@@ -1,0 +1,1 @@
+../../chromaprint/src/fingerprinter_configuration.h

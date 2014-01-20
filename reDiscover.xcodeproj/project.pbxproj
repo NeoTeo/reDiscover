@@ -1,0 +1,657 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		548F3DC769524F62AE69C0C1 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FF4446098666436AB643944F /* libPods.a */; };
+		AB3E9752187C20D600BECC09 /* TGPlaylistCellView.m in Sources */ = {isa = PBXBuildFile; fileRef = AB3E9751187C20D600BECC09 /* TGPlaylistCellView.m */; };
+		AB85BBD71875AACF00670905 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AB85BBD61875AACF00670905 /* Cocoa.framework */; };
+		AB85BBE11875AACF00670905 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = AB85BBDF1875AACF00670905 /* InfoPlist.strings */; };
+		AB85BBE31875AACF00670905 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = AB85BBE21875AACF00670905 /* main.m */; };
+		AB85BBE71875AACF00670905 /* Credits.rtf in Resources */ = {isa = PBXBuildFile; fileRef = AB85BBE51875AACF00670905 /* Credits.rtf */; };
+		AB85BBEA1875AACF00670905 /* TGAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = AB85BBE91875AACF00670905 /* TGAppDelegate.m */; };
+		AB85BBED1875AACF00670905 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = AB85BBEB1875AACF00670905 /* MainMenu.xib */; };
+		AB85BBEF1875AACF00670905 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = AB85BBEE1875AACF00670905 /* Images.xcassets */; };
+		AB85BC3B1875AB5200670905 /* TGDropView.m in Sources */ = {isa = PBXBuildFile; fileRef = AB85BC0B1875AB5200670905 /* TGDropView.m */; };
+		AB85BC3C1875AB5200670905 /* TGDropViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = AB85BC0D1875AB5200670905 /* TGDropViewController.m */; };
+		AB85BC3D1875AB5200670905 /* TGDropViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = AB85BC0E1875AB5200670905 /* TGDropViewController.xib */; };
+		AB85BC3E1875AB5200670905 /* TGFingerPrinter.m in Sources */ = {isa = PBXBuildFile; fileRef = AB85BC101875AB5200670905 /* TGFingerPrinter.m */; };
+		AB85BC3F1875AB5200670905 /* TGGridCell.m in Sources */ = {isa = PBXBuildFile; fileRef = AB85BC121875AB5200670905 /* TGGridCell.m */; };
+		AB85BC401875AB5200670905 /* TGIdleTimer.m in Sources */ = {isa = PBXBuildFile; fileRef = AB85BC141875AB5200670905 /* TGIdleTimer.m */; };
+		AB85BC411875AB5200670905 /* TGMainView.xib in Resources */ = {isa = PBXBuildFile; fileRef = AB85BC151875AB5200670905 /* TGMainView.xib */; };
+		AB85BC421875AB5200670905 /* TGMainViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = AB85BC171875AB5200670905 /* TGMainViewController.m */; };
+		AB85BC431875AB5200670905 /* TGPlaylist.m in Sources */ = {isa = PBXBuildFile; fileRef = AB85BC191875AB5200670905 /* TGPlaylist.m */; };
+		AB85BC441875AB5200670905 /* TGPlaylistView.xib in Resources */ = {isa = PBXBuildFile; fileRef = AB85BC1A1875AB5200670905 /* TGPlaylistView.xib */; };
+		AB85BC451875AB5200670905 /* TGPlaylistViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = AB85BC1C1875AB5200670905 /* TGPlaylistViewController.m */; };
+		AB85BC461875AB5200670905 /* TGSong.m in Sources */ = {isa = PBXBuildFile; fileRef = AB85BC1E1875AB5200670905 /* TGSong.m */; };
+		AB85BC471875AB5200670905 /* TGSongCellMatrix.m in Sources */ = {isa = PBXBuildFile; fileRef = AB85BC201875AB5200670905 /* TGSongCellMatrix.m */; };
+		AB85BC481875AB5200670905 /* TGSongGridView.xib in Resources */ = {isa = PBXBuildFile; fileRef = AB85BC211875AB5200670905 /* TGSongGridView.xib */; };
+		AB85BC491875AB5200670905 /* TGSongGridViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = AB85BC231875AB5200670905 /* TGSongGridViewController.m */; };
+		AB85BC4A1875AB5200670905 /* TGSongInfoView.xib in Resources */ = {isa = PBXBuildFile; fileRef = AB85BC241875AB5200670905 /* TGSongInfoView.xib */; };
+		AB85BC4B1875AB5200670905 /* TGSongInfoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = AB85BC261875AB5200670905 /* TGSongInfoViewController.m */; };
+		AB85BC4C1875AB5200670905 /* TGSongPool.m in Sources */ = {isa = PBXBuildFile; fileRef = AB85BC281875AB5200670905 /* TGSongPool.m */; };
+		AB85BC4D1875AB5200670905 /* TGSongTimelineView.xib in Resources */ = {isa = PBXBuildFile; fileRef = AB85BC291875AB5200670905 /* TGSongTimelineView.xib */; };
+		AB85BC4E1875AB5200670905 /* TGSongTimelineViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = AB85BC2B1875AB5200670905 /* TGSongTimelineViewController.m */; };
+		AB85BC4F1875AB5200670905 /* TGSongUIViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = AB85BC2D1875AB5200670905 /* TGSongUIViewController.m */; };
+		AB85BC501875AB5200670905 /* TGSongUserData.m in Sources */ = {isa = PBXBuildFile; fileRef = AB85BC2F1875AB5200670905 /* TGSongUserData.m */; };
+		AB85BC511875AB5200670905 /* TGSweetSpotControl.m in Sources */ = {isa = PBXBuildFile; fileRef = AB85BC311875AB5200670905 /* TGSweetSpotControl.m */; };
+		AB85BC521875AB5200670905 /* TGTimelineBarView.m in Sources */ = {isa = PBXBuildFile; fileRef = AB85BC331875AB5200670905 /* TGTimelineBarView.m */; };
+		AB85BC531875AB5200670905 /* TGTimelineSliderCell.m in Sources */ = {isa = PBXBuildFile; fileRef = AB85BC351875AB5200670905 /* TGTimelineSliderCell.m */; };
+		AB85BC541875AB5200670905 /* TGTimelineTransformer.m in Sources */ = {isa = PBXBuildFile; fileRef = AB85BC371875AB5200670905 /* TGTimelineTransformer.m */; };
+		AB85BC551875AB5200670905 /* TGWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = AB85BC391875AB5200670905 /* TGWindowController.m */; };
+		AB85BC561875AB5200670905 /* TGWindowController.xib in Resources */ = {isa = PBXBuildFile; fileRef = AB85BC3A1875AB5200670905 /* TGWindowController.xib */; };
+		AB85BC581875ACE200670905 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AB85BC571875ACE200670905 /* AVFoundation.framework */; };
+		AB85BC5A1875AD1500670905 /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AB85BC591875AD1500670905 /* CoreMedia.framework */; };
+		AB85BC5C1875AD3B00670905 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AB85BC5B1875AD3B00670905 /* QuartzCore.framework */; };
+		AB85BC5F1875AD7A00670905 /* TGSongGridScrollView.m in Sources */ = {isa = PBXBuildFile; fileRef = AB85BC5E1875AD7A00670905 /* TGSongGridScrollView.m */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		AB0D052D1889E06400F08566 /* libiconv.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libiconv.dylib; path = usr/lib/libiconv.dylib; sourceTree = SDKROOT; };
+		AB241FD21889767500E8E03F /* libbz2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libbz2.dylib; path = usr/lib/libbz2.dylib; sourceTree = SDKROOT; };
+		AB241FD41889774800E8E03F /* CoreFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreFoundation.framework; path = System/Library/Frameworks/CoreFoundation.framework; sourceTree = SDKROOT; };
+		AB241FD61889776700E8E03F /* VideoDecodeAcceleration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = VideoDecodeAcceleration.framework; path = System/Library/Frameworks/VideoDecodeAcceleration.framework; sourceTree = SDKROOT; };
+		AB241FD9188977AB00E8E03F /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
+		AB3E97481876F94700BECC09 /* libchromaprint.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libchromaprint.a; path = ../chromaprint/build/Release/libchromaprint.a; sourceTree = "<group>"; };
+		AB3E9750187C20D600BECC09 /* TGPlaylistCellView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TGPlaylistCellView.h; sourceTree = "<group>"; };
+		AB3E9751187C20D600BECC09 /* TGPlaylistCellView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TGPlaylistCellView.m; sourceTree = "<group>"; };
+		AB85BBD31875AACF00670905 /* reDiscover.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = reDiscover.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		AB85BBD61875AACF00670905 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
+		AB85BBD91875AACF00670905 /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
+		AB85BBDA1875AACF00670905 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
+		AB85BBDB1875AACF00670905 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
+		AB85BBDE1875AACF00670905 /* reDiscover-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "reDiscover-Info.plist"; sourceTree = "<group>"; };
+		AB85BBE01875AACF00670905 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		AB85BBE21875AACF00670905 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		AB85BBE41875AACF00670905 /* reDiscover-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "reDiscover-Prefix.pch"; sourceTree = "<group>"; };
+		AB85BBE61875AACF00670905 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.rtf; name = en; path = en.lproj/Credits.rtf; sourceTree = "<group>"; };
+		AB85BBE81875AACF00670905 /* TGAppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TGAppDelegate.h; sourceTree = "<group>"; };
+		AB85BBE91875AACF00670905 /* TGAppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TGAppDelegate.m; sourceTree = "<group>"; };
+		AB85BBEC1875AACF00670905 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/MainMenu.xib; sourceTree = "<group>"; };
+		AB85BBEE1875AACF00670905 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
+		AB85BBF51875AACF00670905 /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
+		AB85BBFC1875AACF00670905 /* reDiscoverTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "reDiscoverTests-Info.plist"; sourceTree = "<group>"; };
+		AB85BBFE1875AACF00670905 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		AB85BC001875AACF00670905 /* reDiscoverTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = reDiscoverTests.m; sourceTree = "<group>"; };
+		AB85BC0A1875AB5200670905 /* TGDropView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TGDropView.h; sourceTree = "<group>"; };
+		AB85BC0B1875AB5200670905 /* TGDropView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TGDropView.m; sourceTree = "<group>"; };
+		AB85BC0C1875AB5200670905 /* TGDropViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TGDropViewController.h; sourceTree = "<group>"; };
+		AB85BC0D1875AB5200670905 /* TGDropViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TGDropViewController.m; sourceTree = "<group>"; };
+		AB85BC0E1875AB5200670905 /* TGDropViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = TGDropViewController.xib; sourceTree = "<group>"; };
+		AB85BC0F1875AB5200670905 /* TGFingerPrinter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TGFingerPrinter.h; sourceTree = "<group>"; };
+		AB85BC101875AB5200670905 /* TGFingerPrinter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TGFingerPrinter.m; sourceTree = "<group>"; };
+		AB85BC111875AB5200670905 /* TGGridCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TGGridCell.h; sourceTree = "<group>"; };
+		AB85BC121875AB5200670905 /* TGGridCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TGGridCell.m; sourceTree = "<group>"; };
+		AB85BC131875AB5200670905 /* TGIdleTimer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TGIdleTimer.h; sourceTree = "<group>"; };
+		AB85BC141875AB5200670905 /* TGIdleTimer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TGIdleTimer.m; sourceTree = "<group>"; };
+		AB85BC151875AB5200670905 /* TGMainView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = TGMainView.xib; sourceTree = "<group>"; };
+		AB85BC161875AB5200670905 /* TGMainViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TGMainViewController.h; sourceTree = "<group>"; };
+		AB85BC171875AB5200670905 /* TGMainViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TGMainViewController.m; sourceTree = "<group>"; };
+		AB85BC181875AB5200670905 /* TGPlaylist.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TGPlaylist.h; sourceTree = "<group>"; };
+		AB85BC191875AB5200670905 /* TGPlaylist.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TGPlaylist.m; sourceTree = "<group>"; };
+		AB85BC1A1875AB5200670905 /* TGPlaylistView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = TGPlaylistView.xib; sourceTree = "<group>"; };
+		AB85BC1B1875AB5200670905 /* TGPlaylistViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TGPlaylistViewController.h; sourceTree = "<group>"; };
+		AB85BC1C1875AB5200670905 /* TGPlaylistViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TGPlaylistViewController.m; sourceTree = "<group>"; };
+		AB85BC1D1875AB5200670905 /* TGSong.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TGSong.h; sourceTree = "<group>"; };
+		AB85BC1E1875AB5200670905 /* TGSong.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TGSong.m; sourceTree = "<group>"; };
+		AB85BC1F1875AB5200670905 /* TGSongCellMatrix.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TGSongCellMatrix.h; sourceTree = "<group>"; };
+		AB85BC201875AB5200670905 /* TGSongCellMatrix.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TGSongCellMatrix.m; sourceTree = "<group>"; };
+		AB85BC211875AB5200670905 /* TGSongGridView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = TGSongGridView.xib; sourceTree = "<group>"; };
+		AB85BC221875AB5200670905 /* TGSongGridViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TGSongGridViewController.h; sourceTree = "<group>"; };
+		AB85BC231875AB5200670905 /* TGSongGridViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TGSongGridViewController.m; sourceTree = "<group>"; };
+		AB85BC241875AB5200670905 /* TGSongInfoView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = TGSongInfoView.xib; sourceTree = "<group>"; };
+		AB85BC251875AB5200670905 /* TGSongInfoViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TGSongInfoViewController.h; sourceTree = "<group>"; };
+		AB85BC261875AB5200670905 /* TGSongInfoViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TGSongInfoViewController.m; sourceTree = "<group>"; };
+		AB85BC271875AB5200670905 /* TGSongPool.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TGSongPool.h; sourceTree = "<group>"; };
+		AB85BC281875AB5200670905 /* TGSongPool.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TGSongPool.m; sourceTree = "<group>"; };
+		AB85BC291875AB5200670905 /* TGSongTimelineView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = TGSongTimelineView.xib; sourceTree = "<group>"; };
+		AB85BC2A1875AB5200670905 /* TGSongTimelineViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TGSongTimelineViewController.h; sourceTree = "<group>"; };
+		AB85BC2B1875AB5200670905 /* TGSongTimelineViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TGSongTimelineViewController.m; sourceTree = "<group>"; };
+		AB85BC2C1875AB5200670905 /* TGSongUIViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TGSongUIViewController.h; sourceTree = "<group>"; };
+		AB85BC2D1875AB5200670905 /* TGSongUIViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TGSongUIViewController.m; sourceTree = "<group>"; };
+		AB85BC2E1875AB5200670905 /* TGSongUserData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TGSongUserData.h; sourceTree = "<group>"; };
+		AB85BC2F1875AB5200670905 /* TGSongUserData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TGSongUserData.m; sourceTree = "<group>"; };
+		AB85BC301875AB5200670905 /* TGSweetSpotControl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TGSweetSpotControl.h; sourceTree = "<group>"; };
+		AB85BC311875AB5200670905 /* TGSweetSpotControl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TGSweetSpotControl.m; sourceTree = "<group>"; };
+		AB85BC321875AB5200670905 /* TGTimelineBarView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TGTimelineBarView.h; sourceTree = "<group>"; };
+		AB85BC331875AB5200670905 /* TGTimelineBarView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TGTimelineBarView.m; sourceTree = "<group>"; };
+		AB85BC341875AB5200670905 /* TGTimelineSliderCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TGTimelineSliderCell.h; sourceTree = "<group>"; };
+		AB85BC351875AB5200670905 /* TGTimelineSliderCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TGTimelineSliderCell.m; sourceTree = "<group>"; };
+		AB85BC361875AB5200670905 /* TGTimelineTransformer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TGTimelineTransformer.h; sourceTree = "<group>"; };
+		AB85BC371875AB5200670905 /* TGTimelineTransformer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TGTimelineTransformer.m; sourceTree = "<group>"; };
+		AB85BC381875AB5200670905 /* TGWindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TGWindowController.h; sourceTree = "<group>"; };
+		AB85BC391875AB5200670905 /* TGWindowController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TGWindowController.m; sourceTree = "<group>"; };
+		AB85BC3A1875AB5200670905 /* TGWindowController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = TGWindowController.xib; sourceTree = "<group>"; };
+		AB85BC571875ACE200670905 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
+		AB85BC591875AD1500670905 /* CoreMedia.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMedia.framework; path = System/Library/Frameworks/CoreMedia.framework; sourceTree = SDKROOT; };
+		AB85BC5B1875AD3B00670905 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
+		AB85BC5D1875AD7A00670905 /* TGSongGridScrollView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TGSongGridScrollView.h; sourceTree = "<group>"; };
+		AB85BC5E1875AD7A00670905 /* TGSongGridScrollView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TGSongGridScrollView.m; sourceTree = "<group>"; };
+		AB85BC621875B2E000670905 /* libc++.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libc++.dylib"; path = "usr/lib/libc++.dylib"; sourceTree = SDKROOT; };
+		AB85BC641875B2F600670905 /* Accelerate.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accelerate.framework; path = System/Library/Frameworks/Accelerate.framework; sourceTree = SDKROOT; };
+		B512DB84B1174F868791F7EF /* Pods.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.xcconfig; path = Pods/Pods.xcconfig; sourceTree = "<group>"; };
+		FF4446098666436AB643944F /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		AB85BBD01875AACF00670905 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				548F3DC769524F62AE69C0C1 /* libPods.a in Frameworks */,
+				AB85BC5C1875AD3B00670905 /* QuartzCore.framework in Frameworks */,
+				AB85BC5A1875AD1500670905 /* CoreMedia.framework in Frameworks */,
+				AB85BC581875ACE200670905 /* AVFoundation.framework in Frameworks */,
+				AB85BBD71875AACF00670905 /* Cocoa.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		AB3E974A187BFC7E00BECC09 /* App start view */ = {
+			isa = PBXGroup;
+			children = (
+				AB85BBE81875AACF00670905 /* TGAppDelegate.h */,
+				AB85BBE91875AACF00670905 /* TGAppDelegate.m */,
+				AB85BC381875AB5200670905 /* TGWindowController.h */,
+				AB85BC391875AB5200670905 /* TGWindowController.m */,
+				AB85BC3A1875AB5200670905 /* TGWindowController.xib */,
+				AB85BBEB1875AACF00670905 /* MainMenu.xib */,
+				AB85BC0E1875AB5200670905 /* TGDropViewController.xib */,
+				AB85BC0C1875AB5200670905 /* TGDropViewController.h */,
+				AB85BC0D1875AB5200670905 /* TGDropViewController.m */,
+				AB85BC0A1875AB5200670905 /* TGDropView.h */,
+				AB85BC0B1875AB5200670905 /* TGDropView.m */,
+			);
+			name = "App start view";
+			sourceTree = "<group>";
+		};
+		AB3E974B187BFD6000BECC09 /* Song grid panel */ = {
+			isa = PBXGroup;
+			children = (
+				AB85BC2C1875AB5200670905 /* TGSongUIViewController.h */,
+				AB85BC2D1875AB5200670905 /* TGSongUIViewController.m */,
+				AB85BC111875AB5200670905 /* TGGridCell.h */,
+				AB85BC121875AB5200670905 /* TGGridCell.m */,
+				AB85BC151875AB5200670905 /* TGMainView.xib */,
+				AB85BC161875AB5200670905 /* TGMainViewController.h */,
+				AB85BC171875AB5200670905 /* TGMainViewController.m */,
+				AB85BC5D1875AD7A00670905 /* TGSongGridScrollView.h */,
+				AB85BC5E1875AD7A00670905 /* TGSongGridScrollView.m */,
+				AB85BC1F1875AB5200670905 /* TGSongCellMatrix.h */,
+				AB85BC201875AB5200670905 /* TGSongCellMatrix.m */,
+				AB85BC211875AB5200670905 /* TGSongGridView.xib */,
+				AB85BC221875AB5200670905 /* TGSongGridViewController.h */,
+				AB85BC231875AB5200670905 /* TGSongGridViewController.m */,
+				AB3E974F187BFDC700BECC09 /* song timeline */,
+			);
+			name = "Song grid panel";
+			sourceTree = "<group>";
+		};
+		AB3E974C187BFD8700BECC09 /* Common */ = {
+			isa = PBXGroup;
+			children = (
+				AB85BC0F1875AB5200670905 /* TGFingerPrinter.h */,
+				AB85BC101875AB5200670905 /* TGFingerPrinter.m */,
+				AB85BC2E1875AB5200670905 /* TGSongUserData.h */,
+				AB85BC2F1875AB5200670905 /* TGSongUserData.m */,
+				AB85BC131875AB5200670905 /* TGIdleTimer.h */,
+				AB85BC141875AB5200670905 /* TGIdleTimer.m */,
+				AB85BC1D1875AB5200670905 /* TGSong.h */,
+				AB85BC1E1875AB5200670905 /* TGSong.m */,
+				AB85BC271875AB5200670905 /* TGSongPool.h */,
+				AB85BC281875AB5200670905 /* TGSongPool.m */,
+			);
+			name = Common;
+			sourceTree = "<group>";
+		};
+		AB3E974D187BFD9200BECC09 /* Playlist panel */ = {
+			isa = PBXGroup;
+			children = (
+				AB85BC181875AB5200670905 /* TGPlaylist.h */,
+				AB85BC191875AB5200670905 /* TGPlaylist.m */,
+				AB85BC1A1875AB5200670905 /* TGPlaylistView.xib */,
+				AB85BC1B1875AB5200670905 /* TGPlaylistViewController.h */,
+				AB85BC1C1875AB5200670905 /* TGPlaylistViewController.m */,
+				AB3E9750187C20D600BECC09 /* TGPlaylistCellView.h */,
+				AB3E9751187C20D600BECC09 /* TGPlaylistCellView.m */,
+			);
+			name = "Playlist panel";
+			sourceTree = "<group>";
+		};
+		AB3E974E187BFDA700BECC09 /* Song Info panel */ = {
+			isa = PBXGroup;
+			children = (
+				AB85BC241875AB5200670905 /* TGSongInfoView.xib */,
+				AB85BC251875AB5200670905 /* TGSongInfoViewController.h */,
+				AB85BC261875AB5200670905 /* TGSongInfoViewController.m */,
+			);
+			name = "Song Info panel";
+			sourceTree = "<group>";
+		};
+		AB3E974F187BFDC700BECC09 /* song timeline */ = {
+			isa = PBXGroup;
+			children = (
+				AB85BC301875AB5200670905 /* TGSweetSpotControl.h */,
+				AB85BC311875AB5200670905 /* TGSweetSpotControl.m */,
+				AB85BC321875AB5200670905 /* TGTimelineBarView.h */,
+				AB85BC331875AB5200670905 /* TGTimelineBarView.m */,
+				AB85BC341875AB5200670905 /* TGTimelineSliderCell.h */,
+				AB85BC351875AB5200670905 /* TGTimelineSliderCell.m */,
+				AB85BC361875AB5200670905 /* TGTimelineTransformer.h */,
+				AB85BC371875AB5200670905 /* TGTimelineTransformer.m */,
+				AB85BC291875AB5200670905 /* TGSongTimelineView.xib */,
+				AB85BC2A1875AB5200670905 /* TGSongTimelineViewController.h */,
+				AB85BC2B1875AB5200670905 /* TGSongTimelineViewController.m */,
+			);
+			name = "song timeline";
+			sourceTree = "<group>";
+		};
+		AB85BBCA1875AACF00670905 = {
+			isa = PBXGroup;
+			children = (
+				AB85BBDC1875AACF00670905 /* reDiscover */,
+				AB85BBFA1875AACF00670905 /* reDiscoverTests */,
+				AB85BBD51875AACF00670905 /* Frameworks */,
+				AB85BBD41875AACF00670905 /* Products */,
+				B512DB84B1174F868791F7EF /* Pods.xcconfig */,
+			);
+			sourceTree = "<group>";
+		};
+		AB85BBD41875AACF00670905 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				AB85BBD31875AACF00670905 /* reDiscover.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		AB85BBD51875AACF00670905 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				AB0D052D1889E06400F08566 /* libiconv.dylib */,
+				AB241FD9188977AB00E8E03F /* libz.dylib */,
+				AB241FD61889776700E8E03F /* VideoDecodeAcceleration.framework */,
+				AB241FD41889774800E8E03F /* CoreFoundation.framework */,
+				AB241FD21889767500E8E03F /* libbz2.dylib */,
+				AB3E97481876F94700BECC09 /* libchromaprint.a */,
+				AB85BC641875B2F600670905 /* Accelerate.framework */,
+				AB85BC621875B2E000670905 /* libc++.dylib */,
+				AB85BC5B1875AD3B00670905 /* QuartzCore.framework */,
+				AB85BC591875AD1500670905 /* CoreMedia.framework */,
+				AB85BC571875ACE200670905 /* AVFoundation.framework */,
+				AB85BBD61875AACF00670905 /* Cocoa.framework */,
+				AB85BBF51875AACF00670905 /* XCTest.framework */,
+				AB85BBD81875AACF00670905 /* Other Frameworks */,
+				FF4446098666436AB643944F /* libPods.a */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		AB85BBD81875AACF00670905 /* Other Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				AB85BBD91875AACF00670905 /* AppKit.framework */,
+				AB85BBDA1875AACF00670905 /* CoreData.framework */,
+				AB85BBDB1875AACF00670905 /* Foundation.framework */,
+			);
+			name = "Other Frameworks";
+			sourceTree = "<group>";
+		};
+		AB85BBDC1875AACF00670905 /* reDiscover */ = {
+			isa = PBXGroup;
+			children = (
+				AB3E974A187BFC7E00BECC09 /* App start view */,
+				AB3E974B187BFD6000BECC09 /* Song grid panel */,
+				AB3E974C187BFD8700BECC09 /* Common */,
+				AB3E974D187BFD9200BECC09 /* Playlist panel */,
+				AB3E974E187BFDA700BECC09 /* Song Info panel */,
+				AB85BBEE1875AACF00670905 /* Images.xcassets */,
+				AB85BBDD1875AACF00670905 /* Supporting Files */,
+			);
+			path = reDiscover;
+			sourceTree = "<group>";
+		};
+		AB85BBDD1875AACF00670905 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				AB85BBDE1875AACF00670905 /* reDiscover-Info.plist */,
+				AB85BBDF1875AACF00670905 /* InfoPlist.strings */,
+				AB85BBE21875AACF00670905 /* main.m */,
+				AB85BBE41875AACF00670905 /* reDiscover-Prefix.pch */,
+				AB85BBE51875AACF00670905 /* Credits.rtf */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		AB85BBFA1875AACF00670905 /* reDiscoverTests */ = {
+			isa = PBXGroup;
+			children = (
+				AB85BC001875AACF00670905 /* reDiscoverTests.m */,
+				AB85BBFB1875AACF00670905 /* Supporting Files */,
+			);
+			path = reDiscoverTests;
+			sourceTree = "<group>";
+		};
+		AB85BBFB1875AACF00670905 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				AB85BBFC1875AACF00670905 /* reDiscoverTests-Info.plist */,
+				AB85BBFD1875AACF00670905 /* InfoPlist.strings */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		AB85BBD21875AACF00670905 /* reDiscover */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = AB85BC041875AACF00670905 /* Build configuration list for PBXNativeTarget "reDiscover" */;
+			buildPhases = (
+				61BF372820FC442D98F5DCBA /* Check Pods Manifest.lock */,
+				AB85BBCF1875AACF00670905 /* Sources */,
+				AB85BBD01875AACF00670905 /* Frameworks */,
+				AB85BBD11875AACF00670905 /* Resources */,
+				4841F6531A6146ABB5CC567B /* Copy Pods Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = reDiscover;
+			productName = reDiscover;
+			productReference = AB85BBD31875AACF00670905 /* reDiscover.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		AB85BBCB1875AACF00670905 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				CLASSPREFIX = TG;
+				LastUpgradeCheck = 0500;
+				ORGANIZATIONNAME = "Teo Sartori";
+			};
+			buildConfigurationList = AB85BBCE1875AACF00670905 /* Build configuration list for PBXProject "reDiscover" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = AB85BBCA1875AACF00670905;
+			productRefGroup = AB85BBD41875AACF00670905 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				AB85BBD21875AACF00670905 /* reDiscover */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		AB85BBD11875AACF00670905 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				AB85BC3D1875AB5200670905 /* TGDropViewController.xib in Resources */,
+				AB85BBE11875AACF00670905 /* InfoPlist.strings in Resources */,
+				AB85BC4A1875AB5200670905 /* TGSongInfoView.xib in Resources */,
+				AB85BC561875AB5200670905 /* TGWindowController.xib in Resources */,
+				AB85BC4D1875AB5200670905 /* TGSongTimelineView.xib in Resources */,
+				AB85BBEF1875AACF00670905 /* Images.xcassets in Resources */,
+				AB85BBE71875AACF00670905 /* Credits.rtf in Resources */,
+				AB85BC411875AB5200670905 /* TGMainView.xib in Resources */,
+				AB85BC441875AB5200670905 /* TGPlaylistView.xib in Resources */,
+				AB85BC481875AB5200670905 /* TGSongGridView.xib in Resources */,
+				AB85BBED1875AACF00670905 /* MainMenu.xib in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		4841F6531A6146ABB5CC567B /* Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Pods-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		61BF372820FC442D98F5DCBA /* Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Check Pods Manifest.lock";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		AB85BBCF1875AACF00670905 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				AB85BC521875AB5200670905 /* TGTimelineBarView.m in Sources */,
+				AB85BC491875AB5200670905 /* TGSongGridViewController.m in Sources */,
+				AB85BC4E1875AB5200670905 /* TGSongTimelineViewController.m in Sources */,
+				AB85BC5F1875AD7A00670905 /* TGSongGridScrollView.m in Sources */,
+				AB85BC501875AB5200670905 /* TGSongUserData.m in Sources */,
+				AB85BC421875AB5200670905 /* TGMainViewController.m in Sources */,
+				AB85BC3C1875AB5200670905 /* TGDropViewController.m in Sources */,
+				AB85BC551875AB5200670905 /* TGWindowController.m in Sources */,
+				AB85BC511875AB5200670905 /* TGSweetSpotControl.m in Sources */,
+				AB3E9752187C20D600BECC09 /* TGPlaylistCellView.m in Sources */,
+				AB85BC541875AB5200670905 /* TGTimelineTransformer.m in Sources */,
+				AB85BC461875AB5200670905 /* TGSong.m in Sources */,
+				AB85BBE31875AACF00670905 /* main.m in Sources */,
+				AB85BC401875AB5200670905 /* TGIdleTimer.m in Sources */,
+				AB85BBEA1875AACF00670905 /* TGAppDelegate.m in Sources */,
+				AB85BC451875AB5200670905 /* TGPlaylistViewController.m in Sources */,
+				AB85BC531875AB5200670905 /* TGTimelineSliderCell.m in Sources */,
+				AB85BC4F1875AB5200670905 /* TGSongUIViewController.m in Sources */,
+				AB85BC4B1875AB5200670905 /* TGSongInfoViewController.m in Sources */,
+				AB85BC3E1875AB5200670905 /* TGFingerPrinter.m in Sources */,
+				AB85BC471875AB5200670905 /* TGSongCellMatrix.m in Sources */,
+				AB85BC3F1875AB5200670905 /* TGGridCell.m in Sources */,
+				AB85BC431875AB5200670905 /* TGPlaylist.m in Sources */,
+				AB85BC4C1875AB5200670905 /* TGSongPool.m in Sources */,
+				AB85BC3B1875AB5200670905 /* TGDropView.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXVariantGroup section */
+		AB85BBDF1875AACF00670905 /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				AB85BBE01875AACF00670905 /* en */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+		AB85BBE51875AACF00670905 /* Credits.rtf */ = {
+			isa = PBXVariantGroup;
+			children = (
+				AB85BBE61875AACF00670905 /* en */,
+			);
+			name = Credits.rtf;
+			sourceTree = "<group>";
+		};
+		AB85BBEB1875AACF00670905 /* MainMenu.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				AB85BBEC1875AACF00670905 /* Base */,
+			);
+			name = MainMenu.xib;
+			sourceTree = "<group>";
+		};
+		AB85BBFD1875AACF00670905 /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				AB85BBFE1875AACF00670905 /* en */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		AB85BC021875AACF00670905 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.9;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+				USER_HEADER_SEARCH_PATHS = "../**";
+			};
+			name = Debug;
+		};
+		AB85BC031875AACF00670905 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.9;
+				SDKROOT = macosx;
+				USER_HEADER_SEARCH_PATHS = "../**";
+			};
+			name = Release;
+		};
+		AB85BC051875AACF00670905 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = B512DB84B1174F868791F7EF /* Pods.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				COMBINE_HIDPI_IMAGES = YES;
+				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "reDiscover/reDiscover-Prefix.pch";
+				INFOPLIST_FILE = "reDiscover/reDiscover-Info.plist";
+				LIBRARY_SEARCH_PATHS = "$(inherited)/**";
+				MACOSX_DEPLOYMENT_TARGET = 10.9;
+				OTHER_LDFLAGS = "$(inherited)";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				USER_HEADER_SEARCH_PATHS = "$(inherited)/**";
+				WRAPPER_EXTENSION = app;
+			};
+			name = Debug;
+		};
+		AB85BC061875AACF00670905 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = B512DB84B1174F868791F7EF /* Pods.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				COMBINE_HIDPI_IMAGES = YES;
+				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "reDiscover/reDiscover-Prefix.pch";
+				INFOPLIST_FILE = "reDiscover/reDiscover-Info.plist";
+				LIBRARY_SEARCH_PATHS = "$(inherited)/**";
+				MACOSX_DEPLOYMENT_TARGET = 10.9;
+				OTHER_LDFLAGS = "$(inherited)";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				USER_HEADER_SEARCH_PATHS = "$(inherited)/**";
+				WRAPPER_EXTENSION = app;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		AB85BBCE1875AACF00670905 /* Build configuration list for PBXProject "reDiscover" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				AB85BC021875AACF00670905 /* Debug */,
+				AB85BC031875AACF00670905 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		AB85BC041875AACF00670905 /* Build configuration list for PBXNativeTarget "reDiscover" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				AB85BC051875AACF00670905 /* Debug */,
+				AB85BC061875AACF00670905 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = AB85BBCB1875AACF00670905 /* Project object */;
+}

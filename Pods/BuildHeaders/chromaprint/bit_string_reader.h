@@ -1,0 +1,1 @@
+../../chromaprint/src/bit_string_reader.h

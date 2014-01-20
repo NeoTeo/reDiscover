@@ -1,0 +1,1 @@
+../../chromaprint/src/fingerprint_decompressor.h

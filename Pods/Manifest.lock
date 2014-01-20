@@ -1,0 +1,13 @@
+PODS:
+  - chromaprint (1.2.16)
+  - ffmpegtest (1.0.2)
+
+DEPENDENCIES:
+  - chromaprint (= 1.2.16)
+  - ffmpegtest (= 1.0.2)
+
+SPEC CHECKSUMS:
+  chromaprint: a0d8fd03871e7298aaadfaa629c17e934127f49b
+  ffmpegtest: 5949baeb29c88923e9461071e1fd2cc1466a3551
+
+COCOAPODS: 0.29.0

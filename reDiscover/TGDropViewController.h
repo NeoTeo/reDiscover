@@ -1,0 +1,13 @@
+//
+//  TGDropViewController.h
+//  Proto3
+//
+//  Created by Teo Sartori on 14/10/2013.
+//  Copyright (c) 2013 Teo Sartori. All rights reserved.
+//
+
+#import <Cocoa/Cocoa.h>
+
+@interface TGDropViewController : NSViewController
+
+@end

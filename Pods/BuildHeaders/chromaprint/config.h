@@ -1,0 +1,1 @@
+../../chromaprint/config.h

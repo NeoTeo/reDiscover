@@ -1,0 +1,1 @@
+../../chromaprint/src/feature_vector_consumer.h

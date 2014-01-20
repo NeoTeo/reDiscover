@@ -1,0 +1,1 @@
+../../chromaprint/src/chroma_normalizer.h

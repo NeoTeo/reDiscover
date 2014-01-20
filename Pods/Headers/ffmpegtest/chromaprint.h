@@ -1,0 +1,1 @@
+../../ffmpegtest/includes/chromaprint.h

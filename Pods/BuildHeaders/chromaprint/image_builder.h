@@ -1,0 +1,1 @@
+../../chromaprint/src/image_builder.h
