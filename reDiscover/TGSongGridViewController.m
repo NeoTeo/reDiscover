@@ -128,6 +128,7 @@
     
     // First convert the songID to the matrix index.
     TGGridCell * theCell = [_songCellMatrix cellWithTag:songID];
+    
     // This core stuff has to happen on the main thread apparently #TEO CHECK_THIS
     dispatch_async(dispatch_get_main_queue(), ^{
         [self animateCoverChange:theImage forCell:theCell];
@@ -137,7 +138,6 @@
 
 
 // Obviously this will animate the change eventually.
-//- (void)animateCoverChange:(NSImage *)theImage forSongWithID:(NSUInteger)songID {
 - (void)animateCoverChange:(NSImage *)theImage forCell:(TGGridCell *)theCell {
     
 //    TGGridCell *existingCell = [[_songCellMatrix cells] objectAtIndex:songID];

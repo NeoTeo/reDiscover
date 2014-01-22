@@ -7,7 +7,8 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "/Users/teo/Dropbox/usr/local/include/chromaprint.h"
+#import <chromaprint.h>
+//#import "/Users/teo/Dropbox/usr/local/include/chromaprint.h"
 //#import "/Users/teo/Dropbox/usr/local/include/chromaprint.h"
 // Forward declarations.
 @class TGSong;

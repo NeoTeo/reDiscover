@@ -479,6 +479,7 @@
     }
 }
 
+
 - (void)songPoolDidStartPlayingSong:(NSUInteger)songID {
 
     [_songInfoController setSong:[_currentSongPool getSongDisplayStrings:songID]];
@@ -493,7 +494,8 @@
 //    [_songGridController.songTimelineController setSweetSpotPositions:[theSong songSweetSpots] forSongOfDuration:songDuration];
     
     // Then request a the album image for the song and pass it a block callback.
-    [theSong requestSongAlbumImage:^(NSImage *tmpImage) {
+//    [theSong requestSongAlbumImage:^(NSImage *tmpImage) {
+    [_currentSongPool requestImageForSongID:songID withHandler:^(NSImage *tmpImage) {
         [_songInfoController setSongCoverImage:tmpImage];
         
         if (tmpImage == nil) {

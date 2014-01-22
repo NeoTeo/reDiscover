@@ -77,6 +77,7 @@
 - (TGSong *)currentlyPlayingSong;
 
 
+- (void)requestImageForSongID:(NSInteger)songID withHandler:(void (^)(NSImage *))imageHandler;
 
 - (void)preloadSongArray:(NSArray *)songArray;
 - (void)storeSongData;

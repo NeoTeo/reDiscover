@@ -8,7 +8,6 @@
 
 #import "TGFingerPrinter.h"
 
-// These are libraries imported from /usr/local/lib with headers in /usr/local/include
 #import <libavcodec/avcodec.h>
 #import <libavformat/avformat.h>
 #import <libavutil/opt.h>

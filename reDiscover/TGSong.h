@@ -86,6 +86,7 @@ enum {
 - (Float64)getCurrentPlayTime;
 - (void)setCurrentPlayTime:(NSNumber *)playTimeInSeconds;
 //- (void)setCurrentPlayTime:(Float64)playTimeInSeconds;
+- (void)requestCoverImageWithHandler:(void (^)(NSImage *))imageHandler;
 - (void)requestSongAlbumImage:(void (^)(NSImage *))imageHandler;
 - (void)loadSongMetadata;
 

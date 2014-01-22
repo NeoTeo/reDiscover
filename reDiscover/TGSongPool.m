@@ -542,6 +542,36 @@ static int const kSSCheckCounterSize = 10;
 }
 
 
+// This method will attempt to find the image for the song and, if found, will pass it to the given imageHandler block.
+- (void)requestImageForSongID:(NSInteger)songID withHandler:(void (^)(NSImage *))imageHandler {
+    
+    TGSong * theSong = [self songForID:songID];
+    
+    [theSong requestCoverImageWithHandler:^(NSImage *tmpImage) {
+        
+        if (tmpImage != nil) {
+            
+            // Call the image handler with the image we recived from the song.
+            imageHandler(tmpImage);
+            return;
+        } else {
+            
+            // Try to see if we can find an image in any of the other songs in the same directory as the given song.
+            
+            // Get the song's URL
+            NSURL *theURL = [theSong songURL];
+            
+            // Extract the containing directory by removing the trailing file name.
+            NSLog(@"the baseURL is %@",[theURL baseURL]);
+            
+        }
+        
+        // No image was found by any of the methods so we call the given image handler with nil;
+        imageHandler(nil);
+    }];
+}
+
+
 - (void)requestEmbeddedMetadataForSong:(NSInteger) songID {
     dispatch_async(serialDataLoad, ^{
         TGSong *theSong = [self songForID:songID];
