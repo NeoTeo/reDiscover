@@ -265,148 +265,6 @@ static int const kSSCheckCounterSize = 10;
     return songPoolManagedContext;
 }
 
-/*
- 
-// Traverse the passed in URL, find all music files and load their URLs into a dictionary.
-// returns true if the given url is valid and, if so, will initiate the loading of songs.
-- (BOOL)loadFromURL:(NSURL *)anURL {
-
-
-    // init status.
-    allURLsRequested = NO;
-    allURLsLoaded = NO;
-    errorLoadingSongURLs = NO;
-    __block int requestedOps = 0;
-    __block int completedOps = 0;
-    opQueue = [[NSOperationQueue alloc] init];
-    
-    NSFileManager *fileManager = [[NSFileManager alloc] init];
-    
-    NSArray *keys = [NSArray arrayWithObject:NSURLIsDirectoryKey];
-    
-    NSDirectoryEnumerator *enumerator = [fileManager
-                                         enumeratorAtURL:anURL
-                                         includingPropertiesForKeys:keys
-                                         options:0
-                                         errorHandler:^(NSURL *url, NSError *error) {
-                                             // Handle the error.
-                                             // Return YES if the enumeration should continue after the error.
-                                             NSLog(@"Error getting the directory. %@",error);
-                                             // Return yes to continue traversing.
-                                             return YES;
-                                         }];
-    NSTimeInterval timerStart = [NSDate timeIntervalSinceReferenceDate];
-    NSUInteger dracula =0;
-    for (NSURL *url in enumerator) dracula++;
-    NSLog(@"The directory enumeration took %f seconds.",[NSDate timeIntervalSinceReferenceDate] - timerStart);
-    NSLog(@"The count is %lu",(unsigned long)dracula);
-
-    // At this point, to avoid blocking with a beach ball on big resources/slow access, we drop this part into a concurrent queue.
-    NSOperationQueue *topQueue = [[NSOperationQueue alloc] init];
-    NSBlockOperation *topOp = [NSBlockOperation blockOperationWithBlock:^{
-        
-        for (NSURL *url in enumerator) {
-            
-            // Increment counter to track number of requested load operations.
-            requestedOps++;
-            
-            NSBlockOperation *theOp = [NSBlockOperation blockOperationWithBlock:^{
-                NSError *error;
-                NSNumber *isDirectory = nil;
-
-                if (! [url getResourceValue:&isDirectory forKey:NSURLIsDirectoryKey error:&error]) {
-                    // handle error
-                    NSLog(@"An error %@ occurred in the enumeration.",error);
-                    errorLoadingSongURLs = YES;
-    // TEO: handle error by making another delegate method that signals failure.
-                    return;
-                }
-                else if (! [isDirectory boolValue]) {
-                    // No error and it’s not a directory; do something with the file
-                    
-                    // Check the file extension and deal only with audio files.
-                    CFStringRef fileExtension = (__bridge CFStringRef) [url pathExtension];
-                    CFStringRef fileUTI = UTTypeCreatePreferredIdentifierForTag(kUTTagClassFilenameExtension, fileExtension, NULL);
-                    
-                    if (UTTypeConformsTo(fileUTI, kUTTypeAudio))
-                    {
-                        // Since this can occur asynchronously, atomically increment the number of audio urls.
-                        int curURLNum = OSAtomicIncrement32(&(loadedURLs))-1;
-
-                        // Create a song object with the given url. This does not start loading it from disk.
-                        TGSong *newSong = [[TGSong alloc] initWithURL:url];
-                        
-                        // Set the song pool to be a song's delegate.
-                        [newSong setDelegate:self];
-                        
-                        // The song id is simply its number in the loading sequence. (for now)
-                        [newSong setSongID:curURLNum];
-                        
-                        dispatch_async(serialDataLoad, ^{
-                            
-                            // Try and fetch (by URL) the song's metadata from the core data store.
-                            [self loadMetadataIntoSong:newSong];
-                            
-                            // Add the song to the songpool.
-                            [songPoolDictionary setObject:newSong forKey:[NSNumber numberWithInt:curURLNum]];
-                                                        
-                        });
-                        
-                        // Inform the delegate that another song object has been loaded. This causes a cell in the song matrix to be added.
-                        if ([_delegate respondsToSelector:@selector(songPoolDidLoadSongURLWithID:)]) {
-                            [_delegate songPoolDidLoadSongURLWithID:curURLNum];
-                        }
-                        
-                    }
-                }
-            }];
-            
-            [theOp setCompletionBlock:^{
-                
-                // Atomically increment the counter to track completed operations.
-                OSAtomicIncrement32(&completedOps);
-                
-                // If we're done requesting new urls and
-                // the number of completed operations is the same as the requested operations then
-                // signal that we're done loading and signal our delegate (the songgridcontroller) that we're all done.
-                if (allURLsRequested) {
-                    if ( completedOps == requestedOps) {
-                        // At this point we know how many songs to display.
-                        NSLog(@"Done. Found %d urls",loadedURLs);
-                        
-                        // Inform the delegate that we've loaded the all the URLs.
-                        if ([_delegate respondsToSelector:@selector(songPoolDidLoadAllURLs:)]) {
-                                [_delegate songPoolDidLoadAllURLs:loadedURLs];
-                        }
-                        allURLsLoaded = YES;
-                    }
-                }
-            }];
-            
-            [opQueue addOperation:theOp];
-        }
-    }];
-
-    [topOp setCompletionBlock:^{
-        allURLsRequested = YES;
-//        NSLog(@"requested %d",requestedURLs);
-    }];
-
-    [topQueue addOperation:topOp];
-    
-    
-//        // Example of a delay using performSelector.
-//        [self performSelector:@selector(bingoMethod) withObject:self afterDelay:3.0];
-//        // Or using a block and dispatch
-//        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 1 * NSEC_PER_SEC), dispatch_get_current_queue(), ^{
-//            [object method];
-//        });
-    
-    // But we haven't begun loading the contents of the songs yet.
-    // Start caching songs...
-    return YES;
-}
- */
 
 - (BOOL)validateURL:(NSURL *)anURL {
     
@@ -547,6 +405,7 @@ static int const kSSCheckCounterSize = 10;
     
     TGSong * theSong = [self songForID:songID];
     
+    // Request a cover image from the song passing in a handler block we want executed on resolution.
     [theSong requestCoverImageWithHandler:^(NSImage *tmpImage) {
         
         if (tmpImage != nil) {
@@ -555,14 +414,21 @@ static int const kSSCheckCounterSize = 10;
             imageHandler(tmpImage);
             return;
         } else {
-            
-            // Try to see if we can find an image in any of the other songs in the same directory as the given song.
+            // Search strategies:
+            // 1. Search songs from same album. If they have an image, use that.
+            // 2. Search directory for images.
+            //  If there pick one named same as track.
+            //  If there pick one named same as album.
+            //  Else pick any.
+            // 3. Look up track then album then artist name online.
+
             
             // Get the song's URL
             NSURL *theURL = [theSong songURL];
             
             // Extract the containing directory by removing the trailing file name.
-            NSLog(@"the baseURL is %@",[theURL baseURL]);
+            NSString *directory = [[theURL absoluteString] stringByDeletingLastPathComponent];
+            NSLog(@"the directory is %@",directory);
             
         }
         
