@@ -43,6 +43,7 @@
 @property NSUInteger numSongs;
 @property NSUInteger colsPerRow;
 
+@property NSImage *defaultImage;
 
 //@property TGSongPool *songPool;
 @property TGSongGridScrollView *songGridScrollView;

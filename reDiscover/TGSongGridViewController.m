@@ -65,8 +65,11 @@
     
     CGRect thisFrame = [self view].frame;
     
+    _defaultImage = [NSImage imageNamed:@"songImage"];
+    
     // The scroll view will hold the matrix of song cells.
     _songGridScrollView = [[TGSongGridScrollView alloc] initWithFrame:thisFrame];
+//    [_songGridScrollView setBackgroundColor:[NSColor brownColor]];
     
     [_songGridScrollView setDelegate:self];
     
@@ -141,7 +144,11 @@
 - (void)animateCoverChange:(NSImage *)theImage forCell:(TGGridCell *)theCell {
     
 //    TGGridCell *existingCell = [[_songCellMatrix cells] objectAtIndex:songID];
-    [theCell setImage:theImage];
+    if (theCell.image == _defaultImage) {
+        NSLog(@"here we'd flip and change.");
+        [self coverFlipAnimationForCell:theCell withImage:theImage];
+//        [theCell setImage:theImage];
+    }
     
 //    [_songCellMatrix setNeedsDisplay];
     // Attempt to only invalidate the cell area.
@@ -150,6 +157,7 @@
 //    NSRect cellRect = [_songCellMatrix cellFrameAtRow:row column:col];
 //    [_songCellMatrix setNeedsDisplayInRect:cellRect];
 }
+
 
 
 static NSInteger const kUndefinedID =  -1;
@@ -182,7 +190,7 @@ static NSInteger const kUndefinedID =  -1;
     
     
     NSInteger rowCount, colCount, newRow, newCol;
-    //NSLog(@"songID %ld",(unsigned long)songID);
+    
     // Let the song id decide the position in the matrix.
     NSUInteger row = floor(songID / _colsPerRow);
     NSUInteger col = songID - (row*_colsPerRow);
@@ -210,13 +218,13 @@ static NSInteger const kUndefinedID =  -1;
     // How about sizeToFit?
     
     NSAssert([[_songCellMatrix cells] count] > songID, @"Eeek. songID is bigger than the song cell matrix");
+    
     // Find the existing cell for this songID.
     TGGridCell *existingCell = [[_songCellMatrix cells] objectAtIndex:songID];
     
     // Do pop up anim before we add the actual cell.
     CGRect cellRect = [_songCellMatrix cellFrameAtRow:row column:col];
     CGRect theFrame = [[self songGridScrollView] documentVisibleRect];
-    NSImage *theImage = [NSImage imageNamed:@"songImage"];
 
     // Only do the work if we're actually visible.
 //    if (NSPointInRect(cellRect.origin,theFrame)) {
@@ -224,7 +232,7 @@ static NSInteger const kUndefinedID =  -1;
         // TEO: Should this just use a layer rather than a layer-backed view?
         NSImageView *newURLImage = [[NSImageView alloc] initWithFrame:cellRect];
         [newURLImage setWantsLayer:YES];
-        [newURLImage setImage:theImage];
+        [newURLImage setImage:_defaultImage];
 
         [[[self songGridScrollView] documentView] addSubview:newURLImage];
         
@@ -244,7 +252,7 @@ static NSInteger const kUndefinedID =  -1;
             
               // This is now done JIT or when all songs have been loaded.
 //            [existingCell setTag:songID];
-            [existingCell setImage:theImage];
+            [existingCell setImage:_defaultImage];
             [_songCellMatrix incrementActiveCellCount];
         
             [_songCellMatrix setNeedsDisplay];
@@ -259,7 +267,7 @@ static NSInteger const kUndefinedID =  -1;
         // Set the cell's tag to the songID we've been passed.
           // This is now done JIT or when all songs have been loaded.
 //        [existingCell setTag:songID];
-        [existingCell setImage:theImage];
+        [existingCell setImage:_defaultImage];
         [_songCellMatrix incrementActiveCellCount];
         [_songCellMatrix setNeedsDisplay];
     }
@@ -391,9 +399,36 @@ static NSInteger const kUndefinedID =  -1;
     
 }
 
+- (void)coverFlipAnimationForCell:(TGGridCell *)theCell withImage:(NSImage *)theImage {
+    
+    NSInteger row, col;
+    [_songCellMatrix getRow:&row column:&col ofCell:theCell];
+    CGRect cellRect = [_songCellMatrix cellFrameAtRow:row column:col];
+    
+    NSImageView *newURLImage = [[NSImageView alloc] initWithFrame:cellRect];
+    [newURLImage setWantsLayer:YES];
+    [newURLImage setImage:theImage];
+    
+    [[[self songGridScrollView] documentView] addSubview:newURLImage];
+    
+    [NSAnimationContext runAnimationGroup:^(NSAnimationContext *context){
+        
+        // This has to go after the addSubview as it resets the view's anchorPoint.
+        [self bouncyPopAnimation:newURLImage];
+        
+    } completionHandler:^{
+        
+        [theCell setImage:theImage];
+        // Remove newURLImage without needing display because we have to call setNeedsDisplay on the whole matrix anyway.
+        [newURLImage removeFromSuperviewWithoutNeedingDisplay];
+        
+        [_songCellMatrix setNeedsDisplay];
+        
+    }];
+    
+}
+
 - (void)bouncyPopAnimation:(NSView *)theView {
-#pragma TEO // disable whilst working on grid zooming
-    return;
     
     if (theView.layer != nil) {
         
