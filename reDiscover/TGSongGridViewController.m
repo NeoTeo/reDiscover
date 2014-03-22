@@ -435,7 +435,7 @@ static NSInteger const kUndefinedID =  -1;
     [NSAnimationContext runAnimationGroup:^(NSAnimationContext *context){
         if (frontView.layer != nil) {
             
-            NSArray *frontVals = [sinVals subarrayWithRange:NSMakeRange(0, count/2)];
+            NSArray *frontVals = [sinVals subarrayWithRange:NSMakeRange(0, count/2+1)];
             
             CATransform3D tranny = CATransform3DIdentity;
             tranny.m34 = 1.0/-500;//eyePosition;
@@ -454,7 +454,7 @@ static NSInteger const kUndefinedID =  -1;
             
             flipAnimation.values = frontVals;
             
-            flipAnimation.duration = 2;
+            flipAnimation.duration = 0.2;
             flipAnimation.removedOnCompletion = YES;
             
             [frontView.layer addAnimation:flipAnimation forKey:@"flip"];
@@ -486,7 +486,7 @@ static NSInteger const kUndefinedID =  -1;
                 
                 flipAnimation.values = backVals;
                 
-                flipAnimation.duration = 2;
+                flipAnimation.duration = 0.2;
                 flipAnimation.removedOnCompletion = YES;
                 
                 [backView.layer addAnimation:flipAnimation forKey:@"flip"];
