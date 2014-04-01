@@ -49,6 +49,7 @@
     NSImage *theImage = [self image];
 
     if (theImage) {
+        
 //        [theImage drawInRect:cellFrame fromRect:NSZeroRect operation:NSCompositeSourceOver fraction:1 respectFlipped:YES hints:nil];
         [theImage drawInRect:cellFrame fromRect:NSZeroRect operation:NSCompositeCopy fraction:1 respectFlipped:YES hints:nil];
         // 10.9 Mavericks version of the above [[self image] drawInRect:cellFrame];

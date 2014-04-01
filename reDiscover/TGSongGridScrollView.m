@@ -26,6 +26,7 @@
         [self setHasVerticalScroller:YES];
 
         
+        [self setBackgroundColor:[NSColor colorWithPatternImage:[NSImage imageNamed:@"scrollviewBGImage"]]];
         // TEO - could we set this to draw concurrently?!? What does this actually do?
         //[self setCanDrawConcurrently:YES];
         
