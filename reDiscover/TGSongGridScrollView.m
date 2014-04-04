@@ -132,6 +132,21 @@
 
 // Update focus notifies the delegate when we change the focus (via the pointer) to a different song.
 - (void)updateFocus:(NSPoint)locationInWindow {
+    
+    
+    // First check if the scrolling vector is > x and disable caching until scrolling speed has slowed again.
+    int maxDelta = 2;
+    static NSPoint previousPoint;
+    
+    NSPoint nowPoint = [[self documentView] convertPoint:locationInWindow fromView:nil];
+    NSPoint deltaPoint = NSMakePoint(nowPoint.x-previousPoint.x, nowPoint.y-previousPoint.y);
+    
+    previousPoint = nowPoint;
+    if (abs(deltaPoint.x) > maxDelta || abs(deltaPoint.y) > maxDelta) {
+        return;
+    }
+    
+    
     if ([[self documentView] isKindOfClass:[TGSongCellMatrix class]]) {
         
         TGSongCellMatrix *theMatrix = [self documentView];
@@ -165,6 +180,8 @@
 //    }
 //    NSLog(@"location of mouse in scroll view is %@",NSStringFromPoint([self convertPoint:locationInWindow fromView:nil]));
 //    NSLog(@"location of mouse in matrix view is %@",NSStringFromPoint([[self documentView] convertPoint:locationInWindow fromView:nil]));
+   
+    
 //    if ([[self documentView] isFlipped]) {
 //        NSLog(@"Heck doc!");
 //    }

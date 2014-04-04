@@ -861,15 +861,7 @@ static NSInteger const kUndefinedID =  -1;
 }
 
 
-//- (void)songGridScrollViewDidChangeToCell:(TGGridCell *)theCell withRect:(NSRect)theRect {
-//    
-//    [_songUIViewController setUIPosition:theRect.origin withPopAnimation:YES];
-//    
-//    NSInteger cellIndex = [[_songCellMatrix cells] indexOfObject:theCell];
-//    [[self delegate] userSelectedSongID:[self cellIndexToSongID:cellIndex]];
-//}
-
-
+// Called when a new row and column is selected either by moving mouse pointer or scrolling a new cell under it.
 - (void)songGridScrollViewDidChangeToRow:(NSInteger)theRow andColumn:(NSInteger)theColumn {
     
     NSRect theRect = [_songCellMatrix convertRect:[_songCellMatrix cellFrameAtRow:theRow column:theColumn] toView:_songGridScrollView];
@@ -884,6 +876,8 @@ static NSInteger const kUndefinedID =  -1;
     NSInteger songID = [self cellIndexToSongID:cellIndex];
     if (songID != -1) {
         [[self delegate] userSelectedSongID:songID];
+        
+        // Update the song cache based on the new selection.
         
         NSArray *theArray =[self buildCacheArray:1 forRow:theRow andColumn:theColumn];
         [[self delegate] requestSongArrayPreload:theArray];
