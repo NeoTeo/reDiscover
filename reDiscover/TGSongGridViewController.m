@@ -55,6 +55,23 @@
     [self setupSongGrid];
     
     
+    // Set up the animations we're going to use.
+    
+    NSLog(@"TGSongGridViewController awakeFromNib: setting up animations");
+    
+    KeyframeParametricBlock function = ^double(double time) {
+        // the range is -1.14 >= x <= 0
+        double x = -1.0457+(time*1.0457);
+        // y = amplitude*sin(angle*frequency)
+        return(0.2*x*sin(x*9));
+    };
+    
+    _pushBounceAnimation = [CAKeyframeAnimation
+                         animationWithKeyPath:@"transform.scale"
+                         function:function fromValue:1.0 toValue:0];
+    
+    [_pushBounceAnimation setDuration:0.35];
+    
     // Now's a good time to load the genre-to-colour map
 //    [self loadGenreToColourMap];
 }
@@ -410,26 +427,8 @@ static NSInteger const kUndefinedID =  -1;
     [_songCellMatrix getRow:&row column:&col ofCell:theCell];
     CGRect cellRect = [_songCellMatrix cellFrameAtRow:row column:col];
     
-    // Scale the blank cell image down with a dampened spring animation.
-    // define a parametric function
-//    KeyframeParametricBlock function = ^double(double time) {
-//        return(1.0 - pow((1.0 - time), 2.0));
-//    };
-    
-    
-    KeyframeParametricBlock function = ^double(double time) {
-        // the range is -1.14 >= x <= 0
-        double x = -1.0457+(time*1.0457);
-        // y = amplitude*sin(angle*frequency)
-        return(0.2*x*sin(x*9));
-    };
-    
-//    NSLog(@"layer backed %@",[[[self songGridScrollView] documentView] wantsLayer] ? @"yes" : @"no");
-    
     CALayer *frontLayer = [CALayer layer];
     [frontLayer setContents:theImage];
-//    [frontLayer setFrame:cellRect];
-//    [[[self songGridScrollView] documentView] setLayer:frontLayer];
     [[[self songGridScrollView] documentView] setWantsLayer:YES];
     [[[[self songGridScrollView] documentView] layer] addSublayer:frontLayer];
     
@@ -443,19 +442,7 @@ static NSInteger const kUndefinedID =  -1;
     
     [NSAnimationContext runAnimationGroup:^(NSAnimationContext *context){
         if (frontLayer) {
-            [CATransaction begin];
-            [CATransaction
-             setValue:[NSNumber numberWithFloat:0.35]
-             forKey:kCATransactionAnimationDuration];
-            
-            // make an animation
-            CAAnimation *drop = [CAKeyframeAnimation
-                                 animationWithKeyPath:@"transform.scale"
-                                 function:function fromValue:1.0 toValue:0];
-            // use it
-            [frontLayer addAnimation:drop forKey:@"scale"];
-            
-            [CATransaction commit];
+            [frontLayer addAnimation:_pushBounceAnimation forKey:@"scale"];
             theCell.image = nil;
         }
     }completionHandler:^{

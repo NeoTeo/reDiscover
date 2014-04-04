@@ -20,6 +20,7 @@
 @class TGPlaylistViewController;
 @class TGSongInfoViewController;
 @class TGSongTimelineViewController;
+@class CAKeyframeAnimation;
 
 // Forward declaration of protocol.
 @protocol TGSongGridViewControllerDelegate;
@@ -54,6 +55,7 @@
 //@property NSView *songGridTopView;
 @property TGSongCellMatrix *songCellMatrix;
 @property NSProgressIndicator *pgIndicator;
+@property CAKeyframeAnimation *pushBounceAnimation;
 
 // Not sure we keep this
 @property NSInteger currentSongID;
