@@ -419,6 +419,10 @@ static NSInteger const kUndefinedID =  -1;
 }
 
 
+- (void)coverPushAnimation:(TGGridCell *)theCell withImage:(NSImage *)theImage {
+    
+}
+
 // This animation will push the blank cover image into the screen whilst its cover image fades in and it pops back up to fill its frame.
 - (void)coverPushAndFadeAnimationForCell:(TGGridCell *)theCell withImage:(NSImage *)theImage {
     
@@ -437,22 +441,18 @@ static NSInteger const kUndefinedID =  -1;
     CGPoint aPoint = CGPointMake(CGRectGetMidX(cellRect), CGRectGetMidY(cellRect));
     [frontLayer setPosition:aPoint];
     
-    
-    NSLog(@"the frontLayer rect %@",NSStringFromRect([frontLayer frame]));
-    
     [NSAnimationContext runAnimationGroup:^(NSAnimationContext *context){
-        if (frontLayer) {
-            [frontLayer addAnimation:_pushBounceAnimation forKey:@"scale"];
-            theCell.image = nil;
-        }
+        
+        [frontLayer addAnimation:_pushBounceAnimation forKey:@"scale"];
+        theCell.image = nil;
+        
     }completionHandler:^{
     
         theCell.image = theImage;
         [frontLayer removeFromSuperlayer];
     }];
-    
-    
 }
+
 
 // Test for cover flip animation.
 - (void)coverFlipAnimationForCell:(TGGridCell *)theCell withImage:(NSImage *)theImage {
