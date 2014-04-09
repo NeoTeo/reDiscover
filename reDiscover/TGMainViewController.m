@@ -45,7 +45,6 @@
 @implementation TGMainViewController
 
 -(void)awakeFromNib{
-    NSLog(@"main view woke");
     
     // The idle timer produces system wide notifications of entering and exiting idle time.
     _idleTimer = [[TGIdleTimer alloc] init];
@@ -168,7 +167,6 @@
 
 
 - (void)setSongPool:(TGSongPool *)theSongPool {
-    NSLog(@"Main view setting song pool.");
     
     [self setCurrentSongPool:theSongPool];
     [_currentSongPool setDelegate:self];
@@ -493,6 +491,7 @@
 //    NSNumber *songDuration = [NSNumber numberWithDouble:CMTimeGetSeconds([theSong songDuration])];
 //    [_songGridController.songTimelineController setSweetSpotPositions:[theSong songSweetSpots] forSongOfDuration:songDuration];
     
+    NSLog(@"songPoolDidStartPlayingSong");
     // Then request a the album image for the song and pass it a block callback.
 //    [theSong requestSongAlbumImage:^(NSImage *tmpImage) {
     [_currentSongPool requestImageForSongID:songID withHandler:^(NSImage *tmpImage) {

@@ -26,6 +26,7 @@
         _songSweetSpots = nil;
         _requestedSongStartTime = CMTimeMake(-1, 1);
         _SSCheckCountdown = 0;
+        _artID = -1;
     }
     return self;
 }
@@ -113,7 +114,7 @@
 // Just-in-time track data loading.
 - (void)loadTrackData {
     
-    // If the song is already loaded just return it.
+    // If the song is already loaded we just need to tell the delegate.
     if ([self songStatus] == kSongStatusReady) {
 //        [self songDataHasLoaded];
         if ([[self delegate] respondsToSelector:@selector(songReadyForPlayback:)]) {
@@ -412,7 +413,6 @@
 - (void)setCurrentPlayTime:(NSNumber *)playTimeInSeconds {
     double playTime = [playTimeInSeconds doubleValue];
     if ((playTime >= 0) && (playTime < CMTimeGetSeconds([self songDuration]))) {
-        NSLog(@"setting current play time to %f",playTime);
         [songPlayer seekToTime:CMTimeMake(playTime*100, 100)];
     }
 }

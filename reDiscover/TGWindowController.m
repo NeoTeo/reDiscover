@@ -93,7 +93,6 @@ static NSString *const kMainViewName = @"TGMainView";
 
 - (void)awakeFromNib
 {
-    NSLog(@"window controller awake from nib.");
     [self setActiveViewControllerToViewWithTag:kDropViewTag];
 	//[self changeViewController: kImageView];
 }
@@ -108,7 +107,6 @@ static NSString *const kMainViewName = @"TGMainView";
 // Drop view delegate method called when a URL is dropped onto it
 - (void)dropViewDidReceiveURL:(NSURL *)theURL {
     
-    NSLog(@"got URL %@",theURL);
     TGSongPool *songPool = [[TGSongPool alloc] init];
     
     if ([songPool validateURL:theURL]) {

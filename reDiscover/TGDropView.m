@@ -10,7 +10,6 @@
 
 @implementation TGDropView
 - (void)awakeFromNib {
-    NSLog(@"wakey");
     // This is necessary to avoid the NSImageView hijacking the drag event. Took me an afternoon to track down.
     [dropArrowImageView unregisterDraggedTypes];
     // Make sure we get drag and drop notifications
@@ -36,7 +35,6 @@
 }
 
 - (NSDragOperation)draggingEntered:(id <NSDraggingInfo>)sender {
-    NSLog(@"Dropview enter the draggin");
 
     return NSDragOperationLink;
 }
@@ -53,9 +51,6 @@
     if ( [[pboard types] containsObject:NSURLPboardType] ) {
         
         NSURL *fileURL = [NSURL URLFromPasteboard:pboard];
-        
-        // Perform operation using the file’s URL
-        NSLog(@"Received the URL %@",fileURL);
         
         // Pass the url back to the controller.
         if (_delegate && [_delegate respondsToSelector:@selector(dropViewDidReceiveURL:)]) {

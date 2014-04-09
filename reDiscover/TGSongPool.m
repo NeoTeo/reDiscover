@@ -30,8 +30,6 @@ static int const kSSCheckCounterSize = 10;
     self = [super init];
     if (self != NULL) {
         
-        NSLog(@"songpool init.");
-        
         requestedPlayheadPosition = [NSNumber numberWithDouble:0];
         songPoolStartCapacity = 25;
         songPoolDictionary = [[NSMutableDictionary alloc] initWithCapacity:songPoolStartCapacity];
@@ -41,6 +39,10 @@ static int const kSSCheckCounterSize = 10;
         serialDataLoad = dispatch_queue_create("serial data load queue", NULL);
         timelineUpdateQueue = dispatch_queue_create("timeline GUI updater queue", NULL);
         currentlyPlayingSong = NULL;
+        
+    
+        _artArray = [[NSMutableArray alloc] initWithCapacity:100];
+        [_artArray addObject:[NSImage imageNamed:@"noCover"]];
         
         songFingerPrinter = [[TGFingerPrinter alloc] init];
         [songFingerPrinter setDelegate:self];
@@ -403,12 +405,27 @@ static int const kSSCheckCounterSize = 10;
 // This method will attempt to find the image for the song and, if found, will pass it to the given imageHandler block.
 - (void)requestImageForSongID:(NSInteger)songID withHandler:(void (^)(NSImage *))imageHandler {
     
+    NSLog(@"request image!");
+    // First we should check if the song has an image stashed in the songpool local/temporary store.
     TGSong * theSong = [self songForID:songID];
+    NSInteger artID = [theSong artID];
+    if (artID >= 0) {
+        NSImage *songArt = [_artArray objectAtIndex:artID];
+        NSLog(@"already had image!");
+        imageHandler(songArt);
+        return;
+    }
     
+    // If nothing was found, try asking the song directly.
     // Request a cover image from the song passing in a handler block we want executed on resolution.
     [theSong requestCoverImageWithHandler:^(NSImage *tmpImage) {
         
         if (tmpImage != nil) {
+            // Store the image in the local store so we won't have to re-fetch it from the file.
+            [_artArray addObject:tmpImage];
+            
+            // Add the art index to the song.
+            [theSong setArtID:[_artArray count]-1];
             
             // Call the image handler with the image we recived from the song.
             imageHandler(tmpImage);
@@ -416,19 +433,24 @@ static int const kSSCheckCounterSize = 10;
         } else {
             // Search strategies:
             // 1. Search songs from same album. If they have an image, use that.
+            // * currently the songs are not stored or indexed according to album or any other property.
             // 2. Search directory for images.
             //  If there pick one named same as track.
+            //  If there pick one named same as filename.
             //  If there pick one named same as album.
             //  Else pick any.
             // 3. Look up track then album then artist name online.
 
-            
             // Get the song's URL
             NSURL *theURL = [theSong songURL];
             
-            // Extract the containing directory by removing the trailing file name.
-            NSString *directory = [[theURL absoluteString] stringByDeletingLastPathComponent];
-            NSLog(@"the directory is %@",directory);
+            tmpImage = [self searchForCoverImageAtURL:theURL];
+            if (tmpImage != nil) {
+                NSLog(@"found song image");
+                imageHandler(tmpImage);
+                return;
+            }
+            
             
         }
         
@@ -437,6 +459,38 @@ static int const kSSCheckCounterSize = 10;
     }];
 }
 
+- (NSImage *)searchForCoverImageAtURL:(NSURL *)theURL {
+    
+    // Extract the containing directory by removing the trailing file name.
+    NSString *theDirectory = [[theURL absoluteString] stringByDeletingLastPathComponent];
+    NSString *theTrackName = [[[theURL absoluteString] lastPathComponent] stringByDeletingPathExtension];
+    NSURL *jpgURL = [NSURL URLWithString:[theDirectory stringByAppendingPathComponent:[theTrackName stringByAppendingPathExtension:@"jpg"]]];
+    NSLog(@"looking for %@",[jpgURL absoluteString]);
+    
+    NSImage *theImage = [[NSImage alloc] initWithContentsOfURL:jpgURL];;
+    if (theImage == nil) {
+        return nil;
+    }
+    
+//    NSFileManager *fileManager = [[NSFileManager alloc] init];
+//    
+//    NSArray *keys = [NSArray arrayWithObject:NSURLIs];
+//    
+//    NSDirectoryEnumerator *enumerator = [fileManager
+//                                         enumeratorAtURL:anURL
+//                                         includingPropertiesForKeys:keys
+//                                         options:0
+//                                         errorHandler:^(NSURL *url, NSError *error) {
+//                                             // Handle the error.
+//                                             // Return YES if the enumeration should continue after the error.
+//                                             NSLog(@"Error getting the directory. %@",error);
+//                                             // Return yes to continue traversing.
+//                                             return YES;
+//                                         }];
+    
+        
+    return theImage;
+}
 
 - (void)requestEmbeddedMetadataForSong:(NSInteger) songID {
     dispatch_async(serialDataLoad, ^{
@@ -591,7 +645,6 @@ static int const kSSCheckCounterSize = 10;
 
 
 -(NSNumber *)requestedPlayheadPosition {
-    NSLog(@"returning requested playhead position %@",requestedPlayheadPosition);
     return requestedPlayheadPosition;
 }
 
@@ -600,7 +653,6 @@ static int const kSSCheckCounterSize = 10;
 // also sets a sweet spot for the song which gets stored on next save.
 
 - (void)setRequestedPlayheadPosition:(NSNumber *)newPosition {
-    NSLog(@"setting requested playhead position %@",newPosition);
     requestedPlayheadPosition = newPosition;
     [self setSweetSpotForSong:[self songForID:[self lastRequestedSongID]] atTime:newPosition];
 }
@@ -623,6 +675,8 @@ static int const kSSCheckCounterSize = 10;
         NSInteger songID = [songNumber integerValue];
         TGSong * aSong = [self songForID:songID];
         if (aSong != nil) {
+            
+            NSLog(@"loadTrackData called from updateCache");
             [aSong loadTrackData];
         } else
             NSLog(@"requested song %lu not there",songID);
@@ -720,6 +774,7 @@ static int const kSSCheckCounterSize = 10;
     // Make sure the last request for playback is put on a serial queue so it always is the last song left playing.
     if (song == lastRequestedSong) {
         dispatch_async(playbackQueue, ^{
+            NSLog(@"putting song %lu on the playbackQueue",(unsigned long)[song songID]);
             [self playbackSong:song];
         });
     } else {
@@ -727,6 +782,7 @@ static int const kSSCheckCounterSize = 10;
 //        NSLog(@"songReadyForPlayback overridden. Song is %lu and lastRequestedSong is %lu",(unsigned long)[song songID],(unsigned long)[lastRequestedSong songID]);
     }
 }
+
 
 - (void)preloadSongArray:(NSArray *)songArray {
     NSLog(@"preloading");
@@ -759,6 +815,7 @@ static int const kSSCheckCounterSize = 10;
 // Now called in requestEmbeddedMetaData.
 //    [aSong loadSongMetadata];
     
+    NSLog(@"loadTrackData called from requestSongPlayback");
     // Asynch'ly start loading the track data for aSong. songReadyForPlayback will be called back when the song is good to go.
     [aSong loadTrackData];
 }
@@ -781,12 +838,16 @@ static int const kSSCheckCounterSize = 10;
         [currentlyPlayingSong playStop];
     }
     
+    if (currentlyPlayingSong == nextSong) {
+        NSLog(@"currently playing is the same as next song");
+        return;
+    }
+    
     if ([nextSong playStart]) {
         currentlyPlayingSong = nextSong;
         
         NSNumber *theSongDuration = [NSNumber numberWithDouble:[currentlyPlayingSong getDuration]];
         [self setValue:theSongDuration forKey:@"currentSongDuration"];
-        NSLog(@"setting currentSongDuration to %@",theSongDuration);
         
         // Song fingerprints are generated and UUID fetched during idle time in the background.
         // However, if the song about to be played hasn't got a UUID or fingerprint, an async request will be initiated here.

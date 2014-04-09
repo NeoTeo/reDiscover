@@ -21,9 +21,6 @@
 @synthesize currentSong;
 
 - (void)awakeFromNib {
-    NSLog(@"timeline awoken");
-    NSLog(@"Its view is %@",[self view]);
-    NSLog(@"the timelinepopover view is %@",_songTimelinePopover);
     
     // The view of this controller is the popover view (in its own window)
     
@@ -35,8 +32,7 @@
 //                                    owner:self userInfo:nil];
     
     [[self view] addTrackingArea:trackingArea];
-    TGTimelineSliderCell *thecell = _timelineBar.cell;
-    NSLog(@"the cell size is %@",NSStringFromRect(thecell.controlView.frame));
+//    TGTimelineSliderCell *thecell = _timelineBar.cell;
 }
 
 

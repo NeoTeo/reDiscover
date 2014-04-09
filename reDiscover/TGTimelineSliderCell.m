@@ -80,7 +80,6 @@
     [_controlView addSubview:knobImageView];
     
     
-    NSLog(@"Is barRect flipped? %@",[timelineBar isFlipped] ? @"yes" : @"no");
 }
 
 -(void)drawWithFrame:(NSRect)cellFrame inView:(NSView *)controlView {

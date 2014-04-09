@@ -135,14 +135,14 @@
     
     
     // First check if the scrolling vector is > x and disable caching until scrolling speed has slowed again.
-    int maxDelta = 2;
+    int maxDelta = 4;
     static NSPoint previousPoint;
     
     NSPoint nowPoint = [[self documentView] convertPoint:locationInWindow fromView:nil];
     NSPoint deltaPoint = NSMakePoint(nowPoint.x-previousPoint.x, nowPoint.y-previousPoint.y);
     
     previousPoint = nowPoint;
-    if (abs(deltaPoint.x) > maxDelta || abs(deltaPoint.y) > maxDelta) {
+    if ( (abs(deltaPoint.x) > maxDelta) || (abs(deltaPoint.y) > maxDelta) ) {
         return;
     }
     
@@ -161,10 +161,6 @@
             if ((mouseCol != _currentMouseCol) || (mouseRow != _currentMouseRow)) {
                 
                 // Find the cell that corresponds to the new coordinates and ask it for its id.
-//                TGGridCell *currentCell = [theMatrix cellAtRow:mouseRow column:mouseCol];
-//                if (_delegate && [_delegate respondsToSelector:@selector(songGridScrollViewDidChangeToCell:withRect:)]) {
-//                    NSRect testRect = [theMatrix convertRect:[theMatrix cellFrameAtRow:mouseRow column:mouseCol] toView:self];
-//                    [_delegate songGridScrollViewDidChangeToCell:currentCell withRect:testRect];
                 if (_delegate && [_delegate respondsToSelector:@selector(songGridScrollViewDidChangeToRow:andColumn:)]) {
                     [_delegate songGridScrollViewDidChangeToRow:mouseRow andColumn:mouseCol];
                 }
@@ -174,18 +170,6 @@
         _currentMouseCol = mouseCol;
         _currentMouseRow = mouseRow;
     }
-//    NSLog(@"location of mouse in window is %@",NSStringFromPoint(locationInWindow));
-//    if ([self isFlipped]) {
-//        NSLog(@"Heck!");
-//    }
-//    NSLog(@"location of mouse in scroll view is %@",NSStringFromPoint([self convertPoint:locationInWindow fromView:nil]));
-//    NSLog(@"location of mouse in matrix view is %@",NSStringFromPoint([[self documentView] convertPoint:locationInWindow fromView:nil]));
-   
-    
-//    if ([[self documentView] isFlipped]) {
-//        NSLog(@"Heck doc!");
-//    }
-
 }
 
 //- (NSRect)getRectFromSongID:(NSInteger)songID {

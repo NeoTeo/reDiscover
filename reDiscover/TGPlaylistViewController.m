@@ -18,7 +18,6 @@
 //@synthesize delegate;
 
 -(void)awakeFromNib {
-    NSLog(@"playlist controller awake.");
     if (playlist == NULL) {
         playlist = [[TGPlaylist alloc] init];
         [playlist setDelegate:self];
@@ -107,8 +106,6 @@
 
 // NSTableViewDataSource delegate methods
 -(NSInteger)numberOfRowsInTableView:(NSTableView *)tableView {
-    NSLog(@"number of rows %lu",(unsigned long)[playlist songsInPlaylist]);
-    NSLog(@"table view is %@",tableView);
     return [playlist songsInPlaylist];
 }
 

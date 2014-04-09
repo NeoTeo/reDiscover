@@ -40,7 +40,6 @@
 
 
 -(void)awakeFromNib {
-    NSLog(@"song grid controller awake.");
     zoomFactor = 1.0;
     _currentCellSize = 150;
     _interCellHSpace = 0;//3;
@@ -56,8 +55,6 @@
     
     
     // Set up the animations we're going to use.
-    
-    NSLog(@"TGSongGridViewController awakeFromNib: setting up animations");
     
     KeyframeParametricBlock function = ^double(double time) {
         // the range is -1.14 >= x <= 0
@@ -148,6 +145,7 @@
 
 - (void)setCoverImage:(NSImage *)theImage forSongWithID:(NSUInteger)songID {
     
+        NSLog(@"setCoverImage.");
     // First convert the songID to the matrix index.
     TGGridCell * theCell = [_songCellMatrix cellWithTag:songID];
     

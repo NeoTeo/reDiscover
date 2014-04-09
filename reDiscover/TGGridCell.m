@@ -15,7 +15,6 @@
     self = [super init];
     if (self) {
         // This is where we should request a song reference from the songsmodel via this cell's controller.
-        NSLog(@"cell innit");
         [self setTag:-1];
         
 //        [self setSongImage:nil];

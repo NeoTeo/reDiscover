@@ -55,6 +55,9 @@
     NSNumber *requestedPlayheadPosition;
 }
 
+// Holds the art associated with the songs. Songs will hold indices into the art array.
+@property NSMutableArray *artArray;
+
 // Holds the playhead position of the currently playing song.
 @property NSNumber *currentSongDuration;
 
