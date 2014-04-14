@@ -47,20 +47,31 @@ static int const kSSCheckCounterSize = 10;
         songFingerPrinter = [[TGFingerPrinter alloc] init];
         [songFingerPrinter setDelegate:self];
 
+        
+        // Core Data initialization.
         {
-            // Initialize the entity description.
-            [self initSongUserDataEntityDescription];
-            // Define and init the managed object model.
-            [self initSongUserDataManagedObjectModel];
-            // Initialize the persistent store coordinator.
-            [self initSongPoolPersistentStoreCoordinator];
+            // Create the entity description.
+            NSEntityDescription *songUserDataEntityDescription = [self createSongUserDataEntityDescription];
+            
+            // Create the managed object model.
+            songUserDataManagedObjectModel = [self createSongUserDataManagedObjectModelWithEntityDescription:songUserDataEntityDescription];
+            
+            // Create the persistent store coordinator.
+            NSPersistentStoreCoordinator * songPoolPersistentStoreCoordinator = [self createSongPoolPersistentStoreCoordinatorWithManagedObjectModel:songUserDataManagedObjectModel];
+            
+            // Create a managed object context.
+            if (songPoolManagedContext == nil) {
+                songPoolManagedContext = [[NSManagedObjectContext alloc] initWithConcurrencyType:NSPrivateQueueConcurrencyType];
+                [songPoolManagedContext setPersistentStoreCoordinator:songPoolPersistentStoreCoordinator];
+            }
         }
+        
         songsWithChangesToSave = [[NSMutableSet alloc] init];
         songsWithSaveError = [[NSMutableSet alloc] init];
-        fetchedArray = nil;
+//        fetchedArray = nil;
      
         // Get any user metadata from the local Core Data store.
-        [self fetchMetadataFromLocalStore];
+//        [self fetchMetadataFromLocalStore];
 
         // Register to be notified of idle time starting and ending.
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(idleTimeBegins) name:@"TGIdleTimeBegins" object:nil];
@@ -140,132 +151,16 @@ static int const kSSCheckCounterSize = 10;
 }
 
 
-//- (NSManagedObjectModel *)managedObjectModel {
-- (void)initSongUserDataManagedObjectModel {
-    // Create the managed model.
-    songUserDataManagedObjectModel = [[NSManagedObjectModel alloc] init];
-    // Add the songUserData entity to the managed model.
-    [songUserDataManagedObjectModel setEntities:@[songUserDataEntityDescription]];
-    
-    // Define and add a localization directory for the entities.
-    NSDictionary *localizationDictionary = @{
-                                             @"Property/songURL/Entity/TGSongUserData": @"song URL",
-                                             @"Property/songFingerPrint/Entity/TGSongUserData": @"song finger print",
-                                             @"Property/songUUID/Entity/TGSongUserData": @"song UUID",
-                                             @"Property/songUserSweetSpot/Entity/TGSongUserData": @"song Sweet Spot",
-                                             @"Property/songSweetSpots/Entity/TGSongUserData": @"song Sweet Spots",
-                                             @"ErrorString/Song URL missing.": @"The song URL is missing."};
-    
-    [songUserDataManagedObjectModel setLocalizationDictionary:localizationDictionary];
-}
 
-
-- (void)initSongPoolPersistentStoreCoordinator {
-    // We only need one NSPersistentStoreCoordinator per program.
-    songPoolDataCoordinator = [[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel:songUserDataManagedObjectModel];
-    NSString *STORE_TYPE = NSSQLiteStoreType;
-    NSString *STORE_FILENAME = @"TGSongUserData.sqlite";
-    
-    NSError *error;
-    
-    NSURL *url = [[self applicationSongUserDataDirectory] URLByAppendingPathComponent:STORE_FILENAME];
-    
-    NSPersistentStore *newStore = [songPoolDataCoordinator addPersistentStoreWithType:STORE_TYPE
-                                                                        configuration:nil
-                                                                                  URL:url
-                                                                              options:nil
-                                                                                error:&error];
-    
-    if (newStore == nil) {
-        NSLog(@"Store Configuration Failed.\n%@",([error localizedDescription] != nil) ?
-              [error localizedDescription] : @"Unknown Error");
-    }
-}
-
-
-- (void)initSongUserDataEntityDescription {
-    songUserDataEntityDescription = [[NSEntityDescription alloc] init];
-    [songUserDataEntityDescription setName:@"TGSongUserData"];
-    [songUserDataEntityDescription setManagedObjectClassName:@"TGSongUserData"];
-    
-//    NSLog(@"The songUserData is %@\n",songUserDataEntityDescription);
-    // Define attributes for the user data.
-    NSAttributeDescription *songURL = [[NSAttributeDescription alloc] init];
-    [songURL setName:@"songURL"];
-    [songURL setAttributeType:NSStringAttributeType];
-    [songURL setOptional:NO];
-
-    NSAttributeDescription *songFingerPrint = [[NSAttributeDescription alloc] init];
-    [songFingerPrint setName:@"songFingerPrint"];
-    [songFingerPrint setAttributeType:NSStringAttributeType];
-    [songFingerPrint setOptional:YES];
-    
-    NSAttributeDescription *songUUID = [[NSAttributeDescription alloc] init];
-    [songUUID setName:@"songUUID"];
-    [songUUID setAttributeType:NSStringAttributeType];
-    [songUUID setOptional:YES];
-    
-    NSAttributeDescription *songUserSweetSpot = [[NSAttributeDescription alloc] init];
-    [songUserSweetSpot setName:@"songUserSweetSpot"];
-    [songUserSweetSpot setAttributeType:NSFloatAttributeType];
-    [songUserSweetSpot setOptional:YES];
-
-    NSAttributeDescription *songSweetSpots = [[NSAttributeDescription alloc] init];
-    [songSweetSpots setName:@"songSweetSpots"];
-    [songSweetSpots setAttributeType:NSBinaryDataAttributeType];
-    [songSweetSpots setOptional:YES];
-
-    // Define the validation predicate and the predicate failure warning.
-    NSPredicate *validationPredicate = [NSPredicate predicateWithFormat:@"length > 0"];
-    NSString *validationWarning = @"Song URL missing.";
-    // Set the validation predicate for the songAssetURL attribute.
-    [songURL setValidationPredicates:@[validationPredicate] withValidationWarnings:@[validationWarning]];
-    
-    // Add the properties to the entity.
-    [songUserDataEntityDescription setProperties:@[songURL, songFingerPrint, songUUID, songUserSweetSpot, songSweetSpots]];
-}
-
-
-- (NSURL *)applicationSongUserDataDirectory {
-    
-    static NSURL *songUserDataDirectory = nil;
-    
-    if (songUserDataDirectory == nil) {
-        NSFileManager *fileManager = [[NSFileManager alloc] init];
-        NSError *error;
-        NSURL *libraryURL = [fileManager URLForDirectory:NSLibraryDirectory inDomain:NSUserDomainMask appropriateForURL:nil create:YES error:&error];
-        
-        if (libraryURL == nil) {
-            NSLog(@"Could not access the Library directory\n%@",[error localizedDescription]);
-        }
-        else {
-            songUserDataDirectory = [libraryURL URLByAppendingPathComponent:@"ProjectX"];
-            songUserDataDirectory = [songUserDataDirectory URLByAppendingPathComponent:@"songUserData"];
-            
-            NSDictionary *properties = [songUserDataDirectory resourceValuesForKeys:@[NSURLIsDirectoryKey] error:&error];
-            
-            if (properties == nil) {
-                if (![fileManager createDirectoryAtURL:songUserDataDirectory withIntermediateDirectories:YES attributes:nil error:&error]) {
-                    NSLog(@"Could not create directory %@\n%@",[songUserDataDirectory path], [error localizedDescription]);
-                    songUserDataDirectory = nil;
-                }
-            }
-        }
-    }
-    
-    return songUserDataDirectory;
-}
-
-
-- (NSManagedObjectContext *)managedObjectContext {
-    
-    if (songPoolManagedContext == nil) {
-        songPoolManagedContext = [[NSManagedObjectContext alloc] initWithConcurrencyType:NSPrivateQueueConcurrencyType];
-        [songPoolManagedContext setPersistentStoreCoordinator:songPoolDataCoordinator];
-    }
-    
-    return songPoolManagedContext;
-}
+//- (NSManagedObjectContext *)managedObjectContext {
+//    
+//    if (songPoolManagedContext == nil) {
+//        songPoolManagedContext = [[NSManagedObjectContext alloc] initWithConcurrencyType:NSPrivateQueueConcurrencyType];
+//        [songPoolManagedContext setPersistentStoreCoordinator:songPoolDataCoordinator];
+//    }
+//    
+//    return songPoolManagedContext;
+//}
 
 
 - (BOOL)validateURL:(NSURL *)anURL {
@@ -286,6 +181,7 @@ static int const kSSCheckCounterSize = 10;
     __block int requestedOps = 0;
     __block int completedOps = 0;
     opQueue = [[NSOperationQueue alloc] init];
+    
     
     NSFileManager *fileManager = [[NSFileManager alloc] init];
     
@@ -344,6 +240,7 @@ static int const kSSCheckCounterSize = 10;
                         
                         // The song id is simply its number in the loading sequence. (for now)
                         [newSong setSongID:curURLNum];
+                        
                         
                         dispatch_async(serialDataLoad, ^{
                             
@@ -509,9 +406,14 @@ static int const kSSCheckCounterSize = 10;
 }
 
 
-- (NSInteger)songDurationForSongID:(NSInteger)songID {
-    return CMTimeGetSeconds([[self songForID:songID] songDuration]);
+- (NSNumber *)songDurationForSongID:(NSInteger)songID {
+    float secs = CMTimeGetSeconds([[self songForID:songID] songDuration]);
+    return [NSNumber numberWithDouble:secs];
 }
+
+//- (NSInteger)songDurationForSongID:(NSInteger)songID {
+//    return CMTimeGetSeconds([[self songForID:songID] songDuration]);
+//}
 
 - (NSURL *)songURLForSongID:(NSInteger)songID {
     return [[self songForID:songID] songURL];
@@ -575,8 +477,40 @@ static int const kSSCheckCounterSize = 10;
         NSLog(@"No data returned from sweetspot server.");
 }
 
+- (BOOL)validSongID:(NSInteger)songID {
+    // TEO: also check for top bound.
+    if (songID < 0) return NO;
+
+    return YES;
+}
+
+- (NSArray *)sweetSpotsForSongID:(NSInteger)songID {
+    if (![self validSongID:songID]) {
+        return nil;
+    }
+    
+    return [[self songForID:songID] songSweetSpots];
+}
+
+
+- (NSString *)UUIDStringForSongID:(NSInteger)songID {
+    if (![self validSongID:songID]) return nil;
+    
+    return [[self songForID:songID] songUUIDString];
+}
+
+
+- (NSURL *)URLForSongID:(NSInteger)songID {
+    if (![self validSongID:songID]) return nil;
+    
+    return [[self songForID:songID] songURL];
+}
+
+
+//- (void)sweetSpotFromServerForSongID:(NSInteger)songID {
 - (void)sweetSpotFromServerForSong:(TGSong *)aSong {
 
+//    TGSong *aSong = [self songForID:songID];
     NSString * songUUID = [aSong songUUIDString];
 
     NSURL *theIDURL = [NSURL URLWithString:[NSString stringWithFormat:@"http://localhost:8080/lookup?songUUID=%s",[songUUID UTF8String]]];
@@ -695,183 +629,153 @@ static int const kSSCheckCounterSize = 10;
     return [songPoolDictionary objectForKey:[NSNumber numberWithInteger:songID]];
 }
 
-// Delegate methods:
 
-// TGfingerPrinterDelegate methods.
-// Called by the finger printer when it has finished fingerprinting a song.
-- (void)fingerprintReady:(NSString *)fingerPrint ForSong:(TGSong *)song {
-    //NSLog(@"fingerprintReady received for song %@",[song songURL]);
-    
-    // At this point we should check if the fingerprint resulted in a songUUID.
-    // If it did not we keep the finger print so we don't have to re-generate it, otherwise we can delete the it.
-    if ([song songUUIDString] == nil) {
-        NSLog(@"No UUID found, keeping fingerprint.");
-        [song setFingerprint:fingerPrint];
-    }
-    else {
-        // The song has a UUID, so there's no need to keep the fingerprint.
-        [song setFingerprint:nil];
-    }
-    
-    [song setFingerPrintStatus:kFingerPrintStatusDone];
-    
-    // Check the song user data DB to see if we have song data for the UUID/fingerprint.
-    // If found, load the data into the song.
-    if (![self loadMetadataIntoSong:song]) {
-        // If not found in the user data file, add the song to a songsWithChangesToSave dictionary so any changes to it are stored.
-        [songsWithChangesToSave addObject:song];
-    }    
+- (NSString *)getSongGenreStringForSongID:(NSInteger)songID {
+//    TGSong *tmpSong = [songPoolDictionary objectForKey:[NSNumber numberWithInteger:songID]];
+    TGSong *tmpSong = [self songForID:songID];
+    if (tmpSong) {
+        return [[tmpSong songData] objectForKey:@"Genre"];
+    } else
+        return NULL;
 }
 
-- (NSArray *)floatArrayFromFloatString:(NSString *)floatString {
-    // First we split the floatString into individual float strings.
-    NSArray *splitString = [floatString componentsSeparatedByString:@","];
-    // Then we turn each into a float and drop it into the final array.
-    NSMutableArray *floatArray = [[NSMutableArray alloc] initWithCapacity:[splitString count]];
-    for (NSString *aFloatString in splitString) {
-        NSNumber *floatNumber = [NSNumber numberWithFloat:[aFloatString floatValue]];
-        [floatArray addObject:floatNumber];
-    }
-    
-    return floatArray;
-}
-
-- (NSString *)floatStringFromFloatArray:(NSArray *)floatArray {
-    return [[floatArray valueForKey:@"description"] componentsJoinedByString:@","];
-}
-
-// TSGSongDelegate methods.
-- (void)songDidFinishPlayback:(TGSong *)song {
-    // Pass this on to the delegate (which should be the controller).
-    NSLog(@"song %lu did finish playback. The last requested song is %lu",(unsigned long)[song songID],[lastRequestedSong songID]);
-    if ([[self delegate] respondsToSelector:@selector(songPoolDidFinishPlayingSong:)]) {
-        [[self delegate] songPoolDidFinishPlayingSong:[song songID]];
-    }
+-(NSDictionary *)getSongDisplayStrings:(NSInteger)songID {
+//    TGSong *song = [songPoolDictionary objectForKey:[NSNumber numberWithInteger:songID]];
+    TGSong *song = [self songForID:songID];
+    return [song songData];
 }
 
 
-- (void)songDidLoadEmbeddedMetadata:(TGSong *)song {
-    
-    if ([[self delegate] respondsToSelector:@selector(songPoolDidLoadDataForSongID:)]) {
-        [[self delegate] songPoolDidLoadDataForSongID:[song songID]];
-    }
-    
+- (dispatch_queue_t)serialQueue {
+    return playbackQueue;
 }
 
-// Delegate method that allows a song to set the songpool's playhead position tracker variable.
-- (void)songDidUpdatePlayheadPosition:(NSNumber *)playheadPosition {
-    [self setValue:playheadPosition forKey:@"playheadPos"];
+#pragma mark -
+#pragma mark Core Data methods
+
+- (NSEntityDescription *)createSongUserDataEntityDescription {
+    NSEntityDescription *songUserDataEntityDescription = [[NSEntityDescription alloc] init];
+    [songUserDataEntityDescription setName:@"TGSongUserData"];
+    [songUserDataEntityDescription setManagedObjectClassName:@"TGSongUserData"];
+    
+//    NSLog(@"The songUserData is %@\n",songUserDataEntityDescription);
+    // Define attributes for the user data.
+    NSAttributeDescription *songURL = [[NSAttributeDescription alloc] init];
+    [songURL setName:@"songURL"];
+    [songURL setAttributeType:NSStringAttributeType];
+    [songURL setOptional:NO];
+
+    NSAttributeDescription *songFingerPrint = [[NSAttributeDescription alloc] init];
+    [songFingerPrint setName:@"songFingerPrint"];
+    [songFingerPrint setAttributeType:NSStringAttributeType];
+    [songFingerPrint setOptional:YES];
+    
+    NSAttributeDescription *songUUID = [[NSAttributeDescription alloc] init];
+    [songUUID setName:@"songUUID"];
+    [songUUID setAttributeType:NSStringAttributeType];
+    [songUUID setOptional:YES];
+    
+    NSAttributeDescription *songUserSweetSpot = [[NSAttributeDescription alloc] init];
+    [songUserSweetSpot setName:@"songUserSweetSpot"];
+    [songUserSweetSpot setAttributeType:NSFloatAttributeType];
+    [songUserSweetSpot setOptional:YES];
+
+    NSAttributeDescription *songSweetSpots = [[NSAttributeDescription alloc] init];
+    [songSweetSpots setName:@"songSweetSpots"];
+    [songSweetSpots setAttributeType:NSBinaryDataAttributeType];
+    [songSweetSpots setOptional:YES];
+
+    // Define the validation predicate and the predicate failure warning.
+    NSPredicate *validationPredicate = [NSPredicate predicateWithFormat:@"length > 0"];
+    NSString *validationWarning = @"Song URL missing.";
+    // Set the validation predicate for the songAssetURL attribute.
+    [songURL setValidationPredicates:@[validationPredicate] withValidationWarnings:@[validationWarning]];
+    
+    // Add the properties to the entity.
+    [songUserDataEntityDescription setProperties:@[songURL, songFingerPrint, songUUID, songUserSweetSpot, songSweetSpots]];
+    
+    return songUserDataEntityDescription;
 }
 
-// songReadyForPlayback is called (async'ly) by the song once it is fully loaded.
-- (void)songReadyForPlayback:(TGSong *)song {
+
+- (NSManagedObjectModel *)createSongUserDataManagedObjectModelWithEntityDescription:(NSEntityDescription *)songUserDataEntityDescription {
+    // Create the managed model.
+    NSManagedObjectModel *songUserDataMOM = [[NSManagedObjectModel alloc] init];
+    // Add the songUserData entity to the managed model.
+    [songUserDataMOM setEntities:@[songUserDataEntityDescription]];
     
-    // If the song has a undefined (-1) start time, set it to whatever fetchSongSweetSpot returns.
-    if ([[song startTime] doubleValue] == -1) {
-        [song setStartTime:[self fetchSongSweetSpot:song]];
+    // Define and add a localization directory for the entities.
+    NSDictionary *localizationDictionary = @{
+                                             @"Property/songURL/Entity/TGSongUserData": @"song URL",
+                                             @"Property/songFingerPrint/Entity/TGSongUserData": @"song finger print",
+                                             @"Property/songUUID/Entity/TGSongUserData": @"song UUID",
+                                             @"Property/songUserSweetSpot/Entity/TGSongUserData": @"song Sweet Spot",
+                                             @"Property/songSweetSpots/Entity/TGSongUserData": @"song Sweet Spots",
+                                             @"ErrorString/Song URL missing.": @"The song URL is missing."};
+    
+    [songUserDataMOM setLocalizationDictionary:localizationDictionary];
+    
+    return songUserDataMOM;
+}
+
+
+- (NSPersistentStoreCoordinator *)createSongPoolPersistentStoreCoordinatorWithManagedObjectModel:(NSManagedObjectModel *)theMOM {
+    // We only need one NSPersistentStoreCoordinator per program.
+    NSPersistentStoreCoordinator *songPoolPSC = [[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel:theMOM];
+    NSString *STORE_TYPE = NSSQLiteStoreType;
+    NSString *STORE_FILENAME = @"TGSongUserData.sqlite";
+    
+    NSError *error;
+    
+    NSURL *url = [[self applicationSongUserDataDirectory] URLByAppendingPathComponent:STORE_FILENAME];
+    
+//TEO consider calling this on a separate thread as it may block.
+    NSPersistentStore *newStore = [songPoolPSC addPersistentStoreWithType:STORE_TYPE
+                                                                        configuration:nil
+                                                                                  URL:url
+                                                                              options:nil
+                                                                                error:&error];
+    
+    if (newStore == nil) {
+        NSLog(@"Store Configuration Failed.\n%@",([error localizedDescription] != nil) ?
+              [error localizedDescription] : @"Unknown Error");
     }
     
-    // Make sure the last request for playback is put on a serial queue so it always is the last song left playing.
-    if (song == lastRequestedSong) {
-        dispatch_async(playbackQueue, ^{
-            NSLog(@"putting song %lu on the playbackQueue",(unsigned long)[song songID]);
-            [self playbackSong:song];
-        });
-    } else {
+    return songPoolPSC;
+}
+
+
+
+
+- (NSURL *)applicationSongUserDataDirectory {
+    
+    static NSURL *songUserDataDirectory = nil;
+    
+    if (songUserDataDirectory == nil) {
+        NSFileManager *fileManager = [[NSFileManager alloc] init];
+        NSError *error;
+        NSURL *libraryURL = [fileManager URLForDirectory:NSLibraryDirectory inDomain:NSUserDomainMask appropriateForURL:nil create:YES error:&error];
         
-//        NSLog(@"songReadyForPlayback overridden. Song is %lu and lastRequestedSong is %lu",(unsigned long)[song songID],(unsigned long)[lastRequestedSong songID]);
-    }
-}
-
-
-- (void)preloadSongArray:(NSArray *)songArray {
-    NSLog(@"preloading");
-    for (NSNumber * songID in songArray) {
-        TGSong *aSong = [self songForID:[songID integerValue]];
-        if (aSong == NULL) {
-            NSLog(@"Nope, the requested ID %@ is not in the song pool.",songID);
-            return;
+        if (libraryURL == nil) {
+            NSLog(@"Could not access the Library directory\n%@",[error localizedDescription]);
         }
-        [aSong loadTrackData];
-        [self requestEmbeddedMetadataForSong:[songID integerValue]];
-    }
-}
-
-//- (void)requestSongPlayback:(NSInteger)songID {
-- (void)requestSongPlayback:(NSInteger)songID withStartTimeInSeconds:(NSNumber *)time {
-    
-    TGSong *aSong = [self songForID:songID];
-    if (aSong == NULL) {
-        NSLog(@"Nope, the requested ID %lu is not in the song pool.",songID);
-        return;
-    }
-    
-    lastRequestedSong = aSong;
-    //[aSong setStartTime:[NSNumber numberWithInteger:time]];
-    [aSong setRequestedSongStartTime:CMTimeMakeWithSeconds([time doubleValue], 1)];
-
-    // Since loadTrackData can return on a different thread before reaching the next instruction we need to call the loadSongMetadata before it.
-    // This skips (but is blocking) the regular serial queue that is loading song metadata to load the metadata for the song the user is about to play.
-// Now called in requestEmbeddedMetaData.
-//    [aSong loadSongMetadata];
-    
-    NSLog(@"loadTrackData called from requestSongPlayback");
-    // Asynch'ly start loading the track data for aSong. songReadyForPlayback will be called back when the song is good to go.
-    [aSong loadTrackData];
-}
-
-
-- (void)setPlayheadPos:(NSNumber *)newPos {
-    playheadPos = newPos;
-}
-
-
-- (NSNumber *)playheadPos {
-    return playheadPos;
-}
-
-
-- (void)playbackSong:(TGSong *)nextSong {
-    
-    // Between checking and stopping another thread can modify the currentlyPlayingSong thus causing the song to not be stopped.
-    if (currentlyPlayingSong != nextSong) {
-        [currentlyPlayingSong playStop];
-    }
-    
-    if (currentlyPlayingSong == nextSong) {
-        NSLog(@"currently playing is the same as next song");
-        return;
-    }
-    
-    if ([nextSong playStart]) {
-        currentlyPlayingSong = nextSong;
-        
-        NSNumber *theSongDuration = [NSNumber numberWithDouble:[currentlyPlayingSong getDuration]];
-        [self setValue:theSongDuration forKey:@"currentSongDuration"];
-        
-        // Song fingerprints are generated and UUID fetched during idle time in the background.
-        // However, if the song about to be played hasn't got a UUID or fingerprint, an async request will be initiated here.
-        if ([nextSong songUUIDString] == NULL) {
-            if ([nextSong fingerPrintStatus] == kFingerPrintStatusEmpty) {
-//                NSLog(@"generating fingerprint for song %@",nextSong);
-                [nextSong setFingerPrintStatus:kFingerPrintStatusRequested];
-                [songFingerPrinter requestFingerPrintForSong:nextSong];
+        else {
+            songUserDataDirectory = [libraryURL URLByAppendingPathComponent:@"ProjectX"];
+            songUserDataDirectory = [songUserDataDirectory URLByAppendingPathComponent:@"songUserData"];
+            
+            NSDictionary *properties = [songUserDataDirectory resourceValuesForKeys:@[NSURLIsDirectoryKey] error:&error];
+            
+            if (properties == nil) {
+                if (![fileManager createDirectoryAtURL:songUserDataDirectory withIntermediateDirectories:YES attributes:nil error:&error]) {
+                    NSLog(@"Could not create directory %@\n%@",[songUserDataDirectory path], [error localizedDescription]);
+                    songUserDataDirectory = nil;
+                }
             }
         }
-
-        // Inform the delegate that we've started playing the song.
-        if ([_delegate respondsToSelector:@selector(songPoolDidStartPlayingSong:)]) {
-            [_delegate songPoolDidStartPlayingSong:[nextSong songID]];
-        }
-        
-        // Set the requested playheadposition tracker to the song's start time in a KVC compliant fashion.
-        [self setRequestedPlayheadPosition:[nextSong startTime]];
-//        [self setValue:[nextSong startTime] forKey:@"requestedPlayheadPosition"];
-        
     }
-
+    
+    return songUserDataDirectory;
 }
-
 // Go through all songs and store those who have had data added to them.
 // This includes UUID or a user selected sweet spot.
 - (void)storeSongData {
@@ -880,24 +784,18 @@ static int const kSSCheckCounterSize = 10;
     //if (not already in there) {
     //[self fetchDataFromLocalStore];
     
-    NSEntityDescription *songUserDataEntity = [[songUserDataManagedObjectModel entitiesByName] objectForKey:@"TGSongUserData"];
     // Before adding a new entry we check if the song already exists in the following stages:
     // 1) Check store for a URL match. If none is found...
     // 2)   Check store for a UUID match (if the song has one). If none is found...
     // 3)       Check store for a fingerprint match (if the song doesn't have one, generate it). If none is found...
     // 4)           If none is found in any of the preceding steps; make a new TGSongUserData, fill it and store it.
     // 5) If found in any of the preceding steps; update URL, SS and store.
-    NSFetchRequest *songUserDataFetchRequest = [NSFetchRequest fetchRequestWithEntityName:@"TGSongUserData"];
-    NSError *error = nil;
-    NSManagedObjectContext *aManagedObjectContext = [self managedObjectContext];
-    // Re-fetch the data, otherwise the fetchedArray is not up to date...
-    fetchedArray = [aManagedObjectContext executeFetchRequest:songUserDataFetchRequest error:&error];
-
-
+    NSArray *fetchedArray = [self fetchMetadataFromLocalStore];
     if (fetchedArray == nil) {
         NSLog(@"ERROR in storeSongData. FetchedArray is nil.");
         return;
     }
+    
     // Using the block approach as it is faster (according to Darthenius on Stack Overflow).
     //for (id key in songsWithChangesToSave) {
     //[songsWithChangesToSave enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop) {
@@ -933,7 +831,8 @@ static int const kSSCheckCounterSize = 10;
         if (songUserData == nil) {
             NSLog(@"Nothing found in the store. Making new entry.");
             // Nothing found. Generate a new entry.
-            songUserData = [[TGSongUserData alloc] initWithEntity:songUserDataEntity insertIntoManagedObjectContext:aManagedObjectContext];
+            NSEntityDescription *songUserDataEntity = [[songUserDataManagedObjectModel entitiesByName] objectForKey:@"TGSongUserData"];
+            songUserData = [[TGSongUserData alloc] initWithEntity:songUserDataEntity insertIntoManagedObjectContext:songPoolManagedContext];
         }
         
         [songUserData setSongURL:[[saveSong songURL] absoluteString]];
@@ -952,7 +851,8 @@ static int const kSSCheckCounterSize = 10;
     }
     
     NSTimeInterval timerStart = [NSDate timeIntervalSinceReferenceDate];
-    if (![aManagedObjectContext save:&error]) {
+    NSError *error;
+    if (![songPoolManagedContext save:&error]) {
         NSLog(@"Error while saving\n%@",
               ([error localizedDescription] != nil) ? [error localizedDescription] : @"Unknown error.");
         // On error go through them and extract the URL from the failed attempt, find the object that matches it and add it to the list of failed saves.
@@ -995,16 +895,21 @@ static int const kSSCheckCounterSize = 10;
     NSLog(@"The save took %f seconds.",[NSDate timeIntervalSinceReferenceDate] - timerStart);
 }
 
-- (void)fetchMetadataFromLocalStore {
+
+// Fetch the whole song user data from the store to the persistent store coordinator.
+// Presumably (but to be checked) this is faster than (in loadMetadataIntoSong) calling individual fetchrequests with predicates.
+- (NSArray *)fetchMetadataFromLocalStore {
+    
     NSFetchRequest *songUserDataFetchRequest = [NSFetchRequest fetchRequestWithEntityName:@"TGSongUserData"];
     NSError *error = nil;
-    NSManagedObjectContext *aManagedObjectContext = [self managedObjectContext];
-    fetchedArray = [aManagedObjectContext executeFetchRequest:songUserDataFetchRequest error:&error];
+    static NSArray *fetchedArray = nil;
+    
     if (fetchedArray == nil) {
+        fetchedArray = [songPoolManagedContext executeFetchRequest:songUserDataFetchRequest error:&error];
         NSLog(@"Error while fetching.\n%@",
               ([error localizedDescription] != nil) ? [error localizedDescription] : @"Unknown error..");
     }
-    NSLog(@"Successfully fetched data from local store.");
+    return fetchedArray;
 }
 
 // See if a given song has metadata available in the array fetched from the core data store.
@@ -1016,6 +921,7 @@ static int const kSSCheckCounterSize = 10;
 //      3) look for a fingerprint. A fingerprint is generated when possible and stored until a uuid can be obtained.
 - (BOOL)loadMetadataIntoSong:(TGSong *)aSong {
 
+    NSArray *fetchedArray = [self fetchMetadataFromLocalStore];
     if (fetchedArray == nil)
         return NO;
     
@@ -1082,49 +988,189 @@ static int const kSSCheckCounterSize = 10;
     return NO;
 }
 
-//- (void)fetchSongData {
-//    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:@"TGSongUserData"];
-//    NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"songURL" ascending:YES];
-//    [request setSortDescriptors:@[sortDescriptor]];
-//    
-//    NSError *error = nil;
-//    NSArray *fetchedArray = [[self managedObjectContext] executeFetchRequest:request error:&error];
-//    if (fetchedArray == nil) {
-//        NSLog(@"Error while fetching.\n%@",
-//              ([error localizedDescription] != nil) ? [error localizedDescription] : @"Unknown error..");
-//    }
-//
-//    // Traverse the fetched array and look for each element's url in the songPoolDictionary.
-//    // Actually it is probably going to happen as each song is created and added to the songPoolDictionary...
-//    if ([[fetchedArray valueForKey:@"songUUID"] containsObject:@"ddb1d137-3491-451f-8ecd-c459ee5827a2"]) {
-//        NSLog(@"Found dupe!");
-//    }
-////    for ( TGSongUserData * asud in fetchedArray) {
-////        NSLog(@"The song URL is %@",asud.songURL);
-////        NSLog(@"The song UUID is %@",asud.songUUID);
-////        NSLog(@"And the sweet spot is %f",asud.songUserSweetSpot);
-////    }
-//}
-
-
-- (NSString *)getSongGenreStringForSongID:(NSInteger)songID {
-//    TGSong *tmpSong = [songPoolDictionary objectForKey:[NSNumber numberWithInteger:songID]];
-    TGSong *tmpSong = [self songForID:songID];
-    if (tmpSong) {
-        return [[tmpSong songData] objectForKey:@"Genre"];
-    } else
-        return NULL;
+- (NSString *)findUUIDOfSongWithURL:(NSURL *)songURL {
+    NSString *theUUIDString = @"arses";
+    NSFetchRequest *fetch = [NSFetchRequest fetchRequestWithEntityName:@"TGSongUserData"];
+    NSPredicate *thePredicate = [NSPredicate predicateWithFormat:@"songURL = %@",[songURL absoluteString]];
+    [fetch setPredicate:thePredicate];
+    
+    NSError *error = nil;
+    NSArray *results = [songPoolManagedContext executeFetchRequest:fetch error:&error];
+    if (results) {
+        NSLog(@"Entititties: %@",results);
+    } else {
+        NSLog(@"Error: %@",error);
+    }
+    
+    return theUUIDString;
 }
 
--(NSDictionary *)getSongDisplayStrings:(NSInteger)songID {
-//    TGSong *song = [songPoolDictionary objectForKey:[NSNumber numberWithInteger:songID]];
-    TGSong *song = [self songForID:songID];
-    return [song songData];
+#pragma mark -
+// end of Core Data methods
+
+- (void)preloadSongArray:(NSArray *)songArray {
+    NSLog(@"preloading");
+    for (NSNumber * songID in songArray) {
+        TGSong *aSong = [self songForID:[songID integerValue]];
+        if (aSong == NULL) {
+            NSLog(@"Nope, the requested ID %@ is not in the song pool.",songID);
+            return;
+        }
+        [aSong loadTrackData];
+        [self requestEmbeddedMetadataForSong:[songID integerValue]];
+    }
+}
+
+- (void)requestSongPlayback:(NSInteger)songID withStartTimeInSeconds:(NSNumber *)time {
+    
+    TGSong *aSong = [self songForID:songID];
+    if (aSong == NULL) {
+        NSLog(@"Nope, the requested ID %lu is not in the song pool.",songID);
+        return;
+    }
+    
+    lastRequestedSong = aSong;
+
+    [aSong setRequestedSongStartTime:CMTimeMakeWithSeconds([time doubleValue], 1)];
+
+    // Since loadTrackData can return on a different thread before reaching the next instruction we need to call the loadSongMetadata before it.
+    // This skips (but is blocking) the regular serial queue that is loading song metadata to load the metadata for the song the user is about to play.
+// Now called in requestEmbeddedMetaData.
+//    [aSong loadSongMetadata];
+    
+    NSLog(@"loadTrackData called from requestSongPlayback");
+    // Asynch'ly start loading the track data for aSong. songReadyForPlayback will be called back when the song is good to go.
+    [aSong loadTrackData];
 }
 
 
-- (dispatch_queue_t)serialQueue {
-    return playbackQueue;
+- (void)setPlayheadPos:(NSNumber *)newPos {
+    playheadPos = newPos;
 }
+
+
+- (NSNumber *)playheadPos {
+    return playheadPos;
+}
+
+
+- (void)playbackSong:(TGSong *)nextSong {
+    
+    // Between checking and stopping another thread can modify the currentlyPlayingSong thus causing the song to not be stopped.
+    if (currentlyPlayingSong != nextSong) {
+        [currentlyPlayingSong playStop];
+    }
+    
+    if (currentlyPlayingSong == nextSong) {
+        NSLog(@"currently playing is the same as next song. Early out.");
+        return;
+    }
+    
+    if ([nextSong playStart]) {
+        currentlyPlayingSong = nextSong;
+        
+        NSNumber *theSongDuration = [NSNumber numberWithDouble:[currentlyPlayingSong getDuration]];
+        [self setValue:theSongDuration forKey:@"currentSongDuration"];
+        
+        // Song fingerprints are generated and UUID fetched during idle time in the background.
+        // However, if the song about to be played hasn't got a UUID or fingerprint, an async request will be initiated here.
+        if ([nextSong songUUIDString] == NULL) {
+            if ([nextSong fingerPrintStatus] == kFingerPrintStatusEmpty) {
+                [nextSong setFingerPrintStatus:kFingerPrintStatusRequested];
+                [songFingerPrinter requestFingerPrintForSong:nextSong];
+            }
+        }
+
+        // Inform the delegate that we've started playing the song.
+        if ([_delegate respondsToSelector:@selector(songPoolDidStartPlayingSong:)]) {
+            [_delegate songPoolDidStartPlayingSong:[nextSong songID]];
+        }
+        
+        // Set the requested playheadposition tracker to the song's start time in a KVC compliant fashion.
+        [self setRequestedPlayheadPosition:[nextSong startTime]];
+        
+    }
+}
+
+
+#pragma mark -
+#pragma mark Delegate Methods
+
+// TGfingerPrinterDelegate methods.
+#pragma mark TGFingerPrinterDelegate methods
+// Called by the finger printer when it has finished fingerprinting a song.
+- (void)fingerprintReady:(NSString *)fingerPrint ForSong:(TGSong *)song {
+    //NSLog(@"fingerprintReady received for song %@",[song songURL]);
+    
+    // At this point we should check if the fingerprint resulted in a songUUID.
+    // If it did not we keep the finger print so we don't have to re-generate it, otherwise we can delete the it.
+    if ([song songUUIDString] == nil) {
+        NSLog(@"No UUID found, keeping fingerprint.");
+        [song setFingerprint:fingerPrint];
+    }
+    else {
+        // The song has a UUID, so there's no need to keep the fingerprint.
+        [song setFingerprint:nil];
+    }
+    
+    [song setFingerPrintStatus:kFingerPrintStatusDone];
+    
+    // Check the song user data DB to see if we have song data for the UUID/fingerprint.
+    // If found, load the data into the song.
+    if (![self loadMetadataIntoSong:song]) {
+        // If not found in the user data file, add the song to a songsWithChangesToSave dictionary so any changes to it are stored.
+        [songsWithChangesToSave addObject:song];
+    }    
+}
+
+
+
+// TSGSongDelegate methods.
+#pragma mark TGSongDelegate methods
+
+- (void)songDidFinishPlayback:(TGSong *)song {
+    // Pass this on to the delegate (which should be the controller).
+    NSLog(@"song %lu did finish playback. The last requested song is %lu",(unsigned long)[song songID],[lastRequestedSong songID]);
+    if ([[self delegate] respondsToSelector:@selector(songPoolDidFinishPlayingSong:)]) {
+        [[self delegate] songPoolDidFinishPlayingSong:[song songID]];
+    }
+}
+
+
+- (void)songDidLoadEmbeddedMetadata:(TGSong *)song {
+    
+    if ([[self delegate] respondsToSelector:@selector(songPoolDidLoadDataForSongID:)]) {
+        [[self delegate] songPoolDidLoadDataForSongID:[song songID]];
+    }
+    
+}
+
+// Delegate method that allows a song to set the songpool's playhead position tracker variable.
+- (void)songDidUpdatePlayheadPosition:(NSNumber *)playheadPosition {
+    [self setValue:playheadPosition forKey:@"playheadPos"];
+}
+
+// songReadyForPlayback is called (async'ly) by the song once it is fully loaded.
+- (void)songReadyForPlayback:(TGSong *)song {
+    
+    // If the song has a undefined (-1) start time, set it to whatever fetchSongSweetSpot returns.
+    if ([[song startTime] doubleValue] == -1) {
+        [song setStartTime:[self fetchSongSweetSpot:song]];
+    }
+    
+    // Make sure the last request for playback is put on a serial queue so it always is the last song left playing.
+    if (song == lastRequestedSong) {
+        dispatch_async(playbackQueue, ^{
+            NSLog(@"putting song %lu on the playbackQueue",(unsigned long)[song songID]);
+            [self playbackSong:song];
+        });
+    } else {
+        
+//        NSLog(@"songReadyForPlayback overridden. Song is %lu and lastRequestedSong is %lu",(unsigned long)[song songID],(unsigned long)[lastRequestedSong songID]);
+    }
+}
+
+
+
 
 @end

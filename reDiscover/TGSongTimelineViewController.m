@@ -10,6 +10,7 @@
 #import "TGTimelineSliderCell.h"
 #import "TGSweetSpotControl.h"
 #import "TGSong.h"
+#import "TGSongPool.h"
 
 
 @interface TGSongTimelineViewController ()
@@ -18,7 +19,7 @@
 
 @implementation TGSongTimelineViewController
 
-@synthesize currentSong;
+//@synthesize currentSong;
 
 - (void)awakeFromNib {
     
@@ -85,36 +86,31 @@
     
     // This should just pass up the chain that the user wanted to change sweet spots to x.
     // It in turn should tell the main controller which has a handle to the song pool and can call its setRequestedPlayheadPosition:
+    // The delegate is the TGSongGridViewController
     [[self delegate] userSelectedSweetSpotMarkerAtIndex:[sender tag]];
     
 }
 
 
--(TGSong *)currentSong {
-    return currentSong;
-}
+//-(TGSong *)currentSong {
+//    return currentSong;
+//}
 
--(void)setCurrentSong:(TGSong *)theSong {
+//-(void)setCurrentSong:(TGSong *)theSong {
+-(void)setCurrentSongID:(NSInteger)songID fromSongPool:(TGSongPool *)theSongPool {
     
-    currentSong = theSong;
     
     TGTimelineSliderCell *theCell = _timelineBar.cell;
     
     [theCell setTheController:self];
     
-    NSNumber *songDuration = [NSNumber numberWithDouble:CMTimeGetSeconds([theSong songDuration])];
-    [theCell makeMarkersFromSweetSpots:[theSong songSweetSpots] forSongDuration:songDuration];
+//    NSNumber *songDuration = [NSNumber numberWithDouble:CMTimeGetSeconds([theSong songDuration])];
+    NSNumber *songDuration = [theSongPool songDurationForSongID:songID];
+    NSArray *songSweetSpots = [theSongPool sweetSpotsForSongID:songID];
+    
+    [theCell makeMarkersFromSweetSpots:songSweetSpots forSongDuration:songDuration];
     
 }
-
-//- (void)setSweetSpotPositions:(NSArray *)ssPositions forSongOfDuration:(NSNumber *)songDuration {
-//   
-//    TGTimelineSliderCell *theCell = _timelineBar.cell;
-//    
-//    [theCell setTheController:self];
-//    [theCell makeMarkersFromSweetSpots:ssPositions forSongDuration:songDuration];
-//    
-//}
 
 - (void)updateTimelinePositionWithTime:(CMTime)newTime {
         // The x position is: (the width of the timeline / the total time of the song) * newTime

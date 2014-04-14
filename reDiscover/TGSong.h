@@ -16,6 +16,7 @@
 @class AVPlayerItem;
 @class AVPlayer;
 @class NSURL;
+@class TGSongUserData;
 
 @protocol TGSongDelegate;
 
@@ -67,6 +68,7 @@ enum {
 @property CMTime songStartTime;
 @property int songTimeScale;
 @property NSDictionary *songData;
+
 
 // An id key into the songpool's art dictionary. Values of -1 will be no art and 0 will be the default "no cover" art.
 @property NSInteger artID;

@@ -12,14 +12,14 @@
 
 // Forward declarations
 
-@class TGSong;
+@class TGSongPool;
 @protocol TGSongTimelineViewControllerDelegate;
 
 
 
 @interface TGSongTimelineViewController : NSViewController
 
-@property TGSong *currentSong;
+//@property TGSong *currentSong;
 
 @property id<TGSongTimelineViewControllerDelegate> delegate;
 
@@ -32,6 +32,8 @@
 - (void)updateTimelinePositionWithTime:(CMTime)newTime;
 
 - (void)showTimelinePopoverRelativeToBounds:(CGRect)theBounds ofView:(NSView *)theView;
+
+-(void)setCurrentSongID:(NSInteger)songID fromSongPool:(TGSongPool *)theSongPool;
 
 // sweet spot action method called when a progress bar sweetspot is clicked.
 - (void)sweetspotMarkerAction:(id)sender;

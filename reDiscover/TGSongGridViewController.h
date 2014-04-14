@@ -58,7 +58,7 @@
 @property CAKeyframeAnimation *pushBounceAnimation;
 
 // Not sure we keep this
-@property NSInteger currentSongID;
+//@property NSInteger currentSongID;
 
 - (id)initWithFrame:(NSRect)newFrame;
 

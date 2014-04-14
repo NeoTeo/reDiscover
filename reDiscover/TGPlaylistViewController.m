@@ -95,12 +95,15 @@
 // TGPlaylistDelegate method
 - (NSDictionary *)songDataForSongID:(NSInteger)songID {
     
+    // Get a mutable copy so we can add a few bits of data.
     NSMutableDictionary *songData = [[_delegate songDataForSongID:songID] mutableCopy];
-   
-    [songData addEntriesFromDictionary:@{@"Duration": [NSNumber numberWithInteger:[_delegate songDurationForSongID:songID]],
+    
+    // Get the song duration and floor it before adding it to the playlist data (it doesn't really use it)
+    double durationDoubleSecs =[[_delegate songDurationForSongID:songID] doubleValue];
+    
+    [songData addEntriesFromDictionary:@{@"Duration": [NSNumber numberWithInteger:durationDoubleSecs],
                                          @"SongURL": [_delegate songURLForSongID:songID],
                                          }];
-    
     return songData;
 }
 

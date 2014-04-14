@@ -45,7 +45,8 @@
 // These are all methods defined in the SongPool class.
 - (NSDictionary *)songDataForSongID:(NSInteger)songID;
 - (NSURL *)songURLForSongID:(NSInteger)songID;
-- (NSInteger)songDurationForSongID:(NSInteger)songID;
+//- (NSInteger)songDurationForSongID:(NSInteger)songID;
+- (NSNumber *)songDurationForSongID:(NSInteger)songID;
 - (void)requestSongPlayback:(NSInteger)songID withStartTimeInSeconds:(NSNumber *)time;
 
 @end

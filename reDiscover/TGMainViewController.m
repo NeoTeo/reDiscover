@@ -219,6 +219,7 @@
 
 - (void)keyDown:(NSEvent *)theEvent {
     NSLog(@"Yep, key down in the view controller.");
+    NSInteger lastRequestedSongID = [_currentSongPool lastRequestedSongID];
     
     NSString *chars = [theEvent characters];
     if ([chars isEqualToString:@"["]) {
@@ -226,8 +227,8 @@
     } else if ([chars isEqualToString:@"]"]) {
         [self toggleInfo:nil];
     } else if ([chars isEqualToString:@"\\"]) {
-        TGSong *theSong = [_currentSongPool songForID:[_currentSongPool lastRequestedSongID]];
-        [_currentSongPool sweetSpotFromServerForSong:theSong];
+//        TGSong *theSong = [_currentSongPool songForID:[_currentSongPool lastRequestedSongID]];
+//        [_currentSongPool sweetSpotFromServerForSong:theSong];
         NSLog(@"got it");
     } else if ([chars isEqualToString:@"g"]) {
         NSLog(@"song added to playlist.");
@@ -244,13 +245,17 @@
     } else if ([chars isEqualToString:@"l"]){
         
         NSLog(@"list sweetspots");
-        TGSong *actionSong = [_currentSongPool songForID:[_currentSongPool lastRequestedSongID]];
-        NSLog(@"The UUID is %@",[actionSong songUUIDString]);
-        NSLog(@"The sweetspots are %@",[actionSong songSweetSpots]);
+//        TGSong *actionSong = [_currentSongPool songForID:lastRequestedSongID];
+        NSLog(@"The UUID is %@",[_currentSongPool UUIDStringForSongID:lastRequestedSongID]);
+        
+        NSLog(@"The sweetspots are %@",[_currentSongPool sweetSpotsForSongID:lastRequestedSongID]);
     } else if ([chars isEqualToString:@"p"]){
         
         NSLog(@"Playlist generation.");
         [_playlistController storePlaylistWithName:@"ProjectXPlaylist"];
+    } else if ([chars isEqualToString:@"t"]){
+        NSLog(@"testicle");
+        [_currentSongPool findUUIDOfSongWithURL:[_currentSongPool URLForSongID:lastRequestedSongID]];
     } else {
         
         NSCharacterSet *alphaNums = [NSCharacterSet decimalDigitCharacterSet];
@@ -275,8 +280,7 @@
 
 
 - (void)songUIPlusButtonWasPressed {
-    TGSong *actionSong = [_currentSongPool songForID:[_currentSongPool lastRequestedSongID]];
-    [_playlistController addSongToPlaylist:[actionSong songID]];
+    [_playlistController addSongToPlaylist:[_currentSongPool lastRequestedSongID]];
 }
 
 
@@ -482,11 +486,12 @@
 
     [_songInfoController setSong:[_currentSongPool getSongDisplayStrings:songID]];
     
-    TGSong * theSong = [_currentSongPool songForID:songID];
+//    TGSong * theSong = [_currentSongPool songForID:songID];
     
     // Let the timelinecontroller know that we've changed song.
     // (would a song change be better signalled as a global notification?)
-    [_songGridController.songTimelineController setCurrentSong:theSong];
+//    [_songGridController.songTimelineController setCurrentSong:theSong];
+    [_songGridController.songTimelineController setCurrentSongID:songID fromSongPool:_currentSongPool];
     
 //    NSNumber *songDuration = [NSNumber numberWithDouble:CMTimeGetSeconds([theSong songDuration])];
 //    [_songGridController.songTimelineController setSweetSpotPositions:[theSong songSweetSpots] forSongOfDuration:songDuration];

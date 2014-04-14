@@ -38,11 +38,9 @@
     
     TGFingerPrinter *songFingerPrinter;
     
-    NSPersistentStoreCoordinator *songPoolDataCoordinator;
-    NSEntityDescription *songUserDataEntityDescription;
     NSManagedObjectModel *songUserDataManagedObjectModel;
     NSManagedObjectContext *songPoolManagedContext;
-    NSArray *fetchedArray;
+//    NSArray *fetchedArray;
     
     // songs added to this dictionary need saving (that is, to be added to the managed object context as TGSongUserData managed objects)
     //NSMutableDictionary *songsWithChangesToSave;
@@ -55,48 +53,73 @@
     NSNumber *requestedPlayheadPosition;
 }
 
+@property id<TGSongPoolDelegate> delegate;
+
 // Holds the art associated with the songs. Songs will hold indices into the art array.
 @property NSMutableArray *artArray;
 
 // Holds the playhead position of the currently playing song.
 @property NSNumber *currentSongDuration;
 
-@property id<TGSongPoolDelegate> delegate;
 
 // Methods
 - (BOOL)validateURL:(NSURL *)anURL;
 - (BOOL)loadFromURL:(NSURL *)anURL ;
 - (void)updateCache:(NSArray *)songIDArray;
-// Async methods
-- (void)requestEmbeddedMetadataForSong:(NSInteger) songID;
-- (void)requestSongPlayback:(NSInteger)songID withStartTimeInSeconds:(NSNumber *)time;
+
 - (void)setRequestedPlayheadPosition:(NSNumber *)newPosition;
 
-- (float)fetchSweetSpotForSongID:(NSInteger)songID;
-
--(NSDictionary *)getSongDisplayStrings:(NSInteger)songID;
 -(NSInteger)lastRequestedSongID;
--(TGSong *)songForID:(NSInteger)songID;
+//-(TGSong *)songForID:(NSInteger)songID;
 - (TGSong *)currentlyPlayingSong;
 
 
 - (void)requestImageForSongID:(NSInteger)songID withHandler:(void (^)(NSImage *))imageHandler;
 
 - (void)preloadSongArray:(NSArray *)songArray;
-- (void)storeSongData;
-- (void)fetchMetadataFromLocalStore;
-- (BOOL)loadMetadataIntoSong:(TGSong *)aSong;
-- (void)offsetSweetSpotForSongID:(NSInteger) songID bySeconds:(Float64)offsetInSeconds;
-- (void)sweetSpotFromServerForSong:(TGSong *)aSong;
+#pragma mark -
+#pragma mark song data accessor methods.
+// Async methods
+- (void)requestEmbeddedMetadataForSong:(NSInteger) songID;
+- (void)requestSongPlayback:(NSInteger)songID withStartTimeInSeconds:(NSNumber *)time;
 
-- (void)songDidFinishPlayback:(TGSong *)song;
-- (void)songDidLoadEmbeddedMetadata:(TGSong *)song;
-- (void)songDidUpdatePlayheadPosition:(NSNumber *)playheadPosition;
-
-- (NSInteger)songDurationForSongID:(NSInteger)songID;
+//- (float)fetchSweetSpotForSongID:(NSInteger)songID;
+-(NSDictionary *)getSongDisplayStrings:(NSInteger)songID;
+- (NSNumber *)songDurationForSongID:(NSInteger)songID;
+//- (NSInteger)songDurationForSongID:(NSInteger)songID;
 - (NSDictionary *)songDataForSongID:(NSInteger)songID;
 - (NSURL *)songURLForSongID:(NSInteger)songID;
 - (NSString *)getSongGenreStringForSongID:(NSInteger)songID;
+- (void)offsetSweetSpotForSongID:(NSInteger) songID bySeconds:(Float64)offsetInSeconds;
+// song data accessors.
+- (void)sweetSpotFromServerForSong:(TGSong *)aSong;
+//- (void)sweetSpotFromServerForSongID:(NSInteger)songID;
+- (NSString *)UUIDStringForSongID:(NSInteger)songID;
+- (NSArray *)sweetSpotsForSongID:(NSInteger)songID;
+- (NSURL *)URLForSongID:(NSInteger)songID;
+
+// TEO should this not be private?
+- (NSString *)findUUIDOfSongWithURL:(NSURL *)songURL;
+
+#pragma mark -
+#pragma mark core data methods
+// Core Data methods
+- (void)storeSongData;
+- (NSArray *)fetchMetadataFromLocalStore;
+- (BOOL)loadMetadataIntoSong:(TGSong *)aSong;
+
+
+// DELEGATE METHODS
+
+// TGFingerPrinterDelegate method
+- (void)fingerprintReady:(NSString *)fingerPrint ForSong:(TGSong *)song;
+
+// TGSongDelegate methods
+- (void)songDidFinishPlayback:(TGSong *)song;
+- (void)songDidLoadEmbeddedMetadata:(TGSong *)song;
+- (void)songDidUpdatePlayheadPosition:(NSNumber *)playheadPosition;
+- (void)songReadyForPlayback:(TGSong *)song;
+
 
 @end
 
