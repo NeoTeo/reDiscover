@@ -6,7 +6,6 @@
 //  Copyright (c) 2013 Teo Sartori. All rights reserved.
 //
 
-#import "TGSong.h"
 #import "TGIdleTimer.h"
 #import "TGMainViewController.h"
 #import "TGGridCell.h"
@@ -430,8 +429,10 @@
 // Called by the song pool for every song whose metadata has fully loaded.
 - (void)songPoolDidLoadDataForSongID:(NSUInteger)songID {
     
+    NSDictionary *songData = [_currentSongPool songDataForSongID:songID];
     // Get the song's genre.
-    NSString * songGenre = [_currentSongPool getSongGenreStringForSongID:songID];
+    NSString * songGenre = [songData objectForKey:@"Genre"];
+//    NSString * songGenre = [_currentSongPool getSongGenreStringForSongID:songID];
 
     if (songGenre == NULL)
         return;
@@ -484,7 +485,8 @@
 
 - (void)songPoolDidStartPlayingSong:(NSUInteger)songID {
 
-    [_songInfoController setSong:[_currentSongPool getSongDisplayStrings:songID]];
+//    [_songInfoController setSong:[_currentSongPool getSongDisplayStrings:songID]];
+    [_songInfoController setSong:[_currentSongPool songDataForSongID:songID]];
     
 //    TGSong * theSong = [_currentSongPool songForID:songID];
     
@@ -531,8 +533,9 @@
 
 
 - (void)userSelectedSweetSpot:(NSUInteger)ssIndex {
-    TGSong * theSong = [_currentSongPool currentlyPlayingSong];
-    [_currentSongPool setRequestedPlayheadPosition:[[theSong songSweetSpots] objectAtIndex:ssIndex]];
+//    TGSong * theSong = [_currentSongPool currentlyPlayingSong];
+//    [_currentSongPool setRequestedPlayheadPosition:[[theSong songSweetSpots] objectAtIndex:ssIndex]];
+    [_currentSongPool setRequestedPlayheadPosition:[[_currentSongPool sweetSpotsForSongID:[_currentSongPool currentlyPlayingSongID]] objectAtIndex:ssIndex]];
 }
 
 

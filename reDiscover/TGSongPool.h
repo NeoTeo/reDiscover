@@ -61,6 +61,11 @@
 // Holds the playhead position of the currently playing song.
 @property NSNumber *currentSongDuration;
 
+// TEOSongData test
+@property NSManagedObjectContext*   TEOmanagedObjectContext;
+//@property NSManagedObjectModel*     TEOmanagedObjectModel;
+@property NSDictionary*             TEOSongDataDictionary;
+// TEOSongData end
 
 // Methods
 - (BOOL)validateURL:(NSURL *)anURL;
@@ -71,7 +76,8 @@
 
 -(NSInteger)lastRequestedSongID;
 //-(TGSong *)songForID:(NSInteger)songID;
-- (TGSong *)currentlyPlayingSong;
+//- (TGSong *)currentlyPlayingSong;
+- (NSInteger)currentlyPlayingSongID;
 
 
 - (void)requestImageForSongID:(NSInteger)songID withHandler:(void (^)(NSImage *))imageHandler;
@@ -84,12 +90,10 @@
 - (void)requestSongPlayback:(NSInteger)songID withStartTimeInSeconds:(NSNumber *)time;
 
 //- (float)fetchSweetSpotForSongID:(NSInteger)songID;
--(NSDictionary *)getSongDisplayStrings:(NSInteger)songID;
 - (NSNumber *)songDurationForSongID:(NSInteger)songID;
 //- (NSInteger)songDurationForSongID:(NSInteger)songID;
 - (NSDictionary *)songDataForSongID:(NSInteger)songID;
 - (NSURL *)songURLForSongID:(NSInteger)songID;
-- (NSString *)getSongGenreStringForSongID:(NSInteger)songID;
 - (void)offsetSweetSpotForSongID:(NSInteger) songID bySeconds:(Float64)offsetInSeconds;
 // song data accessors.
 - (void)sweetSpotFromServerForSong:(TGSong *)aSong;

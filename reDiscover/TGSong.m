@@ -7,6 +7,7 @@
 //
 
 #import "TGSong.h"
+#import "TEOSongData.h"
 
 #import <AVFoundation/AVFoundation.h>
 
@@ -132,7 +133,8 @@
     // If used, should only be enabled on songs that are not returning accurate timing values. (Eg. the Abba stuff)
 //    NSDictionary *songLoadingOptions = @{AVURLAssetPreferPreciseDurationAndTimingKey : @YES};
 //    songAsset = [[AVURLAsset alloc] initWithURL:_songURL options:songLoadingOptions];
-#pragma TEO can get stuck in here (Often!) semaphore_wait_trap
+    
+// TEO can get stuck in here (Often!) semaphore_wait_trap
     songAsset = [[AVURLAsset alloc] initWithURL:_songURL options:nil];
     NSArray *keys = @[@"tracks",@"duration"];
     
@@ -206,6 +208,22 @@
     }];
 }
 
+#ifdef TSD
+- (void)loadSongMetadata {
+    // Get other metadata via the MDItem of the file.
+    MDItemRef metadata = MDItemCreate(NULL, (__bridge CFStringRef)[_songURL path]);
+    if (metadata) {
+        NSArray* artists = CFBridgingRelease(MDItemCopyAttribute(metadata, kMDItemAuthors));
+        self.TEOData.artist = [artists objectAtIndex:0];
+        self.TEOData.title = CFBridgingRelease(MDItemCopyAttribute(metadata, kMDItemTitle));
+        self.TEOData.album = CFBridgingRelease(MDItemCopyAttribute(metadata, kMDItemAlbum));
+        self.TEOData.genre = CFBridgingRelease(MDItemCopyAttribute(metadata, kMDItemMusicalGenre));
+        
+        // Make sure that sucker is released.
+        CFRelease(metadata);
+    }
+}
+#else
 - (void)loadSongMetadata {
     if (_songData == NULL) {
         
@@ -236,69 +254,20 @@
             
             // Make sure that sucker is released.
             CFRelease(metadata);
+            
+//            // TEOSongData test
+//            self.TEOData.artist = artistString;
+//            self.TEOData.title = title;
+//            self.TEOData.album = album;
+//            self.TEOData.genre = genre;
+//            // END TEOSongData test
+
         }
         
         _songData = [[NSDictionary alloc] initWithObjects:@[titleString,albumString,artistString,genreString] forKeys:@[@"Title",@"Album",@"Artist",@"Genre"]];
     }
 }
-
-//- (void)loadSongMetadata {
-//    
-//    // At this point we can signal to the song pool that we are ready for playback and let it decide if it still wants playback.
-//    // As this can be run in many separate threads but it only makes sense to play one song at a time we make sure the call to songReadyForPlayback
-//    // is placed in a serial queue.
-//    
-//    if (_songData == NULL) {
-//        NSString *titleString =[self getStringValueForStringKey:@"title" fromAsset:songAsset];
-//        NSString *albumString =[self getStringValueForStringKey:@"albumName" fromAsset:songAsset];
-//        NSString *artistString =[self getStringValueForStringKey:@"artist" fromAsset:songAsset];
-//
-//        NSString *genre;
-//        
-//        
-//        // Get other metadata via the MDItem of the file.
-//        MDItemRef metadata = MDItemCreate(NULL, (CFStringRef)[_songURL path]);
-//        if (metadata) {
-//            
-//            genre = CFBridgingRelease(MDItemCopyAttribute(metadata, kMDItemMusicalGenre));
-//            
-//            NSString *title, *album;
-//            NSArray* artists;
-//            
-//            if ([titleString isEqualToString:@"no data."] && (title = CFBridgingRelease(MDItemCopyAttribute(metadata, kMDItemTitle)))) {
-//                titleString = title;
-//            }
-//            
-//            if ([albumString isEqualToString:@"no data."] && (album = CFBridgingRelease(MDItemCopyAttribute(metadata, kMDItemAlbum)))) {
-//                albumString = album;
-//            }
-//            
-//            if ([artistString isEqualToString:@"no data."] && (artists = CFBridgingRelease(MDItemCopyAttribute(metadata, kMDItemAuthors)))) {
-//                artistString = [artists objectAtIndex:0];
-//            }
-//            
-//            // Make sure that sucker is released.
-//            CFRelease(metadata);
-//        }
-//
-//        // Set the default if no genre is found.
-//        if (genre == NULL) {
-//            genre = @"Unknown";
-//        }
-//        _songData = [[NSDictionary alloc] initWithObjects:@[titleString,albumString,artistString,genre] forKeys:@[@"Title",@"Album",@"Artist",@"Genre"]];
-//    }
-//
-//    // TEO: Find out why some songs don't find the metadata (such as all the songs on The Cure - Disintegration) despite iTunes managing it.
-////    NSArray *tracks =[songAsset tracksWithMediaType:AVMediaTypeAudio];
-////    AVAssetTrack *aTrack = [tracks objectAtIndex:0];
-////    NSLog(@"number of tracks %ld",[tracks count]);
-////    NSArray *metadataFormats =[aTrack availableMetadataFormats];
-////    NSLog(@"songdata has loaded a track %@",[aTrack commonMetadata]);
-////    dispatch_async(songReadyToPlayQueue, ^{
-//        //[[self delegate] songReadyForPlayback:self];
-////    });
-//    
-//}
+#endif
 
 
 - (NSNumber *)startTime {
@@ -329,15 +298,6 @@
     }
 }
 
-//// If the selectedSweetSpot is not -1 return the time it is pointing to.
-//// Otherwise just return the beginning of the song.
-//-(CMTime)songStartTime {
-//    if ((_songSweetSpots != nil) && (_selectedSweetSpot < [_songSweetSpots count])) {
-//        NSNumber *ssNum = [_songSweetSpots objectAtIndex:_selectedSweetSpot];
-//        return CMTimeMakeWithSeconds([ssNum floatValue],_songTimeScale);
-//    } else
-//        return CMTimeMake(-1, 1);
-//}
 
 - (BOOL)playStart {
     if ([self songStatus] == kSongStatusReady) {

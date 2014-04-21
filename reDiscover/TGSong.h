@@ -16,11 +16,13 @@
 @class AVPlayerItem;
 @class AVPlayer;
 @class NSURL;
-@class TGSongUserData;
+@class TEOSongData;
 
 @protocol TGSongDelegate;
 
 // Enum declarations
+
+// States of the songStatus property:
 enum {
     kSongStatusLoading         = 0,
     kSongStatusReady           = 1,
@@ -28,6 +30,7 @@ enum {
     kSongStatusFailed          = 3
 };
 
+// States of the loadStatus property:
 enum {
     kLoadStatusAllCompleted         = 0x0,
     kLoadStatusTrackCompleted       = 0x1,
@@ -39,6 +42,7 @@ enum {
     kLoadStatusFailed               = 0xF
 };
 
+// States of the fingerPrintStatus property:
 enum {
     kFingerPrintStatusEmpty         = 0x00,
     kFingerPrintStatusRequested     = 0x01,
@@ -55,32 +59,54 @@ enum {
     id playerObserver;
 }
 
+// Test of managed object
+//@property NSManagedObject* TEOSongData;
+@property TEOSongData* TEOData;
+
 // the acoustic fingerprint of the song.
 @property NSString *fingerprint;
-@property NSUInteger fingerPrintStatus;
+
+// Stores the UUID obtained from an acoustid server given a fingerprint.
 @property NSString *songUUIDString;
 
+// The local and per-session temporary song id.
 @property NSUInteger songID;
+
+// The location of a song.
 @property NSURL *songURL;
+
+
+// State of various activities.
+@property NSUInteger fingerPrintStatus;
 @property NSUInteger songStatus;
 @property NSUInteger loadStatus;
+
 @property CMTime songDuration;
 @property CMTime songStartTime;
 @property int songTimeScale;
-@property NSDictionary *songData;
 
+#define TSD
+#ifndef TSD
+// Additional song metadata.
+@property NSDictionary *songData;
+#endif
 
 // An id key into the songpool's art dictionary. Values of -1 will be no art and 0 will be the default "no cover" art.
 @property NSInteger artID;
 
 @property CMTime requestedSongStartTime;
+
+// The currently selected sweet spot.
 @property NSUInteger selectedSweetSpot;
+
+// All available sweet spots for the song.
 @property NSArray *songSweetSpots;
 
 // A counter to provide a variable interval between sweet-spot checks.
 @property NSUInteger SSCheckCountdown;
 
-//- (NSUInteger)getSongID;
+
+
 - (NSNumber *)startTime;
 - (void)setStartTime:(NSNumber *)startTime;
 - (id)initWithURL:(NSURL *)anURL;
@@ -90,7 +116,6 @@ enum {
 - (double)getDuration;
 - (Float64)getCurrentPlayTime;
 - (void)setCurrentPlayTime:(NSNumber *)playTimeInSeconds;
-//- (void)setCurrentPlayTime:(Float64)playTimeInSeconds;
 - (void)requestCoverImageWithHandler:(void (^)(NSImage *))imageHandler;
 - (void)requestSongAlbumImage:(void (^)(NSImage *))imageHandler;
 - (void)loadSongMetadata;

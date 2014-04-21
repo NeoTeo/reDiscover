@@ -264,6 +264,12 @@
 // Taken from fpcalc.c example of the chromaprint library and slightly modified.
 //int decode_audio_file(ChromaprintContext *chromaprint_ctx, const char *file_name, int max_length, int *duration)
 - (NSInteger)decodeAudioFile:(NSURL *)fileURL forContext:(ChromaprintContext *)theContext ofLength:(NSInteger)maxLength andDuration:(int *)duration {
+    
+    // TEO Early out on DRM protected songs until I figure out what to do with them. Also need better way of detecting them.
+    if ([[fileURL pathExtension] isEqualToString:@"m4p"]) {
+        return 0;
+    }
+    
 	int ok = 0, remaining, length, consumed, codec_ctx_opened = 0, got_frame, stream_index;
 	AVFormatContext *format_ctx = NULL;
 	AVCodecContext *codec_ctx = NULL;

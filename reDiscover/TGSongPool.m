@@ -14,6 +14,7 @@
 #import "TGFingerPrinter.h"
 
 #import "TGSongUserData.h"
+#import "TEOSongData.h"
 
 // The private interface declaration overrides the public one to declare conformity to the Delegate protocols.
 @interface TGSongPool () <TGSongDelegate,TGFingerPrinterDelegate>
@@ -70,8 +71,17 @@ static int const kSSCheckCounterSize = 10;
         songsWithSaveError = [[NSMutableSet alloc] init];
 //        fetchedArray = nil;
      
+#define TSD
+#ifdef TSD
+        // TEOSongData test
+        [self setupManagedObjectContext];
+        [self initTEOSongDataDictionary];
+        
+        // TEOSongData end
+#endif
+        
         // Get any user metadata from the local Core Data store.
-//        [self fetchMetadataFromLocalStore];
+        [self fetchMetadataFromLocalStore];
 
         // Register to be notified of idle time starting and ending.
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(idleTimeBegins) name:@"TGIdleTimeBegins" object:nil];
@@ -81,6 +91,66 @@ static int const kSSCheckCounterSize = 10;
 }
 
 
+// TEOSongData test set up the Core Data context and store.
+- (void)setupManagedObjectContext {
+    
+    self.TEOmanagedObjectContext = [[NSManagedObjectContext alloc] initWithConcurrencyType:NSMainQueueConcurrencyType];
+    self.TEOmanagedObjectContext.persistentStoreCoordinator = [[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel:self.TEOmanagedObjectModel];
+    
+    NSError* error;
+   [self.TEOmanagedObjectContext.persistentStoreCoordinator addPersistentStoreWithType:NSSQLiteStoreType
+                                                                         configuration:nil
+                                                                                   URL:self.storeURL
+                                                                               options:nil error:&error];
+    if (error) {
+        NSLog(@"Error: %@",error);
+    }
+}
+
+- (NSURL*)storeURL
+{
+    NSURL* documentsDirectory = [[NSFileManager defaultManager] URLForDirectory:NSDocumentDirectory inDomain:NSUserDomainMask appropriateForURL:nil create:YES error:NULL];
+    return [documentsDirectory URLByAppendingPathComponent:@"db.sqlite"];
+}
+
+- (NSURL*)modelURL
+{
+    return [[NSBundle mainBundle] URLForResource:@"TEOSong" withExtension:@"momd"];
+}
+
+- (NSManagedObjectModel*)TEOmanagedObjectModel
+{
+    return [[NSManagedObjectModel alloc] initWithContentsOfURL:self.modelURL];
+}
+
+- (void)initTEOSongDataDictionary {
+    
+    // First we fetch the data from the store.
+    NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:@"TEOSongData"];
+    NSError *error = nil;
+    NSArray *fetchedArray = nil;
+    
+    if (fetchedArray == nil) {
+        fetchedArray = [self.TEOmanagedObjectContext executeFetchRequest:fetchRequest error:&error];
+        if (error != nil) {
+            NSLog(@"Error while fetching TEOSongData.\n%@",
+                  ([error localizedDescription] != nil) ? [error localizedDescription] : @"Unknown error..");
+            return;
+        }
+    }
+    
+    
+    // Then traverse the fetched Array and make a dictionary with the url field as the key.
+    NSMutableDictionary* tmpDictionary = [[NSMutableDictionary alloc] init];
+    
+    for (TEOSongData* songData in fetchedArray) {
+        [tmpDictionary setObject:songData forKey:songData.url];
+    }
+    
+    self.TEOSongDataDictionary = tmpDictionary;
+    
+}
+// END TEOSongData test
 
 
 - (void)idleTimeBegins {
@@ -249,7 +319,19 @@ static int const kSSCheckCounterSize = 10;
                             
                             // Add the song to the songpool.
                             [songPoolDictionary setObject:newSong forKey:[NSNumber numberWithInt:curURLNum]];
-                                                        
+                            
+                            // TEOSongData test
+#ifdef TSD
+                            // Only add the loaded url if it isn't already in the dictionary.
+                            TEOSongData* teoData = [self.TEOSongDataDictionary objectForKey:[url absoluteString]];
+                            if (!teoData) {
+                                newSong.TEOData = [TEOSongData insertItemWithURLString:[url absoluteString] inManagedObjectContext:self.TEOmanagedObjectContext];
+                            } else {
+                                newSong.TEOData = teoData;
+                            }
+                            // END TEOSongData test
+#endif
+                            
                         });
                         
                         // Inform the delegate that another song object has been loaded. This causes a cell in the song matrix to be added.
@@ -323,6 +405,10 @@ static int const kSSCheckCounterSize = 10;
             
             // Add the art index to the song.
             [theSong setArtID:[_artArray count]-1];
+            
+            // TEOSongData test
+            theSong.TEOData.artID = [NSNumber numberWithInteger:theSong.artID];
+            // end TEOSongData test
             
             // Call the image handler with the image we recived from the song.
             imageHandler(tmpImage);
@@ -411,9 +497,26 @@ static int const kSSCheckCounterSize = 10;
     return [NSNumber numberWithDouble:secs];
 }
 
-//- (NSInteger)songDurationForSongID:(NSInteger)songID {
-//    return CMTimeGetSeconds([[self songForID:songID] songDuration]);
-//}
+
+#ifdef TSD
+- (NSURL *)songURLForSongID:(NSInteger)songID {
+    TGSong *aSong = [self songForID:songID];
+    
+    if (aSong) {
+        return [NSURL URLWithString:[self songForID:songID].TEOData.url];
+    }
+    
+    return nil;
+}
+
+- (NSDictionary *)songDataForSongID:(NSInteger)songID {
+    TGSong *song = [self songForID:songID];
+    return @{@"Artist": song.TEOData.artist,
+             @"Title": song.TEOData.title,
+             @"Album": song.TEOData.album,
+             @"Genre": song.TEOData.genre};
+}
+#else
 
 - (NSURL *)songURLForSongID:(NSInteger)songID {
     return [[self songForID:songID] songURL];
@@ -422,6 +525,7 @@ static int const kSSCheckCounterSize = 10;
 - (NSDictionary *)songDataForSongID:(NSInteger)songID {
     return [[self songForID:songID] songData];
 }
+#endif
 
 - (void)offsetSweetSpotForSongID:(NSInteger)songID bySeconds:(Float64)offsetInSeconds {
     TGSong *song = [self songForID:songID];
@@ -621,8 +725,13 @@ static int const kSSCheckCounterSize = 10;
     return [lastRequestedSong songID];
 }
 
-- (TGSong *)currentlyPlayingSong {
-    return currentlyPlayingSong;
+//- (TGSong *)currentlyPlayingSong {
+//    return currentlyPlayingSong;
+//}
+
+
+- (NSInteger)currentlyPlayingSongID {
+    return [currentlyPlayingSong songID];
 }
 
 -(TGSong *)songForID:(NSInteger)songID {
@@ -630,6 +739,8 @@ static int const kSSCheckCounterSize = 10;
 }
 
 
+
+#ifndef TSD
 - (NSString *)getSongGenreStringForSongID:(NSInteger)songID {
 //    TGSong *tmpSong = [songPoolDictionary objectForKey:[NSNumber numberWithInteger:songID]];
     TGSong *tmpSong = [self songForID:songID];
@@ -639,11 +750,13 @@ static int const kSSCheckCounterSize = 10;
         return NULL;
 }
 
+
 -(NSDictionary *)getSongDisplayStrings:(NSInteger)songID {
 //    TGSong *song = [songPoolDictionary objectForKey:[NSNumber numberWithInteger:songID]];
     TGSong *song = [self songForID:songID];
     return [song songData];
 }
+#endif
 
 
 - (dispatch_queue_t)serialQueue {
@@ -779,6 +892,15 @@ static int const kSSCheckCounterSize = 10;
 // Go through all songs and store those who have had data added to them.
 // This includes UUID or a user selected sweet spot.
 - (void)storeSongData {
+    
+    // TEOSongData test
+    NSError *TEOError;
+    if (![self.TEOmanagedObjectContext save:&TEOError]) {
+        NSLog(@"Error while saving TEO data \n%@",
+              ([TEOError localizedDescription] != nil) ? [TEOError localizedDescription] : @"Unknown error.");
+    }
+    // end TEOSongData test
+    
     NSLog(@"The songs to save are these: %@",songsWithChangesToSave);
     // Make managed objects of each of these songs. Can we check if they already are store in there?
     //if (not already in there) {
@@ -816,13 +938,13 @@ static int const kSSCheckCounterSize = 10;
             }
             else if (saveSong.fingerprint && sud.songFingerPrint && [sud.songFingerPrint isEqualToString:saveSong.fingerprint])
             {
-                // We found a UUID match after failing a URL match, so we must update the URL and store.
+                // We found a fingerprint match after failing a URL match, so we must update the URL and store.
                 //NSLog(@"Found FingerPrint match");
                 songUserData = sud;
             }
             else if (saveSong.songUUIDString && sud.songUUID && [sud.songUUID isEqualToString:saveSong.songUUIDString])
             {
-                // We found a UUID match after failing a URL match, so we must update the URL and store.
+                // We found a UUID match after failing a fingerprint match, so we must update the URL and store.
                 //NSLog(@"Found UUID match");
                 songUserData = sud;
             }
@@ -906,8 +1028,11 @@ static int const kSSCheckCounterSize = 10;
     
     if (fetchedArray == nil) {
         fetchedArray = [songPoolManagedContext executeFetchRequest:songUserDataFetchRequest error:&error];
-        NSLog(@"Error while fetching.\n%@",
-              ([error localizedDescription] != nil) ? [error localizedDescription] : @"Unknown error..");
+        if (error != nil) {
+            NSLog(@"Error while fetching songUserData.\n%@",
+                  ([error localizedDescription] != nil) ? [error localizedDescription] : @"Unknown error..");
+            return nil;
+        }
     }
     return fetchedArray;
 }
@@ -929,6 +1054,7 @@ static int const kSSCheckCounterSize = 10;
         if ([sud.songURL isEqualToString:[aSong.songURL absoluteString]]) {
             
             [aSong setStartTime:[NSNumber numberWithFloat:sud.songUserSweetSpot]];
+            
             if (sud.songFingerPrint != nil) {
                 
                 [aSong setFingerprint:sud.songFingerPrint];
@@ -950,7 +1076,7 @@ static int const kSSCheckCounterSize = 10;
             
             // Update the metadata of the core data version of this song.
             
-            // Set the core data song url to what we found it to actually be.
+            // Set/update the core data song url to what we found it to actually be.
             [sud setSongURL:[[aSong songURL] absoluteString]];
             
             // If we have a UUID there's no need to keep the fingerprint.
@@ -958,6 +1084,7 @@ static int const kSSCheckCounterSize = 10;
 
             // Instead of saving it immediately, add it to the songs to save.
             [songsWithChangesToSave addObject:aSong];
+            
             if (sud.songSweetSpots != nil) {
                 [aSong setSongSweetSpots:[NSKeyedUnarchiver unarchiveObjectWithData:sud.songSweetSpots]];
             }
@@ -969,7 +1096,10 @@ static int const kSSCheckCounterSize = 10;
             
             [aSong setStartTime:[NSNumber numberWithFloat:sud.songUserSweetSpot]];
             
+            // Set/update the core data song url to what we found it to actually be.
             [sud setSongURL:[[aSong songURL] absoluteString]];
+            
+            // Set the UUID if there is one.
             if (aSong.songUUIDString != nil) {
                 [sud setSongUUID:aSong.songUUIDString];
             }
@@ -987,6 +1117,24 @@ static int const kSSCheckCounterSize = 10;
 
     return NO;
 }
+
+
+- (NSArray *)findSongsFromAlbumWithName:(NSString *)albumName {
+    NSFetchRequest *fetch = [NSFetchRequest fetchRequestWithEntityName:@"TGAllSongData"];
+    NSPredicate *thePredicate = [NSPredicate predicateWithFormat:@"songAlbum = %@",albumName];
+    [fetch setPredicate:thePredicate];
+    
+    NSError *error = nil;
+    NSArray *results = [songPoolManagedContext executeFetchRequest:fetch error:&error];
+    if (results) {
+        NSLog(@"Entititties: %@",results);
+    } else {
+        NSLog(@"Error: %@",error);
+    }
+    
+    return results;
+}
+
 
 - (NSString *)findUUIDOfSongWithURL:(NSURL *)songURL {
     NSString *theUUIDString = @"arses";

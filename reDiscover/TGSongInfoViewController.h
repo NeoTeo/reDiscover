@@ -35,6 +35,5 @@
 
 //@protocol TGSongInfoPanelDelegate <NSObject>
 
-//-(NSDictionary *)getSongDisplayStrings:(NSInteger)songID;
 
 //@end

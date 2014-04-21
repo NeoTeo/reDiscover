@@ -10,7 +10,6 @@
 #import "TGGridCell.h"
 #import "TGSongGridScrollView.h"
 #import "TGSongPool.h"
-#import "TGSong.h"
 #import "TGPlaylistViewController.h"
 #import "TGSongUIViewController.h"
 #import "TGSongInfoViewController.h"

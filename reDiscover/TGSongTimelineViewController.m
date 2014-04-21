@@ -9,7 +9,6 @@
 #import "TGSongTimelineViewController.h"
 #import "TGTimelineSliderCell.h"
 #import "TGSweetSpotControl.h"
-#import "TGSong.h"
 #import "TGSongPool.h"
 
 
