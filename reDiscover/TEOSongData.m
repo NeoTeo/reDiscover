@@ -14,7 +14,7 @@
 @dynamic album;
 @dynamic artist;
 @dynamic sweetSpotArray;
-@dynamic url;
+@dynamic urlString;
 @dynamic uuid;
 @dynamic year;
 @dynamic fingerprint;
@@ -28,7 +28,7 @@
 {
     TEOSongData* songData = [NSEntityDescription insertNewObjectForEntityForName:self.entityName
                                                inManagedObjectContext:managedObjectContext];
-    songData.url        = URLString;
+    songData.urlString  = URLString;
     songData.album      = @"dunno";
     songData.artist     = @"dunno";
     songData.genre      = @"dunno";

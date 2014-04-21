@@ -144,7 +144,7 @@ static int const kSSCheckCounterSize = 10;
     NSMutableDictionary* tmpDictionary = [[NSMutableDictionary alloc] init];
     
     for (TEOSongData* songData in fetchedArray) {
-        [tmpDictionary setObject:songData forKey:songData.url];
+        [tmpDictionary setObject:songData forKey:songData.urlString];
     }
     
     self.TEOSongDataDictionary = tmpDictionary;
@@ -187,7 +187,8 @@ static int const kSSCheckCounterSize = 10;
     // Unless a fingerprint is actually requested we set the interval until the next timer to as little as possible.
     NSInteger interval = 0;
     
-    if ([aSong songUUIDString] == NULL) {
+//    if ([aSong songUUIDString] == NULL) {
+    if (aSong.TEOData.uuid == NULL) {
         if ([aSong fingerPrintStatus] == kFingerPrintStatusEmpty) {
             NSLog(@"generating fingerprint for song %@",aSong);
             [aSong setFingerPrintStatus:kFingerPrintStatusRequested];
@@ -303,7 +304,8 @@ static int const kSSCheckCounterSize = 10;
                         int curURLNum = OSAtomicIncrement32(&(loadedURLs))-1;
 
                         // Create a song object with the given url. This does not start loading it from disk.
-                        TGSong *newSong = [[TGSong alloc] initWithURL:url];
+//                        TGSong *newSong = [[TGSong alloc] initWithURL:url];
+                        TGSong *newSong = [[TGSong alloc] init];
                         
                         // Set the song pool to be a song's delegate.
                         [newSong setDelegate:self];
@@ -313,13 +315,6 @@ static int const kSSCheckCounterSize = 10;
                         
                         
                         dispatch_async(serialDataLoad, ^{
-                            
-                            // Try and fetch (by URL) the song's metadata from the core data store.
-                            [self loadMetadataIntoSong:newSong];
-                            
-                            // Add the song to the songpool.
-                            [songPoolDictionary setObject:newSong forKey:[NSNumber numberWithInt:curURLNum]];
-                            
                             // TEOSongData test
 #ifdef TSD
                             // Only add the loaded url if it isn't already in the dictionary.
@@ -331,6 +326,13 @@ static int const kSSCheckCounterSize = 10;
                             }
                             // END TEOSongData test
 #endif
+                            
+                            // Try and fetch (by URL) the song's metadata from the core data store.
+                            [self loadMetadataIntoSong:newSong];
+                            
+                            // Add the song to the songpool.
+                            [songPoolDictionary setObject:newSong forKey:[NSNumber numberWithInt:curURLNum]];
+                            
                             
                         });
                         
@@ -387,7 +389,8 @@ static int const kSSCheckCounterSize = 10;
     NSLog(@"request image!");
     // First we should check if the song has an image stashed in the songpool local/temporary store.
     TGSong * theSong = [self songForID:songID];
-    NSInteger artID = [theSong artID];
+//    NSInteger artID = [theSong artID];
+    NSInteger artID = [theSong.TEOData.artID integerValue];
     if (artID >= 0) {
         NSImage *songArt = [_artArray objectAtIndex:artID];
         NSLog(@"already had image!");
@@ -404,11 +407,8 @@ static int const kSSCheckCounterSize = 10;
             [_artArray addObject:tmpImage];
             
             // Add the art index to the song.
-            [theSong setArtID:[_artArray count]-1];
-            
-            // TEOSongData test
-            theSong.TEOData.artID = [NSNumber numberWithInteger:theSong.artID];
-            // end TEOSongData test
+            theSong.TEOData.artID = [NSNumber numberWithInteger:[_artArray count]-1];
+//            [theSong setArtID:[_artArray count]-1];
             
             // Call the image handler with the image we recived from the song.
             imageHandler(tmpImage);
@@ -425,7 +425,8 @@ static int const kSSCheckCounterSize = 10;
             // 3. Look up track then album then artist name online.
 
             // Get the song's URL
-            NSURL *theURL = [theSong songURL];
+//            NSURL *theURL = [theSong songURL];
+            NSURL *theURL = [NSURL URLWithString:theSong.TEOData.urlString];
             
             tmpImage = [self searchForCoverImageAtURL:theURL];
             if (tmpImage != nil) {
@@ -503,7 +504,7 @@ static int const kSSCheckCounterSize = 10;
     TGSong *aSong = [self songForID:songID];
     
     if (aSong) {
-        return [NSURL URLWithString:[self songForID:songID].TEOData.url];
+        return [NSURL URLWithString:[self songForID:songID].TEOData.urlString];
     }
     
     return nil;
@@ -552,7 +553,8 @@ static int const kSSCheckCounterSize = 10;
 
 - (void)sweetSpotToServerForSong:(TGSong *)aSong {
     double sweetSpot = [[aSong startTime] doubleValue] ;
-    NSString * songUUID = [aSong songUUIDString];
+//    NSString * songUUID = [aSong songUUIDString];
+    NSString * songUUID = aSong.TEOData.uuid;
     
     NSURL *requestIDURL = [[NSURL alloc] initWithString:[NSString stringWithFormat:@"http://localhost:8080/submit?songUUID=%s&songSweetSpot=%lf",[songUUID UTF8String],sweetSpot]];
     NSLog(@"sanity check %@",requestIDURL);
@@ -600,22 +602,24 @@ static int const kSSCheckCounterSize = 10;
 - (NSString *)UUIDStringForSongID:(NSInteger)songID {
     if (![self validSongID:songID]) return nil;
     
-    return [[self songForID:songID] songUUIDString];
+    return [self songForID:songID].TEOData.uuid;
+//    return [[self songForID:songID] songUUIDString];
 }
 
 
 - (NSURL *)URLForSongID:(NSInteger)songID {
     if (![self validSongID:songID]) return nil;
     
-    return [[self songForID:songID] songURL];
+    return [NSURL URLWithString:[self songForID:songID].TEOData.urlString];
+//    return [[self songForID:songID] songURL];
 }
 
 
 //- (void)sweetSpotFromServerForSongID:(NSInteger)songID {
 - (void)sweetSpotFromServerForSong:(TGSong *)aSong {
 
-//    TGSong *aSong = [self songForID:songID];
-    NSString * songUUID = [aSong songUUIDString];
+//    NSString * songUUID = [aSong songUUIDString];
+    NSString * songUUID = aSong.TEOData.uuid;
 
     NSURL *theIDURL = [NSURL URLWithString:[NSString stringWithFormat:@"http://localhost:8080/lookup?songUUID=%s",[songUUID UTF8String]]];
     NSURLRequest *request = [NSURLRequest requestWithURL:theIDURL];
@@ -666,7 +670,8 @@ static int const kSSCheckCounterSize = 10;
     
     // Request sweetspots from the sweetspot server if the song does not have a start time, has a uuid and has not exceeded its alotted queries.
     if (([[song startTime] doubleValue] == -1) &&
-        ([song songUUIDString] != nil) &&
+        (song.TEOData.uuid  != nil) &&
+//        ([song songUUIDString] != nil) &&
         (song.SSCheckCountdown-- == 0)) {
         
         // Reset the counter.
@@ -892,7 +897,7 @@ static int const kSSCheckCounterSize = 10;
 // Go through all songs and store those who have had data added to them.
 // This includes UUID or a user selected sweet spot.
 - (void)storeSongData {
-    
+#ifdef TSD
     // TEOSongData test
     NSError *TEOError;
     if (![self.TEOmanagedObjectContext save:&TEOError]) {
@@ -900,6 +905,9 @@ static int const kSSCheckCounterSize = 10;
               ([TEOError localizedDescription] != nil) ? [TEOError localizedDescription] : @"Unknown error.");
     }
     // end TEOSongData test
+    return;
+#else
+    
     
     NSLog(@"The songs to save are these: %@",songsWithChangesToSave);
     // Make managed objects of each of these songs. Can we check if they already are store in there?
@@ -1015,6 +1023,7 @@ static int const kSSCheckCounterSize = 10;
     
 
     NSLog(@"The save took %f seconds.",[NSDate timeIntervalSinceReferenceDate] - timerStart);
+#endif
 }
 
 
@@ -1045,7 +1054,9 @@ static int const kSSCheckCounterSize = 10;
 //      2) look for a uuid match. The uuid is obtained by sending a fingerprint to a server, so if there is a uuid there's no need to look for a fingerprint.
 //      3) look for a fingerprint. A fingerprint is generated when possible and stored until a uuid can be obtained.
 - (BOOL)loadMetadataIntoSong:(TGSong *)aSong {
-
+#ifdef TSD
+    return YES;
+#else
     NSArray *fetchedArray = [self fetchMetadataFromLocalStore];
     if (fetchedArray == nil)
         return NO;
@@ -1116,6 +1127,7 @@ static int const kSSCheckCounterSize = 10;
     }
 
     return NO;
+#endif
 }
 
 
@@ -1220,9 +1232,12 @@ static int const kSSCheckCounterSize = 10;
         NSNumber *theSongDuration = [NSNumber numberWithDouble:[currentlyPlayingSong getDuration]];
         [self setValue:theSongDuration forKey:@"currentSongDuration"];
         
+        NSString* test = nextSong.TEOData.fingerprint;
+        NSLog(@"the fingerprint %@",test);
         // Song fingerprints are generated and UUID fetched during idle time in the background.
         // However, if the song about to be played hasn't got a UUID or fingerprint, an async request will be initiated here.
-        if ([nextSong songUUIDString] == NULL) {
+//        if ([nextSong songUUIDString] == NULL) {
+        if (nextSong.TEOData.uuid == NULL) {
             if ([nextSong fingerPrintStatus] == kFingerPrintStatusEmpty) {
                 [nextSong setFingerPrintStatus:kFingerPrintStatusRequested];
                 [songFingerPrinter requestFingerPrintForSong:nextSong];
@@ -1252,13 +1267,17 @@ static int const kSSCheckCounterSize = 10;
     
     // At this point we should check if the fingerprint resulted in a songUUID.
     // If it did not we keep the finger print so we don't have to re-generate it, otherwise we can delete the it.
-    if ([song songUUIDString] == nil) {
+//    if ([song songUUIDString] == nil) {
+    if (song.TEOData.uuid == nil) {
         NSLog(@"No UUID found, keeping fingerprint.");
-        [song setFingerprint:fingerPrint];
+//        [song setFingerprint:fingerPrint];
+        song.TEOData.fingerprint = fingerPrint;
     }
     else {
         // The song has a UUID, so there's no need to keep the fingerprint.
-        [song setFingerprint:nil];
+//        [song setFingerprint:nil];
+        // TEO - Is there any reason for not keeping the fingerprint (aside from memory)?
+        song.TEOData.fingerprint = nil;
     }
     
     [song setFingerPrintStatus:kFingerPrintStatusDone];

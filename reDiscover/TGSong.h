@@ -64,16 +64,16 @@ enum {
 @property TEOSongData* TEOData;
 
 // the acoustic fingerprint of the song.
-@property NSString *fingerprint;
+//@property NSString *fingerprint;
 
 // Stores the UUID obtained from an acoustid server given a fingerprint.
-@property NSString *songUUIDString;
+//@property NSString *songUUIDString;
 
 // The local and per-session temporary song id.
 @property NSUInteger songID;
 
 // The location of a song.
-@property NSURL *songURL;
+//@property NSURL *songURL;
 
 
 // State of various activities.
@@ -92,7 +92,7 @@ enum {
 #endif
 
 // An id key into the songpool's art dictionary. Values of -1 will be no art and 0 will be the default "no cover" art.
-@property NSInteger artID;
+//@property NSInteger artID;
 
 @property CMTime requestedSongStartTime;
 
@@ -109,7 +109,8 @@ enum {
 
 - (NSNumber *)startTime;
 - (void)setStartTime:(NSNumber *)startTime;
-- (id)initWithURL:(NSURL *)anURL;
+//- (id)initWithURL:(NSURL *)anURL;
+- (id)init;
 - (void)loadTrackData;
 - (BOOL)playStart;
 - (void)playStop;

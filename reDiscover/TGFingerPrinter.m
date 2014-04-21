@@ -18,6 +18,7 @@
 #import <CommonCrypto/CommonDigest.h>
 
 #import "TGSong.h"
+#import "TEOSongData.h"
 
 @implementation TGFingerPrinter
 
@@ -49,7 +50,8 @@
         int duration;
         ChromaprintContext *chromaprintContext = chromaprint_new(CHROMAPRINT_ALGORITHM_DEFAULT);
 
-        [self decodeAudioFile:[song songURL] forContext:chromaprintContext ofLength:maxLength andDuration:&duration];
+//        [self decodeAudioFile:[song songURL] forContext:chromaprintContext ofLength:maxLength andDuration:&duration];
+        [self decodeAudioFile:[NSURL URLWithString:song.TEOData.urlString] forContext:chromaprintContext ofLength:maxLength andDuration:&duration];
 
         if (chromaprint_get_fingerprint(chromaprintContext, &theFingerprint)) {
         
@@ -71,8 +73,10 @@
                 // The first element is the one with the highest score so we take that (for now). Later we can traverse and compare with any tags we already have.
                 if ([results count]) {
                     NSDictionary *theElement = [results objectAtIndex:0];
-                    [song setSongUUIDString:[theElement objectForKey:@"id"]];
-                    NSLog(@"Acoustid server returned a UUID %@",[song songUUIDString]);
+                    song.TEOData.uuid =  [theElement objectForKey:@"id"];
+//                    [song setSongUUIDString:[theElement objectForKey:@"id"]];
+//                    NSLog(@"Acoustid server returned a UUID %@",[song songUUIDString]);
+                    NSLog(@"Acoustid server returned a UUID %@",song.TEOData.uuid);
                 } else
                     NSLog(@"AcoustID returned 0 results.");
                 

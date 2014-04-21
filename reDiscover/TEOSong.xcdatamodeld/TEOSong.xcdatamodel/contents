@@ -9,11 +9,11 @@
         <attribute name="selectedSweetSpot" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
         <attribute name="sweetSpotArray" optional="YES" attributeType="Binary" syncable="YES"/>
         <attribute name="title" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="url" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="urlString" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="uuid" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="year" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
     </entity>
     <elements>
-        <element name="TEOSongData" positionX="-63" positionY="-18" width="128" height="208"/>
+        <element name="TEOSongData" positionX="-63" positionY="-18" width="128" height="210"/>
     </elements>
 </model>

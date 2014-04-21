@@ -14,6 +14,7 @@
 
 @implementation TGSong
 
+#ifndef TSD
 - (id)initWithURL:(NSURL *)anURL {
     
     self = [super init];
@@ -23,21 +24,37 @@
         _songTimeScale = 100; // Centiseconds.
         
         [self setSongStartTime:CMTimeMake(-1, 1)];
-        _fingerprint = nil;
+//        _fingerprint = nil; removed for TEOSongData
         _fingerPrintStatus = kFingerPrintStatusEmpty;
         _songSweetSpots = nil;
         _requestedSongStartTime = CMTimeMake(-1, 1);
         _SSCheckCountdown = 0;
-        _artID = -1;
+//        _artID = -1; removed for TEOSongData
+    }
+    return self;
+}
+#endif
+
+- (id)init {
+    self = [super init];
+    if (self) {
+        
+        _songTimeScale = 100; // Centiseconds.
+        
+        [self setSongStartTime:CMTimeMake(-1, 1)];
+        _fingerPrintStatus = kFingerPrintStatusEmpty;
+        _songSweetSpots = nil;
+        _requestedSongStartTime = CMTimeMake(-1, 1);
+        _SSCheckCountdown = 0;
     }
     return self;
 }
 
-
 - (void)requestCoverImageWithHandler:(void (^)(NSImage *))imageHandler {
     
     if (songAsset == nil) {
-        songAsset = [[AVURLAsset alloc] initWithURL:_songURL options:nil];
+//        songAsset = [[AVURLAsset alloc] initWithURL:_songURL options:nil];
+        songAsset = [[AVURLAsset alloc] initWithURL:[NSURL URLWithString:self.TEOData.urlString] options:nil];
     }
         
     [songAsset loadValuesAsynchronouslyForKeys:@[@"commonMetadata"] completionHandler:^{
@@ -76,7 +93,8 @@
 - (void)requestSongAlbumImage:(void (^)(NSImage *))imageHandler {
 
     if (songAsset == nil) {
-        songAsset = [[AVURLAsset alloc] initWithURL:_songURL options:nil];
+//        songAsset = [[AVURLAsset alloc] initWithURL:_songURL options:nil];
+        songAsset = [[AVURLAsset alloc] initWithURL:[NSURL URLWithString:self.TEOData.urlString] options:nil];
     }
         
     [songAsset loadValuesAsynchronouslyForKeys:@[@"commonMetadata"] completionHandler:^{
@@ -135,7 +153,9 @@
 //    songAsset = [[AVURLAsset alloc] initWithURL:_songURL options:songLoadingOptions];
     
 // TEO can get stuck in here (Often!) semaphore_wait_trap
-    songAsset = [[AVURLAsset alloc] initWithURL:_songURL options:nil];
+//    songAsset = [[AVURLAsset alloc] initWithURL:_songURL options:nil];
+    NSURL *theURL = [NSURL URLWithString:self.TEOData.urlString];
+    songAsset = [[AVURLAsset alloc] initWithURL:theURL options:nil];
     NSArray *keys = @[@"tracks",@"duration"];
     
     //NSLog(@"I gots %lu",(unsigned long)[artworks count]);
@@ -161,7 +181,7 @@
             }
             case AVKeyValueStatusFailed:
             {
-                NSLog(@"URL track %@ load failed.",_songURL);
+                NSLog(@"URL track %@ load failed.",theURL);
                 [self setLoadStatus:kLoadStatusFailed];
                 break;
             }
@@ -192,7 +212,7 @@
             }
             case AVKeyValueStatusFailed:
             {
-                NSLog(@"URL duration %@ load failed.",_songURL);
+                NSLog(@"URL duration %@ load failed.",theURL);
                 [self setLoadStatus:kLoadStatusDurationFailed];
                 [self setSongStatus:kSongStatusFailed];
                 break;
@@ -211,7 +231,9 @@
 #ifdef TSD
 - (void)loadSongMetadata {
     // Get other metadata via the MDItem of the file.
-    MDItemRef metadata = MDItemCreate(NULL, (__bridge CFStringRef)[_songURL path]);
+//    MDItemRef metadata = MDItemCreate(NULL, (__bridge CFStringRef)[_songURL path]);
+    NSURL *theURL = [NSURL URLWithString:self.TEOData.urlString];
+    MDItemRef metadata = MDItemCreate(NULL, (__bridge CFStringRef)[theURL path]);
     if (metadata) {
         NSArray* artists = CFBridgingRelease(MDItemCopyAttribute(metadata, kMDItemAuthors));
         self.TEOData.artist = [artists objectAtIndex:0];
