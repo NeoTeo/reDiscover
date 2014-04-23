@@ -418,6 +418,8 @@
     return YES;
 }
 
+#pragma mark -
+#pragma mark SongPoolDelegate methods
 // SongPoolDelegate methods
 
 // TGSongPoolDelegate methods

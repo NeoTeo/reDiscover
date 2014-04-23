@@ -119,8 +119,11 @@ enum {
 - (void)setCurrentPlayTime:(NSNumber *)playTimeInSeconds;
 - (void)requestCoverImageWithHandler:(void (^)(NSImage *))imageHandler;
 - (void)requestSongAlbumImage:(void (^)(NSImage *))imageHandler;
+#ifndef TSD
 - (void)loadSongMetadata;
-
+#else
+- (BOOL)loadSongMetadata;
+#endif
     
 @property id <TGSongDelegate>delegate;
 @end

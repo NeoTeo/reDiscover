@@ -244,7 +244,6 @@ static int const kSSCheckCounterSize = 10;
 // returns true if the given url is valid and, if so, will initiate the loading of songs.
 - (BOOL)loadFromURL:(NSURL *)anURL {
 
-
     // init status.
     allURLsRequested = NO;
     allURLsLoaded = NO;
@@ -253,33 +252,37 @@ static int const kSSCheckCounterSize = 10;
     __block int completedOps = 0;
     opQueue = [[NSOperationQueue alloc] init];
     
+    NSLog(@"loadFromURL running on the main thread? %@",[NSThread mainThread]?@"Yep":@"Nope");
     
     NSFileManager *fileManager = [[NSFileManager alloc] init];
     
     NSArray *keys = [NSArray arrayWithObject:NSURLIsDirectoryKey];
     
-    NSDirectoryEnumerator *enumerator = [fileManager
-                                         enumeratorAtURL:anURL
-                                         includingPropertiesForKeys:keys
-                                         options:0
-                                         errorHandler:^(NSURL *url, NSError *error) {
-                                             // Handle the error.
-                                             // Return YES if the enumeration should continue after the error.
-                                             NSLog(@"Error getting the directory. %@",error);
-                                             // Return yes to continue traversing.
-                                             return YES;
-                                         }];
 //    NSTimeInterval timerStart = [NSDate timeIntervalSinceReferenceDate];
 
     // At this point, to avoid blocking with a beach ball on big resources/slow access, we drop this part into a concurrent queue.
     NSOperationQueue *topQueue = [[NSOperationQueue alloc] init];
     NSBlockOperation *topOp = [NSBlockOperation blockOperationWithBlock:^{
         
+        // The enumerator does a deep traversal of the given url.
+        NSDirectoryEnumerator *enumerator = [fileManager
+                                             enumeratorAtURL:anURL
+                                             includingPropertiesForKeys:keys
+                                             options:0
+                                             errorHandler:^(NSURL *url, NSError *error) {
+                                                 // Handle the error.
+                                                 // Return YES if the enumeration should continue after the error.
+                                                 NSLog(@"Error getting the directory. %@",error);
+                                                 // Return yes to continue traversing.
+                                                 return YES;
+                                             }];
+        
         for (NSURL *url in enumerator) {
             
             // Increment counter to track number of requested load operations.
             requestedOps++;
             
+            // Each block checks a url.
             NSBlockOperation *theOp = [NSBlockOperation blockOperationWithBlock:^{
                 NSError *error;
                 NSNumber *isDirectory = nil;
@@ -288,10 +291,12 @@ static int const kSSCheckCounterSize = 10;
                     // handle error
                     NSLog(@"An error %@ occurred in the enumeration.",error);
                     errorLoadingSongURLs = YES;
-    // TEO: handle error by making another delegate method that signals failure.
+                    
+                    // TEO: handle error by making another delegate method that signals failure.
                     return;
                 }
-                else if (! [isDirectory boolValue]) {
+                
+                if (! [isDirectory boolValue]) {
                     // No error and it’s not a directory; do something with the file
                     
                     // Check the file extension and deal only with audio files.
@@ -302,9 +307,9 @@ static int const kSSCheckCounterSize = 10;
                     {
                         // Since this can occur asynchronously, atomically increment the number of audio urls.
                         int curURLNum = OSAtomicIncrement32(&(loadedURLs))-1;
-
+                        
                         // Create a song object with the given url. This does not start loading it from disk.
-//                        TGSong *newSong = [[TGSong alloc] initWithURL:url];
+                        //                        TGSong *newSong = [[TGSong alloc] initWithURL:url];
                         TGSong *newSong = [[TGSong alloc] init];
                         
                         // Set the song pool to be a song's delegate.
@@ -317,10 +322,30 @@ static int const kSSCheckCounterSize = 10;
                         dispatch_async(serialDataLoad, ^{
                             // TEOSongData test
 #ifdef TSD
+//                            NSLog(@"current thread %@",[NSThread currentThread]);
                             // Only add the loaded url if it isn't already in the dictionary.
                             TEOSongData* teoData = [self.TEOSongDataDictionary objectForKey:[url absoluteString]];
                             if (!teoData) {
-                                newSong.TEOData = [TEOSongData insertItemWithURLString:[url absoluteString] inManagedObjectContext:self.TEOmanagedObjectContext];
+                                // This is breaking because it's not happening on he main thread.
+                                // The solution seems to be either to create a context for each thread (will this spawn n threads or just one more? And how about after?)
+                                // OR leave TEOData nil and create insert the context on the main thread at some other stage.
+                                NSManagedObjectContext* threadContext = [[NSManagedObjectContext alloc] initWithConcurrencyType:NSConfinementConcurrencyType];
+                                threadContext.persistentStoreCoordinator = self.TEOmanagedObjectContext.persistentStoreCoordinator;
+                                newSong.TEOData = [TEOSongData insertItemWithURLString:[url absoluteString] inManagedObjectContext:threadContext];
+                                
+                                // insane but trying to prove a point
+                                NSError* error;
+                                [threadContext save:&error];
+                                NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:@"TEOSongData"];
+                                //                                [fetchRequest setResultType:NSManagedObjectIDResultType];
+                                NSArray* fetchedArray = [threadContext executeFetchRequest:fetchRequest error:&error];
+                                if ([fetchedArray count]) {
+                                    //                                    TEOSongData* dat = (TEOSongData*)[self.TEOmanagedObjectContext objectWithID:[fetchedArray objectAtIndex:0]];
+                                    //                                    newSong.TEOData = (TEOSongData*)[self.TEOmanagedObjectContext existingObjectWithID:[fetchedArray objectAtIndex:0] error:&error];
+                                    newSong.TEOData = (TEOSongData*)[self.TEOmanagedObjectContext existingObjectWithID:newSong.TEOData.objectID error:&error];
+                                    
+//                                    NSLog(@"dat's cool %@",newSong.TEOData.urlString);
+                                }
                             } else {
                                 newSong.TEOData = teoData;
                             }
@@ -482,8 +507,7 @@ static int const kSSCheckCounterSize = 10;
         NSAssert(theSong, @"the song is nil.");
         if (theSong != nil) {
 
-            [theSong loadSongMetadata];
-            if ([_delegate respondsToSelector:@selector(songPoolDidLoadDataForSongID:)])
+            if ([theSong loadSongMetadata] && [_delegate respondsToSelector:@selector(songPoolDidLoadDataForSongID:)])
                 [_delegate songPoolDidLoadDataForSongID:songID];
         }
 
@@ -512,6 +536,7 @@ static int const kSSCheckCounterSize = 10;
 
 - (NSDictionary *)songDataForSongID:(NSInteger)songID {
     TGSong *song = [self songForID:songID];
+//    NSLog(@"songDataForSongID %ld, %@",(long)songID,song.TEOData);
     return @{@"Artist": song.TEOData.artist,
              @"Title": song.TEOData.title,
              @"Album": song.TEOData.album,
@@ -1304,13 +1329,14 @@ static int const kSSCheckCounterSize = 10;
 }
 
 
-- (void)songDidLoadEmbeddedMetadata:(TGSong *)song {
-    
-    if ([[self delegate] respondsToSelector:@selector(songPoolDidLoadDataForSongID:)]) {
-        [[self delegate] songPoolDidLoadDataForSongID:[song songID]];
-    }
-    
-}
+//// TEO currently not called by anyone. Should probably be called by TGSong loadSongMetaData but since it isn't 
+//- (void)songDidLoadEmbeddedMetadata:(TGSong *)song {
+//    
+//    if ([[self delegate] respondsToSelector:@selector(songPoolDidLoadDataForSongID:)]) {
+//        [[self delegate] songPoolDidLoadDataForSongID:[song songID]];
+//    }
+//    
+//}
 
 // Delegate method that allows a song to set the songpool's playhead position tracker variable.
 - (void)songDidUpdatePlayheadPosition:(NSNumber *)playheadPosition {

@@ -229,21 +229,38 @@
 }
 
 #ifdef TSD
-- (void)loadSongMetadata {
+- (BOOL)loadSongMetadata {
     // Get other metadata via the MDItem of the file.
-//    MDItemRef metadata = MDItemCreate(NULL, (__bridge CFStringRef)[_songURL path]);
     NSURL *theURL = [NSURL URLWithString:self.TEOData.urlString];
     MDItemRef metadata = MDItemCreate(NULL, (__bridge CFStringRef)[theURL path]);
+    
     if (metadata) {
-        NSArray* artists = CFBridgingRelease(MDItemCopyAttribute(metadata, kMDItemAuthors));
-        self.TEOData.artist = [artists objectAtIndex:0];
-        self.TEOData.title = CFBridgingRelease(MDItemCopyAttribute(metadata, kMDItemTitle));
-        self.TEOData.album = CFBridgingRelease(MDItemCopyAttribute(metadata, kMDItemAlbum));
-        self.TEOData.genre = CFBridgingRelease(MDItemCopyAttribute(metadata, kMDItemMusicalGenre));
+        NSString* titleString;
+        NSString* albumString;
+        NSString* genreString;
+        NSArray* artists;
+        
+        if ((artists = CFBridgingRelease(MDItemCopyAttribute(metadata, kMDItemAuthors)))) {
+           self.TEOData.artist = [artists objectAtIndex:0];
+        }
+        
+        if ((titleString = CFBridgingRelease(MDItemCopyAttribute(metadata, kMDItemTitle)))) {
+            self.TEOData.title = titleString;
+        }
+        
+        if ((albumString = CFBridgingRelease(MDItemCopyAttribute(metadata, kMDItemAlbum)))) {
+            self.TEOData.album = albumString;
+        }
+        
+        if ((genreString = CFBridgingRelease(MDItemCopyAttribute(metadata, kMDItemMusicalGenre)))) {
+            self.TEOData.genre = genreString;
+        }
         
         // Make sure that sucker is released.
         CFRelease(metadata);
+        return YES;
     }
+    return NO;
 }
 #else
 - (void)loadSongMetadata {
