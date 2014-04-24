@@ -22,7 +22,7 @@
 @property (nonatomic, retain) NSString * title;
 @property (nonatomic, retain) NSString * genre;
 @property (nonatomic, retain) NSNumber * selectedSweetSpot;
-@property (nonatomic, retain) NSNumber * artID;
+//@property (nonatomic, retain) NSNumber * artID;
 
 + (instancetype)insertItemWithURLString:(NSString*)URLString
                  inManagedObjectContext:(NSManagedObjectContext *)managedObjectContext;

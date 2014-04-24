@@ -415,7 +415,7 @@ static int const kSSCheckCounterSize = 10;
     // First we should check if the song has an image stashed in the songpool local/temporary store.
     TGSong * theSong = [self songForID:songID];
 //    NSInteger artID = [theSong artID];
-    NSInteger artID = [theSong.TEOData.artID integerValue];
+    NSInteger artID = theSong.artID;
     if (artID >= 0) {
         NSImage *songArt = [_artArray objectAtIndex:artID];
         NSLog(@"already had image!");
@@ -432,7 +432,7 @@ static int const kSSCheckCounterSize = 10;
             [_artArray addObject:tmpImage];
             
             // Add the art index to the song.
-            theSong.TEOData.artID = [NSNumber numberWithInteger:[_artArray count]-1];
+            theSong.artID = [_artArray count]-1;
 //            [theSong setArtID:[_artArray count]-1];
             
             // Call the image handler with the image we recived from the song.

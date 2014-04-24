@@ -29,7 +29,7 @@
         _songSweetSpots = nil;
         _requestedSongStartTime = CMTimeMake(-1, 1);
         _SSCheckCountdown = 0;
-//        _artID = -1; removed for TEOSongData
+        _artID = -1;
     }
     return self;
 }
@@ -46,6 +46,7 @@
         _songSweetSpots = nil;
         _requestedSongStartTime = CMTimeMake(-1, 1);
         _SSCheckCountdown = 0;
+        _artID = -1;
     }
     return self;
 }
