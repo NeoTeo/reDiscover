@@ -94,17 +94,32 @@ static int const kSSCheckCounterSize = 10;
 // TEOSongData test set up the Core Data context and store.
 - (void)setupManagedObjectContext {
     
-    self.TEOmanagedObjectContext = [[NSManagedObjectContext alloc] initWithConcurrencyType:NSMainQueueConcurrencyType];
-    self.TEOmanagedObjectContext.persistentStoreCoordinator = [[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel:self.TEOmanagedObjectModel];
+    NSURL* modelURL = [[NSBundle mainBundle] URLForResource:@"TEOSong" withExtension:@"momd"];
+    NSManagedObjectModel* mom = [[NSManagedObjectModel alloc] initWithContentsOfURL:modelURL];
+    NSPersistentStoreCoordinator* psc = [[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel:mom];
     
-    NSError* error;
-   [self.TEOmanagedObjectContext.persistentStoreCoordinator addPersistentStoreWithType:NSSQLiteStoreType
-                                                                         configuration:nil
-                                                                                   URL:self.storeURL
-                                                                               options:nil error:&error];
-    if (error) {
-        NSLog(@"Error: %@",error);
-    }
+    NSManagedObjectContext* private = [[NSManagedObjectContext alloc] initWithConcurrencyType:NSPrivateQueueConcurrencyType];
+    [private setPersistentStoreCoordinator:psc];
+    
+    self.TEOmanagedObjectContext = [[NSManagedObjectContext alloc] initWithConcurrencyType:NSMainQueueConcurrencyType];
+    [self.TEOmanagedObjectContext setParentContext:private];
+    [self setPrivateContext:private];
+    
+    // Since this could potentially take time we dispatch this block async'ly
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        NSError* error;
+        NSURL* documentsDirectory = [[NSFileManager defaultManager] URLForDirectory:NSDocumentDirectory inDomain:NSUserDomainMask appropriateForURL:nil create:YES error:NULL];
+        documentsDirectory = [documentsDirectory URLByAppendingPathComponent:@"reDiscoverdb.sqlite"];
+        
+        [self.TEOmanagedObjectContext.persistentStoreCoordinator addPersistentStoreWithType:NSSQLiteStoreType
+                                                                              configuration:nil
+                                                                                        URL:documentsDirectory
+                                                                                    options:nil error:&error];
+        if (error) {
+            NSLog(@"Error: %@",error);
+        }
+        
+    });
 }
 
 - (NSURL*)storeURL
@@ -113,42 +128,31 @@ static int const kSSCheckCounterSize = 10;
     return [documentsDirectory URLByAppendingPathComponent:@"db.sqlite"];
 }
 
-- (NSURL*)modelURL
-{
-    return [[NSBundle mainBundle] URLForResource:@"TEOSong" withExtension:@"momd"];
-}
-
-- (NSManagedObjectModel*)TEOmanagedObjectModel
-{
-    return [[NSManagedObjectModel alloc] initWithContentsOfURL:self.modelURL];
-}
-
 - (void)initTEOSongDataDictionary {
     
     // First we fetch the data from the store.
     NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:@"TEOSongData"];
-    NSError *error = nil;
-    NSArray *fetchedArray = nil;
     
-    if (fetchedArray == nil) {
+    // fetch the data asynch'ly.
+    [self.TEOmanagedObjectContext performBlock:^{
+        NSArray *fetchedArray = nil;
+        NSError *error = nil;
         fetchedArray = [self.TEOmanagedObjectContext executeFetchRequest:fetchRequest error:&error];
         if (error != nil) {
             NSLog(@"Error while fetching TEOSongData.\n%@",
                   ([error localizedDescription] != nil) ? [error localizedDescription] : @"Unknown error..");
             return;
         }
-    }
-    
-    
-    // Then traverse the fetched Array and make a dictionary with the url field as the key.
-    NSMutableDictionary* tmpDictionary = [[NSMutableDictionary alloc] init];
-    
-    for (TEOSongData* songData in fetchedArray) {
-        [tmpDictionary setObject:songData forKey:songData.urlString];
-    }
-    
-    self.TEOSongDataDictionary = tmpDictionary;
-    
+        
+        // Then traverse the fetched Array and make a dictionary with the url field as the key.
+        NSMutableDictionary* tmpDictionary = [[NSMutableDictionary alloc] init];
+        
+        for (TEOSongData* songData in fetchedArray) {
+            [tmpDictionary setObject:songData forKey:songData.urlString];
+        }
+        
+        self.TEOSongDataDictionary = tmpDictionary;
+    }];
 }
 // END TEOSongData test
 
@@ -326,32 +330,29 @@ static int const kSSCheckCounterSize = 10;
                             // Only add the loaded url if it isn't already in the dictionary.
                             TEOSongData* teoData = [self.TEOSongDataDictionary objectForKey:[url absoluteString]];
                             if (!teoData) {
-                                // This is breaking because it's not happening on he main thread.
-                                // The solution seems to be either to create a context for each thread (will this spawn n threads or just one more? And how about after?)
-                                // OR leave TEOData nil and create insert the context on the main thread at some other stage.
-                                NSManagedObjectContext* threadContext = [[NSManagedObjectContext alloc] initWithConcurrencyType:NSConfinementConcurrencyType];
-                                threadContext.persistentStoreCoordinator = self.TEOmanagedObjectContext.persistentStoreCoordinator;
-                                newSong.TEOData = [TEOSongData insertItemWithURLString:[url absoluteString] inManagedObjectContext:threadContext];
+//                                NSManagedObjectContext* threadContext = [[NSManagedObjectContext alloc] initWithConcurrencyType:NSConfinementConcurrencyType];
+//                                threadContext.persistentStoreCoordinator = self.TEOmanagedObjectContext.persistentStoreCoordinator;
+//                                newSong.TEOData = [TEOSongData insertItemWithURLString:[url absoluteString] inManagedObjectContext:threadContext];
                                 
+                                newSong.TEOData = [TEOSongData insertItemWithURLString:[url absoluteString] inManagedObjectContext:self.TEOmanagedObjectContext];
                                 // insane but trying to prove a point
-                                NSError* error;
-                                [threadContext save:&error];
-                                NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:@"TEOSongData"];
-                                //                                [fetchRequest setResultType:NSManagedObjectIDResultType];
-                                NSArray* fetchedArray = [threadContext executeFetchRequest:fetchRequest error:&error];
-                                if ([fetchedArray count]) {
-                                    //                                    TEOSongData* dat = (TEOSongData*)[self.TEOmanagedObjectContext objectWithID:[fetchedArray objectAtIndex:0]];
-                                    //                                    newSong.TEOData = (TEOSongData*)[self.TEOmanagedObjectContext existingObjectWithID:[fetchedArray objectAtIndex:0] error:&error];
-                                    newSong.TEOData = (TEOSongData*)[self.TEOmanagedObjectContext existingObjectWithID:newSong.TEOData.objectID error:&error];
-                                    
+//                                NSError* error;
+//                                [threadContext save:&error];
+//                                NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:@"TEOSongData"];
+//                                //                                [fetchRequest setResultType:NSManagedObjectIDResultType];
+//                                NSArray* fetchedArray = [threadContext executeFetchRequest:fetchRequest error:&error];
+//                                if ([fetchedArray count]) {
+//                                    newSong.TEOData = (TEOSongData*)[self.TEOmanagedObjectContext existingObjectWithID:newSong.TEOData.objectID error:&error];
+//                                    
 //                                    NSLog(@"dat's cool %@",newSong.TEOData.urlString);
-                                }
+//                                }
                             } else {
                                 newSong.TEOData = teoData;
+                                NSLog(@"new song found %@",newSong.TEOData.title);
                             }
                             // END TEOSongData test
 #endif
-                            
+                        
                             // Try and fetch (by URL) the song's metadata from the core data store.
                             [self loadMetadataIntoSong:newSong];
                             
@@ -919,16 +920,47 @@ static int const kSSCheckCounterSize = 10;
     
     return songUserDataDirectory;
 }
+
+- (void)saveContext:(BOOL)wait {
+    NSManagedObjectContext *moc = self.TEOmanagedObjectContext;
+    NSManagedObjectContext *private = [self privateContext];
+    
+    if (!moc) return;
+    if ([moc hasChanges]) {
+        [moc performBlockAndWait:^{
+            NSError *error = nil;
+            NSAssert([moc save:&error], @"Error saving MOC: %@\n%@",
+                    [error localizedDescription], [error userInfo]);
+        }];
+    }
+    
+    void (^savePrivate) (void) = ^{
+        NSError *error = nil;
+        NSAssert([private save:&error], @"Error saving private moc: %@\n%@",
+                [error localizedDescription], [error userInfo]);
+    };
+    
+    if ([private hasChanges]) {
+        if (wait) {
+            [private performBlockAndWait:savePrivate];
+        } else {
+            [private performBlock:savePrivate];
+        }
+    }
+ 
+}
+
 // Go through all songs and store those who have had data added to them.
 // This includes UUID or a user selected sweet spot.
 - (void)storeSongData {
 #ifdef TSD
     // TEOSongData test
-    NSError *TEOError;
-    if (![self.TEOmanagedObjectContext save:&TEOError]) {
-        NSLog(@"Error while saving TEO data \n%@",
-              ([TEOError localizedDescription] != nil) ? [TEOError localizedDescription] : @"Unknown error.");
-    }
+    [self saveContext:NO];
+//    NSError *TEOError;
+//    if (![self.TEOmanagedObjectContext save:&TEOError]) {
+//        NSLog(@"Error while saving TEO data \n%@",
+//              ([TEOError localizedDescription] != nil) ? [TEOError localizedDescription] : @"Unknown error.");
+//    }
     // end TEOSongData test
     return;
 #else

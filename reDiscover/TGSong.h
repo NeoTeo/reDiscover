@@ -133,7 +133,7 @@ enum {
 //@optional
 - (void)songReadyForPlayback:(TGSong *)song;
 - (void)songDidFinishPlayback:(TGSong *)song;
-- (void)songDidLoadEmbeddedMetadata:(TGSong *)song;
+//- (void)songDidLoadEmbeddedMetadata:(TGSong *)song;
 - (void)songDidUpdatePlayheadPosition:(NSNumber *)playheadPosition;
 - (dispatch_queue_t)serialQueue;
 

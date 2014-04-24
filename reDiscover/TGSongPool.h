@@ -62,6 +62,7 @@
 @property NSNumber *currentSongDuration;
 
 // TEOSongData test
+@property NSManagedObjectContext*   privateContext;
 @property NSManagedObjectContext*   TEOmanagedObjectContext;
 //@property NSManagedObjectModel*     TEOmanagedObjectModel;
 @property NSDictionary*             TEOSongDataDictionary;
@@ -120,7 +121,7 @@
 
 // TGSongDelegate methods
 - (void)songDidFinishPlayback:(TGSong *)song;
-- (void)songDidLoadEmbeddedMetadata:(TGSong *)song;
+//- (void)songDidLoadEmbeddedMetadata:(TGSong *)song;
 - (void)songDidUpdatePlayheadPosition:(NSNumber *)playheadPosition;
 - (void)songReadyForPlayback:(TGSong *)song;
 
