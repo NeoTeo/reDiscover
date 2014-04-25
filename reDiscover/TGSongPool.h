@@ -87,6 +87,7 @@
 #pragma mark -
 #pragma mark song data accessor methods.
 // Async methods
+- (void)requestEmbeddedMetadataForSongID:(NSInteger)songID withHandler:(void (^)(NSDictionary*))dataHandler;
 - (void)requestEmbeddedMetadataForSong:(NSInteger) songID;
 - (void)requestSongPlayback:(NSInteger)songID withStartTimeInSeconds:(NSNumber *)time;
 

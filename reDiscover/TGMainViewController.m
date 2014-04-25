@@ -430,7 +430,8 @@
 
 // Called by the song pool for every song whose metadata has fully loaded.
 - (void)songPoolDidLoadDataForSongID:(NSUInteger)songID {
-    
+    // Not really doing anything so return.
+    return;
     NSDictionary *songData = [_currentSongPool songDataForSongID:songID];
     // Get the song's genre.
     NSString * songGenre = [songData objectForKey:@"Genre"];
@@ -487,11 +488,14 @@
 
 - (void)songPoolDidStartPlayingSong:(NSUInteger)songID {
 
-//    [_songInfoController setSong:[_currentSongPool getSongDisplayStrings:songID]];
-    [_songInfoController setSong:[_currentSongPool songDataForSongID:songID]];
+//    [_songInfoController setSong:[_currentSongPool songDataForSongID:songID]];
     
-//    TGSong * theSong = [_currentSongPool songForID:songID];
-    
+    // TSD test
+    [_currentSongPool requestEmbeddedMetadataForSongID:songID withHandler:^(NSDictionary* theData){
+        // set the info when it's there.
+        [_songInfoController setSong:theData];
+    }];
+    // TSD end
     // Let the timelinecontroller know that we've changed song.
     // (would a song change be better signalled as a global notification?)
 //    [_songGridController.songTimelineController setCurrentSong:theSong];
@@ -548,7 +552,8 @@
             // Now that the song has been added as a cell we (async'ly) request the song's metadata which might affect the look of the cell.
             // Successful loading is signaled through the songPoolDidLoadDataForSongID:
             // It would be nice to do this as JIT or during idle time, but we need to know the genre straight away if we are to colorize the cells.
-            [_currentSongPool requestEmbeddedMetadataForSong:songID];
+    // TEO TSD
+//            [_currentSongPool requestEmbeddedMetadataForSong:songID];
     
     // reset the idle timer
     [_idleTimer startIdleTimer];

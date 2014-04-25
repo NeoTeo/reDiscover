@@ -122,11 +122,6 @@ static int const kSSCheckCounterSize = 10;
     });
 }
 
-- (NSURL*)storeURL
-{
-    NSURL* documentsDirectory = [[NSFileManager defaultManager] URLForDirectory:NSDocumentDirectory inDomain:NSUserDomainMask appropriateForURL:nil create:YES error:NULL];
-    return [documentsDirectory URLByAppendingPathComponent:@"db.sqlite"];
-}
 
 - (void)initTEOSongDataDictionary {
     
@@ -330,22 +325,7 @@ static int const kSSCheckCounterSize = 10;
                             // Only add the loaded url if it isn't already in the dictionary.
                             TEOSongData* teoData = [self.TEOSongDataDictionary objectForKey:[url absoluteString]];
                             if (!teoData) {
-//                                NSManagedObjectContext* threadContext = [[NSManagedObjectContext alloc] initWithConcurrencyType:NSConfinementConcurrencyType];
-//                                threadContext.persistentStoreCoordinator = self.TEOmanagedObjectContext.persistentStoreCoordinator;
-//                                newSong.TEOData = [TEOSongData insertItemWithURLString:[url absoluteString] inManagedObjectContext:threadContext];
-                                
                                 newSong.TEOData = [TEOSongData insertItemWithURLString:[url absoluteString] inManagedObjectContext:self.TEOmanagedObjectContext];
-                                // insane but trying to prove a point
-//                                NSError* error;
-//                                [threadContext save:&error];
-//                                NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:@"TEOSongData"];
-//                                //                                [fetchRequest setResultType:NSManagedObjectIDResultType];
-//                                NSArray* fetchedArray = [threadContext executeFetchRequest:fetchRequest error:&error];
-//                                if ([fetchedArray count]) {
-//                                    newSong.TEOData = (TEOSongData*)[self.TEOmanagedObjectContext existingObjectWithID:newSong.TEOData.objectID error:&error];
-//                                    
-//                                    NSLog(@"dat's cool %@",newSong.TEOData.urlString);
-//                                }
                             } else {
                                 newSong.TEOData = teoData;
                                 NSLog(@"new song found %@",newSong.TEOData.title);
@@ -502,6 +482,16 @@ static int const kSSCheckCounterSize = 10;
     return theImage;
 }
 
+- (void)requestEmbeddedMetadataForSongID:(NSInteger)songID withHandler:(void (^)(NSDictionary*))dataHandler{
+    dispatch_async(serialDataLoad, ^{
+        TGSong *theSong = [self songForID:songID];
+        if (theSong != nil) {
+            [theSong loadSongMetadata];
+            // call the datahandler with whatever metadata the song loaded.
+            dataHandler([self songDataForSongID:songID]);
+        }
+    });
+}
 - (void)requestEmbeddedMetadataForSong:(NSInteger) songID {
     dispatch_async(serialDataLoad, ^{
         TGSong *theSong = [self songForID:songID];
@@ -513,8 +503,6 @@ static int const kSSCheckCounterSize = 10;
         }
 
     });
-    
-    
 }
 
 
@@ -1234,7 +1222,8 @@ static int const kSSCheckCounterSize = 10;
             return;
         }
         [aSong loadTrackData];
-        [self requestEmbeddedMetadataForSong:[songID integerValue]];
+        // TEO TSD test
+//        [self requestEmbeddedMetadataForSong:[songID integerValue]];
     }
 }
 
