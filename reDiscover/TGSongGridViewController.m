@@ -161,7 +161,7 @@
     
 //    TGGridCell *existingCell = [[_songCellMatrix cells] objectAtIndex:songID];
 //    if (theCell.image == _defaultImage) {
-        NSLog(@"here we'd flip and change.");
+//        NSLog(@"here we'd flip and change.");
         [self coverPushAndFadeAnimationForCell:theCell withImage:theImage];
 //        [self coverFlipAnimationForCell:theCell withImage:theImage];
 //    }

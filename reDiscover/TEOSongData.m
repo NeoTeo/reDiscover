@@ -28,14 +28,14 @@
 {
     TEOSongData* songData = [NSEntityDescription insertNewObjectForEntityForName:self.entityName
                                                inManagedObjectContext:managedObjectContext];
-    songData.album             = @"dunno";
-    songData.artist            = @"dunno";
+    songData.album             = nil;//@"dunno";
+    songData.artist            = nil;//@"dunno";
     songData.sweetSpotArray    = nil;
     songData.urlString         = URLString;
     songData.uuid              = nil;
     songData.year              = [NSNumber numberWithInteger:0];
-    songData.genre             = @"dunno";
-    songData.title             = @"dunno";
+    songData.genre             = nil;//@"dunno";
+    songData.title             = nil;//@"dunno";
     songData.fingerprint       = nil;
     songData.selectedSweetSpot = [NSNumber numberWithInteger:0];
 //    songData.artID             = [NSNumber numberWithInteger:-1];

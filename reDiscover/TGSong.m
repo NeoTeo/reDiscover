@@ -91,44 +91,44 @@
 }
 
 
-- (void)requestSongAlbumImage:(void (^)(NSImage *))imageHandler {
-
-    if (songAsset == nil) {
-//        songAsset = [[AVURLAsset alloc] initWithURL:_songURL options:nil];
-        songAsset = [[AVURLAsset alloc] initWithURL:[NSURL URLWithString:self.TEOData.urlString] options:nil];
-    }
-        
-    [songAsset loadValuesAsynchronouslyForKeys:@[@"commonMetadata"] completionHandler:^{
-        
-        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            
-            NSArray *artworks = [AVMetadataItem metadataItemsFromArray:songAsset.commonMetadata  withKey:AVMetadataCommonKeyArtwork keySpace:AVMetadataKeySpaceCommon];
-            
-            for (AVMetadataItem *metadataItem in artworks) {
-                
-                if ([metadataItem.keySpace isEqualToString:AVMetadataKeySpaceID3]) {
-                    
-                    NSDictionary *d = [metadataItem.value copyWithZone:nil];
-                    // Use the passed in callback to return image.
-                    imageHandler([[NSImage alloc] initWithData:[d objectForKey:@"data"]]);
-                    return;
-                } else if ([metadataItem.keySpace isEqualToString:AVMetadataKeySpaceiTunes]) {
-                    
-                    // Use the passed in callback to return image.
-                    imageHandler([[NSImage alloc] initWithData:[metadataItem.value copyWithZone:nil]]);
-                    return;
-                } else
-                    NSLog(@"%@ is neither mp3 nor iTunes.",metadataItem.keySpace);
-            }
-            
-            // At this point we check if other tracks in the same directory have embedded album art.
-            
-            // No luck. Call the image handler with nil.
-            imageHandler(nil);
-            
-        });
-    }];
-}
+//- (void)requestSongAlbumImage:(void (^)(NSImage *))imageHandler {
+//
+//    if (songAsset == nil) {
+////        songAsset = [[AVURLAsset alloc] initWithURL:_songURL options:nil];
+//        songAsset = [[AVURLAsset alloc] initWithURL:[NSURL URLWithString:self.TEOData.urlString] options:nil];
+//    }
+//        
+//    [songAsset loadValuesAsynchronouslyForKeys:@[@"commonMetadata"] completionHandler:^{
+//        
+//        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+//            
+//            NSArray *artworks = [AVMetadataItem metadataItemsFromArray:songAsset.commonMetadata  withKey:AVMetadataCommonKeyArtwork keySpace:AVMetadataKeySpaceCommon];
+//            
+//            for (AVMetadataItem *metadataItem in artworks) {
+//                
+//                if ([metadataItem.keySpace isEqualToString:AVMetadataKeySpaceID3]) {
+//                    
+//                    NSDictionary *d = [metadataItem.value copyWithZone:nil];
+//                    // Use the passed in callback to return image.
+//                    imageHandler([[NSImage alloc] initWithData:[d objectForKey:@"data"]]);
+//                    return;
+//                } else if ([metadataItem.keySpace isEqualToString:AVMetadataKeySpaceiTunes]) {
+//                    
+//                    // Use the passed in callback to return image.
+//                    imageHandler([[NSImage alloc] initWithData:[metadataItem.value copyWithZone:nil]]);
+//                    return;
+//                } else
+//                    NSLog(@"%@ is neither mp3 nor iTunes.",metadataItem.keySpace);
+//            }
+//            
+//            // At this point we check if other tracks in the same directory have embedded album art.
+//            
+//            // No luck. Call the image handler with nil.
+//            imageHandler(nil);
+//            
+//        });
+//    }];
+//}
 
 
 
@@ -236,9 +236,9 @@
     MDItemRef metadata = MDItemCreate(NULL, (__bridge CFStringRef)[theURL path]);
     
     if (metadata) {
-        NSString* titleString;
-        NSString* albumString;
-        NSString* genreString;
+        NSString* titleString = @"Unknown";
+        NSString* albumString = @"Unknown";
+        NSString* genreString = @"Unknown";
         NSArray* artists;
         
         if ((artists = CFBridgingRelease(MDItemCopyAttribute(metadata, kMDItemAuthors)))) {

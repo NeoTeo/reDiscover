@@ -488,17 +488,14 @@
 
 - (void)songPoolDidStartPlayingSong:(NSUInteger)songID {
 
-//    [_songInfoController setSong:[_currentSongPool songDataForSongID:songID]];
-    
-    // TSD test
+    // Request metadata for the song and pass in the block to be called when done.
     [_currentSongPool requestEmbeddedMetadataForSongID:songID withHandler:^(NSDictionary* theData){
-        // set the info when it's there.
+        // Tell the info panel to change to display the new song's data.
         [_songInfoController setSong:theData];
     }];
-    // TSD end
+    
     // Let the timelinecontroller know that we've changed song.
     // (would a song change be better signalled as a global notification?)
-//    [_songGridController.songTimelineController setCurrentSong:theSong];
     [_songGridController.songTimelineController setCurrentSongID:songID fromSongPool:_currentSongPool];
     
 //    NSNumber *songDuration = [NSNumber numberWithDouble:CMTimeGetSeconds([theSong songDuration])];
