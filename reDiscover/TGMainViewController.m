@@ -212,13 +212,13 @@
 }
 
 
-- (NSInteger)lastRequestedSongID {
+- (id)lastRequestedSongID {
     return [_currentSongPool lastRequestedSongID];
 }
 
 - (void)keyDown:(NSEvent *)theEvent {
     NSLog(@"Yep, key down in the view controller.");
-    NSInteger lastRequestedSongID = [_currentSongPool lastRequestedSongID];
+    id lastRequestedSongID = [_currentSongPool lastRequestedSongID];
     
     NSString *chars = [theEvent characters];
     if ([chars isEqualToString:@"["]) {
@@ -429,7 +429,8 @@
 }
 
 // Called by the song pool for every song whose metadata has fully loaded.
-- (void)songPoolDidLoadDataForSongID:(NSUInteger)songID {
+//- (void)songPoolDidLoadDataForSongID:(NSUInteger)songID {
+- (void)songPoolDidLoadDataForSongID:(id)songID {
     // Not really doing anything so return.
     return;
     NSDictionary *songData = [_currentSongPool songDataForSongID:songID];
@@ -467,14 +468,16 @@
 
 // Called by the song pool for every song what with an URL.
 // This does not guarantee that any of its data is loaded yet, in fact it's very unlikely.
-- (void)songPoolDidLoadSongURLWithID:(NSUInteger)songID {
+//- (void)songPoolDidLoadSongURLWithID:(NSUInteger)songID {
+- (void)songPoolDidLoadSongURLWithID:(id)songID {
     
     
     
     // We have to make sure we execute on the main thread since much of the AppKit stuff isn't thread safe.
     // addMatrixCell2 has many classes that need to run on the main thread or are otherwise thread-unsafe;
     // (see the "Thread Safety Summary" chapter of Apple's "Threading Programming Guide", in particular on NSCell, NSResponder, NSImage and NSView).
-    NSAssert(songID != -1, @"song pool passing us song id -1");
+//    NSAssert(songID != -1, @"song pool passing us song id -1");
+    NSAssert(songID != nil, @"song pool passing us song id nil.");
     if ([NSThread isMainThread] == NO) {
         [[NSOperationQueue mainQueue] addOperationWithBlock:^ {
             
@@ -486,7 +489,7 @@
 }
 
 
-- (void)songPoolDidStartPlayingSong:(NSUInteger)songID {
+- (void)songPoolDidStartPlayingSong:(id)songID {
 
     // Request metadata for the song and pass in the block to be called when done.
     [_currentSongPool requestEmbeddedMetadataForSongID:songID withHandler:^(NSDictionary* theData){
@@ -516,17 +519,30 @@
     }];
 }
 
-- (void)songPoolDidFinishPlayingSong:(NSUInteger)songID {
+- (void)songPoolDidFinishPlayingSong:(id)songID {
     // If the currently selected song is the same as the one that just finished, see if there is more on the playlist.
-    NSLog(@"song grid controller. Song %lu finished playing.",(unsigned long)songID);
+    NSLog(@"song grid controller. Song %@ finished playing.",(NSString*)songID);
     if (songID == [_currentSongPool lastRequestedSongID]) {
-        NSInteger newSongID = [_playlistController getNextSongIDToPlay];
-        if (newSongID != -1) {
-            [_currentSongPool requestSongPlayback:newSongID withStartTimeInSeconds:0];
-        } else
+        id newSongID = [_playlistController getNextSongIDToPlay];
+        if (newSongID == nil) {
             NSLog(@"No more songs in playlist.");
+            return;
+        }
+        
+        [_currentSongPool requestSongPlayback:newSongID withStartTimeInSeconds:0];
     }
 }
+//- (void)songPoolDidFinishPlayingSong:(NSUInteger)songID {
+//    // If the currently selected song is the same as the one that just finished, see if there is more on the playlist.
+//    NSLog(@"song grid controller. Song %lu finished playing.",(unsigned long)songID);
+//    if (songID == [_currentSongPool lastRequestedSongID]) {
+//        NSInteger newSongID = [_playlistController getNextSongIDToPlay];
+//        if (newSongID != -1) {
+//            [_currentSongPool requestSongPlayback:newSongID withStartTimeInSeconds:0];
+//        } else
+//            NSLog(@"No more songs in playlist.");
+//    }
+//}
 
 // TGSongGridViewControllerDelegate methods
 - (void)requestSongArrayPreload:(NSArray *)theArray {
@@ -542,7 +558,8 @@
 }
 
 
-- (void)userSelectedSongID:(NSUInteger)songID {
+//- (void)userSelectedSongID:(NSUInteger)songID {
+- (void)userSelectedSongID:(id)songID {
     [_currentSongPool requestSongPlayback:songID withStartTimeInSeconds:[NSNumber numberWithInt:-1]];
     
     //TEO make sure this works as intended. Moved from songPoolDidLoadSongURLWithID

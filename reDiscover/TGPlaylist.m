@@ -24,12 +24,16 @@
     return [songList count];
 }
 
-- (NSNumber *)songIDAtIndex:(NSUInteger)index {
+- (id)songIDAtIndex:(NSUInteger)index {
     return [songList objectAtIndex:index];
 }
+//- (NSNumber *)songIDAtIndex:(NSUInteger)index {
+//    return [songList objectAtIndex:index];
+//}
 
-- (void)addSong:(NSInteger)aSongID atIndex:(NSUInteger)index {
-    [songList insertObject:[NSNumber numberWithInteger:aSongID] atIndex:index];
+- (void)addSong:(id)aSongID atIndex:(NSUInteger)index {
+    [songList insertObject:aSongID atIndex:index];
+//    [songList insertObject:[NSNumber numberWithInteger:aSongID] atIndex:index];
     NSLog(@"Added song %ld to playlist which is now %@",(long)aSongID ,songList);
 }
 
@@ -37,22 +41,28 @@
     [songList removeObjectAtIndex:index];
 }
 
-- (void)removeSong:(NSInteger)aSong {
-    [songList removeObject:[NSNumber numberWithInteger:aSong]];
+- (void)removeSong:(id)aSong {
+    [songList removeObject:aSong];
 }
+//- (void)removeSong:(NSInteger)aSong {
+//    [songList removeObject:[NSNumber numberWithInteger:aSong]];
+//}
 
-- (NSInteger)getNextSongIDToPlay {
-    NSInteger sID = -1;
+//- (NSInteger)getNextSongIDToPlay {
+- (id)getNextSongIDToPlay {
+//    NSInteger sID = -1;
+    id sID = nil;
     NSUInteger songCount = [songList count];
     
     if (songCount) {
         if (_posInPlaylist >= songCount)
             _posInPlaylist = 0;
         
-        NSNumber *songID = [songList objectAtIndex:_posInPlaylist++];
-        if (songID != nil) {
-            sID = [songID integerValue];
-        }
+        sID = [songList objectAtIndex:_posInPlaylist++];
+//        NSNumber *songID = [songList objectAtIndex:_posInPlaylist++];
+//        if (songID != nil) {
+//            sID = [songID integerValue];
+//        }
     }
     
     return sID;
@@ -69,9 +79,11 @@
     // Start the content off with the header.
     NSString *content = m3uHeader;
     // TEO: Do some error checking here.
-    for (NSNumber *songID in songList) {
-        NSInteger sID = [songID integerValue];
-        NSDictionary *songData = [_delegate songDataForSongID:sID];
+//    for (NSNumber *songID in songList) {
+    for (id songID in songList) {
+//        NSInteger sID = [songID integerValue];
+//        NSDictionary *songData = [_delegate songDataForSongID:sID];
+        NSDictionary *songData = [_delegate songDataForSongID:songID];
         NSInteger sDuration = [[songData valueForKey:@"Duration"] integerValue];
         NSURL *songURL = [songData valueForKey:@"SongURL"];
 //        NSInteger sDuration = [_delegate songDurationForSongID:sID];

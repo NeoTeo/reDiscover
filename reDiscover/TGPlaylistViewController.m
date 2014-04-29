@@ -73,18 +73,18 @@
 //    [self setView:playlistView];
 //}
 
--(void)addSongToPlaylist:(NSInteger)aSongID {
+-(void)addSongToPlaylist:(id)aSongID {
     [playlist addSong:aSongID atIndex:0];
     [_playlistTableView reloadData];
 }
 
 
--(void)removeSongFromPlaylist:(NSInteger)aSong {
+-(void)removeSongFromPlaylist:(id)aSong {
     [playlist removeSong:aSong];
     [_playlistTableView reloadData];
 }
 
-- (NSInteger)getNextSongIDToPlay {
+- (id)getNextSongIDToPlay {
     return [playlist getNextSongIDToPlay];
 }
 
@@ -93,7 +93,8 @@
 }
 
 // TGPlaylistDelegate method
-- (NSDictionary *)songDataForSongID:(NSInteger)songID {
+//- (NSDictionary *)songDataForSongID:(NSInteger)songID {
+- (NSDictionary *)songDataForSongID:(id)songID {
     
     // Get a mutable copy so we can add a few bits of data.
     NSMutableDictionary *songData = [[_delegate songDataForSongID:songID] mutableCopy];
@@ -120,7 +121,8 @@
     // Get an existing cell with the MyView identifier if it exists
     TGPlaylistCellView *resultCell = [tableView makeViewWithIdentifier:@"SongCell" owner:self];
     
-    NSDictionary *songData = [_delegate songDataForSongID:[[playlist songIDAtIndex:row] integerValue]];
+//    NSDictionary *songData = [_delegate songDataForSongID:[[playlist songIDAtIndex:row] integerValue]];
+    NSDictionary *songData = [_delegate songDataForSongID:[playlist songIDAtIndex:row]];
     
     // Construct the string for the playlist entry.
 //    resultCell.layer.backgroundColor = (__bridge CGColorRef)([NSColor whiteColor]);
@@ -141,8 +143,10 @@
     // Set it if it is a valid position.
     if (selectedRow >=0) {
         [playlist setPosInPlaylist:selectedRow];
-        NSInteger newSongID = [[playlist songIDAtIndex:selectedRow] integerValue];
+        id newSongID = [playlist songIDAtIndex:selectedRow];
         [_delegate requestSongPlayback:newSongID withStartTimeInSeconds:0];
+//        NSInteger newSongID = [[playlist songIDAtIndex:selectedRow] integerValue];
+//        [_delegate requestSongPlayback:newSongID withStartTimeInSeconds:0];
     }
 
     [_playlistTableView deselectRow:selectedRow];

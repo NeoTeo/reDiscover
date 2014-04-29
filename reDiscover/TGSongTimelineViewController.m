@@ -95,8 +95,8 @@
 //    return currentSong;
 //}
 
-//-(void)setCurrentSong:(TGSong *)theSong {
--(void)setCurrentSongID:(NSInteger)songID fromSongPool:(TGSongPool *)theSongPool {
+//-(void)setCurrentSongID:(NSInteger)songID fromSongPool:(TGSongPool *)theSongPool {
+-(void)setCurrentSongID:(id)songID fromSongPool:(TGSongPool *)theSongPool {
     
     
     TGTimelineSliderCell *theCell = _timelineBar.cell;

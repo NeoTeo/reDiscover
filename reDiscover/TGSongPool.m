@@ -315,7 +315,9 @@ static int const kSSCheckCounterSize = 10;
                         [newSong setDelegate:self];
                         
                         // The song id is simply its number in the loading sequence. (for now)
-                        [newSong setSongID:curURLNum];
+//                        [newSong setSongID:curURLNum];
+                        NSLog(@"The url is %@",url);
+                        [newSong setSongID:[url absoluteString]];
                         
                         
                         dispatch_async(serialDataLoad, ^{
@@ -344,7 +346,8 @@ static int const kSSCheckCounterSize = 10;
                         
                         // Inform the delegate that another song object has been loaded. This causes a cell in the song matrix to be added.
                         if ((_delegate != Nil) && [_delegate respondsToSelector:@selector(songPoolDidLoadSongURLWithID:)]) {
-                            [_delegate songPoolDidLoadSongURLWithID:curURLNum];
+                            [_delegate songPoolDidLoadSongURLWithID:[url absoluteString]];
+//                            [_delegate songPoolDidLoadSongURLWithID:curURLNum];
                         }
                     }
                 }
@@ -390,7 +393,8 @@ static int const kSSCheckCounterSize = 10;
 
 
 // This method will attempt to find the image for the song and, if found, will pass it to the given imageHandler block.
-- (void)requestImageForSongID:(NSInteger)songID withHandler:(void (^)(NSImage *))imageHandler {
+//- (void)requestImageForSongID:(NSInteger)songID withHandler:(void (^)(NSImage *))imageHandler {
+- (void)requestImageForSongID:(id)songID withHandler:(void (^)(NSImage *))imageHandler {
     
     NSLog(@"request image!");
     // First we should check if the song has an image stashed in the songpool local/temporary store.
@@ -503,7 +507,8 @@ static int const kSSCheckCounterSize = 10;
 // Async'ly load the song metadata and call the given dataHandler with it.
 // If the song already has the metadata it calls the dataHandler with the existing data.
 // If the song does not exist it logs the fact and simply returns without calling the dataHandler.
-- (void)requestEmbeddedMetadataForSongID:(NSInteger)songID withHandler:(void (^)(NSDictionary*))dataHandler{
+//- (void)requestEmbeddedMetadataForSongID:(NSInteger)songID withHandler:(void (^)(NSDictionary*))dataHandler{
+- (void)requestEmbeddedMetadataForSongID:(id)songID withHandler:(void (^)(NSDictionary*))dataHandler{
     dispatch_async(serialDataLoad, ^{
         TGSong *theSong = [self songForID:songID];
         if (theSong == nil) {
@@ -535,14 +540,14 @@ static int const kSSCheckCounterSize = 10;
 //}
 
 
-- (NSNumber *)songDurationForSongID:(NSInteger)songID {
+- (NSNumber *)songDurationForSongID:(id)songID {
     float secs = CMTimeGetSeconds([[self songForID:songID] songDuration]);
     return [NSNumber numberWithDouble:secs];
 }
 
 
 #ifdef TSD
-- (NSURL *)songURLForSongID:(NSInteger)songID {
+- (NSURL *)songURLForSongID:(id)songID {
     TGSong *aSong = [self songForID:songID];
     
     if (aSong) {
@@ -552,7 +557,7 @@ static int const kSSCheckCounterSize = 10;
     return nil;
 }
 
-- (NSDictionary *)songDataForSongID:(NSInteger)songID {
+- (NSDictionary *)songDataForSongID:(id)songID {
     TGSong *song = [self songForID:songID];
 //    NSLog(@"songDataForSongID %ld, %@",(long)songID,song.TEOData);
     return @{@"Artist": song.TEOData.artist,
@@ -571,7 +576,7 @@ static int const kSSCheckCounterSize = 10;
 }
 #endif
 
-- (void)offsetSweetSpotForSongID:(NSInteger)songID bySeconds:(Float64)offsetInSeconds {
+- (void)offsetSweetSpotForSongID:(id)songID bySeconds:(Float64)offsetInSeconds {
     TGSong *song = [self songForID:songID];
     if (song != nil) {
         Float64 currentPlayTimeInSeconds = [song getCurrentPlayTime];
@@ -626,14 +631,14 @@ static int const kSSCheckCounterSize = 10;
         NSLog(@"No data returned from sweetspot server.");
 }
 
-- (BOOL)validSongID:(NSInteger)songID {
+- (BOOL)validSongID:(id)songID {
     // TEO: also check for top bound.
-    if (songID < 0) return NO;
+    if (songID == nil) return NO;
 
     return YES;
 }
 
-- (NSArray *)sweetSpotsForSongID:(NSInteger)songID {
+- (NSArray *)sweetSpotsForSongID:(id)songID {
     if (![self validSongID:songID]) {
         return nil;
     }
@@ -642,7 +647,7 @@ static int const kSSCheckCounterSize = 10;
 }
 
 
-- (NSString *)UUIDStringForSongID:(NSInteger)songID {
+- (NSString *)UUIDStringForSongID:(id)songID {
     if (![self validSongID:songID]) return nil;
     
     return [self songForID:songID].TEOData.uuid;
@@ -650,7 +655,7 @@ static int const kSSCheckCounterSize = 10;
 }
 
 
-- (NSURL *)URLForSongID:(NSInteger)songID {
+- (NSURL *)URLForSongID:(id)songID {
     if (![self validSongID:songID]) return nil;
     
     return [NSURL URLWithString:[self songForID:songID].TEOData.urlString];
@@ -745,7 +750,8 @@ static int const kSSCheckCounterSize = 10;
 
 
 // TEO: Convenience method. May not need it for long.
-- (float)fetchSweetSpotForSongID:(NSInteger)songID {
+//- (float)fetchSweetSpotForSongID:(NSInteger)songID {
+- (float)fetchSweetSpotForSongID:(id)songID {
     TGSong *song = [self songForID:songID];
     return [[self fetchSongSweetSpot:song] floatValue];
 }
@@ -757,33 +763,54 @@ static int const kSSCheckCounterSize = 10;
 // De-cache those songs in the cache that are no longer needed and initiate the caching of the new songs.
 // TEO: consider adding an age/counter to the cached songs such that they don't get unloaded immediately (temporal caching).
 - (void)updateCache:(NSArray *)songIDArray {
-    for (NSNumber *songNumber in songIDArray) {
-        NSInteger songID = [songNumber integerValue];
+    for (id songID in songIDArray) {
         TGSong * aSong = [self songForID:songID];
         if (aSong != nil) {
             
             NSLog(@"loadTrackData called from updateCache");
             [aSong loadTrackData];
         } else
-            NSLog(@"requested song %lu not there",songID);
+            NSLog(@"requested song %@ not there",(NSString*)songID);
     }
 }
+//- (void)updateCache:(NSArray *)songIDArray {
+//    for (NSNumber *songNumber in songIDArray) {
+//        NSInteger songID = [songNumber integerValue];
+//        TGSong * aSong = [self songForID:songID];
+//        if (aSong != nil) {
+//            
+//            NSLog(@"loadTrackData called from updateCache");
+//            [aSong loadTrackData];
+//        } else
+//            NSLog(@"requested song %lu not there",songID);
+//    }
+//}
 
-- (NSInteger)lastRequestedSongID {
+- (id)lastRequestedSongID {
     return [lastRequestedSong songID];
 }
+
+//- (NSInteger)lastRequestedSongID {
+//    return [lastRequestedSong songID];
+//}
 
 //- (TGSong *)currentlyPlayingSong {
 //    return currentlyPlayingSong;
 //}
 
 
-- (NSInteger)currentlyPlayingSongID {
+- (id)currentlyPlayingSongID {
     return [currentlyPlayingSong songID];
 }
+//- (NSInteger)currentlyPlayingSongID {
+//    return [currentlyPlayingSong songID];
+//}
 
--(TGSong *)songForID:(NSInteger)songID {
-    return [songPoolDictionary objectForKey:[NSNumber numberWithInteger:songID]];
+//-(TGSong *)songForID:(NSInteger)songID {
+//    return [songPoolDictionary objectForKey:[NSNumber numberWithInteger:songID]];
+//}
+-(TGSong *)songForID:(id)songID {
+    return [songPoolDictionary objectForKey:(NSString*)songID];
 }
 
 
@@ -1246,8 +1273,8 @@ static int const kSSCheckCounterSize = 10;
     NSLog(@"preloading");
     // Be smarter about this. Keep track of what's cached (in a set) and only recache what's missing.
     // The loadTrackData won't reload a loaded track but we can probably still save some loops.
-    for (NSNumber * songID in songArray) {
-        TGSong *aSong = [self songForID:[songID integerValue]];
+    for (id songID in songArray) {
+        TGSong *aSong = [self songForID:songID];
         if (aSong == NULL) {
             NSLog(@"Nope, the requested ID %@ is not in the song pool.",songID);
             return;
@@ -1256,17 +1283,36 @@ static int const kSSCheckCounterSize = 10;
         // TEO TSD test. We should try and get the metadata so it's ready,
         // but not so that songPoolDidLoadDataForSongID gets called for each song.
 //        [self requestEmbeddedMetadataForSong:[songID integerValue]];
-        [self requestEmbeddedMetadataForSongID:[songID integerValue] withHandler:^(NSDictionary* theData){
+        [self requestEmbeddedMetadataForSongID:songID withHandler:^(NSDictionary* theData){
 //            NSLog(@"preloadSongArray got data! %@",theData);
         }];
     }
 }
+//- (void)preloadSongArray:(NSArray *)songArray {
+//    NSLog(@"preloading");
+//    // Be smarter about this. Keep track of what's cached (in a set) and only recache what's missing.
+//    // The loadTrackData won't reload a loaded track but we can probably still save some loops.
+//    for (NSNumber * songID in songArray) {
+//        TGSong *aSong = [self songForID:[songID integerValue]];
+//        if (aSong == NULL) {
+//            NSLog(@"Nope, the requested ID %@ is not in the song pool.",songID);
+//            return;
+//        }
+//        [aSong loadTrackData];
+//        // TEO TSD test. We should try and get the metadata so it's ready,
+//        // but not so that songPoolDidLoadDataForSongID gets called for each song.
+////        [self requestEmbeddedMetadataForSong:[songID integerValue]];
+//        [self requestEmbeddedMetadataForSongID:[songID integerValue] withHandler:^(NSDictionary* theData){
+////            NSLog(@"preloadSongArray got data! %@",theData);
+//        }];
+//    }
+//}
 
-- (void)requestSongPlayback:(NSInteger)songID withStartTimeInSeconds:(NSNumber *)time {
+- (void)requestSongPlayback:(id)songID withStartTimeInSeconds:(NSNumber *)time {
     
     TGSong *aSong = [self songForID:songID];
     if (aSong == NULL) {
-        NSLog(@"Nope, the requested ID %lu is not in the song pool.",songID);
+        NSLog(@"Nope, the requested ID %@ is not in the song pool.",(NSString*)songID);
         return;
     }
     

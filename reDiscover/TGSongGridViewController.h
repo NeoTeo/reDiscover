@@ -63,9 +63,11 @@
 - (id)initWithFrame:(NSRect)newFrame;
 
 //- (void)initSongGrid:(NSUInteger)songCount;
-- (void)addMatrixCell2:(NSUInteger)songID;
+//- (void)addMatrixCell2:(NSUInteger)songID;
+- (void)addMatrixCell2:(id)songID;
 - (void)animateMatrixZoom:(NSInteger)zoomQuantum;
-- (void)setCoverImage:(NSImage *)theImage forSongWithID:(NSUInteger)songID;
+//- (void)setCoverImage:(NSImage *)theImage forSongWithID:(NSUInteger)songID;
+- (void)setCoverImage:(NSImage *)theImage forSongWithID:(id)songID;
 
 // Delegate methods.
 // TGSongGridScrollViewDelegate methods
@@ -84,7 +86,8 @@
 
 - (NSInteger)lastRequestedSongID;
 - (void)userSelectedSweetSpot:(NSUInteger)ssIndex;
--(void)userSelectedSongID:(NSUInteger)songID ;
+-(void)userSelectedSongID:(id)songID ;
+//-(void)userSelectedSongID:(NSUInteger)songID ;
 - (void)requestSongArrayPreload:(NSArray *)theArray;
 
 @end

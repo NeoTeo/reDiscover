@@ -142,11 +142,13 @@
 }
 
 
-- (void)setCoverImage:(NSImage *)theImage forSongWithID:(NSUInteger)songID {
+- (void)setCoverImage:(NSImage *)theImage forSongWithID:(id)songID {
     
         NSLog(@"setCoverImage.");
+    // TEO bigidchange
     // First convert the songID to the matrix index.
-    TGGridCell * theCell = [_songCellMatrix cellWithTag:songID];
+    NSInteger cellTag = [_songCellMatrix.cellTagToSongID indexOfObject:songID];
+    TGGridCell * theCell = [_songCellMatrix cellWithTag:cellTag];
     
     // This core stuff has to happen on the main thread apparently #TEO CHECK_THIS
     dispatch_async(dispatch_get_main_queue(), ^{
@@ -178,38 +180,88 @@
 
 static NSInteger const kUndefinedID =  -1;
 
-- (NSInteger)cellIndexToSongID:(NSInteger)cellIndex {
+- (id)cellIndexToSongID:(NSInteger)cellIndex {
+    
     NSAssert(cellIndex < [[_songCellMatrix cells] count], @"cell index is greater than the size of the cells array");
     TGGridCell *theCell = [[_songCellMatrix cells] objectAtIndex:cellIndex];
     
     // If the cell has not yet been connected to a song ID, pick one from the unmapped songs and connect it.
     if ([theCell tag] ==  kUndefinedID) {
-        
         // No id yet, so pick one from the unmapped song set.
         u_int32_t unmappedCount =(u_int32_t)[unmappedSongIDArray count];
-        if (unmappedCount > 0) {
-            int randomSongIDIndex = arc4random_uniform(unmappedCount);
-            
-            // get the randomSong id out of the array.
-            NSNumber *songIDNumber = [unmappedSongIDArray objectAtIndex:randomSongIDIndex];
-            [unmappedSongIDArray removeObjectAtIndex:randomSongIDIndex];
-            
-            [theCell setTag:[songIDNumber integerValue]];
-        }
+        if (unmappedCount < 1)
+            return nil;
+        
+        int randomSongIDIndex = arc4random_uniform(unmappedCount);
+        
+        // get the randomSong id out of the array.
+        id songIDNumber = [unmappedSongIDArray objectAtIndex:randomSongIDIndex];
+        [unmappedSongIDArray removeObjectAtIndex:randomSongIDIndex];
+        
+        // Since we're about to add an object to the cellTagToSongID array it's current count must be the
+        // index at which the object will be added. We use that for setting the tag of the cell.
+        NSInteger index = [[_songCellMatrix cellTagToSongID] count];
+        // Add an entry to the songCellMatrix cellTagToSongID array
+        [[_songCellMatrix cellTagToSongID] addObject:songIDNumber];
+        
+        [theCell setTag:index];
     }
     
-    return [theCell tag];
+    return [_songCellMatrix.cellTagToSongID objectAtIndex:[theCell tag]];
+}
+//- (NSInteger)cellIndexToSongID:(NSInteger)cellIndex {
+//    NSAssert(cellIndex < [[_songCellMatrix cells] count], @"cell index is greater than the size of the cells array");
+//    TGGridCell *theCell = [[_songCellMatrix cells] objectAtIndex:cellIndex];
+//    
+//    // If the cell has not yet been connected to a song ID, pick one from the unmapped songs and connect it.
+//    if ([theCell tag] ==  kUndefinedID) {
+//        
+//        // No id yet, so pick one from the unmapped song set.
+//        u_int32_t unmappedCount =(u_int32_t)[unmappedSongIDArray count];
+//        if (unmappedCount > 0) {
+//            int randomSongIDIndex = arc4random_uniform(unmappedCount);
+//            
+//            // get the randomSong id out of the array.
+//            NSNumber *songIDNumber = [unmappedSongIDArray objectAtIndex:randomSongIDIndex];
+//            [unmappedSongIDArray removeObjectAtIndex:randomSongIDIndex];
+//            
+//            [theCell setTag:[songIDNumber integerValue]];
+//        }
+//    }
+//    
+//    return [theCell tag];
+//}
+
+-(NSInteger)songIDToCellIndex:(id)songID {
+    static NSInteger songSerial = 0;
+    NSInteger cellTag = [_songCellMatrix.cellTagToSongID indexOfObject:songID];
+    if (cellTag == NSNotFound) {
+        <#statements#>
+    }
+    
+    // May need to increment this atomically if it's called from multiple threads.
+    songSerial++;
+    
+    // If the songID isn't already in the dictionary add it.
+    if (id == kUndefinedID) {
+        [_songCellMatrix.songIDsToCellIndices setObject:[NSNumber numberWithInteger:songSerial] forKey:songID];
+    }
+    
+    
 }
 
-
-- (void)addMatrixCell2:(NSUInteger)songID {
+// Called for every new song added by the song pool (via main view controller's songPoolDidLoadSongURLWithID)
+//- (void)addMatrixCell2:(NSUInteger)songID {
+- (void)addMatrixCell2:(id)songID {
     
-    
+    NSInteger index = [self indexFromSongID:songID];
     NSInteger rowCount, colCount, newRow, newCol;
     
     // Let the song id decide the position in the matrix.
-    NSUInteger row = floor(songID / _colsPerRow);
-    NSUInteger col = songID - (row*_colsPerRow);
+    NSUInteger row = floor(index/ _colsPerRow);
+    NSUInteger col = index- (row*_colsPerRow);
+//    NSUInteger row = floor(songID / _colsPerRow);
+//    NSUInteger col = songID - (row*_colsPerRow);
     
     [_songCellMatrix getNumberOfRows:&rowCount columns:&colCount];
     
@@ -233,10 +285,12 @@ static NSInteger const kUndefinedID =  -1;
     [_songCellMatrix sizeToCells];
     // How about sizeToFit?
     
-    NSAssert([[_songCellMatrix cells] count] > songID, @"Eeek. songID is bigger than the song cell matrix");
+//    NSAssert([[_songCellMatrix cells] count] > songID, @"Eeek. songID is bigger than the song cell matrix");
+    NSAssert([[_songCellMatrix cells] count] > serialSongNumber, @"Eeek. songID is bigger than the song cell matrix");
     
     // Find the existing cell for this songID.
-    TGGridCell *existingCell = [[_songCellMatrix cells] objectAtIndex:songID];
+//    TGGridCell *existingCell = [[_songCellMatrix cells] objectAtIndex:songID];
+    TGGridCell *existingCell = [[_songCellMatrix cells] objectAtIndex:serialSongNumber];
     
     // Do pop up anim before we add the actual cell.
     CGRect cellRect = [_songCellMatrix cellFrameAtRow:row column:col];
@@ -264,7 +318,8 @@ static NSInteger const kUndefinedID =  -1;
             
             // Add the id of this song to an array of unassigned songs.
             // We will then pick randomly from that array to assign to a cell in the matrix.
-            [unmappedSongIDArray addObject:[NSNumber numberWithInteger:songID]];
+            [unmappedSongIDArray addObject:songID];
+//            [unmappedSongIDArray addObject:[NSNumber numberWithInteger:songID]];
             
               // This is now done JIT or when all songs have been loaded.
 //            [existingCell setTag:songID];
@@ -278,7 +333,8 @@ static NSInteger const kUndefinedID =  -1;
     {
         // Add the id of this song to an array of unassigned songs.
         // We will then pick randomly from that array to assign to a cell in the matrix.
-        [unmappedSongIDArray addObject:[NSNumber numberWithInteger:songID]];
+        [unmappedSongIDArray addObject:songID];
+//        [unmappedSongIDArray addObject:[NSNumber numberWithInteger:songID]];
         
         // Set the cell's tag to the songID we've been passed.
           // This is now done JIT or when all songs have been loaded.

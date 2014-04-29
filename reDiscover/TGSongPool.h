@@ -75,34 +75,42 @@
 
 - (void)setRequestedPlayheadPosition:(NSNumber *)newPosition;
 
--(NSInteger)lastRequestedSongID;
-//-(TGSong *)songForID:(NSInteger)songID;
-//- (TGSong *)currentlyPlayingSong;
-- (NSInteger)currentlyPlayingSongID;
+//-(NSInteger)lastRequestedSongID;
+//- (NSInteger)currentlyPlayingSongID;
+-(id)lastRequestedSongID;
+- (id)currentlyPlayingSongID;
 
 
-- (void)requestImageForSongID:(NSInteger)songID withHandler:(void (^)(NSImage *))imageHandler;
+- (void)requestImageForSongID:(id)songID withHandler:(void (^)(NSImage *))imageHandler;
+//- (void)requestImageForSongID:(NSInteger)songID withHandler:(void (^)(NSImage *))imageHandler;
 
 - (void)preloadSongArray:(NSArray *)songArray;
 #pragma mark -
 #pragma mark song data accessor methods.
 // Async methods
-- (void)requestEmbeddedMetadataForSongID:(NSInteger)songID withHandler:(void (^)(NSDictionary*))dataHandler;
+- (void)requestEmbeddedMetadataForSongID:(id)songID withHandler:(void (^)(NSDictionary*))dataHandler;
+//- (void)requestEmbeddedMetadataForSongID:(NSInteger)songID withHandler:(void (^)(NSDictionary*))dataHandler;
 //- (void)requestEmbeddedMetadataForSong:(NSInteger) songID;
-- (void)requestSongPlayback:(NSInteger)songID withStartTimeInSeconds:(NSNumber *)time;
+//- (void)requestSongPlayback:(NSInteger)songID withStartTimeInSeconds:(NSNumber *)time;
+- (void)requestSongPlayback:(id)songID withStartTimeInSeconds:(NSNumber *)time;
 
 //- (float)fetchSweetSpotForSongID:(NSInteger)songID;
-- (NSNumber *)songDurationForSongID:(NSInteger)songID;
+//- (NSNumber *)songDurationForSongID:(NSInteger)songID;
 //- (NSInteger)songDurationForSongID:(NSInteger)songID;
-- (NSDictionary *)songDataForSongID:(NSInteger)songID;
-- (NSURL *)songURLForSongID:(NSInteger)songID;
-- (void)offsetSweetSpotForSongID:(NSInteger) songID bySeconds:(Float64)offsetInSeconds;
+//- (NSDictionary *)songDataForSongID:(NSInteger)songID;
+//- (NSURL *)songURLForSongID:(NSInteger)songID;
+//- (void)offsetSweetSpotForSongID:(NSInteger) songID bySeconds:(Float64)offsetInSeconds;
+- (NSURL *)songURLForSongID:(id)songID;
+- (NSNumber *)songDurationForSongID:(id)songID;
+- (NSDictionary *)songDataForSongID:(id)songID;
+- (void)offsetSweetSpotForSongID:(id)songID bySeconds:(Float64)offsetInSeconds;
+
 // song data accessors.
 - (void)sweetSpotFromServerForSong:(TGSong *)aSong;
 //- (void)sweetSpotFromServerForSongID:(NSInteger)songID;
-- (NSString *)UUIDStringForSongID:(NSInteger)songID;
-- (NSArray *)sweetSpotsForSongID:(NSInteger)songID;
-- (NSURL *)URLForSongID:(NSInteger)songID;
+- (NSString *)UUIDStringForSongID:(id)songID;
+- (NSArray *)sweetSpotsForSongID:(id)songID;
+- (NSURL *)URLForSongID:(id)songID;
 
 // TEO should this not be private?
 - (NSString *)findUUIDOfSongWithURL:(NSURL *)songURL;
@@ -132,9 +140,14 @@
 // Delegate method declarations.
 @protocol TGSongPoolDelegate <NSObject>
 //@optional
-- (void)songPoolDidLoadSongURLWithID:(NSUInteger)songID;
+- (void)songPoolDidLoadSongURLWithID:(id)songID;
 - (void)songPoolDidLoadAllURLs:(NSUInteger)numberOfURLs;
-- (void)songPoolDidStartPlayingSong:(NSUInteger)songID;
-- (void)songPoolDidFinishPlayingSong:(NSUInteger)songID;
-- (void)songPoolDidLoadDataForSongID:(NSUInteger)songID;
+- (void)songPoolDidStartPlayingSong:(id)songID;
+- (void)songPoolDidFinishPlayingSong:(id)songID;
+- (void)songPoolDidLoadDataForSongID:(id)songID;
+//- (void)songPoolDidLoadSongURLWithID:(NSUInteger)songID;
+//- (void)songPoolDidLoadAllURLs:(NSUInteger)numberOfURLs;
+//- (void)songPoolDidStartPlayingSong:(NSUInteger)songID;
+//- (void)songPoolDidFinishPlayingSong:(NSUInteger)songID;
+//- (void)songPoolDidLoadDataForSongID:(NSUInteger)songID;
 @end

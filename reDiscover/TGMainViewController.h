@@ -58,6 +58,6 @@
 
 // Delegate methods
 - (void)setSongPool:(TGSongPool *)theSongPool;
-- (NSInteger)lastRequestedSongID;
+- (id)lastRequestedSongID;
 
 @end

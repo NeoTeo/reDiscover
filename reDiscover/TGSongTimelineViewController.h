@@ -33,7 +33,8 @@
 
 - (void)showTimelinePopoverRelativeToBounds:(CGRect)theBounds ofView:(NSView *)theView;
 
--(void)setCurrentSongID:(NSInteger)songID fromSongPool:(TGSongPool *)theSongPool;
+-(void)setCurrentSongID:(id)songID fromSongPool:(TGSongPool *)theSongPool;
+//-(void)setCurrentSongID:(NSInteger)songID fromSongPool:(TGSongPool *)theSongPool;
 
 // sweet spot action method called when a progress bar sweetspot is clicked.
 - (void)sweetspotMarkerAction:(id)sender;

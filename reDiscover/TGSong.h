@@ -70,7 +70,9 @@ enum {
 //@property NSString *songUUIDString;
 
 // The local and per-session temporary song id.
-@property NSUInteger songID;
+//@property NSUInteger songID;
+// Do not store this as it's not the same from executions.
+@property NSString* songID;
 
 // The location of a song.
 //@property NSURL *songURL;
