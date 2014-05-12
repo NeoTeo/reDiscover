@@ -152,16 +152,30 @@ static int const kSSCheckCounterSize = 10;
 // END TEOSongData test
 
 
+//- (void)idleTimeBegins {
+//    NSLog(@"song pool idle start");
+//    
+//    [idleTimeFingerprinterTimer invalidate];
+//    
+//    // Start a timer that calls idleTimeRequestFingerprint.
+//    idleTimeFingerprinterTimer = [NSTimer scheduledTimerWithTimeInterval:5
+//                                                 target:self
+//                                               selector:@selector(idleTimeRequestFingerprint:)
+//                                                                userInfo:@{@"previousSongID" : [NSNumber numberWithInteger:0]}
+//                                                repeats:YES];
+//
+//}
 - (void)idleTimeBegins {
     NSLog(@"song pool idle start");
     
     [idleTimeFingerprinterTimer invalidate];
     
+    NSEnumerator* theSongEnumerator = [songPoolDictionary objectEnumerator];
     // Start a timer that calls idleTimeRequestFingerprint.
     idleTimeFingerprinterTimer = [NSTimer scheduledTimerWithTimeInterval:5
                                                  target:self
                                                selector:@selector(idleTimeRequestFingerprint:)
-                                                                userInfo:@{@"previousSongID" : [NSNumber numberWithInteger:0]}
+                                                                userInfo:@{@"songEnumerator" : theSongEnumerator}
                                                 repeats:YES];
 
 }
@@ -169,19 +183,23 @@ static int const kSSCheckCounterSize = 10;
 
 - (void)idleTimeRequestFingerprint:(NSTimer *)theTimer {
     
-    NSInteger aSongID = [[[theTimer userInfo] objectForKey:@"previousSongID"] integerValue];
+//    NSInteger aSongID = [[[theTimer userInfo] objectForKey:@"previousSongID"] integerValue];
+    NSEnumerator* theSongEnumerator = [[theTimer userInfo] objectForKey:@"songEnumerator"];
+    
+    TGSong* aSong = [theSongEnumerator nextObject];
     
     // Stop the fingerprinter timer.
     [idleTimeFingerprinterTimer invalidate];
     
-    if (aSongID >= [songPoolDictionary count]) {
+//    if (aSongIndex >= [songPoolDictionary count]) {
+    if (aSong == nil) {
         // We've done all the songs. Return without starting a new timer.
         NSLog(@"No more songs to fingerprint");
         return;
     }
 
     // TEO songid?
-    TGSong * aSong = [songPoolDictionary objectForKey:[NSNumber numberWithInteger:aSongID]];
+//    TGSong * aSong = [songPoolDictionary objectForKey:[NSNumber numberWithInteger:aSongID]];
     
     // Unless a fingerprint is actually requested we set the interval until the next timer to as little as possible.
     NSInteger interval = 0;
@@ -207,8 +225,13 @@ static int const kSSCheckCounterSize = 10;
     idleTimeFingerprinterTimer = [NSTimer scheduledTimerWithTimeInterval:interval
                                                                   target:self
                                                                 selector:@selector(idleTimeRequestFingerprint:)
-                                                                userInfo:@{@"previousSongID" : [NSNumber numberWithInteger:aSongID+1]}
+                                                                userInfo:@{@"songEnumerator" : theSongEnumerator }
                                                                  repeats:YES];
+//    idleTimeFingerprinterTimer = [NSTimer scheduledTimerWithTimeInterval:interval
+//                                                                  target:self
+//                                                                selector:@selector(idleTimeRequestFingerprint:)
+//                                                                userInfo:@{@"previousSongID" : [NSNumber numberWithInteger:aSongID+1]}
+//                                                                 repeats:YES];
 
 }
 
@@ -339,7 +362,8 @@ static int const kSSCheckCounterSize = 10;
                             [self loadMetadataIntoSong:newSong];
                             
                             // Add the song to the songpool.
-                            [songPoolDictionary setObject:newSong forKey:[NSNumber numberWithInt:curURLNum]];
+//                            [songPoolDictionary setObject:newSong forKey:[NSNumber numberWithInt:curURLNum]];
+                            [songPoolDictionary setObject:newSong forKey:[url absoluteString]];
                             
                             
                         });

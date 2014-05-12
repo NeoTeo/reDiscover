@@ -101,7 +101,7 @@
                                                     prototype:protoGrid //[[TGGridCell alloc] init]
                                                  numberOfRows:verticalCellNumber
                                               numberOfColumns:horizontalCellNumber];
-        
+    
     // Set the cell size and spacing of the matrix's cells.
     [_songCellMatrix setCellSize:NSMakeSize(_currentCellSize, _currentCellSize)];
     [_songCellMatrix setIntercellSpacing:NSMakeSize(_interCellHSpace, _interCellVSpace)];
@@ -180,13 +180,15 @@
 
 static NSInteger const kUndefinedID =  -1;
 
-- (id)cellIndexToSongID:(NSInteger)cellIndex {
+- (id)cellToSongID:(TGGridCell*)theCell {
     
-    NSAssert(cellIndex < [[_songCellMatrix cells] count], @"cell index is greater than the size of the cells array");
-    TGGridCell *theCell = [[_songCellMatrix cells] objectAtIndex:cellIndex];
+//    NSAssert(cellIndex < [[_songCellMatrix cells] count], @"cell index is greater than the size of the cells array");
+//    TGGridCell *theCell = [[_songCellMatrix cells] objectAtIndex:cellIndex];
     
+    NSInteger cellTag = [theCell tag];
     // If the cell has not yet been connected to a song ID, pick one from the unmapped songs and connect it.
-    if ([theCell tag] ==  kUndefinedID) {
+//    if ([theCell tag] ==  kUndefinedID) {
+    if (cellTag ==  kUndefinedID) {
         // No id yet, so pick one from the unmapped song set.
         u_int32_t unmappedCount =(u_int32_t)[unmappedSongIDArray count];
         if (unmappedCount < 1)
@@ -195,19 +197,22 @@ static NSInteger const kUndefinedID =  -1;
         int randomSongIDIndex = arc4random_uniform(unmappedCount);
         
         // get the randomSong id out of the array.
-        id songIDNumber = [unmappedSongIDArray objectAtIndex:randomSongIDIndex];
+        id songID = [unmappedSongIDArray objectAtIndex:randomSongIDIndex];
         [unmappedSongIDArray removeObjectAtIndex:randomSongIDIndex];
         
         // Since we're about to add an object to the cellTagToSongID array it's current count must be the
         // index at which the object will be added. We use that for setting the tag of the cell.
         NSInteger index = [[_songCellMatrix cellTagToSongID] count];
         // Add an entry to the songCellMatrix cellTagToSongID array
-        [[_songCellMatrix cellTagToSongID] addObject:songIDNumber];
+        [[_songCellMatrix cellTagToSongID] addObject:songID];
         
         [theCell setTag:index];
-    }
+        
+        return songID;
+    } else
+        return [[_songCellMatrix cellTagToSongID] objectAtIndex:cellTag];
     
-    return [_songCellMatrix.cellTagToSongID objectAtIndex:[theCell tag]];
+//    return [_songCellMatrix.cellTagToSongID objectAtIndex:[theCell tag]];
 }
 //- (NSInteger)cellIndexToSongID:(NSInteger)cellIndex {
 //    NSAssert(cellIndex < [[_songCellMatrix cells] count], @"cell index is greater than the size of the cells array");
@@ -232,34 +237,80 @@ static NSInteger const kUndefinedID =  -1;
 //    return [theCell tag];
 //}
 
--(NSInteger)songIDToCellIndex:(id)songID {
-    static NSInteger songSerial = 0;
-    NSInteger cellTag = [_songCellMatrix.cellTagToSongID indexOfObject:songID];
-    if (cellTag == NSNotFound) {
-        <#statements#>
-    }
-    
-    // May need to increment this atomically if it's called from multiple threads.
-    songSerial++;
-    
-    // If the songID isn't already in the dictionary add it.
-    if (id == kUndefinedID) {
-        [_songCellMatrix.songIDsToCellIndices setObject:[NSNumber numberWithInteger:songSerial] forKey:songID];
-    }
-    
-    
-}
+//-(NSInteger)songIDToCellIndex:(id)songID {
+//    static NSInteger songSerial = 0;
+//    NSInteger cellTag = [_songCellMatrix.cellTagToSongID indexOfObject:songID];
+//    
+//    // If the songID isn't already in the dictionary add it.
+//    if (cellTag == NSNotFound) {
+//            //        [_songCellMatrix.songIDsToCellIndices setObject:[NSNumber numberWithInteger:songSerial] forKey:songID];
+//        NSLog(@"SHit!");
+//        return NSNotFound;
+//    }
+//
+//    // May need to increment this atomically if it's called from multiple threads.
+//    songSerial++;
+//    return [_songCellMatrix.cells indexOfObject:[_songCellMatrix cellWithTag:cellTag]];
+//
+//
+//    
+//    
+//}
 
+// Increments the matrix by one new cell and returns it.
+-(TGGridCell*)growMatrix {
+    static NSInteger songSerialNumber = 0;
+    NSInteger rowCount, colCount, newRow, newCol;
+    
+    // Let the song id decide the position in the matrix.
+    NSUInteger row = floor(songSerialNumber/ _colsPerRow);
+    NSUInteger col = songSerialNumber- (row*_colsPerRow);
+    
+    [_songCellMatrix getNumberOfRows:&rowCount columns:&colCount];
+    
+    // Grow the rows and columns as songs are added.
+    if (row >= rowCount) {
+        newRow = row+1;
+    } else
+        newRow = rowCount;
+
+    // If there is more than one row the number of columns is already set.
+    if (row > 0) {
+        newCol = _colsPerRow;
+    } else {
+        if (col >= colCount) {
+            newCol = col+1;
+        } else
+            newCol = colCount;
+    }
+    [_songCellMatrix renewRows:newRow columns:newCol];
+    
+    [_songCellMatrix sizeToCells];
+    // How about sizeToFit?
+    
+    NSAssert([[_songCellMatrix cells] count] > songSerialNumber, @"Eeek. songID is bigger than the song cell matrix");
+    
+    // Find the existing cell for this songID.
+    TGGridCell *existingCell = [[_songCellMatrix cells] objectAtIndex:songSerialNumber];
+   
+    // Increment serial number ready for the next call.
+    songSerialNumber++;
+    
+    return existingCell;
+}
 // Called for every new song added by the song pool (via main view controller's songPoolDidLoadSongURLWithID)
 //- (void)addMatrixCell2:(NSUInteger)songID {
 - (void)addMatrixCell2:(id)songID {
     
-    NSInteger index = [self indexFromSongID:songID];
+    /*
+//    NSInteger index = [self indexFromSongID:songID];
+//    NSInteger index = [self songIDToCellIndex:songID];
+    
     NSInteger rowCount, colCount, newRow, newCol;
     
     // Let the song id decide the position in the matrix.
-    NSUInteger row = floor(index/ _colsPerRow);
-    NSUInteger col = index- (row*_colsPerRow);
+    NSUInteger row = floor(songSerialNumber/ _colsPerRow);
+    NSUInteger col = songSerialNumber- (row*_colsPerRow);
 //    NSUInteger row = floor(songID / _colsPerRow);
 //    NSUInteger col = songID - (row*_colsPerRow);
     
@@ -286,13 +337,16 @@ static NSInteger const kUndefinedID =  -1;
     // How about sizeToFit?
     
 //    NSAssert([[_songCellMatrix cells] count] > songID, @"Eeek. songID is bigger than the song cell matrix");
-    NSAssert([[_songCellMatrix cells] count] > serialSongNumber, @"Eeek. songID is bigger than the song cell matrix");
+    NSAssert([[_songCellMatrix cells] count] > songSerialNumber, @"Eeek. songID is bigger than the song cell matrix");
     
     // Find the existing cell for this songID.
 //    TGGridCell *existingCell = [[_songCellMatrix cells] objectAtIndex:songID];
-    TGGridCell *existingCell = [[_songCellMatrix cells] objectAtIndex:serialSongNumber];
-    
+    TGGridCell *existingCell = [[_songCellMatrix cells] objectAtIndex:songSerialNumber];
+   */
     // Do pop up anim before we add the actual cell.
+    NSInteger row,col;
+    TGGridCell* existingCell = [self growMatrix];
+    [_songCellMatrix getRow:&row column:&col ofCell:existingCell];
     CGRect cellRect = [_songCellMatrix cellFrameAtRow:row column:col];
     CGRect theFrame = [[self songGridScrollView] documentVisibleRect];
 
@@ -837,16 +891,17 @@ static NSInteger const kUndefinedID =  -1;
                 if((matrixCols >=0) && (matrixCols < maxCols)) {
                     NSAssert([[_songCellMatrix cells] count] > 0, @"shit no cells");
                     TGGridCell *theCell = [_songCellMatrix cellAtRow:matrixRows column:matrixCols];
-                    NSInteger cellIndex = [[_songCellMatrix cells] indexOfObject:theCell];
-                    NSInteger songID = [self cellIndexToSongID:cellIndex];
-                    if (songID != -1) {
-                        [songIDCache addObject:[NSNumber numberWithInteger:songID]];
+//                    NSInteger cellIndex = [[_songCellMatrix cells] indexOfObject:theCell];
+//                    NSInteger songID = [self cellIndexToSongID:cellIndex];
+                    id songID = [self cellToSongID:theCell];
+                    if (songID != nil) {
+//                        [songIDCache addObject:[NSNumber numberWithInteger:songID]];
+                        [songIDCache addObject:songID];
                     }
                 }
             }
         }
     }
-    
 //    NSLog(@"I'm thinking %@",cellIndexArray);
     // Then we build a list of song ids.
     return [songIDCache allObjects];
@@ -924,10 +979,12 @@ static NSInteger const kUndefinedID =  -1;
     
     
     NSAssert(theCell, @"cell is nil");
-    NSInteger cellIndex = [[_songCellMatrix cells] indexOfObject:theCell];
+//    NSInteger cellIndex = [[_songCellMatrix cells] indexOfObject:theCell];
     
-    NSInteger songID = [self cellIndexToSongID:cellIndex];
-    if (songID != -1) {
+//    NSInteger songID = [self cellIndexToSongID:cellIndex];
+    id songID = [self cellToSongID:theCell];
+//    if (songID != -1) {
+    if (songID != nil) {
         [[self delegate] userSelectedSongID:songID];
         
         // Update the song cache based on the new selection.

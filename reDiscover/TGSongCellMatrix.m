@@ -10,13 +10,15 @@
 
 @implementation TGSongCellMatrix
 
-- (id)initWithFrame:(NSRect)frame
+- (id)initWithFrame:(NSRect)frameRect mode:(NSMatrixMode)aMode prototype:(NSCell *)aCell numberOfRows:(NSInteger)rowsHigh numberOfColumns:(NSInteger)colsWide
 {
-    self = [super initWithFrame:frame];
+    self = [super initWithFrame:frameRect mode:aMode prototype:aCell numberOfRows:rowsHigh numberOfColumns:colsWide];
     if (self) {
         // Initialization code here.
         _activeCellCount = 0;
     }
+    
+    self.cellTagToSongID = [[NSMutableArray alloc] init];
     
     [self setLayerContentsRedrawPolicy:NSViewLayerContentsRedrawOnSetNeedsDisplay];
     [self setWantsLayer:NO];
