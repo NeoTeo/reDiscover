@@ -504,12 +504,13 @@ static int const kSSCheckCounterSize = 10;
                     
                     // We've succeeded, so drop out.
                     return;
-                    } else
+                    } else {
                         NSLog(@"got bupkiss from the webs");
+                        // Finally, if no image was found by any of the methods, we call the given image handler with nil;
+                        imageHandler(nil);
+                    }
                 }];
                 
-                // Finally, if no image was found by any of the methods, we call the given image handler with nil;
-                imageHandler(nil);
                 
             }];
         }
