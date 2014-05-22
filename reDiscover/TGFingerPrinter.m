@@ -39,6 +39,43 @@
     //chromaprint_free(chromaprintContext);
 }
 
+-(void)requestCoverArtForSong:(TGSong*)song withHandler:(void (^)(NSImage*))imageHandler {
+    
+    NSImage* theImage;
+    
+    // If there's no uuid, request one and drop out.
+    if (song.TEOData.uuid == NULL) {
+        if ([song fingerPrintStatus] == kFingerPrintStatusEmpty) {
+            [song setFingerPrintStatus:kFingerPrintStatusRequested];
+            [self requestFingerPrintForSong:song];
+        }
+            imageHandler(nil);
+            return;
+    }
+    
+    // At this point we know we have the data.
+    NSArray* releases = [NSKeyedUnarchiver unarchiveObjectWithData:song.TEOData.songReleases];
+//    NSError* error;
+//    NSDictionary* json = [NSJSONSerialization JSONObjectWithData:song.TEOData.songReleases
+//                                                         options:kNilOptions
+//                                                           error:&error];
+    
+    for (NSDictionary* release in releases) {
+        // pick the best one. Eg. compare the release album name with the song's and pick the closest match.
+        
+        NSString* releaseMBID = [release objectForKey:@"id"];
+        
+        NSURL *coverartarchiveURL = [[NSURL alloc] initWithString:[NSString stringWithFormat:@"http://coverartarchive.org/release/%@/front",releaseMBID]];
+        
+        NSData *coverartData = [[NSData alloc] initWithContentsOfURL:coverartarchiveURL];
+        if (coverartData != nil) {
+            theImage = [[NSImage alloc] initWithData:coverartData];
+            imageHandler(theImage);
+            return;
+        }
+    }
+}
+
 
 - (void)requestFingerPrintForSong:(TGSong *)song {
     //__block NSMutableArray *songFingerPrint = NULL;
@@ -50,14 +87,14 @@
         int duration;
         ChromaprintContext *chromaprintContext = chromaprint_new(CHROMAPRINT_ALGORITHM_DEFAULT);
 
-//        [self decodeAudioFile:[song songURL] forContext:chromaprintContext ofLength:maxLength andDuration:&duration];
         [self decodeAudioFile:[NSURL URLWithString:song.TEOData.urlString] forContext:chromaprintContext ofLength:maxLength andDuration:&duration];
 
         if (chromaprint_get_fingerprint(chromaprintContext, &theFingerprint)) {
         
             NSLog(@"requesting UUID from generated fingerprint.");
             // Ask AcoustID for the unique id for this song.
-            NSURL *acoustIDURL = [[NSURL alloc] initWithString:[NSString stringWithFormat:@"http://api.acoustid.org/v2/lookup?client=8XaBELgH&duration=%d&fingerprint=%s",duration,theFingerprint]];
+//            NSURL *acoustIDURL = [[NSURL alloc] initWithString:[NSString stringWithFormat:@"http://api.acoustid.org/v2/lookup?client=8XaBELgH&duration=%d&fingerprint=%s",duration,theFingerprint]];
+            NSURL *acoustIDURL = [[NSURL alloc] initWithString:[NSString stringWithFormat:@"http://api.acoustid.org/v2/lookup?client=8XaBELgH&meta=releases&duration=%d&fingerprint=%s",duration,theFingerprint]];
 
             NSData *acoustiData = [[NSData alloc] initWithContentsOfURL:acoustIDURL];
             if ([acoustiData length] == 0 ) {
@@ -66,23 +103,30 @@
             }
             NSDictionary *acoustiJSON = [NSJSONSerialization JSONObjectWithData:acoustiData options:NSJSONReadingMutableContainers error:nil];
 //            NSLog(@"The json data is this %@",acoustiJSON);
+            
             // First we check that the return status is ok.
             NSString *status = [acoustiJSON objectForKey:@"status"];
             if ([status isEqualToString:@"ok"]) {
                 NSArray *results = [acoustiJSON objectForKey:@"results"];
-                // The first element is the one with the highest score so we take that (for now). Later we can traverse and compare with any tags we already have.
+                // The first element is the one with the highest score so we take that (for now).
+                // Later we can traverse and compare with any tags we already have.
                 if ([results count]) {
                     NSDictionary *theElement = [results objectAtIndex:0];
                     song.TEOData.uuid =  [theElement objectForKey:@"id"];
-//                    [song setSongUUIDString:[theElement objectForKey:@"id"]];
-//                    NSLog(@"Acoustid server returned a UUID %@",[song songUUIDString]);
+                    
+                    
+            NSArray* releases = [theElement objectForKey:@"releases"];
+                    song.TEOData.songReleases = [NSKeyedArchiver archivedDataWithRootObject:releases];
+                    
+                    NSDictionary* release = releases[0];
+                    
+                    NSLog(@"The release id: %@",[release objectForKey:@"id"]);
+            NSLog(@"the first recording: %@",releases[0]);
+                    
                     NSLog(@"Acoustid server returned a UUID %@",song.TEOData.uuid);
                 } else
                     NSLog(@"AcoustID returned 0 results.");
                 
-//                for (id element in results) {
-//                    NSLog(@"result item : %@",[element description]);
-//                }
 
             } else
                 NSLog(@"ERROR: AcoustID server returned %@",status);
@@ -96,16 +140,9 @@
             }
         } else
             NSLog(@"ERROR: Fingerprinter failed to produce a fingerprint for song %@",song);
+        
         chromaprint_free(chromaprintContext);
     });
-    
-//    [theOp setCompletionBlock:^{
-//    }];
-//
-//    [opQueue addOperation:theOp];
-
-    // return our fingerprint array.
-//    return songFingerprint;
 }
 
 //- (NSInteger)decodeAudioFile:(NSURL *)fileURL forContext:(ChromaprintContext *)theContext ofLength:(NSInteger)maxLength andDuration:(NSInteger)duration {

@@ -22,6 +22,7 @@
 @dynamic genre;
 @dynamic selectedSweetSpot;
 //@dynamic artID;
+@dynamic songReleases;
 
 + (instancetype)insertItemWithURLString:(NSString*)URLString
              inManagedObjectContext:(NSManagedObjectContext *)managedObjectContext
@@ -39,6 +40,7 @@
     songData.fingerprint       = nil;
     songData.selectedSweetSpot = [NSNumber numberWithInteger:0];
 //    songData.artID             = [NSNumber numberWithInteger:-1];
+    songData.songReleases      = nil;
     
     return songData;
 }

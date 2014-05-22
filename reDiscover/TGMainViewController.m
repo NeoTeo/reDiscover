@@ -447,23 +447,23 @@
     if (genreCols == NULL)
         return;
     
-    unsigned int colourCode;
-    NSScanner *scanner = [NSScanner scannerWithString:genreCols];
-
-    // Extract the colour code in from hex into an unsigned integer.
-    [scanner setScanLocation:0];
-    [scanner scanHexInt:&colourCode];
+//    unsigned int colourCode;
+//    NSScanner *scanner = [NSScanner scannerWithString:genreCols];
+//
+//    // Extract the colour code in from hex into an unsigned integer.
+//    [scanner setScanLocation:0];
+//    [scanner scanHexInt:&colourCode];
     
     // Shift it down, mask lower two bytes and make into a float value between 0 and 1.
-    CGFloat redComponent = ((colourCode >> 16) & 0xFF) / 255.0;
-    CGFloat greenComponent = ((colourCode >> 8) & 0xFF) / 255.0;
-    CGFloat blueComponent = (colourCode & 0xFF) / 255.0;
-    CGFloat alphaComponent = 0.25;
+//    CGFloat redComponent = ((colourCode >> 16) & 0xFF) / 255.0;
+//    CGFloat greenComponent = ((colourCode >> 8) & 0xFF) / 255.0;
+//    CGFloat blueComponent = (colourCode & 0xFF) / 255.0;
+//    CGFloat alphaComponent = 0.25;
     
-//    TGGridCell *existingCell = [[_songCellMatrix cells] objectAtIndex:songID];
-    TGGridCell *existingCell = [[[_songGridController songCellMatrix] cells] objectAtIndex:songID];
-    
-    [existingCell setTintColour:[NSColor colorWithDeviceRed:redComponent green:greenComponent blue:blueComponent alpha:alphaComponent]];
+//    TGGridCell *existingCell = [[[_songGridController songCellMatrix] cells] objectAtIndex:songID];
+//
+//    
+//    [existingCell setTintColour:[NSColor colorWithDeviceRed:redComponent green:greenComponent blue:blueComponent alpha:alphaComponent]];
 }
 
 // Called by the song pool for every song what with an URL.
@@ -501,22 +501,21 @@
     // (would a song change be better signalled as a global notification?)
     [_songGridController.songTimelineController setCurrentSongID:songID fromSongPool:_currentSongPool];
     
-//    NSNumber *songDuration = [NSNumber numberWithDouble:CMTimeGetSeconds([theSong songDuration])];
-//    [_songGridController.songTimelineController setSweetSpotPositions:[theSong songSweetSpots] forSongOfDuration:songDuration];
-    
     NSLog(@"songPoolDidStartPlayingSong");
-    // Then request a the album image for the song and pass it a block callback.
-//    [theSong requestSongAlbumImage:^(NSImage *tmpImage) {
-    [_currentSongPool requestImageForSongID:songID withHandler:^(NSImage *tmpImage) {
-        [_songInfoController setSongCoverImage:tmpImage];
-        
-        if (tmpImage == nil) {
-            tmpImage = [NSImage imageNamed:@"noCover"];
-        }
-        
-        // Also make sure the scroll view controller has the cover.
-        [_songGridController setCoverImage:tmpImage forSongWithID:songID];
-    }];
+    
+    // Then async'ly request an album image for the song and pass it a block callback.
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        [_currentSongPool requestImageForSongID:songID withHandler:^(NSImage *tmpImage) {
+            [_songInfoController setSongCoverImage:tmpImage];
+            
+            if (tmpImage == nil) {
+                tmpImage = [NSImage imageNamed:@"noCover"];
+            }
+            
+            // Also make sure the scroll view controller has the cover.
+            [_songGridController setCoverImage:tmpImage forSongWithID:songID];
+        }];
+    });
 }
 
 - (void)songPoolDidFinishPlayingSong:(id)songID {

@@ -28,6 +28,8 @@
 - (void)requestFingerPrintForSong:(TGSong *)song;
 - (NSInteger)decodeAudioFile:(NSURL *)fileURL forContext:(ChromaprintContext *)theContext ofLength:(NSInteger)maxLength andDuration:(int *)duration;
 
+-(void)requestCoverArtForSong:(TGSong*)song withHandler:(void (^)(NSImage*))imageHandler;
+
 @property id<TGFingerPrinterDelegate> delegate;
 
 @end

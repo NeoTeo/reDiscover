@@ -68,6 +68,9 @@
 @property NSDictionary*             TEOSongDataDictionary;
 // TEOSongData end
 
+@property NSFileManager*    sharedFileManager;
+
+
 // Methods
 - (BOOL)validateURL:(NSURL *)anURL;
 - (BOOL)loadFromURL:(NSURL *)anURL ;

@@ -19,4 +19,5 @@
 
 - (void)clearView;
 - (void)incrementActiveCellCount;
+-(BOOL)validateCellRow:(NSInteger)row andColumn:(NSInteger)col;
 @end

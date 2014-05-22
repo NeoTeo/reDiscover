@@ -23,6 +23,7 @@
 @property (nonatomic, retain) NSString * genre;
 @property (nonatomic, retain) NSNumber * selectedSweetSpot;
 //@property (nonatomic, retain) NSNumber * artID;
+@property (nonatomic, retain) NSData * songReleases;
 
 + (instancetype)insertItemWithURLString:(NSString*)URLString
                  inManagedObjectContext:(NSManagedObjectContext *)managedObjectContext;

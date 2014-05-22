@@ -90,48 +90,6 @@
     }];
 }
 
-
-//- (void)requestSongAlbumImage:(void (^)(NSImage *))imageHandler {
-//
-//    if (songAsset == nil) {
-////        songAsset = [[AVURLAsset alloc] initWithURL:_songURL options:nil];
-//        songAsset = [[AVURLAsset alloc] initWithURL:[NSURL URLWithString:self.TEOData.urlString] options:nil];
-//    }
-//        
-//    [songAsset loadValuesAsynchronouslyForKeys:@[@"commonMetadata"] completionHandler:^{
-//        
-//        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-//            
-//            NSArray *artworks = [AVMetadataItem metadataItemsFromArray:songAsset.commonMetadata  withKey:AVMetadataCommonKeyArtwork keySpace:AVMetadataKeySpaceCommon];
-//            
-//            for (AVMetadataItem *metadataItem in artworks) {
-//                
-//                if ([metadataItem.keySpace isEqualToString:AVMetadataKeySpaceID3]) {
-//                    
-//                    NSDictionary *d = [metadataItem.value copyWithZone:nil];
-//                    // Use the passed in callback to return image.
-//                    imageHandler([[NSImage alloc] initWithData:[d objectForKey:@"data"]]);
-//                    return;
-//                } else if ([metadataItem.keySpace isEqualToString:AVMetadataKeySpaceiTunes]) {
-//                    
-//                    // Use the passed in callback to return image.
-//                    imageHandler([[NSImage alloc] initWithData:[metadataItem.value copyWithZone:nil]]);
-//                    return;
-//                } else
-//                    NSLog(@"%@ is neither mp3 nor iTunes.",metadataItem.keySpace);
-//            }
-//            
-//            // At this point we check if other tracks in the same directory have embedded album art.
-//            
-//            // No luck. Call the image handler with nil.
-//            imageHandler(nil);
-//            
-//        });
-//    }];
-//}
-
-
-
 // Just-in-time track data loading.
 - (void)loadTrackData {
     
@@ -229,32 +187,35 @@
     }];
 }
 
-#ifdef TSD
 - (BOOL)loadSongMetadata {
     // Get other metadata via the MDItem of the file.
     NSURL *theURL = [NSURL URLWithString:self.TEOData.urlString];
     MDItemRef metadata = MDItemCreate(NULL, (__bridge CFStringRef)[theURL path]);
     
+    // Add reasonable defaults
+    self.TEOData.artist = @"Unknown";
+    self.TEOData.title  = @"Unknown";
+    self.TEOData.album  = @"Unknown";
+    self.TEOData.genre  = @"Unknown";
+    
     if (metadata) {
-        NSString* titleString = @"Unknown";
-        NSString* albumString = @"Unknown";
-        NSString* genreString = @"Unknown";
+        NSString* aString;
         NSArray* artists;
         
         if ((artists = CFBridgingRelease(MDItemCopyAttribute(metadata, kMDItemAuthors)))) {
            self.TEOData.artist = [artists objectAtIndex:0];
         }
         
-        if ((titleString = CFBridgingRelease(MDItemCopyAttribute(metadata, kMDItemTitle)))) {
-            self.TEOData.title = titleString;
+        if ((aString = CFBridgingRelease(MDItemCopyAttribute(metadata, kMDItemTitle)))) {
+            self.TEOData.title = aString;
         }
         
-        if ((albumString = CFBridgingRelease(MDItemCopyAttribute(metadata, kMDItemAlbum)))) {
-            self.TEOData.album = albumString;
+        if ((aString = CFBridgingRelease(MDItemCopyAttribute(metadata, kMDItemAlbum)))) {
+            self.TEOData.album = aString;
         }
         
-        if ((genreString = CFBridgingRelease(MDItemCopyAttribute(metadata, kMDItemMusicalGenre)))) {
-            self.TEOData.genre = genreString;
+        if ((aString = CFBridgingRelease(MDItemCopyAttribute(metadata, kMDItemMusicalGenre)))) {
+            self.TEOData.genre = aString;
         }
         
         // Make sure that sucker is released.
@@ -263,52 +224,6 @@
     }
     return NO;
 }
-#else
-- (void)loadSongMetadata {
-    if (_songData == NULL) {
-        
-        NSString *titleString = @"no data.";
-        NSString *albumString = @"no data.";
-        NSString *artistString = @"no data.";
-        NSString *genreString = @"Unknown";
-        
-        
-        // Get other metadata via the MDItem of the file.
-        MDItemRef metadata = MDItemCreate(NULL, (__bridge CFStringRef)[_songURL path]);
-        if (metadata) {
-            
-            NSString *title, *album, *genre;
-            NSArray* artists;
-            
-            if ((genre = CFBridgingRelease(MDItemCopyAttribute(metadata, kMDItemMusicalGenre))))
-                genreString = genre;
-            
-            if ((title = CFBridgingRelease(MDItemCopyAttribute(metadata, kMDItemTitle))))
-                titleString = title;
-            
-            if ((album = CFBridgingRelease(MDItemCopyAttribute(metadata, kMDItemAlbum))))
-                albumString = album;
-            
-            if ((artists = CFBridgingRelease(MDItemCopyAttribute(metadata, kMDItemAuthors))))
-                artistString = [artists objectAtIndex:0];
-            
-            // Make sure that sucker is released.
-            CFRelease(metadata);
-            
-//            // TEOSongData test
-//            self.TEOData.artist = artistString;
-//            self.TEOData.title = title;
-//            self.TEOData.album = album;
-//            self.TEOData.genre = genre;
-//            // END TEOSongData test
-
-        }
-        
-        _songData = [[NSDictionary alloc] initWithObjects:@[titleString,albumString,artistString,genreString] forKeys:@[@"Title",@"Album",@"Artist",@"Genre"]];
-    }
-}
-#endif
-
 
 - (NSNumber *)startTime {
     return [NSNumber numberWithFloat:CMTimeGetSeconds([self songStartTime])];
@@ -356,10 +271,6 @@
         } else
             [songPlayer seekToTime:_requestedSongStartTime];
         
-
-//        NSString *labelString = [NSString stringWithFormat:@"%@ by %@ from %@",[[self songData] objectForKey:@"Title"],[[self songData] objectForKey:@"Artist"],[[self songData] objectForKey:@"Album"]];
-//        NSLog(@"about to play (%ld) %@ at position %f",_songID,labelString,CMTimeGetSeconds(_songStartTime));
-//        NSLog(@"The song has UUID %@",_songUUIDString);
 
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(playDidFinish) name:AVPlayerItemDidPlayToEndTimeNotification object:songPlayerItem];
         

@@ -71,6 +71,8 @@ static int const kSSCheckCounterSize = 10;
         songsWithSaveError = [[NSMutableSet alloc] init];
 //        fetchedArray = nil;
      
+        self.sharedFileManager = [[NSFileManager alloc] init];
+        
 #define TSD
 #ifdef TSD
         // TEOSongData test
@@ -276,7 +278,7 @@ static int const kSSCheckCounterSize = 10;
     
     NSLog(@"loadFromURL running on the main thread? %@",[NSThread mainThread]?@"Yep":@"Nope");
     
-    NSFileManager *fileManager = [[NSFileManager alloc] init];
+//    NSFileManager *fileManager = [[NSFileManager alloc] init];
     
     NSArray *keys = [NSArray arrayWithObject:NSURLIsDirectoryKey];
     
@@ -287,7 +289,7 @@ static int const kSSCheckCounterSize = 10;
     NSBlockOperation *topOp = [NSBlockOperation blockOperationWithBlock:^{
         
         // The enumerator does a deep traversal of the given url.
-        NSDirectoryEnumerator *enumerator = [fileManager
+        NSDirectoryEnumerator *enumerator = [self.sharedFileManager
                                              enumeratorAtURL:anURL
                                              includingPropertiesForKeys:keys
                                              options:0
@@ -327,26 +329,19 @@ static int const kSSCheckCounterSize = 10;
                     
                     if (UTTypeConformsTo(fileUTI, kUTTypeAudio))
                     {
-                        // Since this can occur asynchronously, atomically increment the number of audio urls.
-                        int curURLNum = OSAtomicIncrement32(&(loadedURLs))-1;
-                        
                         // Create a song object with the given url. This does not start loading it from disk.
-                        //                        TGSong *newSong = [[TGSong alloc] initWithURL:url];
                         TGSong *newSong = [[TGSong alloc] init];
                         
                         // Set the song pool to be a song's delegate.
                         [newSong setDelegate:self];
                         
                         // The song id is simply its number in the loading sequence. (for now)
-//                        [newSong setSongID:curURLNum];
-                        NSLog(@"The url is %@",url);
                         [newSong setSongID:[url absoluteString]];
                         
                         
                         dispatch_async(serialDataLoad, ^{
                             // TEOSongData test
 #ifdef TSD
-//                            NSLog(@"current thread %@",[NSThread currentThread]);
                             // Only add the loaded url if it isn't already in the dictionary.
                             TEOSongData* teoData = [self.TEOSongDataDictionary objectForKey:[url absoluteString]];
                             if (!teoData) {
@@ -362,7 +357,6 @@ static int const kSSCheckCounterSize = 10;
                             [self loadMetadataIntoSong:newSong];
                             
                             // Add the song to the songpool.
-//                            [songPoolDictionary setObject:newSong forKey:[NSNumber numberWithInt:curURLNum]];
                             [songPoolDictionary setObject:newSong forKey:[url absoluteString]];
                             
                             
@@ -371,7 +365,6 @@ static int const kSSCheckCounterSize = 10;
                         // Inform the delegate that another song object has been loaded. This causes a cell in the song matrix to be added.
                         if ((_delegate != Nil) && [_delegate respondsToSelector:@selector(songPoolDidLoadSongURLWithID:)]) {
                             [_delegate songPoolDidLoadSongURLWithID:[url absoluteString]];
-//                            [_delegate songPoolDidLoadSongURLWithID:curURLNum];
                         }
                     }
                 }
@@ -417,13 +410,11 @@ static int const kSSCheckCounterSize = 10;
 
 
 // This method will attempt to find the image for the song and, if found, will pass it to the given imageHandler block.
-//- (void)requestImageForSongID:(NSInteger)songID withHandler:(void (^)(NSImage *))imageHandler {
 - (void)requestImageForSongID:(id)songID withHandler:(void (^)(NSImage *))imageHandler {
     
     NSLog(@"request image!");
     // First we should check if the song has an image stashed in the songpool local/temporary store.
     TGSong * theSong = [self songForID:songID];
-//    NSInteger artID = [theSong artID];
     NSInteger artID = theSong.artID;
     if (artID >= 0) {
         NSImage *songArt = [_artArray objectAtIndex:artID];
@@ -433,6 +424,8 @@ static int const kSSCheckCounterSize = 10;
     }
     
     // If nothing was found, try asking the song directly.
+    // This is done by chaining asynchronous requests for data from either our Core Data store, from the file system and
+    // finally from the network.
     // Request a cover image from the song passing in a block we want executed on resolution.
     [theSong requestCoverImageWithHandler:^(NSImage *tmpImage) {
         
@@ -442,91 +435,154 @@ static int const kSSCheckCounterSize = 10;
             
             // Add the art index to the song.
             theSong.artID = [_artArray count]-1;
-//            [theSong setArtID:[_artArray count]-1];
             
             // Call the image handler with the image we recived from the song.
             imageHandler(tmpImage);
+            
+            // We've succeeded, so drop out.
             return;
+            
         } else {
             // Search strategies:
-            // 1. Search songs from same album. If they have an image, use that.
-            return;
-            NSArray* albums = [self findSongsFromAlbumWithName:theSong.TEOData.album];
-            for (TEOSongData* songDat in albums) {
-                // Excluding the original song whose art we're looking for see if the others have it.
-                // Find the song from the url string.
-                // This will break until we switch song ids to be the song's url, then we can look it up directly.
-                TGSong* aSong = [songPoolDictionary objectForKey:songDat.urlString];
-                if (aSong && ![aSong isEqualTo:theSong]) {
-                    // Here we can check the song's artID to see if it already has album art.
-                    if ((aSong.artID != -1) && [_artArray objectAtIndex:aSong.artID] ) {
-                        NSLog(@"Got ART!");
+            // 1. See if other songs from the same album have album art in their metadata.
+            // This will produce the wrong result for the (rare) albums where each song has a separate image.
+            // Additionally this only produces album art once other songs' album art has been resolved which only
+            // happens when the song is actively selected and played.
+            [self requestSongsFromAlbumWithName:theSong.TEOData.album withHandler:^(NSArray* songs) {
+                
+                for (TEOSongData* songDat in songs) {
+                    // Excluding the original song whose art we're looking for see if the others have it.
+                    // Find the song from the url string.
+                    // This will break until we switch song ids to be the song's url, then we can look it up directly.
+                    TGSong* aSong = [songPoolDictionary objectForKey:songDat.urlString];
+                    if (aSong && ![aSong isEqualTo:theSong]) {
+                        // Here we can check the song's artID to see if it already has album art.
+                        if ((aSong.artID != -1) && [_artArray objectAtIndex:aSong.artID] ) {
+                            NSLog(@"Got ART!");
+            
+                            // Add the art index to the song.
+                            theSong.artID = aSong.artID;
+                            imageHandler([_artArray objectAtIndex:aSong.artID]);
+                            
+                            // We've succeeded, so drop out.
+                            return;
+                        }
                     }
                 }
-            }
-            // * currently the songs are not stored or indexed according to album or any other property.
-            // 2. Search directory for images.
-            //  If there pick one named same as track.
-            //  If there pick one named same as filename.
-            //  If there pick one named same as album.
-            //  Else pick any.
-            // 3. Look up track then album then artist name online.
-
-            // Get the song's URL
-//            NSURL *theURL = [theSong songURL];
-            NSURL *theURL = [NSURL URLWithString:theSong.TEOData.urlString];
-            
-            tmpImage = [self searchForCoverImageAtURL:theURL];
-            if (tmpImage != nil) {
-                NSLog(@"found song image");
-                imageHandler(tmpImage);
-                return;
-            }
-            
-            
-            
+                
+                // 2. Search the directory where the songID song is located for images.
+                
+                // Get the song's URL
+                NSURL*      theURL = [NSURL URLWithString:theSong.TEOData.urlString];
+                NSImage*    tmpImage = [self searchForCoverImageAtURL:theURL];
+                
+                if (tmpImage != nil) {
+                    
+                    NSLog(@"found song image");
+                    // Store the image in the local store so we won't have to re-fetch it from the file.
+                    [_artArray addObject:tmpImage];
+                    
+                    // Add the art index to the song.
+                    theSong.artID = [_artArray count]-1;
+                    
+                    imageHandler(tmpImage);
+                    
+                    // We've succeeded, so drop out.
+                    return;
+                }
+                
+                // 3. Look up track then album then artist name online.
+                [songFingerPrinter requestCoverArtForSong:theSong withHandler:^(NSImage* theImage) {
+                    if (theImage != nil) {
+                        NSLog(@"got image from the internets!");
+                    // Store the image in the local store so we won't have to re-fetch it from the file.
+                    [_artArray addObject:theImage];
+                    
+                    // Add the art index to the song.
+                    theSong.artID = [_artArray count]-1;
+                    imageHandler(theImage);
+                    
+                    // We've succeeded, so drop out.
+                    return;
+                    } else
+                        NSLog(@"got bupkiss from the webs");
+                }];
+                
+                // Finally, if no image was found by any of the methods, we call the given image handler with nil;
+                imageHandler(nil);
+                
+            }];
         }
         
-        // No image was found by any of the methods so we call the given image handler with nil;
-        imageHandler(nil);
     }];
 }
 
-
-- (NSImage *)searchForCoverImageAtURL:(NSURL *)theURL {
+// Search for image files in the directory containing the given URL that match a particular pattern.
+// The patterns looked for are any of the following strings anywhere in the image file name:
+// The name of the album or
+// the words "cover", "front" or "folder".
+// Currently it simply picks the first image file that matches.
+-(NSImage*)searchForCoverImageAtURL:(NSURL*)theURL {
+    NSString* filePathString = [[theURL filePathURL] absoluteString];
     
-    NSString *filePathString = [[theURL filePathURL] absoluteString];
     // Extract the containing directory by removing the trailing file name.
-    NSString *theDirectory = [filePathString stringByDeletingLastPathComponent];
-    NSString *theTrackName = [[filePathString lastPathComponent] stringByDeletingPathExtension];
+    NSString* theDirectory = [filePathString stringByDeletingLastPathComponent];
     
-    NSURL *jpgURL = [NSURL URLWithString:[theDirectory stringByAppendingPathComponent:[theTrackName stringByAppendingPathExtension:@"jpg"]]];
-    NSLog(@"looking for %@",[jpgURL absoluteString]);
+    NSError*        error;
+    NSNumber*       isFile = nil;
+    NSArray* keys = [NSArray arrayWithObject:NSURLIsRegularFileKey];
     
-    NSImage *theImage = [[NSImage alloc] initWithContentsOfURL:jpgURL];;
-    if (theImage != nil) {
-        return theImage;
+    // The enumerator does a traversal of the given url.
+    NSDirectoryEnumerator *enumerator = [self.sharedFileManager
+                                         enumeratorAtURL:[NSURL URLWithString:theDirectory]
+                                         includingPropertiesForKeys:keys
+                                         options:0
+                                         errorHandler:^(NSURL *url, NSError *error) {
+                                             // Handle the error.
+                                             // Return YES if the enumeration should continue after the error.
+                                             NSLog(@"Error getting the file. %@",error);
+                                             // Return yes to continue traversing.
+                                             return YES;
+                                         }];
+    
+    for (NSURL *url in enumerator) {
+        if (![url getResourceValue:&isFile forKey:NSURLIsRegularFileKey error:&error]) {
+            // handle error
+            NSLog(@"An URL error %@ occurred.",error);
+            return nil;
+        }
+        if ([isFile boolValue]) {
+            // Check the file extension and deal only with audio files.
+            CFStringRef fileExtension = (__bridge CFStringRef) [url pathExtension];
+            CFStringRef fileUTI = UTTypeCreatePreferredIdentifierForTag(kUTTagClassFilenameExtension, fileExtension, NULL);
+            
+            if (UTTypeConformsTo(fileUTI, kUTTypeImage)){
+                NSString* regexString = [NSString stringWithFormat:@"(cover|front|folder|%@)",[theDirectory lastPathComponent]];
+                NSLog(@"the regex string is %@",regexString);
+                // At this point we extract the file name and, using a regex look for words like cover or front.
+                NSRegularExpression* regex = [NSRegularExpression regularExpressionWithPattern:regexString
+                                                                                       options:NSRegularExpressionCaseInsensitive
+                                                                                         error:&error];
+                
+                NSString* imageURLString =[[url filePathURL] absoluteString];
+                imageURLString = [imageURLString lastPathComponent];
+                NSUInteger matches = [regex numberOfMatchesInString:imageURLString options:0 range:NSMakeRange(0, [imageURLString length])];
+                if (matches > 0) {
+                    NSLog(@"The track name %@ has %ld matches",imageURLString,matches);
+                    NSImage *theImage = [[NSImage alloc] initWithContentsOfURL:url];
+                    if (theImage != nil) {
+                        return theImage;
+                    }
+                }
+                
+                NSLog(@"                                   The image %@ did not match",imageURLString);
+                
+            }
+        }
     }
-    
-//    NSFileManager *fileManager = [[NSFileManager alloc] init];
-//    
-//    NSArray *keys = [NSArray arrayWithObject:NSURLIs];
-//    
-//    NSDirectoryEnumerator *enumerator = [fileManager
-//                                         enumeratorAtURL:anURL
-//                                         includingPropertiesForKeys:keys
-//                                         options:0
-//                                         errorHandler:^(NSURL *url, NSError *error) {
-//                                             // Handle the error.
-//                                             // Return YES if the enumeration should continue after the error.
-//                                             NSLog(@"Error getting the directory. %@",error);
-//                                             // Return yes to continue traversing.
-//                                             return YES;
-//                                         }];
-    
-        
-    return theImage;
+    return nil;
 }
+
 
 // Async'ly load the song metadata and call the given dataHandler with it.
 // If the song already has the metadata it calls the dataHandler with the existing data.
@@ -841,7 +897,6 @@ static int const kSSCheckCounterSize = 10;
 
 #ifndef TSD
 - (NSString *)getSongGenreStringForSongID:(NSInteger)songID {
-//    TGSong *tmpSong = [songPoolDictionary objectForKey:[NSNumber numberWithInteger:songID]];
     TGSong *tmpSong = [self songForID:songID];
     if (tmpSong) {
         return [[tmpSong songData] objectForKey:@"Genre"];
@@ -851,7 +906,6 @@ static int const kSSCheckCounterSize = 10;
 
 
 -(NSDictionary *)getSongDisplayStrings:(NSInteger)songID {
-//    TGSong *song = [songPoolDictionary objectForKey:[NSNumber numberWithInteger:songID]];
     TGSong *song = [self songForID:songID];
     return [song songData];
 }
@@ -1256,23 +1310,23 @@ static int const kSSCheckCounterSize = 10;
 }
 
 
-- (NSArray *)findSongsFromAlbumWithName:(NSString *)albumName {
+// Fetch all songs from the given album asynchronously and call the given songArrayHandler block with the result.
+-(void)requestSongsFromAlbumWithName:(NSString*)albumName withHandler:(void (^)(NSArray*))songArrayHandler {
+    
     NSFetchRequest *fetch = [NSFetchRequest fetchRequestWithEntityName:@"TEOSongData"];
     NSPredicate *thePredicate = [NSPredicate predicateWithFormat:@"album = %@",albumName];
     [fetch setPredicate:thePredicate];
     
-    NSError *error = nil;
-    NSArray *results = [self.TEOmanagedObjectContext executeFetchRequest:fetch error:&error];
-    if (results) {
-        NSLog(@"Songs from album %@: %@",albumName, results);
-    } else {
-        NSLog(@"Error: %@",error);
-    }
-    
-    return results;
+    // Perform the fetch on the context's own thread to avoid threading problems.
+    [self.TEOmanagedObjectContext performBlock:^{
+        
+        NSError *error = nil;
+        NSArray* results = [self.TEOmanagedObjectContext executeFetchRequest:fetch error:&error];
+        songArrayHandler(results);
+    }];
 }
 
-
+// Not currently used.
 - (NSString *)findUUIDOfSongWithURL:(NSURL *)songURL {
     NSString *theUUIDString = @"arses";
     NSFetchRequest *fetch = [NSFetchRequest fetchRequestWithEntityName:@"TGSongUserData"];
@@ -1448,7 +1502,7 @@ static int const kSSCheckCounterSize = 10;
 
 - (void)songDidFinishPlayback:(TGSong *)song {
     // Pass this on to the delegate (which should be the controller).
-    NSLog(@"song %lu did finish playback. The last requested song is %lu",(unsigned long)[song songID],[lastRequestedSong songID]);
+    NSLog(@"song %lu did finish playback. The last requested song is %@",(unsigned long)[song songID],[lastRequestedSong songID]);
     if ([[self delegate] respondsToSelector:@selector(songPoolDidFinishPlayingSong:)]) {
         [[self delegate] songPoolDidFinishPlayingSong:[song songID]];
     }

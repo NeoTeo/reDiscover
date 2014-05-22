@@ -44,6 +44,16 @@
     _activeCellCount--;
 }
 
+-(id)cellAtRow:(NSInteger)row column:(NSInteger)col {
+    if ([self validateCellRow:row andColumn:col]) {
+        return [super cellAtRow:row column:col];
+    }
+    return nil;
+}
+
+-(BOOL)validateCellRow:(NSInteger)row andColumn:(NSInteger)col {
+    return (row*self.numberOfColumns+col < self.activeCellCount);
+}
 
 // Speed optimisations
 - (BOOL)isOpaque {
