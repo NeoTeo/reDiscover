@@ -24,7 +24,7 @@
 @protocol TGSongGridScrollViewDelegate <NSObject>
 @optional
 - (void)songGridScrollViewDidScrollToRect:(NSRect)theRect;
-- (void)songGridScrollViewDidChangeToRow:(NSInteger)theRow andColumn:(NSInteger)theColumn;
+- (void)songGridScrollViewDidChangeToRow:(NSInteger)theRow andColumn:(NSInteger)theColumn withSpeedVector:(NSPoint)theSpeed;
 //- (void)songGridScrollViewDidChangeToCell:(TGGridCell *)theCell withRect:(NSRect)theRect;
 //- (void)songGridScrollViewDidChangeToSongID:(NSUInteger)songID withRect:(NSRect)theRect;
 - (void)songGridScrollViewDidRightClickSongID:(NSUInteger)songID;

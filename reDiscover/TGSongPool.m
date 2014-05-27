@@ -413,12 +413,12 @@ static int const kSSCheckCounterSize = 10;
 - (void)requestImageForSongID:(id)songID withHandler:(void (^)(NSImage *))imageHandler {
     
     NSLog(@"request image!");
+    
     // First we should check if the song has an image stashed in the songpool local/temporary store.
     TGSong * theSong = [self songForID:songID];
     NSInteger artID = theSong.artID;
     if (artID >= 0) {
         NSImage *songArt = [_artArray objectAtIndex:artID];
-        NSLog(@"already had image!");
         imageHandler(songArt);
         return;
     }
@@ -429,6 +429,7 @@ static int const kSSCheckCounterSize = 10;
     // Request a cover image from the song passing in a block we want executed on resolution.
     [theSong requestCoverImageWithHandler:^(NSImage *tmpImage) {
         
+        NSLog(@"LEVEL 1");
         if (tmpImage != nil) {
             // Store the image in the local store so we won't have to re-fetch it from the file.
             [_artArray addObject:tmpImage];
@@ -599,7 +600,6 @@ static int const kSSCheckCounterSize = 10;
         
         // If the metadata has not yet been set, do it.
         if (theSong.TEOData.title == nil) {
-            NSLog(@"No metadata - loading for song %ld",(long)songID);
             [theSong loadSongMetadata];
         }
         
@@ -1323,7 +1323,12 @@ static int const kSSCheckCounterSize = 10;
         
         NSError *error = nil;
         NSArray* results = [self.TEOmanagedObjectContext executeFetchRequest:fetch error:&error];
-        songArrayHandler(results);
+        
+        // Since the containing block is performed on the main thread and we want to spend as little on the main as possible doing this
+        // we set the rest (songArrayHandler) off on a separate thread.
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            songArrayHandler(results);
+        });
     }];
 }
 
@@ -1535,7 +1540,7 @@ static int const kSSCheckCounterSize = 10;
     // Make sure the last request for playback is put on a serial queue so it always is the last song left playing.
     if (song == lastRequestedSong) {
         dispatch_async(playbackQueue, ^{
-            NSLog(@"putting song %lu on the playbackQueue",(unsigned long)[song songID]);
+//            NSLog(@"putting song %lu on the playbackQueue",(unsigned long)[song songID]);
             [self playbackSong:song];
         });
     } else {

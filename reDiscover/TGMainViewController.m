@@ -502,6 +502,8 @@
     [_songGridController.songTimelineController setCurrentSongID:songID fromSongPool:_currentSongPool];
     
     NSLog(@"songPoolDidStartPlayingSong");
+    // Don't wait for a result. Set to the "fetching artwork..." whilst waiting.
+    [_songGridController setCoverImage:[NSImage imageNamed:@"fetchingArt"] forSongWithID:songID];
     
     // Then async'ly request an album image for the song and pass it a block callback.
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
@@ -516,6 +518,7 @@
             [_songGridController setCoverImage:tmpImage forSongWithID:songID];
         }];
     });
+    
 }
 
 - (void)songPoolDidFinishPlayingSong:(id)songID {
@@ -557,7 +560,6 @@
 }
 
 
-//- (void)userSelectedSongID:(NSUInteger)songID {
 - (void)userSelectedSongID:(id)songID {
     [_currentSongPool requestSongPlayback:songID withStartTimeInSeconds:[NSNumber numberWithInt:-1]];
     

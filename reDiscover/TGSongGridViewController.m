@@ -881,6 +881,7 @@ static NSInteger const kUndefinedID =  -1;
     }
 }
 
+
 // TGSongGridScrollViewDelegate methods:
 - (void)songGridScrollViewDidScrollToRect:(NSRect)theRect {
     // TEO: Make a method inside the songUIViewController that is a delegate of the TGSongGridScrollView that is called whenever scrolling/moving.
@@ -889,42 +890,39 @@ static NSInteger const kUndefinedID =  -1;
 
 
 // Called when a new row and column is selected either by moving mouse pointer or scrolling a new cell under it.
-- (void)songGridScrollViewDidChangeToRow:(NSInteger)theRow andColumn:(NSInteger)theColumn {
+//- (void)songGridScrollViewDidChangeToRow:(NSInteger)theRow andColumn:(NSInteger)theColumn {
+- (void)songGridScrollViewDidChangeToRow:(NSInteger)theRow
+                               andColumn:(NSInteger)theColumn
+                               withSpeedVector:(NSPoint)theSpeed {
+    NSLog(@"The selection speed %@",NSStringFromPoint(theSpeed));
     
     NSRect theRect = [_songCellMatrix convertRect:[_songCellMatrix cellFrameAtRow:theRow column:theColumn] toView:_songGridScrollView];
     [_songUIViewController setUIPosition:theRect.origin withPopAnimation:YES];
     
     TGGridCell *theCell = [_songCellMatrix cellAtRow:theRow column:theColumn];
     // Early out if the coordinates are pointing to an invalid cell.
-    if (theCell == nil) {
-        return;
-    }
+    if (theCell == nil) return;
     
     id songID = [self cellToSongID:theCell];
-    if (songID != nil) {
-        [[self delegate] userSelectedSongID:songID];
-        
-        // Update the song cache based on the new selection.
-        
-        NSArray *theArray =[self buildCacheArray:1 forRow:theRow andColumn:theColumn];
-        [[self delegate] requestSongArrayPreload:theArray];
+    // Early out if the cell is not pointing at an actual song.
+    if (songID == nil) return;
     
-        // If a popover is shown, hide it.
-        if ([[_songTimelineController songTimelinePopover] isShown]) {
-            [[_songTimelineController songTimelinePopover] close];
-        }
-        
-        NSRect cellFrame = [_songCellMatrix cellFrameAtRow:theRow column:theColumn];
-        [self togglePopoverAtCellFrame:cellFrame withDelay:3.0];
+    [[self delegate] userSelectedSongID:songID];
+    
+    // TEO! the cache should not use the userSelected methods. Make a separate wrapper.
+    // Update the song cache based on the new selection.
+    NSArray *theArray =[self buildCacheArray:1 forRow:theRow andColumn:theColumn];
+    [[self delegate] requestSongArrayPreload:theArray];
+    
+    // If a popover is shown, hide it.
+    if ([[_songTimelineController songTimelinePopover] isShown]) {
+        [[_songTimelineController songTimelinePopover] close];
     }
+    
+    NSRect cellFrame = [_songCellMatrix cellFrameAtRow:theRow column:theColumn];
+    [self togglePopoverAtCellFrame:cellFrame withDelay:3.0];
 }
 
-//- (void)songGridScrollViewDidChangeToSongID:(NSUInteger)songID withRect:(NSRect)theRect {
-//    
-//    [_songUIViewController setUIPosition:theRect.origin withPopAnimation:YES];
-//    
-//    [[self delegate] userSelectedSongID:songID];
-//}
 
 - (void)songGridScrollViewDidRightClickSongID:(NSUInteger)songID {
     NSLog(@"RMB");

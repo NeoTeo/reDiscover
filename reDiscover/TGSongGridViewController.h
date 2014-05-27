@@ -73,7 +73,8 @@
 // TGSongGridScrollViewDelegate methods
 
 //- (void)songGridScrollViewDidChangeToCell:(TGGridCell *)theCell withRect:(NSRect)theRect;
-- (void)songGridScrollViewDidChangeToRow:(NSInteger)theRow andColumn:(NSInteger)theColumn;
+- (void)songGridScrollViewDidChangeToRow:(NSInteger)theRow andColumn:(NSInteger)theColumn withSpeedVector:(NSPoint)theSpeed;
+//- (void)songGridScrollViewDidChangeToRow:(NSInteger)theRow andColumn:(NSInteger)theColumn;
 - (void)songGridScrollViewDidScrollToRect:(NSRect)theRect;
 - (void)songGridScrollViewDidRightClickSongID:(NSUInteger)songID;
 

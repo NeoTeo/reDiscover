@@ -101,7 +101,7 @@
         }
         return;
     }
-           NSLog(@"song %@ is not cached.",self);
+//           NSLog(@"song %@ is not cached.",self);
     
     // Start off marking this song as currently loading.
     [self setSongStatus:kSongStatusLoading];
@@ -188,14 +188,22 @@
 }
 
 - (BOOL)loadSongMetadata {
+    
+    NSString *tmpString = [self.TEOData.urlString stringByDeletingPathExtension];
+    NSString* fileName = [tmpString lastPathComponent];
+    tmpString =[tmpString stringByDeletingLastPathComponent];
+    NSString* album = [tmpString lastPathComponent];
+    tmpString =[tmpString stringByDeletingLastPathComponent];
+    NSString* artist = [tmpString lastPathComponent];
+    
     // Get other metadata via the MDItem of the file.
     NSURL *theURL = [NSURL URLWithString:self.TEOData.urlString];
     MDItemRef metadata = MDItemCreate(NULL, (__bridge CFStringRef)[theURL path]);
     
     // Add reasonable defaults
-    self.TEOData.artist = @"Unknown";
-    self.TEOData.title  = @"Unknown";
-    self.TEOData.album  = @"Unknown";
+    self.TEOData.artist = [artist stringByRemovingPercentEncoding];//@"Unknown";
+    self.TEOData.title  = [fileName stringByRemovingPercentEncoding];//@"Unknown";
+    self.TEOData.album  = [album stringByRemovingPercentEncoding];//@"Unknown";
     self.TEOData.genre  = @"Unknown";
     
     if (metadata) {
