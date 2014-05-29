@@ -340,8 +340,6 @@ static int const kSSCheckCounterSize = 10;
                         
                         
                         dispatch_async(serialDataLoad, ^{
-                            // TEOSongData test
-#ifdef TSD
                             // Only add the loaded url if it isn't already in the dictionary.
                             TEOSongData* teoData = [self.TEOSongDataDictionary objectForKey:[url absoluteString]];
                             if (!teoData) {
@@ -350,15 +348,12 @@ static int const kSSCheckCounterSize = 10;
                                 newSong.TEOData = teoData;
                                 NSLog(@"new song found %@",newSong.TEOData.title);
                             }
-                            // END TEOSongData test
-#endif
                         
                             // Try and fetch (by URL) the song's metadata from the core data store.
                             [self loadMetadataIntoSong:newSong];
                             
                             // Add the song to the songpool.
                             [songPoolDictionary setObject:newSong forKey:[url absoluteString]];
-                            
                             
                         });
                         
@@ -429,10 +424,10 @@ static int const kSSCheckCounterSize = 10;
     // Request a cover image from the song passing in a block we want executed on resolution.
     [theSong requestCoverImageWithHandler:^(NSImage *tmpImage) {
         
-        NSLog(@"LEVEL 1");
         if (tmpImage != nil) {
             // Store the image in the local store so we won't have to re-fetch it from the file.
             [_artArray addObject:tmpImage];
+            NSLog(@"Adding imaage to art array.");
             
             // Add the art index to the song.
             theSong.artID = [_artArray count]-1;
@@ -459,7 +454,7 @@ static int const kSSCheckCounterSize = 10;
                     if (aSong && ![aSong isEqualTo:theSong]) {
                         // Here we can check the song's artID to see if it already has album art.
                         if ((aSong.artID != -1) && [_artArray objectAtIndex:aSong.artID] ) {
-                            NSLog(@"Got ART!");
+                            NSLog(@"Got cover art from another song in the same album!");
             
                             // Add the art index to the song.
                             theSong.artID = aSong.artID;
@@ -479,7 +474,7 @@ static int const kSSCheckCounterSize = 10;
                 
                 if (tmpImage != nil) {
                     
-                    NSLog(@"found song image");
+                    NSLog(@"found an image in the same folder as the song.");
                     // Store the image in the local store so we won't have to re-fetch it from the file.
                     [_artArray addObject:tmpImage];
                     
@@ -495,16 +490,17 @@ static int const kSSCheckCounterSize = 10;
                 // 3. Look up track then album then artist name online.
                 [songFingerPrinter requestCoverArtForSong:theSong withHandler:^(NSImage* theImage) {
                     if (theImage != nil) {
+                        
                         NSLog(@"got image from the internets!");
-                    // Store the image in the local store so we won't have to re-fetch it from the file.
-                    [_artArray addObject:theImage];
-                    
-                    // Add the art index to the song.
-                    theSong.artID = [_artArray count]-1;
-                    imageHandler(theImage);
-                    
-                    // We've succeeded, so drop out.
-                    return;
+                        // Store the image in the local store so we won't have to re-fetch it from the file.
+                        [_artArray addObject:theImage];
+                        
+                        // Add the art index to the song.
+                        theSong.artID = [_artArray count]-1;
+                        imageHandler(theImage);
+                        
+                        // We've succeeded, so drop out.
+                        return;
                     } else {
                         NSLog(@"got bupkiss from the webs");
                         // Finally, if no image was found by any of the methods, we call the given image handler with nil;
@@ -598,27 +594,23 @@ static int const kSSCheckCounterSize = 10;
             return ;
         }
         
-        // If the metadata has not yet been set, do it.
-        if (theSong.TEOData.title == nil) {
-            [theSong loadSongMetadata];
-        }
-        
-        // call the datahandler with whatever metadata the song loaded.
-        dataHandler([self songDataForSongID:songID]);
+        // Because loadSongMetadata writes to the managed object, we perform it on the context's thread.
+        // TEO see if there's a way of avoiding this.
+        [self.TEOmanagedObjectContext performBlock:^{
+            // If the metadata has not yet been set, do it.
+            if (theSong.TEOData.title == nil) {
+                [theSong loadSongMetadata];
+            }
+            
+            // Since the containing block is performed on the main thread and we want to spend as little on the main as possible doing this
+            // we set the rest (dataHandler) off on a separate thread.
+            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+                // call the datahandler with whatever metadata the song loaded.
+                dataHandler([self songDataForSongID:songID]);
+            });
+        }];
     });
 }
-//- (void)requestEmbeddedMetadataForSong:(NSInteger) songID {
-//    dispatch_async(serialDataLoad, ^{
-//        TGSong *theSong = [self songForID:songID];
-//        NSAssert(theSong, @"the song is nil.");
-//        if (theSong != nil) {
-//
-//            if ([theSong loadSongMetadata] && [_delegate respondsToSelector:@selector(songPoolDidLoadDataForSongID:)])
-//                [_delegate songPoolDidLoadDataForSongID:songID];
-//        }
-//
-//    });
-//}
 
 
 - (NSNumber *)songDurationForSongID:(id)songID {
@@ -838,6 +830,7 @@ static int const kSSCheckCounterSize = 10;
 }
 
 
+/*
 // updateCache:
 // The song pool doesn't know about the layout of the song grid so it cannot decide which songs to cache.
 // Therefore it is passed an array of ids that need caching.
@@ -849,23 +842,12 @@ static int const kSSCheckCounterSize = 10;
         if (aSong != nil) {
             
             NSLog(@"loadTrackData called from updateCache");
-            [aSong loadTrackData];
+            [aSong loadTrackDataWithCallBackOnCompetion:NO];
         } else
             NSLog(@"requested song %@ not there",(NSString*)songID);
     }
 }
-//- (void)updateCache:(NSArray *)songIDArray {
-//    for (NSNumber *songNumber in songIDArray) {
-//        NSInteger songID = [songNumber integerValue];
-//        TGSong * aSong = [self songForID:songID];
-//        if (aSong != nil) {
-//            
-//            NSLog(@"loadTrackData called from updateCache");
-//            [aSong loadTrackData];
-//        } else
-//            NSLog(@"requested song %lu not there",songID);
-//    }
-//}
+ */
 
 - (id)lastRequestedSongID {
     return [lastRequestedSong songID];
@@ -1070,7 +1052,6 @@ static int const kSSCheckCounterSize = 10;
             [private performBlock:savePrivate];
         }
     }
- 
 }
 
 // Go through all songs and store those who have had data added to them.
@@ -1363,10 +1344,12 @@ static int const kSSCheckCounterSize = 10;
             NSLog(@"Nope, the requested ID %@ is not in the song pool.",songID);
             return;
         }
-        [aSong loadTrackData];
+        
+        // tell the song to load its data asyncronously without requesting a callback on completion.
+        [aSong loadTrackDataWithCallBackOnCompetion:NO];
+        
         // TEO TSD test. We should try and get the metadata so it's ready,
         // but not so that songPoolDidLoadDataForSongID gets called for each song.
-//        [self requestEmbeddedMetadataForSong:[songID integerValue]];
         [self requestEmbeddedMetadataForSongID:songID withHandler:^(NSDictionary* theData){
 //            NSLog(@"preloadSongArray got data! %@",theData);
         }];
@@ -1411,7 +1394,7 @@ static int const kSSCheckCounterSize = 10;
     
     NSLog(@"loadTrackData called from requestSongPlayback");
     // Asynch'ly start loading the track data for aSong. songReadyForPlayback will be called back when the song is good to go.
-    [aSong loadTrackData];
+    [aSong loadTrackDataWithCallBackOnCompetion:YES];
 }
 
 

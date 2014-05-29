@@ -41,26 +41,16 @@
 
 -(void)requestCoverArtForSong:(TGSong*)song withHandler:(void (^)(NSImage*))imageHandler {
     
-    
     // If there's no uuid, request one and drop out.
     if (song.TEOData.uuid != NULL) {
         [self requestAlbumArtFromWebForSong:song withHandler:imageHandler];
     } else {
-        if (1){//[song fingerPrintStatus] == kFingerPrintStatusEmpty) {
-            [song setFingerPrintStatus:kFingerPrintStatusRequested];
-            [self requestFingerPrintForSong:song withHandler:^(NSString* fingerPrint){
-                
-//                if ([_delegate respondsToSelector:@selector(fingerprintReady:ForSong:)]) {
-//                    [_delegate fingerprintReady:fingerPrint ForSong:song];
-//                }
-                
-                [self requestAlbumArtFromWebForSong:song withHandler:imageHandler];
-                //
-                
-            }];
-        }
-        imageHandler(nil);
-        return;
+        [song setFingerPrintStatus:kFingerPrintStatusRequested];
+        [self requestFingerPrintForSong:song withHandler:^(NSString* fingerPrint){
+            
+            [self requestAlbumArtFromWebForSong:song withHandler:imageHandler];
+            
+        }];
     }
 }
 

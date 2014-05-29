@@ -18,6 +18,9 @@
 #import "TGSongCellMatrix.h"
 #import "CAKeyframeAnimation+Parametric.h"
 
+// Trying out some pop animation.
+//#import <POP/POP.h>
+
 // The private interface declaration overrides the public one to implement the TGSongDelegate protocol.
 //@interface TGSongGridController () <TGSongUIViewControllerDelegate,TGSongGridScrollViewDelegate, TGSongPoolDelegate>
 //
@@ -144,25 +147,25 @@
 
 - (void)setCoverImage:(NSImage *)theImage forSongWithID:(id)songID {
     
-        NSLog(@"setCoverImage.");
-    // TEO bigidchange
     // First convert the songID to the matrix index.
     NSInteger cellTag = [_songCellMatrix.cellTagToSongID indexOfObject:songID];
+    NSAssert(cellTag < [_songCellMatrix cells].count , @"cellTag out of bounds");
     TGGridCell * theCell = [_songCellMatrix cellWithTag:cellTag];
     
-    // This core stuff has to happen on the main thread apparently #TEO CHECK_THIS
-    dispatch_async(dispatch_get_main_queue(), ^{
-        [self animateCoverChange:theImage forCell:theCell];
-//        [self animateCoverChange:theImage forSongWithID:songID];
-    });
-}
-
-
-// Obviously this will animate the change eventually.
-- (void)animateCoverChange:(NSImage *)theImage forCell:(TGGridCell *)theCell {
-    
+    // If we are setting the cover for the currently playing song do a pop animation,
+    // otherwise just fade it in.
+    if ([songID isEqualTo:[_delegate lastRequestedSongID]]) {
         [self coverPushAndFadeAnimationForCell:theCell withImage:theImage];
+    }else {
+        [self coverFadeInAnimation:theCell withImage:theImage];
+    }
 }
+
+
+//// Obviously this will animate the change eventually.
+//- (void)animateCoverChange:(NSImage *)theImage forCell:(TGGridCell *)theCell {
+//    [self coverPushAndFadeAnimationForCell:theCell withImage:theImage];
+//}
 
 
 
@@ -319,7 +322,7 @@ static NSInteger const kUndefinedID =  -1;
 - (void)animateMatrixZoom:(NSInteger)zoomQuantum {
 
     // Note which cell is the currently selected so that we can keep it in view after the zooming is done.
-    TGGridCell *selectedCell = [_songCellMatrix cellWithTag:[_delegate lastRequestedSongID]];
+    TGGridCell *selectedCell = [self songIDToCell:[_delegate lastRequestedSongID]];
     
     zoomFactor = 0.1*zoomQuantum;
     NSUInteger currentSongCount = [_songCellMatrix activeCellCount];//[[_songCellMatrix cells] count];
@@ -343,16 +346,13 @@ static NSInteger const kUndefinedID =  -1;
     int maxVisibleRows = [_songGridScrollView frame].size.height / [_songCellMatrix cellSize].height;
     __block NSInteger animCount = 0;
     // We need to figure out how big the new frame needs to be and set both the songCellMatrix and the bgView to it.
-    NSRect newGridRect = [_songGridScrollView bounds];//NSMakeRect(0, 0, _colsPerRow*(newCellSize+_interCellHSpace), newRows*(newCellSize+_interCellVSpace));
+    NSRect newGridRect = [_songGridScrollView bounds];
     NSLog(@"the new grid rect is %@",NSStringFromRect(newGridRect));
     
     // Make a view to cover the existing grid view before re-configuring it and to draw the zooming songs onto.
-//    TGFlippedView *bgView = [[TGFlippedView alloc] initWithFrame:newGridRect];
     NSView *bgView = [[NSView alloc] initWithFrame:newGridRect];
     [_songCellMatrix setFrame:newGridRect];
 
-    //[_songCellMatrix setHidden:YES];
-    //[_songGridScrollView setDocumentView:bgView];
     [_songCellMatrix addSubview:bgView];
 
 
@@ -379,7 +379,6 @@ static NSInteger const kUndefinedID =  -1;
     NSLog(@"loopCols %lu loopRows %lu",loopCols,loopRows);
     
     // clip to maxVisible
-//    loopRows = newRows < maxVisibleRows ? newRows : maxVisibleRows;
     
     for (int cellCol=0; cellCol < loopCols; cellCol++) {
         
@@ -446,13 +445,17 @@ static NSInteger const kUndefinedID =  -1;
     
 }
 
-// This animation will push the blank cover image into the screen whilst its cover image fades in and it pops back up to fill its frame.
-- (void)coverPushAndFadeAnimationForCell:(TGGridCell *)theCell withImage:(NSImage *)theImage {
-    
+- (void)coverFadeInAnimation:(TGGridCell *)theCell withImage:(NSImage *)theImage {
     // First we get the cell's rect.
     NSInteger row, col;
     [_songCellMatrix getRow:&row column:&col ofCell:theCell];
     CGRect cellRect = [_songCellMatrix cellFrameAtRow:row column:col];
+    
+    CABasicAnimation* fadeAnim = [CABasicAnimation animationWithKeyPath:@"opacity"];
+    fadeAnim.fromValue = [NSNumber numberWithFloat:0.0];
+    fadeAnim.toValue = [NSNumber numberWithFloat:1.0];
+    fadeAnim.duration = 1.0;
+    
     
     CALayer *frontLayer = [CALayer layer];
     [frontLayer setContents:theImage];
@@ -463,6 +466,43 @@ static NSInteger const kUndefinedID =  -1;
     [frontLayer setAnchorPoint:CGPointMake(0.5, 0.5)];
     CGPoint aPoint = CGPointMake(CGRectGetMidX(cellRect), CGRectGetMidY(cellRect));
     [frontLayer setPosition:aPoint];
+    
+    // Flush layer to screen.
+    [CATransaction commit];
+    
+    [NSAnimationContext runAnimationGroup:^(NSAnimationContext *context){
+        
+        [frontLayer addAnimation:fadeAnim forKey:@"opacity"];
+        theCell.image = nil;
+        
+    }completionHandler:^{
+    
+        theCell.image = theImage;
+        [frontLayer removeFromSuperlayer];
+    }];
+}
+
+// This animation will push the blank cover image into the screen whilst its cover image fades in and it pops back up to fill its frame.
+- (void)coverPushAndFadeAnimationForCell:(TGGridCell *)theCell withImage:(NSImage *)theImage {
+    
+    // First we get the cell's rect.
+    NSInteger row, col;
+    [_songCellMatrix getRow:&row column:&col ofCell:theCell];
+    CGRect cellRect = [_songCellMatrix cellFrameAtRow:row column:col];
+    
+    CALayer *frontLayer = [CALayer layer];
+    
+    [frontLayer setContents:theImage];
+    [[[self songGridScrollView] documentView] setWantsLayer:YES];
+    [[[[self songGridScrollView] documentView] layer] addSublayer:frontLayer];
+    
+    [frontLayer setBounds:CGRectMake(0, 0, cellRect.size.width, cellRect.size.height)];
+    [frontLayer setAnchorPoint:CGPointMake(0.5, 0.5)];
+    CGPoint aPoint = CGPointMake(CGRectGetMidX(cellRect), CGRectGetMidY(cellRect));
+    [frontLayer setPosition:aPoint];
+    
+    // Flush layer to screen.
+    [CATransaction commit];
     
     [NSAnimationContext runAnimationGroup:^(NSAnimationContext *context){
         
@@ -805,6 +845,10 @@ static NSInteger const kUndefinedID =  -1;
             if ((matrixRows >= 0) && (matrixRows <maxRows)) {
                 if((matrixCols >=0) && (matrixCols < maxCols)) {
                     
+                    // skip if this is the selected cell (which is already cached or requested).
+                    if ((matrixRows == theRow) && (matrixCols == theColumn))
+                        continue;
+                    
                     NSAssert([[_songCellMatrix cells] count] > 0, @"shit no cells");
                     TGGridCell *theCell = [_songCellMatrix cellAtRow:matrixRows column:matrixCols];
                     
@@ -894,6 +938,8 @@ static NSInteger const kUndefinedID =  -1;
 - (void)songGridScrollViewDidChangeToRow:(NSInteger)theRow
                                andColumn:(NSInteger)theColumn
                                withSpeedVector:(NSPoint)theSpeed {
+    
+    
     NSLog(@"The selection speed %@",NSStringFromPoint(theSpeed));
     
     NSRect theRect = [_songCellMatrix convertRect:[_songCellMatrix cellFrameAtRow:theRow column:theColumn] toView:_songGridScrollView];

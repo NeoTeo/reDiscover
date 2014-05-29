@@ -182,6 +182,8 @@
 		AB3E974B187BFD6000BECC09 /* Song grid panel */ = {
 			isa = PBXGroup;
 			children = (
+				AB85BC161875AB5200670905 /* TGMainViewController.h */,
+				AB85BC171875AB5200670905 /* TGMainViewController.m */,
 				AB56D9F218EC14D5005AB947 /* CAKeyframeAnimation+Parametric.h */,
 				AB56D9F318EC14D5005AB947 /* CAKeyframeAnimation+Parametric.m */,
 				AB85BC2C1875AB5200670905 /* TGSongUIViewController.h */,
@@ -189,8 +191,6 @@
 				AB85BC111875AB5200670905 /* TGGridCell.h */,
 				AB85BC121875AB5200670905 /* TGGridCell.m */,
 				AB85BC151875AB5200670905 /* TGMainView.xib */,
-				AB85BC161875AB5200670905 /* TGMainViewController.h */,
-				AB85BC171875AB5200670905 /* TGMainViewController.m */,
 				AB85BC5D1875AD7A00670905 /* TGSongGridScrollView.h */,
 				AB85BC5E1875AD7A00670905 /* TGSongGridScrollView.m */,
 				AB85BC1F1875AB5200670905 /* TGSongCellMatrix.h */,

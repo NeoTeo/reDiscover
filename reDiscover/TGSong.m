@@ -91,7 +91,7 @@
 }
 
 // Just-in-time track data loading.
-- (void)loadTrackData {
+- (void)loadTrackDataWithCallBackOnCompetion:(BOOL)wantsCallback {
     
     // If the song is already loaded we just need to tell the delegate.
     if ([self songStatus] == kSongStatusReady) {
@@ -117,6 +117,7 @@
     songAsset = [[AVURLAsset alloc] initWithURL:theURL options:nil];
     NSArray *keys = @[@"tracks",@"duration"];
     
+    NSLog(@"loadTrackDataWithCallbackOnCompletion for song %@ and wantsCallback %@",[self songID],wantsCallback?@"YES":@"NO");
     //NSLog(@"I gots %lu",(unsigned long)[artworks count]);
     
     [songAsset loadValuesAsynchronouslyForKeys:keys completionHandler:^() {
@@ -178,7 +179,7 @@
             }
         }
         
-        if ([self songStatus] == kSongStatusReady) {
+        if ((wantsCallback == YES) && [self songStatus] == kSongStatusReady) {
             //[self songDataHasLoaded];
             if ([[self delegate] respondsToSelector:@selector(songReadyForPlayback:)]) {
                 [[self delegate] songReadyForPlayback:self];

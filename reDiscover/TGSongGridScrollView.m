@@ -47,8 +47,12 @@
 - (void)boundsChanged:(NSEvent *)theEvent {
     
     NSPoint mPos = [[self window] mouseLocationOutsideOfEventStream];
-// TEO: commmented this out as it's not currently being used and anyway prolly should be called from within the songGridScrollViewDidChangeToRow.
+    
 /*
+    // TEO: commmented this out as it's not currently being used and anyway setUIPosition
+    // is already being called from within songGridScrollViewDidChangeToRow.
+ 
+ 
     NSInteger mouseRow, mouseCol;
     // Notifiy the delegate of a scroll movement.
     // Convert mouse position from window base coords to the matrix view coords.

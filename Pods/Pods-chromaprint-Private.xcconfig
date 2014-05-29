@@ -1,5 +1,5 @@
 #include "Pods-chromaprint.xcconfig"
 GCC_PREPROCESSOR_DEFINITIONS = COCOAPODS=1 ${PODS_CHROMAPRINT_GCC_PREPROCESSOR_DEFINITIONS}
-HEADER_SEARCH_PATHS = "${PODS_ROOT}/BuildHeaders" "${PODS_ROOT}/BuildHeaders/chromaprint" "${PODS_ROOT}/Headers" "${PODS_ROOT}/Headers/chromaprint" "${PODS_ROOT}/Headers/ffmpegtest"
+HEADER_SEARCH_PATHS = "${PODS_ROOT}/BuildHeaders" "${PODS_ROOT}/BuildHeaders/chromaprint" "${PODS_ROOT}/Headers" "${PODS_ROOT}/Headers/chromaprint" "${PODS_ROOT}/Headers/ffmpegtest" "${PODS_ROOT}/Headers/pop"
 OTHER_LDFLAGS = -ObjC
 PODS_ROOT = ${SRCROOT}

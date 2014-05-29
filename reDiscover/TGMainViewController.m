@@ -501,21 +501,32 @@
     // (would a song change be better signalled as a global notification?)
     [_songGridController.songTimelineController setCurrentSongID:songID fromSongPool:_currentSongPool];
     
-    NSLog(@"songPoolDidStartPlayingSong");
+//    NSLog(@"songPoolDidStartPlayingSong");
     // Don't wait for a result. Set to the "fetching artwork..." whilst waiting.
-    [_songGridController setCoverImage:[NSImage imageNamed:@"fetchingArt"] forSongWithID:songID];
+    NSImage* fetchingImage = [NSImage imageNamed:@"fetchingArt"];
+    [_songGridController setCoverImage:fetchingImage forSongWithID:songID];
+    [_songInfoController setSongCoverImage:fetchingImage];
     
     // Then async'ly request an album image for the song and pass it a block callback.
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         [_currentSongPool requestImageForSongID:songID withHandler:^(NSImage *tmpImage) {
-            [_songInfoController setSongCoverImage:tmpImage];
             
+            // none of the attempts returned an image so just show the no cover cover.
             if (tmpImage == nil) {
                 tmpImage = [NSImage imageNamed:@"noCover"];
+                NSBeep();
             }
             
-            // Also make sure the scroll view controller has the cover.
+            // Set the scroll view controller cover image.
             [_songGridController setCoverImage:tmpImage forSongWithID:songID];
+            
+            // Only update the info window for the currently playing song.
+            if ([songID isEqualTo:[_currentSongPool currentlyPlayingSongID]])
+            {
+                [_songInfoController setSongCoverImage:tmpImage];
+            }
+            
+            
         }];
     });
     

@@ -85,7 +85,7 @@
 
 @protocol TGSongGridViewControllerDelegate <NSObject>
 
-- (NSInteger)lastRequestedSongID;
+- (id)lastRequestedSongID;
 - (void)userSelectedSweetSpot:(NSUInteger)ssIndex;
 -(void)userSelectedSongID:(id)songID ;
 //-(void)userSelectedSongID:(NSUInteger)songID ;

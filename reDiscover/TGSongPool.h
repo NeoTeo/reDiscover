@@ -74,7 +74,7 @@
 // Methods
 - (BOOL)validateURL:(NSURL *)anURL;
 - (BOOL)loadFromURL:(NSURL *)anURL ;
-- (void)updateCache:(NSArray *)songIDArray;
+//- (void)updateCache:(NSArray *)songIDArray;
 
 - (void)setRequestedPlayheadPosition:(NSNumber *)newPosition;
 
