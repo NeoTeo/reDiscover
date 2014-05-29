@@ -116,6 +116,8 @@
     // Set the matrix as the document view of the scroll view.
     [_songGridScrollView setDocumentView:_songCellMatrix];
     
+    [[_songGridScrollView documentView] setWantsLayer:YES];
+    
     [[self view] addSubview:_songGridScrollView];
     
     // Make sure the unmapped songs array is allocated.
@@ -459,7 +461,6 @@ static NSInteger const kUndefinedID =  -1;
     
     CALayer *frontLayer = [CALayer layer];
     [frontLayer setContents:theImage];
-    [[[self songGridScrollView] documentView] setWantsLayer:YES];
     [[[[self songGridScrollView] documentView] layer] addSublayer:frontLayer];
     
     [frontLayer setBounds:CGRectMake(0, 0, cellRect.size.width, cellRect.size.height)];
@@ -473,7 +474,7 @@ static NSInteger const kUndefinedID =  -1;
     [NSAnimationContext runAnimationGroup:^(NSAnimationContext *context){
         
         [frontLayer addAnimation:fadeAnim forKey:@"opacity"];
-        theCell.image = nil;
+//        theCell.image = nil;
         
     }completionHandler:^{
     
@@ -493,7 +494,6 @@ static NSInteger const kUndefinedID =  -1;
     CALayer *frontLayer = [CALayer layer];
     
     [frontLayer setContents:theImage];
-    [[[self songGridScrollView] documentView] setWantsLayer:YES];
     [[[[self songGridScrollView] documentView] layer] addSublayer:frontLayer];
     
     [frontLayer setBounds:CGRectMake(0, 0, cellRect.size.width, cellRect.size.height)];
