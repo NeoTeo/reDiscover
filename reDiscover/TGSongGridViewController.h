@@ -56,6 +56,7 @@
 @property TGSongCellMatrix *songCellMatrix;
 @property NSProgressIndicator *pgIndicator;
 @property CAKeyframeAnimation *pushBounceAnimation;
+@property CAKeyframeAnimation *bounceAnimation;
 
 // Not sure we keep this
 //@property NSInteger currentSongID;

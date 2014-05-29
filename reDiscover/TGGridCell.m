@@ -37,6 +37,7 @@
 //    NSLog(@"The control view is %@",[self controlView]);
 //}
 
+
 // The controlView passed in is the matrix view which is (the content view of the scroll view) being scrolled around.
 // The cell frame is dimension of the cell that we're drawing.
 - (void)drawWithFrame:(NSRect)cellFrame inView:(NSView *)controlView {

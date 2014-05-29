@@ -71,9 +71,26 @@
     
     [_pushBounceAnimation setDuration:0.35];
     
+    _bounceAnimation = [self makeBounceAnimation];
     // Now's a good time to load the genre-to-colour map
 //    [self loadGenreToColourMap];
 }
+
+- (CAKeyframeAnimation*)makeBounceAnimation {
+    CAKeyframeAnimation *bounceAnimation = [CAKeyframeAnimation animationWithKeyPath:@"transform.scale"];
+    
+    // Set the keyframes for the pop animation.
+    bounceAnimation.values = [NSArray arrayWithObjects:
+                              [NSNumber numberWithFloat:0.1],
+                              [NSNumber numberWithFloat:1.5],
+                              [NSNumber numberWithFloat:0.95],
+                              [NSNumber numberWithFloat:1.0], nil];
+    
+    bounceAnimation.duration = 0.25;
+    bounceAnimation.removedOnCompletion = YES;
+    return bounceAnimation;
+}
+
 
 
 - (void)setupSongGrid {
@@ -127,6 +144,17 @@
     [[self view] setCanDrawSubviewsIntoLayer:YES];
 }
 
+- (CALayer*)makeLayerWithImage:(NSImage*)theImage atRect:(CGRect)cellRect {
+    
+    CALayer* frontLayer = [CALayer layer];
+    [frontLayer setContents:theImage];
+    [frontLayer setBounds:CGRectMake(0, 0, cellRect.size.width, cellRect.size.height)];
+    [frontLayer setAnchorPoint:CGPointMake(0.5, 0.5)];
+    CGPoint aPoint = CGPointMake(CGRectGetMidX(cellRect), CGRectGetMidY(cellRect));
+    [frontLayer setPosition:aPoint];
+    
+    return frontLayer;
+}
 
 - (void)loadGenreToColourMap {
         NSString *errorDesc = nil;
@@ -278,23 +306,18 @@ static NSInteger const kUndefinedID =  -1;
 
     // Only do the work if we're actually visible.
     if (NSIntersectsRect(cellRect, theFrame)) {
-        // TEO: Should this just use a layer rather than a layer-backed view?
-        NSImageView *newURLImage = [[NSImageView alloc] initWithFrame:cellRect];
-        [newURLImage setWantsLayer:YES];
-        [newURLImage setImage:_defaultImage];
-
-        [[[self songGridScrollView] documentView] addSubview:newURLImage];
+        
+        CALayer* frontLayer =[self makeLayerWithImage:_defaultImage atRect:cellRect];
+        
+        [[[[self songGridScrollView] documentView] layer] addSublayer:frontLayer];
+        [CATransaction commit];
         
         [NSAnimationContext runAnimationGroup:^(NSAnimationContext *context){
             
-            // This has to go after the addSubview as it resets the view's anchorPoint.
-            [self bouncyPopAnimation:newURLImage];
-            
+            [frontLayer addAnimation:_bounceAnimation forKey:@"bounce"];
         } completionHandler:^{
             
-            // Remove newURLImage without needing display because we have to call setNeedsDisplay on the whole matrix anyway.
-            [newURLImage removeFromSuperviewWithoutNeedingDisplay];
-            
+            [frontLayer removeFromSuperlayer];
             // Add the id of this song to an array of unassigned songs.
             // We will then pick randomly from that array to assign to a cell in the matrix.
             [unmappedSongIDArray addObject:songID];
@@ -458,15 +481,8 @@ static NSInteger const kUndefinedID =  -1;
     fadeAnim.toValue = [NSNumber numberWithFloat:1.0];
     fadeAnim.duration = 1.0;
     
-    
-    CALayer *frontLayer = [CALayer layer];
-    [frontLayer setContents:theImage];
+    CALayer* frontLayer = [self makeLayerWithImage:theImage atRect:cellRect];
     [[[[self songGridScrollView] documentView] layer] addSublayer:frontLayer];
-    
-    [frontLayer setBounds:CGRectMake(0, 0, cellRect.size.width, cellRect.size.height)];
-    [frontLayer setAnchorPoint:CGPointMake(0.5, 0.5)];
-    CGPoint aPoint = CGPointMake(CGRectGetMidX(cellRect), CGRectGetMidY(cellRect));
-    [frontLayer setPosition:aPoint];
     
     // Flush layer to screen.
     [CATransaction commit];
@@ -491,15 +507,8 @@ static NSInteger const kUndefinedID =  -1;
     [_songCellMatrix getRow:&row column:&col ofCell:theCell];
     CGRect cellRect = [_songCellMatrix cellFrameAtRow:row column:col];
     
-    CALayer *frontLayer = [CALayer layer];
-    
-    [frontLayer setContents:theImage];
+    CALayer *frontLayer = [self makeLayerWithImage:theImage atRect:cellRect];
     [[[[self songGridScrollView] documentView] layer] addSublayer:frontLayer];
-    
-    [frontLayer setBounds:CGRectMake(0, 0, cellRect.size.width, cellRect.size.height)];
-    [frontLayer setAnchorPoint:CGPointMake(0.5, 0.5)];
-    CGPoint aPoint = CGPointMake(CGRectGetMidX(cellRect), CGRectGetMidY(cellRect));
-    [frontLayer setPosition:aPoint];
     
     // Flush layer to screen.
     [CATransaction commit];
