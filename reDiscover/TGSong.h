@@ -113,7 +113,7 @@ enum {
 - (void)setStartTime:(NSNumber *)startTime;
 //- (id)initWithURL:(NSURL *)anURL;
 - (id)init;
-- (void)loadTrackDataWithCallBackOnCompetion:(BOOL)wantsCallback;
+- (void)loadTrackDataWithCallBackOnCompletion:(BOOL)wantsCallback;
 //- (void)loadTrackData;
 - (BOOL)playStart;
 - (void)playStop;

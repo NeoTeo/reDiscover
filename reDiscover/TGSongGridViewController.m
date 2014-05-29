@@ -293,7 +293,6 @@ static NSInteger const kUndefinedID =  -1;
 
 
 // Called for every new song added by the song pool (via main view controller's songPoolDidLoadSongURLWithID)
-//- (void)addMatrixCell2:(NSUInteger)songID {
 - (void)addMatrixCell2:(id)songID {
     
     // Do pop up anim before we add the actual cell.
@@ -943,7 +942,6 @@ static NSInteger const kUndefinedID =  -1;
 
 
 // Called when a new row and column is selected either by moving mouse pointer or scrolling a new cell under it.
-//- (void)songGridScrollViewDidChangeToRow:(NSInteger)theRow andColumn:(NSInteger)theColumn {
 - (void)songGridScrollViewDidChangeToRow:(NSInteger)theRow
                                andColumn:(NSInteger)theColumn
                                withSpeedVector:(NSPoint)theSpeed {

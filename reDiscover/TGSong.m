@@ -91,13 +91,15 @@
 }
 
 // Just-in-time track data loading.
-- (void)loadTrackDataWithCallBackOnCompetion:(BOOL)wantsCallback {
+- (void)loadTrackDataWithCallBackOnCompletion:(BOOL)wantsCallback {
     
     // If the song is already loaded we just need to tell the delegate.
     if ([self songStatus] == kSongStatusReady) {
 //        [self songDataHasLoaded];
-        if ([[self delegate] respondsToSelector:@selector(songReadyForPlayback:)]) {
-            [[self delegate] songReadyForPlayback:self];
+        if (wantsCallback == YES) {
+            if ([[self delegate] respondsToSelector:@selector(songReadyForPlayback:)]) {
+                [[self delegate] songReadyForPlayback:self];
+            }
         }
         return;
     }
@@ -117,7 +119,7 @@
     songAsset = [[AVURLAsset alloc] initWithURL:theURL options:nil];
     NSArray *keys = @[@"tracks",@"duration"];
     
-    NSLog(@"loadTrackDataWithCallbackOnCompletion for song %@ and wantsCallback %@",[self songID],wantsCallback?@"YES":@"NO");
+//    NSLog(@"loadTrackDataWithCallbackOnCompletion for song %@ and wantsCallback %@",[self songID],wantsCallback?@"YES":@"NO");
     //NSLog(@"I gots %lu",(unsigned long)[artworks count]);
     
     [songAsset loadValuesAsynchronouslyForKeys:keys completionHandler:^() {

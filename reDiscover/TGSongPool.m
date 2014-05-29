@@ -346,7 +346,7 @@ static int const kSSCheckCounterSize = 10;
                                 newSong.TEOData = [TEOSongData insertItemWithURLString:[url absoluteString] inManagedObjectContext:self.TEOmanagedObjectContext];
                             } else {
                                 newSong.TEOData = teoData;
-                                NSLog(@"new song found %@",newSong.TEOData.title);
+//                                NSLog(@"new song found %@",newSong.TEOData.title);
                             }
                         
                             // Try and fetch (by URL) the song's metadata from the core data store.
@@ -619,7 +619,6 @@ static int const kSSCheckCounterSize = 10;
 }
 
 
-#ifdef TSD
 - (NSURL *)songURLForSongID:(id)songID {
     TGSong *aSong = [self songForID:songID];
     
@@ -638,16 +637,6 @@ static int const kSSCheckCounterSize = 10;
              @"Album": song.TEOData.album,
              @"Genre": song.TEOData.genre};
 }
-#else
-
-- (NSURL *)songURLForSongID:(NSInteger)songID {
-    return [[self songForID:songID] songURL];
-}
-
-- (NSDictionary *)songDataForSongID:(NSInteger)songID {
-    return [[self songForID:songID] songData];
-}
-#endif
 
 - (void)offsetSweetSpotForSongID:(id)songID bySeconds:(Float64)offsetInSeconds {
     TGSong *song = [self songForID:songID];
@@ -1335,25 +1324,26 @@ static int const kSSCheckCounterSize = 10;
 // end of Core Data methods
 
 - (void)preloadSongArray:(NSArray *)songArray {
-    NSLog(@"preloading");
-    // Be smarter about this. Keep track of what's cached (in a set) and only recache what's missing.
-    // The loadTrackData won't reload a loaded track but we can probably still save some loops.
-    for (id songID in songArray) {
-        TGSong *aSong = [self songForID:songID];
-        if (aSong == NULL) {
-            NSLog(@"Nope, the requested ID %@ is not in the song pool.",songID);
-            return;
+    // TEO - calling this async'ly crashes in core data.
+//    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        // Be smarter about this. Keep track of what's cached (in a set) and only recache what's missing.
+        // The loadTrackData won't reload a loaded track but we can probably still save some loops.
+        for (id songID in songArray) {
+            TGSong *aSong = [self songForID:songID];
+            if (aSong == NULL) {
+                NSLog(@"Nope, the requested ID %@ is not in the song pool.",songID);
+                return;
+            }
+            
+            // tell the song to load its data asyncronously without requesting a callback on completion.
+            [aSong loadTrackDataWithCallBackOnCompletion:NO];
+        
+            // TEO TSD test. We should try and get the metadata so it's ready,
+            // but not so that songPoolDidLoadDataForSongID gets called for each song.
+            [self requestEmbeddedMetadataForSongID:songID withHandler:^(NSDictionary* theData){
+                //            NSLog(@"preloadSongArray got data! %@",theData);
+            }];
         }
-        
-        // tell the song to load its data asyncronously without requesting a callback on completion.
-        [aSong loadTrackDataWithCallBackOnCompetion:NO];
-        
-        // TEO TSD test. We should try and get the metadata so it's ready,
-        // but not so that songPoolDidLoadDataForSongID gets called for each song.
-        [self requestEmbeddedMetadataForSongID:songID withHandler:^(NSDictionary* theData){
-//            NSLog(@"preloadSongArray got data! %@",theData);
-        }];
-    }
 }
 //- (void)preloadSongArray:(NSArray *)songArray {
 //    NSLog(@"preloading");
@@ -1394,7 +1384,7 @@ static int const kSSCheckCounterSize = 10;
     
     NSLog(@"loadTrackData called from requestSongPlayback");
     // Asynch'ly start loading the track data for aSong. songReadyForPlayback will be called back when the song is good to go.
-    [aSong loadTrackDataWithCallBackOnCompetion:YES];
+    [aSong loadTrackDataWithCallBackOnCompletion:YES];
 }
 
 
