@@ -254,7 +254,8 @@
         [_playlistController storePlaylistWithName:@"ProjectXPlaylist"];
     } else if ([chars isEqualToString:@"t"]){
         NSLog(@"testicle");
-        [_currentSongPool findUUIDOfSongWithURL:[_currentSongPool URLForSongID:lastRequestedSongID]];
+        [_songGridController runTest];
+//        [_currentSongPool findUUIDOfSongWithURL:[_currentSongPool URLForSongID:lastRequestedSongID]];
     } else {
         
         NSCharacterSet *alphaNums = [NSCharacterSet decimalDigitCharacterSet];
@@ -466,17 +467,14 @@
 //    [existingCell setTintColour:[NSColor colorWithDeviceRed:redComponent green:greenComponent blue:blueComponent alpha:alphaComponent]];
 }
 
+
 // Called by the song pool for every song what with an URL.
 // This does not guarantee that any of its data is loaded yet, in fact it's very unlikely.
-//- (void)songPoolDidLoadSongURLWithID:(NSUInteger)songID {
 - (void)songPoolDidLoadSongURLWithID:(id)songID {
-    
-    
     
     // We have to make sure we execute on the main thread since much of the AppKit stuff isn't thread safe.
     // addMatrixCell2 has many classes that need to run on the main thread or are otherwise thread-unsafe;
     // (see the "Thread Safety Summary" chapter of Apple's "Threading Programming Guide", in particular on NSCell, NSResponder, NSImage and NSView).
-//    NSAssert(songID != -1, @"song pool passing us song id -1");
     NSAssert(songID != nil, @"song pool passing us song id nil.");
     if ([NSThread isMainThread] == NO) {
         [[NSOperationQueue mainQueue] addOperationWithBlock:^ {

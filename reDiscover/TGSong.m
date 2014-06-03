@@ -95,7 +95,6 @@
     
     // If the song is already loaded we just need to tell the delegate.
     if ([self songStatus] == kSongStatusReady) {
-//        [self songDataHasLoaded];
         if (wantsCallback == YES) {
             if ([[self delegate] respondsToSelector:@selector(songReadyForPlayback:)]) {
                 [[self delegate] songReadyForPlayback:self];
@@ -103,8 +102,6 @@
         }
         return;
     }
-//           NSLog(@"song %@ is not cached.",self);
-    
     // Start off marking this song as currently loading.
     [self setSongStatus:kSongStatusLoading];
     

@@ -176,7 +176,7 @@
 
 
 - (void)setCoverImage:(NSImage *)theImage forSongWithID:(id)songID {
-    
+//    return;
     // First convert the songID to the matrix index.
     NSInteger cellTag = [_songCellMatrix.cellTagToSongID indexOfObject:songID];
     NSAssert(cellTag < [_songCellMatrix cells].count , @"cellTag out of bounds");
@@ -248,13 +248,37 @@ static NSInteger const kUndefinedID =  -1;
     return nil;
 }
 
+- (void)runTest {
+    
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+    NSInteger rowCount, colCount;
+    NSPoint spd = NSMakePoint(1, 1);
+    [_songCellMatrix getNumberOfRows:&rowCount columns:&colCount];
+    
+        for (int row=0; row < rowCount; row++) {
+            for (int col=0; col < colCount; col++) {
+                
+                [_songCellMatrix scrollCellToVisibleAtRow:row column:col];
+                [_songCellMatrix setNeedsDisplay];
+//                [_songGridScrollView setNeedsDisplay:YES];
+//    CGRect cellRect = [_songCellMatrix cellFrameAtRow:row column:col];
+//                [_songGridScrollView scrollPoint:cellRect.origin];
+                [self songGridScrollViewDidChangeToRow:row andColumn:col withSpeedVector:spd];
+                
+                // Wait a bit.
+                usleep(250000);
+                [_songCellMatrix getNumberOfRows:&rowCount columns:&colCount];
+            }
+        }
+    });
+}
+
 
 // Increments the matrix by one new cell and returns it.
 -(TGGridCell*)growMatrix {
+    
     static NSInteger songSerialNumber = 0;
     NSInteger rowCount, colCount, newRow, newCol;
-    
-    // Let the song id decide the position in the matrix.
     NSUInteger row = floor(songSerialNumber/ _colsPerRow);
     NSUInteger col = songSerialNumber- (row*_colsPerRow);
     
@@ -275,10 +299,12 @@ static NSInteger const kUndefinedID =  -1;
         } else
             newCol = colCount;
     }
+    
+    
     [_songCellMatrix renewRows:newRow columns:newCol];
     
+    // Resize the matrix to account for the newly added cell.
     [_songCellMatrix sizeToCells];
-    // How about sizeToFit?
     
     NSAssert([[_songCellMatrix cells] count] > songSerialNumber, @"Eeek. songID is bigger than the song cell matrix");
     
@@ -505,7 +531,7 @@ static NSInteger const kUndefinedID =  -1;
     NSInteger row, col;
     [_songCellMatrix getRow:&row column:&col ofCell:theCell];
     CGRect cellRect = [_songCellMatrix cellFrameAtRow:row column:col];
-    
+    return;
     CALayer *frontLayer = [self makeLayerWithImage:theImage atRect:cellRect];
     [[[[self songGridScrollView] documentView] layer] addSublayer:frontLayer];
     
@@ -941,6 +967,7 @@ static NSInteger const kUndefinedID =  -1;
 }
 
 
+
 // Called when a new row and column is selected either by moving mouse pointer or scrolling a new cell under it.
 - (void)songGridScrollViewDidChangeToRow:(NSInteger)theRow
                                andColumn:(NSInteger)theColumn
@@ -962,10 +989,11 @@ static NSInteger const kUndefinedID =  -1;
     
     [[self delegate] userSelectedSongID:songID];
     
-    // TEO! the cache should not use the userSelected methods. Make a separate wrapper.
+    // TEO The cache should not use the userSelected methods. Make a separate wrapper.
     // Update the song cache based on the new selection.
-    NSArray *theArray =[self buildCacheArray:1 forRow:theRow andColumn:theColumn];
-    [[self delegate] requestSongArrayPreload:theArray];
+    // TEOTEST
+//    NSArray *theArray =[self buildCacheArray:1 forRow:theRow andColumn:theColumn];
+//    [[self delegate] requestSongArrayPreload:theArray];
     
     // If a popover is shown, hide it.
     if ([[_songTimelineController songTimelinePopover] isShown]) {

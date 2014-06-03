@@ -184,6 +184,8 @@
 			children = (
 				AB85BC161875AB5200670905 /* TGMainViewController.h */,
 				AB85BC171875AB5200670905 /* TGMainViewController.m */,
+				AB85BC221875AB5200670905 /* TGSongGridViewController.h */,
+				AB85BC231875AB5200670905 /* TGSongGridViewController.m */,
 				AB56D9F218EC14D5005AB947 /* CAKeyframeAnimation+Parametric.h */,
 				AB56D9F318EC14D5005AB947 /* CAKeyframeAnimation+Parametric.m */,
 				AB85BC2C1875AB5200670905 /* TGSongUIViewController.h */,
@@ -196,8 +198,6 @@
 				AB85BC1F1875AB5200670905 /* TGSongCellMatrix.h */,
 				AB85BC201875AB5200670905 /* TGSongCellMatrix.m */,
 				AB85BC211875AB5200670905 /* TGSongGridView.xib */,
-				AB85BC221875AB5200670905 /* TGSongGridViewController.h */,
-				AB85BC231875AB5200670905 /* TGSongGridViewController.m */,
 				AB3E974F187BFDC700BECC09 /* song timeline */,
 			);
 			name = "Song grid panel";

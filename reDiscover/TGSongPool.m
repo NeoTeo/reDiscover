@@ -343,7 +343,10 @@ static int const kSSCheckCounterSize = 10;
                             // Only add the loaded url if it isn't already in the dictionary.
                             TEOSongData* teoData = [self.TEOSongDataDictionary objectForKey:[url absoluteString]];
                             if (!teoData) {
+                                // this needs to happen on the managed object context's own thread
+    [self.TEOmanagedObjectContext performBlock:^{
                                 newSong.TEOData = [TEOSongData insertItemWithURLString:[url absoluteString] inManagedObjectContext:self.TEOmanagedObjectContext];
+    }];
                             } else {
                                 newSong.TEOData = teoData;
 //                                NSLog(@"new song found %@",newSong.TEOData.title);
@@ -787,7 +790,7 @@ static int const kSSCheckCounterSize = 10;
         // Reset the counter.
         song.SSCheckCountdown = (NSUInteger)kSSCheckCounterSize;
         
-#pragma TEO finish off the timestamping of server requests instead of using the countdown.
+// TEO finish off the timestamping of server requests instead of using the countdown.
         NSDate *now = [NSDate date];
         [now timeIntervalSinceDate:now];
         [self sweetSpotFromServerForSong:song];
@@ -1324,8 +1327,12 @@ static int const kSSCheckCounterSize = 10;
 // end of Core Data methods
 
 - (void)preloadSongArray:(NSArray *)songArray {
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+    // sleep 8 million microseconds.
+//        NSLog(@"feeling drowsy...");
+    usleep(8000000);
+//        NSLog(@"Aaah, fresh again.");
     // TEO - calling this async'ly crashes in core data.
-//    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         // Be smarter about this. Keep track of what's cached (in a set) and only recache what's missing.
         // The loadTrackData won't reload a loaded track but we can probably still save some loops.
         for (id songID in songArray) {
@@ -1344,6 +1351,7 @@ static int const kSSCheckCounterSize = 10;
                 //            NSLog(@"preloadSongArray got data! %@",theData);
             }];
         }
+    });
 }
 //- (void)preloadSongArray:(NSArray *)songArray {
 //    NSLog(@"preloading");

@@ -82,6 +82,8 @@
 // TGSongTimelineViewControllerDelegate methods
 - (void)userSelectedSweetSpotMarkerAtIndex:(NSUInteger)ssIndex;
 
+- (void)runTest;
+
 @end
 
 @protocol TGSongGridViewControllerDelegate <NSObject>
