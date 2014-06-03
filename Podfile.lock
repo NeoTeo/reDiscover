@@ -1,16 +1,13 @@
 PODS:
   - chromaprint (1.2.16)
   - ffmpegtest (1.0.2)
-  - pop (1.0.5)
 
 DEPENDENCIES:
   - chromaprint (= 1.2.16)
   - ffmpegtest (= 1.0.2)
-  - pop (~> 1.0)
 
 SPEC CHECKSUMS:
   chromaprint: a0d8fd03871e7298aaadfaa629c17e934127f49b
   ffmpegtest: 16d744c082b8e7eb623a3dde3b2dd6032f2ca8ba
-  pop: 75fa2b33934200a8a68abb449ac1726fcf7e43b9
 
 COCOAPODS: 0.33.1

@@ -1,8 +1,6 @@
-CLANG_CXX_LANGUAGE_STANDARD = c++11
-CLANG_CXX_LIBRARY = libc++
 GCC_PREPROCESSOR_DEFINITIONS = $(inherited) COCOAPODS=1 HAVE_CONFIG_H=1
-HEADER_SEARCH_PATHS = "${PODS_ROOT}/Headers" "${PODS_ROOT}/Headers/chromaprint" "${PODS_ROOT}/Headers/ffmpegtest" "${PODS_ROOT}/Headers/pop" ${PODS_ROOT}/ffmpegtest/includes/**
+HEADER_SEARCH_PATHS = "${PODS_ROOT}/Headers" "${PODS_ROOT}/Headers/chromaprint" "${PODS_ROOT}/Headers/ffmpegtest" ${PODS_ROOT}/ffmpegtest/includes/**
 LIBRARY_SEARCH_PATHS = /usr/local/lib "$(PODS_ROOT)/ffmpegtest/libraries" "$(PODS_ROOT)/ffmpegtest/libraries" "$(PODS_ROOT)/ffmpegtest/libraries" "$(PODS_ROOT)/ffmpegtest/libraries" "$(PODS_ROOT)/ffmpegtest/libraries" "$(PODS_ROOT)/ffmpegtest/libraries" "$(PODS_ROOT)/ffmpegtest/libraries" "$(PODS_ROOT)/ffmpegtest/libraries" "$(PODS_ROOT)/ffmpegtest/libraries" "$(PODS_ROOT)/ffmpegtest/libraries" "$(PODS_ROOT)/ffmpegtest/libraries" "$(PODS_ROOT)/ffmpegtest/libraries" "$(PODS_ROOT)/ffmpegtest/libraries"
-OTHER_CFLAGS = $(inherited) -isystem "${PODS_ROOT}/Headers" -isystem "${PODS_ROOT}/Headers/chromaprint" -isystem "${PODS_ROOT}/Headers/ffmpegtest" -isystem "${PODS_ROOT}/Headers/pop"
+OTHER_CFLAGS = $(inherited) -isystem "${PODS_ROOT}/Headers" -isystem "${PODS_ROOT}/Headers/chromaprint" -isystem "${PODS_ROOT}/Headers/ffmpegtest"
 OTHER_LDFLAGS = -ObjC -lavcodec -lavdevice -lavfilter -lavformat -lavresample -lavutil -lc++ -lfaac -lmp3lame -lpostproc -lswresample -lswscale -lxvidcore -lyasm -framework Accelerate
 PODS_ROOT = ${SRCROOT}/Pods

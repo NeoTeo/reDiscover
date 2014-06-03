@@ -531,6 +531,7 @@ static NSInteger const kUndefinedID =  -1;
     NSInteger row, col;
     [_songCellMatrix getRow:&row column:&col ofCell:theCell];
     CGRect cellRect = [_songCellMatrix cellFrameAtRow:row column:col];
+#pragma warning added a test return here
     return;
     CALayer *frontLayer = [self makeLayerWithImage:theImage atRect:cellRect];
     [[[[self songGridScrollView] documentView] layer] addSublayer:frontLayer];

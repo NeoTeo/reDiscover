@@ -1,6 +1,6 @@
 #include "Pods-ffmpegtest.xcconfig"
 GCC_PREPROCESSOR_DEFINITIONS = COCOAPODS=1
-HEADER_SEARCH_PATHS = "${PODS_ROOT}/BuildHeaders" "${PODS_ROOT}/BuildHeaders/ffmpegtest" "${PODS_ROOT}/Headers" "${PODS_ROOT}/Headers/chromaprint" "${PODS_ROOT}/Headers/ffmpegtest" "${PODS_ROOT}/Headers/pop" ${PODS_FFMPEGTEST_HEADER_SEARCH_PATHS}
+HEADER_SEARCH_PATHS = "${PODS_ROOT}/BuildHeaders" "${PODS_ROOT}/BuildHeaders/ffmpegtest" "${PODS_ROOT}/Headers" "${PODS_ROOT}/Headers/chromaprint" "${PODS_ROOT}/Headers/ffmpegtest" ${PODS_FFMPEGTEST_HEADER_SEARCH_PATHS}
 LIBRARY_SEARCH_PATHS = ${PODS_FFMPEGTEST_LIBRARY_SEARCH_PATHS}
 OTHER_LDFLAGS = -ObjC ${PODS_FFMPEGTEST_OTHER_LDFLAGS}
 PODS_ROOT = ${SRCROOT}
