@@ -7,11 +7,13 @@
 //
 
 import Foundation
+import AppKit
 
 @objc
 
 protocol SongPoolAccessProtocol {
     func UUIDStringForSongID(songID: AnyObject) -> NSString
+    func releasesForSongID(songID: AnyObject) -> NSData
 }
 
 @objc
@@ -29,28 +31,39 @@ class CoverArtArchiveWebFetcher : NSObject {
         
         if songUUID != nil {
             println("We have an ID \(songUUID)")
+            requestAlbumArtFromWebForSong(songID, imageHandler: imageHandler)
+            
         } else {
             println(":( No ID")
         }
     }
     
+    func requestAlbumArtFromWebForSong(songID: AnyObject, imageHandler: AnyObject) {
+        var theImage: NSImage?
+        var releases = NSKeyedUnarchiver.unarchiveObjectWithData(delegate?.releasesForSongID(songID)) as? NSArray
+        var lenient = 0
+        
+        println(releases)
+        // Go through various levels of leniency for album art.
+//        var myReleases: AnyObject[] = releases!
+        
+    }
 }
 
 
 /* 
 -(void)requestCoverArtForSong:(TGSong*)song withHandler:(void (^)(NSImage*))imageHandler {
 
-// If there's no uuid, request one and drop out.
-if (song.TEOData.uuid != NULL) {
-[self requestAlbumArtFromWebForSong:song withHandler:imageHandler];
-} else {
-[song setFingerPrintStatus:kFingerPrintStatusRequested];
-[self requestFingerPrintForSong:song withHandler:^(NSString* fingerPrint){
+    // If there's no uuid, request one and drop out.
+    if (song.TEOData.uuid != NULL) {
+        [self requestAlbumArtFromWebForSong:song withHandler:imageHandler];
+    } else {
+        [song setFingerPrintStatus:kFingerPrintStatusRequested];
+        [self requestFingerPrintForSong:song withHandler:^(NSString* fingerPrint){
 
-[self requestAlbumArtFromWebForSong:song withHandler:imageHandler];
-
-}];
-}
+            [self requestAlbumArtFromWebForSong:song withHandler:imageHandler];
+        }];
+    }
 }
 
 -(NSString*)testicle {

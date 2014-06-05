@@ -495,7 +495,7 @@ static int const kSSCheckCounterSize = 10;
                 // 3. Look up track then album then artist name online.
                 CoverArtArchiveWebFetcher* caaf = [[CoverArtArchiveWebFetcher alloc] init];
                 caaf.delegate = self;
-                [caaf requestCoverArtForSong:theSong.TEOData.urlString imageHandler:^(NSImage* theImage) {
+                [caaf requestCoverArtForSong:songID imageHandler:^(NSImage* theImage) {
                     if (theImage != nil) {
                         
                         NSLog(@"got image from the internets!");
@@ -735,6 +735,9 @@ static int const kSSCheckCounterSize = 10;
     return [[self songForID:songID] songSweetSpots];
 }
 
+- (NSData*)releasesForSongID:(id)songID {
+    return [self songForID:songID].TEOData.songReleases;
+}
 
 - (NSString *)UUIDStringForSongID:(id)songID {
     if (![self validSongID:songID]) return nil;
