@@ -5,6 +5,7 @@
 //  Created by Teo Sartori on 02/05/2013.
 //  Copyright (c) 2013 Teo Sartori. All rights reserved.
 //
+@import AppKit;
 
 #import "TGFingerPrinter.h"
 
@@ -53,7 +54,6 @@
         }];
     }
 }
-
 
 -(void)requestAlbumArtFromWebForSong:(TGSong*)song withHandler:(void (^)(NSImage*))imageHandler {
     NSImage* theImage;

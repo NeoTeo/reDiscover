@@ -10,12 +10,16 @@
 #import <Foundation/Foundation.h>
 #import "TGPlaylistViewController.h"
 
+
 // class forward declaration
 @class TGSong;
 @class TGFingerPrinter;
 
+@class CoverArtArchiveWebFetcher;
+
 // protocol forward declaration
 @protocol TGSongPoolDelegate;
+@protocol SongPoolAccessProtocol;
 
 // The public interface declaration doesn't implement the TGSongDelegate. The private interface declaration in the .m will.
 @interface TGSongPool : NSObject <TGPlaylistViewControllerDelegate>

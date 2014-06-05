@@ -11,6 +11,7 @@
 		AB301E7619050C830093B654 /* TEOSongData.m in Sources */ = {isa = PBXBuildFile; fileRef = AB301E7519050C830093B654 /* TEOSongData.m */; };
 		AB3E9752187C20D600BECC09 /* TGPlaylistCellView.m in Sources */ = {isa = PBXBuildFile; fileRef = AB3E9751187C20D600BECC09 /* TGPlaylistCellView.m */; };
 		AB56D9F418EC14D5005AB947 /* CAKeyframeAnimation+Parametric.m in Sources */ = {isa = PBXBuildFile; fileRef = AB56D9F318EC14D5005AB947 /* CAKeyframeAnimation+Parametric.m */; };
+		AB71279B19407C8E0002B1F8 /* CoverArtArchiveWebFetcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB71279A19407C8E0002B1F8 /* CoverArtArchiveWebFetcher.swift */; };
 		AB85BBD71875AACF00670905 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AB85BBD61875AACF00670905 /* Cocoa.framework */; };
 		AB85BBE11875AACF00670905 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = AB85BBDF1875AACF00670905 /* InfoPlist.strings */; };
 		AB85BBE31875AACF00670905 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = AB85BBE21875AACF00670905 /* main.m */; };
@@ -66,6 +67,8 @@
 		AB3E9751187C20D600BECC09 /* TGPlaylistCellView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TGPlaylistCellView.m; sourceTree = "<group>"; };
 		AB56D9F218EC14D5005AB947 /* CAKeyframeAnimation+Parametric.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "CAKeyframeAnimation+Parametric.h"; sourceTree = "<group>"; };
 		AB56D9F318EC14D5005AB947 /* CAKeyframeAnimation+Parametric.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "CAKeyframeAnimation+Parametric.m"; sourceTree = "<group>"; };
+		AB71279919407C8D0002B1F8 /* reDiscover-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "reDiscover-Bridging-Header.h"; sourceTree = "<group>"; };
+		AB71279A19407C8E0002B1F8 /* CoverArtArchiveWebFetcher.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CoverArtArchiveWebFetcher.swift; sourceTree = "<group>"; };
 		AB85BBD31875AACF00670905 /* reDiscover.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = reDiscover.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		AB85BBD61875AACF00670905 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
 		AB85BBD91875AACF00670905 /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
@@ -208,6 +211,8 @@
 			children = (
 				AB85BC0F1875AB5200670905 /* TGFingerPrinter.h */,
 				AB85BC101875AB5200670905 /* TGFingerPrinter.m */,
+				AB71279A19407C8E0002B1F8 /* CoverArtArchiveWebFetcher.swift */,
+				AB71279919407C8D0002B1F8 /* reDiscover-Bridging-Header.h */,
 				AB85BC2E1875AB5200670905 /* TGSongUserData.h */,
 				AB85BC2F1875AB5200670905 /* TGSongUserData.m */,
 				AB85BC131875AB5200670905 /* TGIdleTimer.h */,
@@ -483,6 +488,7 @@
 				AB85BC511875AB5200670905 /* TGSweetSpotControl.m in Sources */,
 				AB3E9752187C20D600BECC09 /* TGPlaylistCellView.m in Sources */,
 				AB85BC541875AB5200670905 /* TGTimelineTransformer.m in Sources */,
+				AB71279B19407C8E0002B1F8 /* CoverArtArchiveWebFetcher.swift in Sources */,
 				AB85BC461875AB5200670905 /* TGSong.m in Sources */,
 				AB85BBE31875AACF00670905 /* main.m in Sources */,
 				AB85BC401875AB5200670905 /* TGIdleTimer.m in Sources */,
@@ -613,15 +619,19 @@
 			baseConfigurationReference = B512DB84B1174F868791F7EF /* Pods.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
 				COMBINE_HIDPI_IMAGES = YES;
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "reDiscover/reDiscover-Prefix.pch";
 				INFOPLIST_FILE = "reDiscover/reDiscover-Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
 				LIBRARY_SEARCH_PATHS = "$(inherited)/**";
 				MACOSX_DEPLOYMENT_TARGET = 10.9;
 				OTHER_LDFLAGS = "$(inherited)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "reDiscover/reDiscover-Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				USER_HEADER_SEARCH_PATHS = "$(inherited)/**";
 				WRAPPER_EXTENSION = app;
 			};
@@ -632,15 +642,18 @@
 			baseConfigurationReference = B512DB84B1174F868791F7EF /* Pods.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
 				COMBINE_HIDPI_IMAGES = YES;
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "reDiscover/reDiscover-Prefix.pch";
 				INFOPLIST_FILE = "reDiscover/reDiscover-Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
 				LIBRARY_SEARCH_PATHS = "$(inherited)/**";
 				MACOSX_DEPLOYMENT_TARGET = 10.9;
 				OTHER_LDFLAGS = "$(inherited)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "reDiscover/reDiscover-Bridging-Header.h";
 				USER_HEADER_SEARCH_PATHS = "$(inherited)/**";
 				WRAPPER_EXTENSION = app;
 			};

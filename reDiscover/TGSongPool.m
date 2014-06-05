@@ -16,8 +16,10 @@
 #import "TGSongUserData.h"
 #import "TEOSongData.h"
 
+#import "rediscover-swift.h"
+
 // The private interface declaration overrides the public one to declare conformity to the Delegate protocols.
-@interface TGSongPool () <TGSongDelegate,TGFingerPrinterDelegate>
+@interface TGSongPool () <TGSongDelegate,TGFingerPrinterDelegate,SongPoolAccessProtocol>
 @end
 
 // constant definitions
@@ -491,7 +493,9 @@ static int const kSSCheckCounterSize = 10;
                 }
                 
                 // 3. Look up track then album then artist name online.
-                [songFingerPrinter requestCoverArtForSong:theSong withHandler:^(NSImage* theImage) {
+                CoverArtArchiveWebFetcher* caaf = [[CoverArtArchiveWebFetcher alloc] init];
+                caaf.delegate = self;
+                [caaf requestCoverArtForSong:theSong.TEOData.urlString imageHandler:^(NSImage* theImage) {
                     if (theImage != nil) {
                         
                         NSLog(@"got image from the internets!");
@@ -510,6 +514,26 @@ static int const kSSCheckCounterSize = 10;
                         imageHandler(nil);
                     }
                 }];
+                
+//                [songFingerPrinter requestCoverArtForSong:theSong withHandler:^(NSImage* theImage) {
+//                    if (theImage != nil) {
+//                        
+//                        NSLog(@"got image from the internets!");
+//                        // Store the image in the local store so we won't have to re-fetch it from the file.
+//                        [_artArray addObject:theImage];
+//                        
+//                        // Add the art index to the song.
+//                        theSong.artID = [_artArray count]-1;
+//                        imageHandler(theImage);
+//                        
+//                        // We've succeeded, so drop out.
+//                        return;
+//                    } else {
+//                        NSLog(@"got bupkiss from the webs");
+//                        // Finally, if no image was found by any of the methods, we call the given image handler with nil;
+//                        imageHandler(nil);
+//                    }
+//                }];
                 
                 
             }];
@@ -714,9 +738,7 @@ static int const kSSCheckCounterSize = 10;
 
 - (NSString *)UUIDStringForSongID:(id)songID {
     if (![self validSongID:songID]) return nil;
-    
     return [self songForID:songID].TEOData.uuid;
-//    return [[self songForID:songID] songUUIDString];
 }
 
 
