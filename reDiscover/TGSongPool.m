@@ -735,6 +735,10 @@ static int const kSSCheckCounterSize = 10;
     return [[self songForID:songID] songSweetSpots];
 }
 
+- (NSString*)albumForSongID:(id)songID {
+    return [self songForID:songID].TEOData.album;
+}
+
 - (NSData*)releasesForSongID:(id)songID {
     return [self songForID:songID].TEOData.songReleases;
 }

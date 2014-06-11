@@ -119,6 +119,7 @@
 - (NSArray *)sweetSpotsForSongID:(id)songID;
 - (NSURL *)URLForSongID:(id)songID;
 - (NSData*)releasesForSongID:(id)songID;
+- (NSString*)albumForSongID:(id)songID;
 
 // TEO should this not be private?
 - (NSString *)findUUIDOfSongWithURL:(NSURL *)songURL;

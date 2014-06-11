@@ -118,7 +118,7 @@
     
 //    NSLog(@"loadTrackDataWithCallbackOnCompletion for song %@ and wantsCallback %@",[self songID],wantsCallback?@"YES":@"NO");
     //NSLog(@"I gots %lu",(unsigned long)[artworks count]);
-    
+    NSAssert(songAsset, @"Song asset is missing!");
     [songAsset loadValuesAsynchronouslyForKeys:keys completionHandler:^() {
         NSError *error = nil;
         AVKeyValueStatus assetStatus = [songAsset statusOfValueForKey:@"tracks"
