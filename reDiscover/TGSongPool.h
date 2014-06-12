@@ -57,6 +57,8 @@
     NSNumber *requestedPlayheadPosition;
 }
 
+@property CoverArtArchiveWebFetcher* coverArtWebFetcher;
+
 @property id<TGSongPoolDelegate> delegate;
 
 // Holds the art associated with the songs. Songs will hold indices into the art array.

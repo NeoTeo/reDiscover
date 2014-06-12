@@ -79,7 +79,7 @@ std::string FingerprintCompressor::Compress(const vector<int32_t> &data, int alg
 			ProcessSubfingerprint(data[i] ^ data[i - 1]);
 		}
 	}
-	int length = data.size();
+	unsigned long length = data.size();
 	m_result.resize(4);
 	m_result[0] = algorithm & 255;
 	m_result[1] = (length >> 16) & 255;

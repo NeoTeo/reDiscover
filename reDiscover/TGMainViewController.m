@@ -12,7 +12,6 @@
 #import "TGSongGridViewController.h"
 #import "TGDropView.h"
 #import "TGSongPool.h"
-#import "TGSongCellMatrix.h"
 #import "TGPlaylistViewController.h"
 #import "TGSongInfoViewController.h"
 #import "TGSongTimelineViewController.h"
@@ -461,7 +460,6 @@
 //    CGFloat blueComponent = (colourCode & 0xFF) / 255.0;
 //    CGFloat alphaComponent = 0.25;
     
-//    TGGridCell *existingCell = [[[_songGridController songCellMatrix] cells] objectAtIndex:songID];
 //
 //    
 //    [existingCell setTintColour:[NSColor colorWithDeviceRed:redComponent green:greenComponent blue:blueComponent alpha:alphaComponent]];

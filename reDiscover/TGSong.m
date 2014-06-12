@@ -150,6 +150,12 @@
                 [self setLoadStatus:kLoadStatusCancelled];
                 break;
             }
+            case AVKeyValueStatusUnknown:
+                NSLog(@"Status for song duration unknown");
+                break;
+            case AVKeyValueStatusLoading:
+                NSLog(@"Status for song duration loading");
+
         }
         
         assetStatus = [songAsset statusOfValueForKey:@"duration"
@@ -176,6 +182,14 @@
                 [self setSongStatus:kSongStatusFailed];
                 break;
             }
+            case AVKeyValueStatusCancelled:
+                NSLog(@"Status for song duration cancelled");
+                break;
+            case AVKeyValueStatusUnknown:
+                NSLog(@"Status for song duration unknown");
+                break;
+            case AVKeyValueStatusLoading:
+                NSLog(@"Status for song duration loading");
         }
         
         if ((wantsCallback == YES) && [self songStatus] == kSongStatusReady) {

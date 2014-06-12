@@ -18,6 +18,9 @@
 #import "TGSongCellMatrix.h"
 #import "CAKeyframeAnimation+Parametric.h"
 
+#include <os/trace.h>
+#include <os/activity.h>
+
 // Trying out some pop animation.
 //#import <POP/POP.h>
 
@@ -174,14 +177,15 @@
     *col = songID - (*row) * _colsPerRow;
 }
 
-
+// I think this wants to run on the main thread otherwise it conflicts with the view layer enumeration whenever the growMatrix is called.
 - (void)setCoverImage:(NSImage *)theImage forSongWithID:(id)songID {
-//    return;
+    os_activity_set_breadcrumb("setCoverImage here");
+
     // First convert the songID to the matrix index.
     NSInteger cellTag = [_songCellMatrix.cellTagToSongID indexOfObject:songID];
     NSAssert(cellTag < [_songCellMatrix cells].count , @"cellTag out of bounds");
     TGGridCell * theCell = [_songCellMatrix cellWithTag:cellTag];
-    
+    // TEO This should only be animated if the cover is visible on screen.
     // If we are setting the cover for the currently playing song do a pop animation,
     // otherwise just fade it in.
     if ([songID isEqualTo:[_delegate lastRequestedSongID]]) {
@@ -299,7 +303,6 @@ static NSInteger const kUndefinedID =  -1;
         } else
             newCol = colCount;
     }
-    
     
     [_songCellMatrix renewRows:newRow columns:newCol];
     
@@ -507,21 +510,23 @@ static NSInteger const kUndefinedID =  -1;
     fadeAnim.duration = 1.0;
     
     CALayer* frontLayer = [self makeLayerWithImage:theImage atRect:cellRect];
-    [[[[self songGridScrollView] documentView] layer] addSublayer:frontLayer];
-    
-    // Flush layer to screen.
-    [CATransaction commit];
-    
-    [NSAnimationContext runAnimationGroup:^(NSAnimationContext *context){
+
+        [[[[self songGridScrollView] documentView] layer] addSublayer:frontLayer];
+
+        // Flush layer to screen.
+        [CATransaction commit];
         
-        [frontLayer addAnimation:fadeAnim forKey:@"opacity"];
-//        theCell.image = nil;
+        [NSAnimationContext runAnimationGroup:^(NSAnimationContext *context){
+            
+            [frontLayer addAnimation:fadeAnim forKey:@"opacity"];
+    //        theCell.image = nil;
+            
+        }completionHandler:^{
         
-    }completionHandler:^{
-    
-        theCell.image = theImage;
-        [frontLayer removeFromSuperlayer];
-    }];
+            theCell.image = theImage;
+            [frontLayer removeFromSuperlayer];
+        }];
+//    });
 }
 
 // This animation will push the blank cover image into the screen whilst its cover image fades in and it pops back up to fill its frame.
@@ -529,26 +534,30 @@ static NSInteger const kUndefinedID =  -1;
     
     // First we get the cell's rect.
     NSInteger row, col;
+    NSLog(@"Asking for row and col of the cell %ld",(long)theCell.tag);
     [_songCellMatrix getRow:&row column:&col ofCell:theCell];
+    NSLog(@"...and got %ld, %ld",(long)row,(long)col);
     CGRect cellRect = [_songCellMatrix cellFrameAtRow:row column:col];
-#pragma warning added a test return here
-    return;
     CALayer *frontLayer = [self makeLayerWithImage:theImage atRect:cellRect];
-    [[[[self songGridScrollView] documentView] layer] addSublayer:frontLayer];
     
-    // Flush layer to screen.
-    [CATransaction commit];
+    // This breaks if not running on main thread. But it also causes uncommitted CATransactions to occur :(
+
+        [[[[self songGridScrollView] documentView] layer] addSublayer:frontLayer];
     
-    [NSAnimationContext runAnimationGroup:^(NSAnimationContext *context){
+        // Flush layer to screen.
+        [CATransaction commit];
         
-        [frontLayer addAnimation:_pushBounceAnimation forKey:@"scale"];
-        theCell.image = nil;
+        [NSAnimationContext runAnimationGroup:^(NSAnimationContext *context){
+            
+            [frontLayer addAnimation:_pushBounceAnimation forKey:@"scale"];
+            theCell.image = nil;
+            
+        }completionHandler:^{
         
-    }completionHandler:^{
-    
-        theCell.image = theImage;
-        [frontLayer removeFromSuperlayer];
-    }];
+            theCell.image = theImage;
+            [frontLayer removeFromSuperlayer];
+        }];
+//    });
 }
 
 
@@ -565,6 +574,7 @@ static NSInteger const kUndefinedID =  -1;
     [frontView setCanDrawSubviewsIntoLayer:YES];
     [frontView setLayerContentsRedrawPolicy:NSViewLayerContentsRedrawOnSetNeedsDisplay];
     
+    // Breaks if not done on main thread.
     [[[self songGridScrollView] documentView] addSubview:frontView];
     
     // We want the animation to occur from the center of the view layer.
@@ -975,7 +985,7 @@ static NSInteger const kUndefinedID =  -1;
                                withSpeedVector:(NSPoint)theSpeed {
     
     
-    NSLog(@"The selection speed %@",NSStringFromPoint(theSpeed));
+//    NSLog(@"The selection speed %@",NSStringFromPoint(theSpeed));
     
     NSRect theRect = [_songCellMatrix convertRect:[_songCellMatrix cellFrameAtRow:theRow column:theColumn] toView:_songGridScrollView];
     [_songUIViewController setUIPosition:theRect.origin withPopAnimation:YES];

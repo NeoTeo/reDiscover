@@ -39,8 +39,8 @@ static const char kBase64CharsReversed[128] = {
 
 string Chromaprint::Base64Encode(const string &orig)
 {
-	int size = orig.size();
-	int encoded_size = (size * 4 + 2) / 3;
+	unsigned long size = orig.size();
+	unsigned long encoded_size = (size * 4 + 2) / 3;
 	string encoded(encoded_size, '\x00');
 	const unsigned char *src = (unsigned char *)orig.data();
 	string::iterator dest = encoded.begin();
@@ -63,7 +63,7 @@ string Chromaprint::Base64Decode(const string &encoded)
 {
 	string str((3 * encoded.size()) / 4, '\x00');
 	const unsigned char *src = (const unsigned char *)encoded.data();
-	int size = encoded.size();
+	unsigned long size = encoded.size();
 	string::iterator dest = str.begin();
 	while (size > 0) {
 		int b0 = kBase64CharsReversed[*src++];

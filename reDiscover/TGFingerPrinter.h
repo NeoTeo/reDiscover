@@ -27,10 +27,11 @@
 //- (NSArray *)requestFingerPrintForSongURL:(NSURL *)songURL;
 //- (NSArray *)requestFingerPrintForSong:(TGSong *)song;
 - (void)requestFingerPrintForSong:(TGSong *)song;
+- (void)requestFingerPrintForSong:(TGSong *)song withHandler:(void (^)(NSString*))fingerprintHandler;
+
 - (NSInteger)decodeAudioFile:(NSURL *)fileURL forContext:(ChromaprintContext *)theContext ofLength:(NSInteger)maxLength andDuration:(int *)duration;
 
-- (void)requestFingerPrintForSong:(TGSong *)song withHandler:(void (^)(NSString*))fingerprintHandler;
--(void)requestCoverArtForSong:(TGSong*)song withHandler:(void (^)(NSImage*))imageHandler;
+//-(void)requestCoverArtForSong:(TGSong*)song withHandler:(void (^)(NSImage*))imageHandler;
 
 @property id<TGFingerPrinterDelegate> delegate;
 

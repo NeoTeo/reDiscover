@@ -90,7 +90,12 @@ static int const kSSCheckCounterSize = 10;
         // Register to be notified of idle time starting and ending.
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(idleTimeBegins) name:@"TGIdleTimeBegins" object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(idleTimeEnds) name:@"TGIdleTimeEnds" object:nil];
+        
+        _coverArtWebFetcher = [[CoverArtArchiveWebFetcher alloc] init];
+        _coverArtWebFetcher.delegate = self;
+
     }
+    
     return self;
 }
 
@@ -412,7 +417,7 @@ static int const kSSCheckCounterSize = 10;
 // This method will attempt to find the image for the song and, if found, will pass it to the given imageHandler block.
 - (void)requestImageForSongID:(id)songID withHandler:(void (^)(NSImage *))imageHandler {
     
-    NSLog(@"request image!");
+//    NSLog(@"request image!");
     
     // First we should check if the song has an image stashed in the songpool local/temporary store.
     TGSong * theSong = [self songForID:songID];
@@ -432,7 +437,7 @@ static int const kSSCheckCounterSize = 10;
         if (tmpImage != nil) {
             // Store the image in the local store so we won't have to re-fetch it from the file.
             [_artArray addObject:tmpImage];
-            NSLog(@"Adding imaage to art array.");
+//            NSLog(@"Adding imaage to art array.");
             
             // Add the art index to the song.
             theSong.artID = [_artArray count]-1;
@@ -459,7 +464,7 @@ static int const kSSCheckCounterSize = 10;
                     if (aSong && ![aSong isEqualTo:theSong]) {
                         // Here we can check the song's artID to see if it already has album art.
                         if ((aSong.artID != -1) && [_artArray objectAtIndex:aSong.artID] ) {
-                            NSLog(@"Got cover art from another song in the same album!");
+//                            NSLog(@"Got cover art from another song in the same album!");
             
                             // Add the art index to the song.
                             theSong.artID = aSong.artID;
@@ -493,9 +498,9 @@ static int const kSSCheckCounterSize = 10;
                 }
                 
                 // 3. Look up track then album then artist name online.
-                CoverArtArchiveWebFetcher* caaf = [[CoverArtArchiveWebFetcher alloc] init];
-                caaf.delegate = self;
-                [caaf requestCoverArtForSong:songID imageHandler:^(NSImage* theImage) {
+                
+                
+                [self requestCoverArtForSong:songID withHandler:^(NSImage* theImage) {
                     if (theImage != nil) {
                         
                         NSLog(@"got image from the internets!");
@@ -515,31 +520,26 @@ static int const kSSCheckCounterSize = 10;
                     }
                 }];
                 
-//                [songFingerPrinter requestCoverArtForSong:theSong withHandler:^(NSImage* theImage) {
-//                    if (theImage != nil) {
-//                        
-//                        NSLog(@"got image from the internets!");
-//                        // Store the image in the local store so we won't have to re-fetch it from the file.
-//                        [_artArray addObject:theImage];
-//                        
-//                        // Add the art index to the song.
-//                        theSong.artID = [_artArray count]-1;
-//                        imageHandler(theImage);
-//                        
-//                        // We've succeeded, so drop out.
-//                        return;
-//                    } else {
-//                        NSLog(@"got bupkiss from the webs");
-//                        // Finally, if no image was found by any of the methods, we call the given image handler with nil;
-//                        imageHandler(nil);
-//                    }
-//                }];
-                
-                
             }];
         }
         
     }];
+}
+
+-(void)requestCoverArtForSong:(id)songID withHandler:(void (^)(NSImage*))imageHandler {
+    
+    TGSong * theSong = [self songForID:songID];
+    // If there's no uuid, request one and drop out.
+    if (theSong.TEOData.uuid != NULL) {
+        [_coverArtWebFetcher requestAlbumArtFromWebForSong:songID imageHandler:imageHandler];
+    } else {
+        [theSong setFingerPrintStatus:kFingerPrintStatusRequested];
+        [songFingerPrinter requestFingerPrintForSong:theSong withHandler:^(NSString* fingerPrint){
+            
+            [_coverArtWebFetcher requestAlbumArtFromWebForSong:songID imageHandler:imageHandler];
+            
+        }];
+    }
 }
 
 // Search for image files in the directory containing the given URL that match a particular pattern.
@@ -1419,7 +1419,7 @@ static int const kSSCheckCounterSize = 10;
 // Now called in requestEmbeddedMetaData.
 //    [aSong loadSongMetadata];
     
-    NSLog(@"loadTrackData called from requestSongPlayback");
+//    NSLog(@"loadTrackData called from requestSongPlayback");
     // Asynch'ly start loading the track data for aSong. songReadyForPlayback will be called back when the song is good to go.
     [aSong loadTrackDataWithCallBackOnCompletion:YES];
 }
@@ -1453,8 +1453,8 @@ static int const kSSCheckCounterSize = 10;
         NSNumber *theSongDuration = [NSNumber numberWithDouble:[currentlyPlayingSong getDuration]];
         [self setValue:theSongDuration forKey:@"currentSongDuration"];
         
-        NSString* test = nextSong.TEOData.fingerprint;
-        NSLog(@"the fingerprint %@",test);
+//        NSString* test = nextSong.TEOData.fingerprint;
+//        NSLog(@"the fingerprint %@",test);
         // Song fingerprints are generated and UUID fetched during idle time in the background.
         // However, if the song about to be played hasn't got a UUID or fingerprint, an async request will be initiated here.
 //        if ([nextSong songUUIDString] == NULL) {

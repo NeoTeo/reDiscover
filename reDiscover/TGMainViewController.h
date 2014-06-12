@@ -39,7 +39,6 @@
 }
 
 @property TGSongPool *currentSongPool;
-//@property TGSongCellMatrix *songCellMatrix;
 @property songPositionClass *songPosGlue;
 @property NSObjectController *myObjectController;
 
