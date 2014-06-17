@@ -227,8 +227,7 @@
 }
 */
 
-- (BOOL)loadSongMetadata {
-    
+- (BOOL)loadSongMetadata {    
     NSString *tmpString = [self.TEOData.urlString stringByDeletingPathExtension];
     NSString* fileName = [tmpString lastPathComponent];
     tmpString =[tmpString stringByDeletingLastPathComponent];
@@ -388,6 +387,7 @@
     return 0;
 }
 
+// TEO Never called.
 // Looks in the common metadata of the asset for the given string.
 - (NSString *)getStringValueForStringKey:(NSString *)theString fromAsset:(AVURLAsset *)theAsset
 {
@@ -396,7 +396,10 @@
     for (AVMetadataItem *item in songMeta ) {
         NSString *key = [item commonKey];
         NSString *value = [item stringValue];
-        
+        if ([key isNotEqualTo:@"artwork"]) {
+            NSLog(@"songMeta key:%@ value:%@",key,value);
+        }
+
         if ([key isEqualToString:theString]) {
             return value;
         }

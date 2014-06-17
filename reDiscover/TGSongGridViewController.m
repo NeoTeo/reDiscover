@@ -265,12 +265,12 @@ static NSInteger const kUndefinedID =  -1;
     
         for (int row=0; row < rowCount; row++) {
             for (int col=0; col < colCount; col++) {
-                NSRect cellRect = [_songCellMatrix cellFrameAtRow:row column:col];
-                [_songCellMatrix scrollRectToVisible:cellRect];
+//                NSRect cellRect = [_songCellMatrix cellFrameAtRow:row column:col];
+//                [_songCellMatrix scrollRectToVisible:cellRect];
                 
 //                NSLog(@"the frame of the cell at %d,%d is %@",row,col,NSStringFromRect(cellRect));
                 
-//                [_songCellMatrix scrollCellToVisibleAtRow:row column:col];
+                [_songCellMatrix scrollCellToVisibleAtRow:row column:col];
 //                [_songCellMatrix display];
                 [_songCellMatrix setNeedsDisplay];
                 [_songGridScrollView setNeedsDisplay:YES];
