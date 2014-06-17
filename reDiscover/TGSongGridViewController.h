@@ -32,6 +32,10 @@
     NSMutableArray *unmappedSongIDArray;
     NSTimeInterval popupTimerStart;
     NSMutableSet *songIDCache;
+    
+    // A queue for running the test on
+    dispatch_queue_t testingQueue;
+
 }
 
 @property id<TGSongGridViewControllerDelegate> delegate;
@@ -83,6 +87,7 @@
 - (void)userSelectedSweetSpotMarkerAtIndex:(NSUInteger)ssIndex;
 
 - (void)runTest;
+
 
 @end
 

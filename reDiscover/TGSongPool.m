@@ -18,6 +18,7 @@
 
 #import "rediscover-swift.h"
 
+
 // The private interface declaration overrides the public one to declare conformity to the Delegate protocols.
 @interface TGSongPool () <TGSongDelegate,TGFingerPrinterDelegate,SongPoolAccessProtocol>
 @end
@@ -36,7 +37,12 @@ static int const kSSCheckCounterSize = 10;
         requestedPlayheadPosition = [NSNumber numberWithDouble:0];
         songPoolStartCapacity = 25;
         songPoolDictionary = [[NSMutableDictionary alloc] initWithCapacity:songPoolStartCapacity];
-        
+
+        // Make url queues and make them serial.
+        urlLoadingOpQueue = [[NSOperationQueue alloc] init];
+        [urlLoadingOpQueue setMaxConcurrentOperationCount:1];
+        urlCachingOpQueue = [[NSOperationQueue alloc] init];
+        [urlCachingOpQueue setMaxConcurrentOperationCount:1];
         
         playbackQueue = dispatch_queue_create("playback queue", NULL);
         serialDataLoad = dispatch_queue_create("serial data load queue", NULL);
@@ -93,7 +99,7 @@ static int const kSSCheckCounterSize = 10;
         
         _coverArtWebFetcher = [[CoverArtArchiveWebFetcher alloc] init];
         _coverArtWebFetcher.delegate = self;
-
+        
     }
     
     return self;
@@ -1356,12 +1362,14 @@ static int const kSSCheckCounterSize = 10;
 // end of Core Data methods
 
 - (void)preloadSongArray:(NSArray *)songArray {
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-    // sleep 8 million microseconds.
-//        NSLog(@"feeling drowsy...");
-    usleep(8000000);
-//        NSLog(@"Aaah, fresh again.");
-    // TEO - calling this async'ly crashes in core data.
+//    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+
+    // First we make sure to clear any pending requests
+    [urlCachingOpQueue cancelAllOperations];
+    
+    // Then we add the tracks to cache queue.
+    [urlCachingOpQueue addOperationWithBlock:^{
+        // TEO - calling this async'ly crashes in core data.
         // Be smarter about this. Keep track of what's cached (in a set) and only recache what's missing.
         // The loadTrackData won't reload a loaded track but we can probably still save some loops.
         for (id songID in songArray) {
@@ -1370,17 +1378,18 @@ static int const kSSCheckCounterSize = 10;
                 NSLog(@"Nope, the requested ID %@ is not in the song pool.",songID);
                 return;
             }
-            
+            NSLog(@"Caching %@",songID);
             // tell the song to load its data asyncronously without requesting a callback on completion.
             [aSong loadTrackDataWithCallBackOnCompletion:NO];
-        
+            
             // TEO TSD test. We should try and get the metadata so it's ready,
             // but not so that songPoolDidLoadDataForSongID gets called for each song.
             [self requestEmbeddedMetadataForSongID:songID withHandler:^(NSDictionary* theData){
                 //            NSLog(@"preloadSongArray got data! %@",theData);
             }];
         }
-    });
+        
+    }];
 }
 //- (void)preloadSongArray:(NSArray *)songArray {
 //    NSLog(@"preloading");
@@ -1411,17 +1420,19 @@ static int const kSSCheckCounterSize = 10;
     }
     
     lastRequestedSong = aSong;
-
-    [aSong setRequestedSongStartTime:CMTimeMakeWithSeconds([time doubleValue], 1)];
-
-    // Since loadTrackData can return on a different thread before reaching the next instruction we need to call the loadSongMetadata before it.
-    // This skips (but is blocking) the regular serial queue that is loading song metadata to load the metadata for the song the user is about to play.
-// Now called in requestEmbeddedMetaData.
-//    [aSong loadSongMetadata];
     
-//    NSLog(@"loadTrackData called from requestSongPlayback");
-    // Asynch'ly start loading the track data for aSong. songReadyForPlayback will be called back when the song is good to go.
-    [aSong loadTrackDataWithCallBackOnCompletion:YES];
+    [aSong setRequestedSongStartTime:CMTimeMakeWithSeconds([time doubleValue], 1)];
+    NSLog(@"the urlLoadingQueue size: %lu",(unsigned long)[urlLoadingOpQueue operationCount]);
+    // First cancel any pending requests in the operation queue and then add this.
+    // This won't delete them from the queue but it will tell each in turn it has been cancelled.
+    [urlLoadingOpQueue cancelAllOperations];
+    
+    // Then add this new request.
+    [urlLoadingOpQueue addOperationWithBlock:^{
+        //    NSLog(@"loadTrackData called from requestSongPlayback");
+        // Asynch'ly start loading the track data for aSong. songReadyForPlayback will be called back when the song is good to go.
+        [aSong loadTrackDataWithCallBackOnCompletion:YES];
+    }];
 }
 
 

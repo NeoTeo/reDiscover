@@ -43,6 +43,8 @@
 
 // A version of the fingerprint request that uses a completion block instead of a delegate callback.
 - (void)requestFingerPrintForSong:(TGSong *)song withHandler:(void (^)(NSString*))fingerprintHandler {
+#pragma warning returning from requestFingerPrintForSong: withHandler:
+    return;
     dispatch_async(fingerprintingQueue, ^{
         int maxLength = 120;
         char *theFingerprint;
@@ -103,6 +105,8 @@
 
 - (void)requestFingerPrintForSong:(TGSong *)song {
     //__block NSMutableArray *songFingerPrint = NULL;
+#pragma warning returning from requestFingerPrintForSong:
+    return;
     
     //NSBlockOperation *theOp = [NSBlockOperation blockOperationWithBlock:^{
     dispatch_async(fingerprintingQueue, ^{

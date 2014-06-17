@@ -18,8 +18,8 @@
 #import "TGSongCellMatrix.h"
 #import "CAKeyframeAnimation+Parametric.h"
 
-#include <os/trace.h>
-#include <os/activity.h>
+//#include <os/trace.h>
+//#include <os/activity.h>
 
 // Trying out some pop animation.
 //#import <POP/POP.h>
@@ -145,6 +145,9 @@
     
     // OS 10.9 feature.
     [[self view] setCanDrawSubviewsIntoLayer:YES];
+    
+    testingQueue = dispatch_queue_create("Testing queue", NULL);
+
 }
 
 - (CALayer*)makeLayerWithImage:(NSImage*)theImage atRect:(CGRect)cellRect {
@@ -179,12 +182,13 @@
 
 // I think this wants to run on the main thread otherwise it conflicts with the view layer enumeration whenever the growMatrix is called.
 - (void)setCoverImage:(NSImage *)theImage forSongWithID:(id)songID {
-    os_activity_set_breadcrumb("setCoverImage here");
-
+//#pragma warning setCoverImage being disabled
+//    return;
     // First convert the songID to the matrix index.
     NSInteger cellTag = [_songCellMatrix.cellTagToSongID indexOfObject:songID];
     NSAssert(cellTag < [_songCellMatrix cells].count , @"cellTag out of bounds");
     TGGridCell * theCell = [_songCellMatrix cellWithTag:cellTag];
+    NSAssert(theCell != nil, @"WTF, the cell is nil");
     // TEO This should only be animated if the cover is visible on screen.
     // If we are setting the cover for the currently playing song do a pop animation,
     // otherwise just fade it in.
@@ -254,23 +258,28 @@ static NSInteger const kUndefinedID =  -1;
 
 - (void)runTest {
     
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+    dispatch_async(testingQueue, ^{
     NSInteger rowCount, colCount;
     NSPoint spd = NSMakePoint(1, 1);
     [_songCellMatrix getNumberOfRows:&rowCount columns:&colCount];
     
         for (int row=0; row < rowCount; row++) {
             for (int col=0; col < colCount; col++) {
+                NSRect cellRect = [_songCellMatrix cellFrameAtRow:row column:col];
+                [_songCellMatrix scrollRectToVisible:cellRect];
                 
-                [_songCellMatrix scrollCellToVisibleAtRow:row column:col];
+//                NSLog(@"the frame of the cell at %d,%d is %@",row,col,NSStringFromRect(cellRect));
+                
+//                [_songCellMatrix scrollCellToVisibleAtRow:row column:col];
+//                [_songCellMatrix display];
                 [_songCellMatrix setNeedsDisplay];
-//                [_songGridScrollView setNeedsDisplay:YES];
+                [_songGridScrollView setNeedsDisplay:YES];
 //    CGRect cellRect = [_songCellMatrix cellFrameAtRow:row column:col];
 //                [_songGridScrollView scrollPoint:cellRect.origin];
                 [self songGridScrollViewDidChangeToRow:row andColumn:col withSpeedVector:spd];
                 
                 // Wait a bit.
-                usleep(250000);
+//                usleep(50000);
                 [_songCellMatrix getNumberOfRows:&rowCount columns:&colCount];
             }
         }
@@ -278,9 +287,9 @@ static NSInteger const kUndefinedID =  -1;
 }
 
 
+// growMatrix runs on the main thread.
 // Increments the matrix by one new cell and returns it.
 -(TGGridCell*)growMatrix {
-    
     static NSInteger songSerialNumber = 0;
     NSInteger rowCount, colCount, newRow, newCol;
     NSUInteger row = floor(songSerialNumber/ _colsPerRow);
@@ -321,6 +330,7 @@ static NSInteger const kUndefinedID =  -1;
 }
 
 
+// addMatrixCell2 runs on main thread.
 // Called for every new song added by the song pool (via main view controller's songPoolDidLoadSongURLWithID)
 - (void)addMatrixCell2:(id)songID {
     
@@ -333,6 +343,7 @@ static NSInteger const kUndefinedID =  -1;
     CGRect theFrame = [[self songGridScrollView] documentVisibleRect];
 
     // Only do the work if we're actually visible.
+//    if(1){
     if (NSIntersectsRect(cellRect, theFrame)) {
         
         CALayer* frontLayer =[self makeLayerWithImage:_defaultImage atRect:cellRect];
@@ -1002,7 +1013,7 @@ static NSInteger const kUndefinedID =  -1;
     
     // TEO The cache should not use the userSelected methods. Make a separate wrapper.
     // Update the song cache based on the new selection.
-    // TEOTEST
+#pragma warning commented out for BugHunt_1
 //    NSArray *theArray =[self buildCacheArray:1 forRow:theRow andColumn:theColumn];
 //    [[self delegate] requestSongArrayPreload:theArray];
     

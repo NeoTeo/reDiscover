@@ -16,6 +16,7 @@
 @class TGFingerPrinter;
 
 @class CoverArtArchiveWebFetcher;
+@class TGStack;
 
 // protocol forward declaration
 @protocol TGSongPoolDelegate;
@@ -30,6 +31,10 @@
     BOOL allURLsRequested;
     // concurrent queue used for asynch resource loading.
     NSOperationQueue *opQueue;
+    
+    NSOperationQueue* urlLoadingOpQueue;
+    NSOperationQueue* urlCachingOpQueue;
+    
     dispatch_queue_t playbackQueue;
     dispatch_queue_t serialDataLoad;
     dispatch_queue_t timelineUpdateQueue;
@@ -57,6 +62,7 @@
     NSNumber *requestedPlayheadPosition;
 }
 
+@property TGStack* requestedSongStack;
 @property CoverArtArchiveWebFetcher* coverArtWebFetcher;
 
 @property id<TGSongPoolDelegate> delegate;
@@ -86,7 +92,7 @@
 
 //-(NSInteger)lastRequestedSongID;
 //- (NSInteger)currentlyPlayingSongID;
--(id)lastRequestedSongID;
+
 - (id)currentlyPlayingSongID;
 
 
@@ -139,8 +145,10 @@
 // TGFingerPrinterDelegate method
 - (void)fingerprintReady:(NSString *)fingerPrint ForSong:(TGSong *)song;
 
-// TGSongDelegate methods
+// TGSongDelegate calls these methods
 - (void)songDidFinishPlayback:(TGSong *)song;
+-(id)lastRequestedSongID;
+
 //- (void)songDidLoadEmbeddedMetadata:(TGSong *)song;
 - (void)songDidUpdatePlayheadPosition:(NSNumber *)playheadPosition;
 - (void)songReadyForPlayback:(TGSong *)song;

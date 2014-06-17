@@ -90,6 +90,21 @@
     }];
 }
 
+
+- (void)loadTrackDataWithCallBackOnCompletion:(BOOL)wantsCallback {
+    NSURL *theURL = [NSURL URLWithString:self.TEOData.urlString];
+    [self setSongStatus:kSongStatusLoading];
+    songAsset = [AVAsset assetWithURL:theURL];
+    [self setSongDuration:[songAsset duration]];
+    if ([songAsset isPlayable]) {
+        [self setSongStatus:kSongStatusReady];
+        
+        if (!wantsCallback) return;
+        
+        [[self delegate] songReadyForPlayback:self];
+    }
+}
+/*
 // Just-in-time track data loading.
 - (void)loadTrackDataWithCallBackOnCompletion:(BOOL)wantsCallback {
     
@@ -105,15 +120,25 @@
     // Start off marking this song as currently loading.
     [self setSongStatus:kSongStatusLoading];
     
+    // TEO change this to comparing SongID types when we switch over to using the SongID type
+    // Check if we're still the last requested song.
+    NSString* idString = [[self delegate] lastRequestedSongID];
+    if (![idString isEqualToString:[self songID]] ) {
+        NSLog(@"early out of load track");
+        return;
+    }
 //  Loading the asset with precise duration and timing significantly slows down playback response times.
     // If used, should only be enabled on songs that are not returning accurate timing values. (Eg. the Abba stuff)
 //    NSDictionary *songLoadingOptions = @{AVURLAssetPreferPreciseDurationAndTimingKey : @YES};
 //    songAsset = [[AVURLAsset alloc] initWithURL:_songURL options:songLoadingOptions];
     
-// TEO can get stuck in here (Often!) semaphore_wait_trap
+// TEO can get stuck in here (Often!) semaphore_wait_trap. This is probably due to hitting GCD's 64 thread limit.
 //    songAsset = [[AVURLAsset alloc] initWithURL:_songURL options:nil];
+
     NSURL *theURL = [NSURL URLWithString:self.TEOData.urlString];
     songAsset = [[AVURLAsset alloc] initWithURL:theURL options:nil];
+   
+    // The keys that must be set for the completion hander to be called.
     NSArray *keys = @[@"tracks",@"duration"];
     
 //    NSLog(@"loadTrackDataWithCallbackOnCompletion for song %@ and wantsCallback %@",[self songID],wantsCallback?@"YES":@"NO");
@@ -121,11 +146,8 @@
     NSAssert(songAsset, @"Song asset is missing!");
     [songAsset loadValuesAsynchronouslyForKeys:keys completionHandler:^() {
         NSError *error = nil;
-        AVKeyValueStatus assetStatus = [songAsset statusOfValueForKey:@"tracks"
-                                                              error:&error];
+        AVKeyValueStatus assetStatus = [songAsset statusOfValueForKey:@"tracks" error:&error];
         
-        // At this point a load may have completed after we'd decided to remove the asset again,
-        // eg. if the user moves quickly across songs.
         switch (assetStatus) {
             case AVKeyValueStatusLoaded:
             {
@@ -200,6 +222,7 @@
         }
     }];
 }
+*/
 
 - (BOOL)loadSongMetadata {
     
