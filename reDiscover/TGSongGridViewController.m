@@ -283,6 +283,7 @@ static NSInteger const kUndefinedID =  -1;
                 [_songCellMatrix getNumberOfRows:&rowCount columns:&colCount];
             }
         }
+        NSLog(@"TESTING DONE");
     });
 }
 

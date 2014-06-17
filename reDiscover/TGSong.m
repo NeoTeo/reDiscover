@@ -95,6 +95,9 @@
     NSURL *theURL = [NSURL URLWithString:self.TEOData.urlString];
     [self setSongStatus:kSongStatusLoading];
     songAsset = [AVAsset assetWithURL:theURL];
+    
+    // Get the song duration.
+    //    This may block which is just how we want it.
     [self setSongDuration:[songAsset duration]];
     if ([songAsset isPlayable]) {
         [self setSongStatus:kSongStatusReady];
