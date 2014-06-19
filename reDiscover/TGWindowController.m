@@ -93,16 +93,28 @@ static NSString *const kMainViewName = @"TGMainView";
 
 - (void)awakeFromNib
 {
-    [self setActiveViewControllerToViewWithTag:kDropViewTag];
+//    [self setActiveViewControllerToViewWithTag:kDropViewTag];
 	//[self changeViewController: kImageView];
+    // This is necessary to avoid the NSImageView hijacking the drag event. Took me an afternoon to track down.
+//    [dropArrowImageView unregisterDraggedTypes];
+    // Make sure we get drag and drop notifications
+    TGDropView* theDropView = [[self window] contentView];
+    [theDropView registerForDraggedTypes:[NSArray arrayWithObjects:NSURLPboardType, NSFilenamesPboardType, nil]];
+    [theDropView setDelegate:self];
+    
+    NSLog(@"The window's content view controller is: %@",[self contentViewController]);
+    NSLog(@"The window's storyboard is: %@",[self storyboard]);
+
+
 }
 
-
-
-
+-(void)prepareForSegue:(NSStoryboardSegue *)segue sender:(id)sender {
+    NSLog(@"Prepping that segue");
+}
 
 // Delegate methods
 //
+
 
 // Drop view delegate method called when a URL is dropped onto it
 - (void)dropViewDidReceiveURL:(NSURL *)theURL {
@@ -110,7 +122,10 @@ static NSString *const kMainViewName = @"TGMainView";
     TGSongPool *songPool = [[TGSongPool alloc] init];
     
     if ([songPool validateURL:theURL]) {
-        
+//        NSLog(@"gogogo");
+//        [self setContentViewController:[[self storyboard] instantiateControllerWithIdentifier:@"TheSplit"]];
+//        [[self contentViewController] performSegueWithIdentifier:@"goGridViewSegue" sender:self];
+//        return;
         // activateIgnoringOtherApps brings the application to the front.
         [NSApp activateIgnoringOtherApps:YES];
         

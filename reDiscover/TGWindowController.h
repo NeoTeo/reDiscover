@@ -12,5 +12,6 @@
 {
     NSViewController *activeViewController;
 }
+-(void)prepareForSegue:(NSStoryboardSegue *)segue sender:(id)sender;
 
 @end
