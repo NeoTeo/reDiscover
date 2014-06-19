@@ -42,6 +42,11 @@
 // Main coordinating controller.
 @implementation TGMainViewController
 
+-(void)viewWillAppear {
+    NSLog(@"Appearing");
+}
+
+
 -(void)awakeFromNib{
     
     // The idle timer produces system wide notifications of entering and exiting idle time.

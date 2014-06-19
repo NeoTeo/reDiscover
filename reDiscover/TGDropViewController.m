@@ -15,15 +15,18 @@
 
 @implementation TGDropViewController
 
-- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
-{
-    self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
-    if (self) {
-        
-        // Initialization code here.
-    }
-    return self;
-}
+//- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
+//{
+//    self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
+//    if (self) {
+//        NSLog(@"Is this even called?");
+//        // Initialization code here.
+//    }
+//    return self;
+//}
 
+-(void)viewDidAppear {
+    NSLog(@"Boo");
+}
 
 @end

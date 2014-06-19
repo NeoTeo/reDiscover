@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="6154.21" systemVersion="14A261i" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" initialViewController="1rG-hg-cjj">
+    <dependencies>
+        <deployment defaultVersion="101000" identifier="macosx"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="6154.21"/>
+    </dependencies>
+    <scenes>
+        <!--Window Controller - Window-->
+        <scene sceneID="deD-lT-RaP">
+            <objects>
+                <windowController id="1rG-hg-cjj" customClass="TGWindowController" sceneMemberID="viewController">
+                    <window key="window" title="Window" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" restorable="NO" oneShot="NO" releasedWhenClosed="NO" showsToolbarButton="NO" animationBehavior="default" id="wuT-Kj-Wye">
+                        <windowStyleMask key="styleMask" unifiedTitleAndToolbar="YES"/>
+                        <rect key="contentRect" x="244" y="1000" width="300" height="300"/>
+                        <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1417"/>
+                        <view key="contentView" id="kQk-9C-O5w">
+                            <rect key="frame" x="0.0" y="0.0" width="300" height="300"/>
+                            <autoresizingMask key="autoresizingMask"/>
+                        </view>
+                    </window>
+                    <connections>
+                        <segue destination="Nxi-KE-3bM" kind="relationship" relationship="window.shadowedContentViewController" id="45Q-md-xTO"/>
+                    </connections>
+                </windowController>
+                <customObject id="5fK-Zy-7Ly" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="498" y="123"/>
+        </scene>
+        <!--Drop View Controller-->
+        <scene sceneID="w9l-IF-kSv">
+            <objects>
+                <viewController id="Nxi-KE-3bM" customClass="TGDropViewController" sceneMemberID="viewController">
+                    <view key="view" id="ZnL-KQ-Sb9" customClass="TGDropView">
+                        <rect key="frame" x="0.0" y="0.0" width="300" height="300"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                        <subviews>
+                            <imageView horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="P5B-U5-u4f">
+                                <rect key="frame" x="21" y="21" width="259" height="259"/>
+                                <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" image="DropArrow" id="9UV-0o-FxX"/>
+                            </imageView>
+                        </subviews>
+                        <constraints>
+                            <constraint firstAttribute="centerX" secondItem="P5B-U5-u4f" secondAttribute="centerX" id="Qhe-4w-OMf"/>
+                            <constraint firstAttribute="centerY" secondItem="P5B-U5-u4f" secondAttribute="centerY" id="YVu-ri-d2C"/>
+                        </constraints>
+                        <connections>
+                            <outlet property="dropArrowImageView" destination="P5B-U5-u4f" id="11R-nO-fYb"/>
+                        </connections>
+                    </view>
+                    <connections>
+                        <segue destination="Oyu-Ii-pF3" kind="popover" popoverBehavior="t" preferredEdge="maxY" id="YlZ-Uj-5kG"/>
+                    </connections>
+                </viewController>
+                <customObject id="FXS-ra-OyA" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="918" y="123"/>
+        </scene>
+        <!--Split View Controller-->
+        <scene sceneID="agX-Z1-Kl4">
+            <objects>
+                <splitViewController storyboardIdentifier="TheSplit" id="Oyu-Ii-pF3" sceneMemberID="viewController">
+                    <splitView key="view" dividerStyle="thin" vertical="YES" id="UEB-bm-CAZ">
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </splitView>
+                    <splitViewItems>
+                        <splitViewItem canCollapse="YES" id="Fo2-yW-1sw"/>
+                        <splitViewItem id="z2B-ix-FrW"/>
+                        <splitViewItem canCollapse="YES" id="ucp-iB-OeV"/>
+                    </splitViewItems>
+                    <connections>
+                        <segue destination="Rgs-dl-FP4" kind="relationship" relationship="splitItem" id="g7u-kc-Tki"/>
+                        <segue destination="3Pr-Xk-icz" kind="relationship" relationship="splitItem" id="AST-at-19t"/>
+                        <segue destination="Iyy-D3-ujX" kind="relationship" relationship="splitItem" id="FZk-KL-aK9"/>
+                    </connections>
+                </splitViewController>
+                <customObject id="8Xj-GR-W9V" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1682" y="123"/>
+        </scene>
+        <!--View Controller-->
+        <scene sceneID="YEY-QU-Oe5">
+            <objects>
+                <viewController id="Iyy-D3-ujX" sceneMemberID="viewController">
+                    <view key="view" id="yFt-LL-eqB">
+                        <rect key="frame" x="0.0" y="0.0" width="300" height="600"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                        <subviews>
+                            <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Ypm-Rt-7MK">
+                                <rect key="frame" x="117" y="330" width="75" height="17"/>
+                                <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="The Playlist" id="bAb-mQ-G3A">
+                                    <font key="font" metaFont="system"/>
+                                    <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                    <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                </textFieldCell>
+                            </textField>
+                        </subviews>
+                    </view>
+                </viewController>
+                <customObject id="Twh-Be-Tlx" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1196" y="685"/>
+        </scene>
+        <!--View Controller-->
+        <scene sceneID="DLS-FN-yxp">
+            <objects>
+                <viewController id="Rgs-dl-FP4" sceneMemberID="viewController">
+                    <view key="view" horizontalCompressionResistancePriority="751" id="sWm-yH-SHi">
+                        <rect key="frame" x="0.0" y="0.0" width="300" height="600"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                        <subviews>
+                            <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="cFV-up-GeH">
+                                <rect key="frame" x="120" y="287" width="54" height="17"/>
+                                <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="The info" id="Kdy-vj-uW1">
+                                    <font key="font" metaFont="system"/>
+                                    <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                    <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                </textFieldCell>
+                            </textField>
+                        </subviews>
+                    </view>
+                </viewController>
+                <customObject id="2Xx-lY-WnM" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="2165" y="685"/>
+        </scene>
+        <!--View Controller-->
+        <scene sceneID="RHP-Lu-bpW">
+            <objects>
+                <viewController id="3Pr-Xk-icz" sceneMemberID="viewController">
+                    <view key="view" id="T7u-Xf-78x">
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                        <subviews>
+                            <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="tEY-wN-8d4">
+                                <rect key="frame" x="210" y="344" width="265" height="28"/>
+                                <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="The Grid" id="Hq5-x3-mRQ">
+                                    <font key="font" metaFont="system"/>
+                                    <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                    <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                </textFieldCell>
+                            </textField>
+                        </subviews>
+                    </view>
+                </viewController>
+                <customObject id="iWT-eM-ZR8" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1682" y="685"/>
+        </scene>
+    </scenes>
+    <resources>
+        <image name="DropArrow" width="259" height="259"/>
+    </resources>
+</document>
