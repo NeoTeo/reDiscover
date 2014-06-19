@@ -16,14 +16,17 @@
     if (self) {
         // Initialization code here.
         _activeCellCount = 0;
+
+        self.cellTagToSongID = [[NSMutableArray alloc] init];
+        
+        [self setLayerContentsRedrawPolicy:NSViewLayerContentsRedrawOnSetNeedsDisplay];
+        [self setWantsLayer:NO];
+        // Mavericks API that ensures that subviews won't get layers. This is a speed optimization as their updateLayer is not used.
+        [self setCanDrawSubviewsIntoLayer:YES];
+
+        _matrixAccessQueue = dispatch_queue_create("matrixAccessQueue", DISPATCH_QUEUE_SERIAL);
     }
     
-    self.cellTagToSongID = [[NSMutableArray alloc] init];
-    
-    [self setLayerContentsRedrawPolicy:NSViewLayerContentsRedrawOnSetNeedsDisplay];
-    [self setWantsLayer:NO];
-    // Mavericks API that ensures that subviews won't get layers. This is a speed optimization as their updateLayer is not used.
-    [self setCanDrawSubviewsIntoLayer:YES];
     return self;
 }
 
@@ -35,25 +38,81 @@
 //}
 
 
+
 - (void)incrementActiveCellCount {
-    _activeCellCount++;
+    OSAtomicIncrement32(&_activeCellCount);
 }
 
 
 - (void)decrementActiveCellCount {
-    _activeCellCount--;
+    OSAtomicDecrement32(&_activeCellCount);
+//    _activeCellCount--;
+}
+
+- (NSInteger)indexOfObjectWithSongID:(id)songID {
+    __block NSInteger retVal = -1;
+    dispatch_sync(_matrixAccessQueue,^{
+        retVal = [_cellTagToSongID indexOfObject:songID];
+    });
+    return retVal;
+}
+
+
+-(void)scrollCellToVisibleAtRow:(NSInteger)row column:(NSInteger)col {
+    dispatch_sync(_matrixAccessQueue,^{
+        [super scrollCellToVisibleAtRow:row column:col];
+    });
+}
+
+
+-(id)cellWithTag:(NSInteger)anInt {
+    __block id retVal;
+    dispatch_sync(_matrixAccessQueue,^{
+        retVal = [super cellWithTag:anInt];
+    });
+    return retVal;
 }
 
 -(id)cellAtRow:(NSInteger)row column:(NSInteger)col {
-    if ([self validateCellRow:row andColumn:col]) {
-        return [super cellAtRow:row column:col];
-    }
-    return nil;
+    __block id retVal = nil;
+    dispatch_sync(_matrixAccessQueue,^{
+        if ([self validateCellRow:row andColumn:col]) {
+            retVal = [super cellAtRow:row column:col];
+        }
+    });
+    return retVal;
 }
+
+-(BOOL)getRow:(NSInteger *)row column:(NSInteger *)col forPoint:(NSPoint)aPoint {
+    __block BOOL retVal;
+    dispatch_sync(_matrixAccessQueue,^{
+        retVal = [super getRow:row column:col forPoint:aPoint];
+    });
+    return retVal;
+}
+
+-(BOOL)getRow:(NSInteger *)row column:(NSInteger *)col ofCell:(NSCell *)aCell {
+    __block BOOL retVal;
+    dispatch_sync(_matrixAccessQueue,^{
+        retVal = [super getRow:row column:col ofCell:aCell];
+    });
+    return retVal;
+}
+
+
+-(NSRect)cellFrameAtRow:(NSInteger)row column:(NSInteger)col {
+    __block NSRect retVal;
+    dispatch_sync(_matrixAccessQueue,^{
+        retVal = [super cellFrameAtRow:row column:col];
+    });
+    return retVal;
+}
+
 
 -(BOOL)validateCellRow:(NSInteger)row andColumn:(NSInteger)col {
     return (row*self.numberOfColumns+col < self.activeCellCount);
 }
+
 
 // Speed optimisations
 - (BOOL)isOpaque {

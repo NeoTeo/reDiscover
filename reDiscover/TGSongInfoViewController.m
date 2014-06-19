@@ -56,7 +56,8 @@
         
         newCoverImageView.layer.opacity = 1;
         albumCover.layer.opacity = 0;
-        
+
+        [albumCover removeFromSuperview];
         albumCover = newCoverImageView;
     }
 }

@@ -89,6 +89,7 @@
 -(void)mouseDown:(NSEvent *)theEvent {
     
     NSLog(@"lmb");
+
     NSPoint mouseLoc = [[self documentView] convertPoint:[theEvent locationInWindow] fromView:nil];
     NSInteger mouseRow, mouseCol;
     [[self documentView] getRow:&mouseRow column:&mouseCol forPoint:mouseLoc];

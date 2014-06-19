@@ -185,8 +185,9 @@
 //#pragma warning setCoverImage being disabled
 //    return;
     // First convert the songID to the matrix index.
-    NSInteger cellTag = [_songCellMatrix.cellTagToSongID indexOfObject:songID];
-    NSAssert(cellTag < [_songCellMatrix cells].count , @"cellTag out of bounds");
+//    NSInteger cellTag = [_songCellMatrix.cellTagToSongID indexOfObject:songID];
+    NSInteger cellTag = [_songCellMatrix indexOfObjectWithSongID:songID];
+//    NSAssert(cellTag < [_songCellMatrix cells].count , @"cellTag out of bounds");
     TGGridCell * theCell = [_songCellMatrix cellWithTag:cellTag];
     NSAssert(theCell != nil, @"WTF, the cell is nil");
     // TEO This should only be animated if the cover is visible on screen.
@@ -270,10 +271,11 @@ static NSInteger const kUndefinedID =  -1;
                 
 //                NSLog(@"the frame of the cell at %d,%d is %@",row,col,NSStringFromRect(cellRect));
                 
-                [_songCellMatrix scrollCellToVisibleAtRow:row column:col];
+//                [_songCellMatrix scrollCellToVisibleAtRow:row column:col];
 //                [_songCellMatrix display];
-                [_songCellMatrix setNeedsDisplay];
-                [_songGridScrollView setNeedsDisplay:YES];
+//                [_songCellMatrix setNeedsDisplay];
+
+//                [_songGridScrollView setNeedsDisplay:YES];
 //    CGRect cellRect = [_songCellMatrix cellFrameAtRow:row column:col];
 //                [_songGridScrollView scrollPoint:cellRect.origin];
                 [self songGridScrollViewDidChangeToRow:row andColumn:col withSpeedVector:spd];
@@ -289,7 +291,7 @@ static NSInteger const kUndefinedID =  -1;
 
 
 // growMatrix runs on the main thread.
-// Increments the matrix by one new cell and returns it.
+// Increments (atomically) the matrix by one new cell and returns it.
 -(TGGridCell*)growMatrix {
     static NSInteger songSerialNumber = 0;
     NSInteger rowCount, colCount, newRow, newCol;
@@ -314,6 +316,8 @@ static NSInteger const kUndefinedID =  -1;
             newCol = colCount;
     }
     
+    // As long as this runs on the main thread it should be ok to call it outside the matrixAccessQueue
+    // TEO perhaps a speedup would be to put the remaining matrix calls onto the matrixAccessQueue and run this off the main thread.
     [_songCellMatrix renewRows:newRow columns:newCol];
     
     // Resize the matrix to account for the newly added cell.
