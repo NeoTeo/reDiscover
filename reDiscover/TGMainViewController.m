@@ -516,7 +516,7 @@
             // none of the attempts returned an image so just show the no cover cover.
             if (tmpImage == nil) {
                 tmpImage = [NSImage imageNamed:@"noCover"];
-                NSBeep();
+                //NSBeep();
             }
             
             // Set the scroll view controller cover image.

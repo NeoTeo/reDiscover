@@ -10,7 +10,8 @@
 
 @interface TGSongCellMatrix : NSMatrix
 {
-    NSMutableArray* cellTagToSongID;    
+    NSMutableArray* cellTagToSongID;
+
 }
 //@property NSUInteger activeCellCount;
 @property int activeCellCount;
@@ -23,9 +24,12 @@
 // Use to access the queue without causing concurrent access problems.
 @property dispatch_queue_t matrixAccessQueue;
 
+
+
 - (void)clearView;
 - (void)incrementActiveCellCount;
 -(BOOL)validateCellRow:(NSInteger)row andColumn:(NSInteger)col;
+// Synchronous serial matrixAccessQueue methods
 - (NSInteger)indexOfObjectWithSongID:(id)songID;
 
 - (NSInteger)tagForSongWithID:(id)songID;

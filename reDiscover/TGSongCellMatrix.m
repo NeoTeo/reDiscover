@@ -36,7 +36,6 @@
 //    NSLog(@"matrix mouse down in %@",[self selectedCell]);
 //    [self sendAction];
 //}
-
 - (void)renewAndSizeRows:(NSInteger)newRows columns:(NSInteger)newCols {
     dispatch_sync(_matrixAccessQueue,^{
         [super renewRows:newRows columns:newCols];
@@ -61,7 +60,6 @@
     });
     return songTag;
 }
-
 
 - (void)incrementActiveCellCount {
     OSAtomicIncrement32(&_activeCellCount);

@@ -60,9 +60,10 @@
     [songAsset loadValuesAsynchronouslyForKeys:@[@"commonMetadata"] completionHandler:^{
         
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            
+
             NSArray *artworks = [AVMetadataItem metadataItemsFromArray:songAsset.commonMetadata  withKey:AVMetadataCommonKeyArtwork keySpace:AVMetadataKeySpaceCommon];
-            
+
+            // TEO should only do one!
             for (AVMetadataItem *metadataItem in artworks) {
                 imageHandler([[NSImage alloc] initWithData:[metadataItem.value copyWithZone:nil]]);
                 return;
