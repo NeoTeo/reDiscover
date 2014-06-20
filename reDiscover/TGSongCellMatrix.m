@@ -17,7 +17,7 @@
         // Initialization code here.
         _activeCellCount = 0;
 
-        self.cellTagToSongID = [[NSMutableArray alloc] init];
+        cellTagToSongID = [[NSMutableArray alloc] init];
         
         [self setLayerContentsRedrawPolicy:NSViewLayerContentsRedrawOnSetNeedsDisplay];
         [self setWantsLayer:NO];
@@ -36,8 +36,29 @@
 //    NSLog(@"matrix mouse down in %@",[self selectedCell]);
 //    [self sendAction];
 //}
+- (void)MAQrenewAndSizeRows:(NSInteger)newRows columns:(NSInteger)newCols {
+    dispatch_sync(_matrixAccessQueue,^{
+        [self renewRows:newRows columns:newCols];
+        [self sizeToCells];
+    });
+}
 
+- (id)MAQsongIDForSongWithTag:(NSInteger)songTag {
+    __block id songID;
+    dispatch_sync(_matrixAccessQueue,^{
+        songID = [cellTagToSongID objectAtIndex:songTag];
+    });
+    return songID;
+}
 
+- (NSInteger)MAQtagForSongWithID:(id)songID {
+    __block NSInteger songTag;
+    dispatch_sync(_matrixAccessQueue,^{
+        songTag = [cellTagToSongID count];
+        [cellTagToSongID addObject:songID];
+    });
+    return songTag;
+}
 
 - (void)incrementActiveCellCount {
     OSAtomicIncrement32(&_activeCellCount);
@@ -49,23 +70,23 @@
 //    _activeCellCount--;
 }
 
-- (NSInteger)indexOfObjectWithSongID:(id)songID {
+- (NSInteger)MAQindexOfObjectWithSongID:(id)songID {
     __block NSInteger retVal = -1;
     dispatch_sync(_matrixAccessQueue,^{
-        retVal = [_cellTagToSongID indexOfObject:songID];
+        retVal = [cellTagToSongID indexOfObject:songID];
     });
     return retVal;
 }
 
 
--(void)scrollCellToVisibleAtRow:(NSInteger)row column:(NSInteger)col {
+-(void)MAQscrollCellToVisibleAtRow:(NSInteger)row column:(NSInteger)col {
     dispatch_sync(_matrixAccessQueue,^{
         [super scrollCellToVisibleAtRow:row column:col];
     });
 }
 
 
--(id)cellWithTag:(NSInteger)anInt {
+-(id)MAQcellWithTag:(NSInteger)anInt {
     __block id retVal;
     dispatch_sync(_matrixAccessQueue,^{
         retVal = [super cellWithTag:anInt];
@@ -73,7 +94,7 @@
     return retVal;
 }
 
--(id)cellAtRow:(NSInteger)row column:(NSInteger)col {
+-(id)MAQcellAtRow:(NSInteger)row column:(NSInteger)col {
     __block id retVal = nil;
     dispatch_sync(_matrixAccessQueue,^{
         if ([self validateCellRow:row andColumn:col]) {
@@ -83,7 +104,7 @@
     return retVal;
 }
 
--(BOOL)getRow:(NSInteger *)row column:(NSInteger *)col forPoint:(NSPoint)aPoint {
+-(BOOL)MAQgetRow:(NSInteger *)row column:(NSInteger *)col forPoint:(NSPoint)aPoint {
     __block BOOL retVal;
     dispatch_sync(_matrixAccessQueue,^{
         retVal = [super getRow:row column:col forPoint:aPoint];
@@ -91,7 +112,7 @@
     return retVal;
 }
 
--(BOOL)getRow:(NSInteger *)row column:(NSInteger *)col ofCell:(NSCell *)aCell {
+-(BOOL)MAQgetRow:(NSInteger *)row column:(NSInteger *)col ofCell:(NSCell *)aCell {
     __block BOOL retVal;
     dispatch_sync(_matrixAccessQueue,^{
         retVal = [super getRow:row column:col ofCell:aCell];
@@ -100,7 +121,7 @@
 }
 
 
--(NSRect)cellFrameAtRow:(NSInteger)row column:(NSInteger)col {
+-(NSRect)MAQcellFrameAtRow:(NSInteger)row column:(NSInteger)col {
     __block NSRect retVal;
     dispatch_sync(_matrixAccessQueue,^{
         retVal = [super cellFrameAtRow:row column:col];

@@ -59,12 +59,12 @@
     NSPoint mouseLoc = [[self documentView] convertPoint:mPos fromView:nil];
     
     // Get the row and column in the matrix for the mouse location.
-    [[self documentView] getRow:&mouseRow column:&mouseCol forPoint:mouseLoc];
+    [[self documentView] MAQgetRow:&mouseRow column:&mouseCol forPoint:mouseLoc];
     
     if (_delegate && [_delegate respondsToSelector:@selector(songGridScrollViewDidScrollToRect:)]) {
         
         // Convert from (document view) matrix coordinates to window coordinates.
-        NSRect testRect = [[self documentView] convertRect:[[self documentView] cellFrameAtRow:mouseRow column:mouseCol] toView:self];
+        NSRect testRect = [[self documentView] convertRect:[[self documentView] MAQcellFrameAtRow:mouseRow column:mouseCol] toView:self];
         [_delegate songGridScrollViewDidScrollToRect:testRect];
     }
 */
@@ -92,14 +92,14 @@
 
     NSPoint mouseLoc = [[self documentView] convertPoint:[theEvent locationInWindow] fromView:nil];
     NSInteger mouseRow, mouseCol;
-    [[self documentView] getRow:&mouseRow column:&mouseCol forPoint:mouseLoc];
+    [[self documentView] MAQgetRow:&mouseRow column:&mouseCol forPoint:mouseLoc];
     
-    TGGridCell *currentCell = [[self documentView] cellAtRow:mouseRow column:mouseCol];
+    TGGridCell *currentCell = [[self documentView] MAQcellAtRow:mouseRow column:mouseCol];
     if ([currentCell tag] != -1) {
         
         if (_delegate && [_delegate respondsToSelector:@selector(buttonDownInCellFrame:)]) {
             
-            NSRect theRect = [[self documentView] cellFrameAtRow:mouseRow column:mouseCol];
+            NSRect theRect = [[self documentView] MAQcellFrameAtRow:mouseRow column:mouseCol];
             [_delegate buttonDownInCellFrame:theRect];
         }
     }
@@ -111,8 +111,8 @@
     // to the coordinates of the document view (the view being scrolled by the scroll view).
     NSPoint mouseLoc = [[self documentView] convertPoint:[theEvent locationInWindow] fromView:nil];
     NSInteger mouseRow, mouseCol;
-    [[self documentView] getRow:&mouseRow column:&mouseCol forPoint:mouseLoc];
-    TGGridCell *currentCell = [[self documentView] cellAtRow:mouseRow column:mouseCol];
+    [[self documentView] MAQgetRow:&mouseRow column:&mouseCol forPoint:mouseLoc];
+    TGGridCell *currentCell = [[self documentView] MAQcellAtRow:mouseRow column:mouseCol];
     if (_delegate && [_delegate respondsToSelector:@selector(songGridScrollViewDidRightClickSongID:)]) {
         [_delegate songGridScrollViewDidRightClickSongID:[currentCell tag]];
     }
@@ -151,8 +151,8 @@
     // Find out what the mouse location is in the coordinates of the document view (the matrix).
     //NSPoint mouseLoc = [theMatrix convertPoint:locationInWindow fromView:nil];
     
-    [theMatrix getRow:&mouseRow column:&mouseCol forPoint:nowPoint];
-//    [theMatrix getRow:&mouseRow column:&mouseCol forPoint:mouseLoc];
+    [theMatrix MAQgetRow:&mouseRow column:&mouseCol forPoint:nowPoint];
+//    [theMatrix MAQgetRow:&mouseRow column:&mouseCol forPoint:mouseLoc];
     
     if ((mouseCol >= 0) && (mouseRow >= 0)) {
         if ((mouseCol != _currentMouseCol) || (mouseRow != _currentMouseRow)) {
