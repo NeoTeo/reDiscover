@@ -29,7 +29,7 @@
 	<key>NSHumanReadableCopyright</key>
 	<string>Copyright © 2014 Teo Sartori. All rights reserved.</string>
 	<key>NSMainStoryboardFile</key>
-	<string>AppStoryboard</string>
+	<string>Main</string>
 	<key>NSPrincipalClass</key>
 	<string>NSApplication</string>
 </dict>

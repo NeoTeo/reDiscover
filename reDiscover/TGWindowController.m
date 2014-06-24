@@ -9,8 +9,8 @@
 #import "TGWindowController.h"
 
 #import "TGMainViewController.h"
-#import "TGDropViewController.h"
-#import "TGDropView.h"
+//#import "TGDropViewController.h"
+//#import "TGDropView.h"
 #import "TGSongPool.h"
 
 static NSInteger const kDropViewTag = 0;
@@ -20,8 +20,8 @@ static NSString *const kDropViewName = @"TGDropViewController";
 static NSString *const kMainViewName = @"TGMainView";
 
 
-@interface TGWindowController () <TGDropViewDelegate>
-
+//@interface TGWindowController () <TGDropViewDelegate, NSSeguePerforming>
+@interface TGWindowController () <NSSeguePerforming>
 @end
 
 
@@ -44,6 +44,7 @@ static NSString *const kMainViewName = @"TGMainView";
     // Implement this method to handle any initialization after your window controller's window has been loaded from its nib file.
 }
 
+/*
 - (void)setActiveViewControllerToViewWithTag:(NSInteger)viewTag {
     
     if (activeViewController != nil) {
@@ -90,7 +91,7 @@ static NSString *const kMainViewName = @"TGMainView";
     }
 
 }
-
+*/
 - (void)awakeFromNib
 {
 //    [self setActiveViewControllerToViewWithTag:kDropViewTag];
@@ -98,9 +99,9 @@ static NSString *const kMainViewName = @"TGMainView";
     // This is necessary to avoid the NSImageView hijacking the drag event. Took me an afternoon to track down.
 //    [dropArrowImageView unregisterDraggedTypes];
     // Make sure we get drag and drop notifications
-    TGDropView* theDropView = [[self window] contentView];
-    [theDropView registerForDraggedTypes:[NSArray arrayWithObjects:NSURLPboardType, NSFilenamesPboardType, nil]];
-    [theDropView setDelegate:self];
+//    TGDropView* theDropView = [[self window] contentView];
+//    [theDropView registerForDraggedTypes:[NSArray arrayWithObjects:NSURLPboardType, NSFilenamesPboardType, nil]];
+//    [theDropView setDelegate:self];
     
     NSLog(@"The window's content view controller is: %@",[self contentViewController]);
     NSLog(@"The window's storyboard is: %@",[self storyboard]);
@@ -122,13 +123,19 @@ static NSString *const kMainViewName = @"TGMainView";
     TGSongPool *songPool = [[TGSongPool alloc] init];
     
     if ([songPool validateURL:theURL]) {
-//        NSLog(@"gogogo");
+        NSLog(@"gogogo");
 //        [self setContentViewController:[[self storyboard] instantiateControllerWithIdentifier:@"TheSplit"]];
-//        [[self contentViewController] performSegueWithIdentifier:@"goGridViewSegue" sender:self];
-//        return;
+        NSLog(@"This window is %@ and the first responder is %@",[self window], [[self window] firstResponder]);
+        // Dismiss own window (not working?)
+//        [self dismissController:nil];
+
+//        [[self contentViewController] performSegueWithIdentifier:@"goMainViewSegue" sender:self];
+//        [self performSegueWithIdentifier:@"goMainViewSegue" sender:self];
+/*
         // activateIgnoringOtherApps brings the application to the front.
         [NSApp activateIgnoringOtherApps:YES];
-        
+
+
         // Change the active view controller to the main view.
         [self setActiveViewControllerToViewWithTag:kMainViewTag];
         
@@ -140,7 +147,7 @@ static NSString *const kMainViewName = @"TGMainView";
         
         // Ensure that the songGridView receives all the events (in particular the key events).
         [[self window] makeFirstResponder:mainViewController];
-
+*/
     }
 }
 
