@@ -9,10 +9,16 @@
 /* Begin PBXBuildFile section */
 		548F3DC769524F62AE69C0C1 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FF4446098666436AB643944F /* libPods.a */; };
 		AB01DB04194F499900368693 /* TGStack.m in Sources */ = {isa = PBXBuildFile; fileRef = AB01DB03194F499900368693 /* TGStack.m */; };
+		AB17DEF91959937400BFD25B /* CoverViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB17DEF81959937400BFD25B /* CoverViewController.swift */; };
+		AB17DF321959B2A200BFD25B /* PlaylistViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB17DF311959B2A200BFD25B /* PlaylistViewController.swift */; };
+		AB17DF341959B2B800BFD25B /* InfoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB17DF331959B2B800BFD25B /* InfoViewController.swift */; };
+		AB1E831619586C3C00D61BCA /* MainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB1E831519586C3C00D61BCA /* MainViewController.swift */; };
 		AB301E7619050C830093B654 /* TEOSongData.m in Sources */ = {isa = PBXBuildFile; fileRef = AB301E7519050C830093B654 /* TEOSongData.m */; };
 		AB3E9752187C20D600BECC09 /* TGPlaylistCellView.m in Sources */ = {isa = PBXBuildFile; fileRef = AB3E9751187C20D600BECC09 /* TGPlaylistCellView.m */; };
 		AB56D9F418EC14D5005AB947 /* CAKeyframeAnimation+Parametric.m in Sources */ = {isa = PBXBuildFile; fileRef = AB56D9F318EC14D5005AB947 /* CAKeyframeAnimation+Parametric.m */; };
 		AB71279B19407C8E0002B1F8 /* CoverArtArchiveWebFetcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB71279A19407C8E0002B1F8 /* CoverArtArchiveWebFetcher.swift */; };
+		AB7FFB6119589BF2002D1E63 /* DropViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB7FFB6019589BF2002D1E63 /* DropViewController.swift */; };
+		AB7FFB6319589D1E002D1E63 /* DropView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB7FFB6219589D1E002D1E63 /* DropView.swift */; };
 		AB85BBD71875AACF00670905 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AB85BBD61875AACF00670905 /* Cocoa.framework */; };
 		AB85BBE11875AACF00670905 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = AB85BBDF1875AACF00670905 /* InfoPlist.strings */; };
 		AB85BBE31875AACF00670905 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = AB85BBE21875AACF00670905 /* main.m */; };
@@ -20,9 +26,6 @@
 		AB85BBEA1875AACF00670905 /* TGAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = AB85BBE91875AACF00670905 /* TGAppDelegate.m */; };
 		AB85BBED1875AACF00670905 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = AB85BBEB1875AACF00670905 /* MainMenu.xib */; };
 		AB85BBEF1875AACF00670905 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = AB85BBEE1875AACF00670905 /* Images.xcassets */; };
-		AB85BC3B1875AB5200670905 /* TGDropView.m in Sources */ = {isa = PBXBuildFile; fileRef = AB85BC0B1875AB5200670905 /* TGDropView.m */; };
-		AB85BC3C1875AB5200670905 /* TGDropViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = AB85BC0D1875AB5200670905 /* TGDropViewController.m */; };
-		AB85BC3D1875AB5200670905 /* TGDropViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = AB85BC0E1875AB5200670905 /* TGDropViewController.xib */; };
 		AB85BC3E1875AB5200670905 /* TGFingerPrinter.m in Sources */ = {isa = PBXBuildFile; fileRef = AB85BC101875AB5200670905 /* TGFingerPrinter.m */; };
 		AB85BC3F1875AB5200670905 /* TGGridCell.m in Sources */ = {isa = PBXBuildFile; fileRef = AB85BC121875AB5200670905 /* TGGridCell.m */; };
 		AB85BC401875AB5200670905 /* TGIdleTimer.m in Sources */ = {isa = PBXBuildFile; fileRef = AB85BC141875AB5200670905 /* TGIdleTimer.m */; };
@@ -54,13 +57,17 @@
 		AB85BC5F1875AD7A00670905 /* TGSongGridScrollView.m in Sources */ = {isa = PBXBuildFile; fileRef = AB85BC5E1875AD7A00670905 /* TGSongGridScrollView.m */; };
 		ABB770AB1950486600155EE7 /* SongID.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABB770AA1950486600155EE7 /* SongID.swift */; };
 		ABCB68EA18FD57E4009CF277 /* TEOSong.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = ABCB68E818FD57E4009CF277 /* TEOSong.xcdatamodeld */; };
-		ABEC263D1951C6F200A57CE3 /* AppStoryboard.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = ABEC263C1951C6F200A57CE3 /* AppStoryboard.storyboard */; };
+		ABEC263D1951C6F200A57CE3 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = ABEC263C1951C6F200A57CE3 /* Main.storyboard */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		AB01DB03194F499900368693 /* TGStack.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TGStack.m; path = ../TGStack.m; sourceTree = "<group>"; };
 		AB01DB05194F49B800368693 /* TGStack.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = TGStack.h; path = ../TGStack.h; sourceTree = "<group>"; };
 		AB0D052D1889E06400F08566 /* libiconv.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libiconv.dylib; path = usr/lib/libiconv.dylib; sourceTree = SDKROOT; };
+		AB17DEF81959937400BFD25B /* CoverViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CoverViewController.swift; sourceTree = "<group>"; };
+		AB17DF311959B2A200BFD25B /* PlaylistViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlaylistViewController.swift; sourceTree = "<group>"; };
+		AB17DF331959B2B800BFD25B /* InfoViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InfoViewController.swift; sourceTree = "<group>"; };
+		AB1E831519586C3C00D61BCA /* MainViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MainViewController.swift; sourceTree = "<group>"; };
 		AB241FD21889767500E8E03F /* libbz2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libbz2.dylib; path = usr/lib/libbz2.dylib; sourceTree = SDKROOT; };
 		AB241FD41889774800E8E03F /* CoreFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreFoundation.framework; path = System/Library/Frameworks/CoreFoundation.framework; sourceTree = SDKROOT; };
 		AB241FD61889776700E8E03F /* VideoDecodeAcceleration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = VideoDecodeAcceleration.framework; path = System/Library/Frameworks/VideoDecodeAcceleration.framework; sourceTree = SDKROOT; };
@@ -74,6 +81,8 @@
 		AB56D9F318EC14D5005AB947 /* CAKeyframeAnimation+Parametric.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "CAKeyframeAnimation+Parametric.m"; sourceTree = "<group>"; };
 		AB71279919407C8D0002B1F8 /* reDiscover-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "reDiscover-Bridging-Header.h"; sourceTree = "<group>"; };
 		AB71279A19407C8E0002B1F8 /* CoverArtArchiveWebFetcher.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CoverArtArchiveWebFetcher.swift; sourceTree = "<group>"; };
+		AB7FFB6019589BF2002D1E63 /* DropViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DropViewController.swift; sourceTree = "<group>"; };
+		AB7FFB6219589D1E002D1E63 /* DropView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DropView.swift; sourceTree = "<group>"; };
 		AB85BBD31875AACF00670905 /* reDiscover.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = reDiscover.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		AB85BBD61875AACF00670905 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
 		AB85BBD91875AACF00670905 /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
@@ -92,11 +101,6 @@
 		AB85BBFC1875AACF00670905 /* reDiscoverTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "reDiscoverTests-Info.plist"; sourceTree = "<group>"; };
 		AB85BBFE1875AACF00670905 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		AB85BC001875AACF00670905 /* reDiscoverTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = reDiscoverTests.m; sourceTree = "<group>"; };
-		AB85BC0A1875AB5200670905 /* TGDropView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TGDropView.h; sourceTree = "<group>"; };
-		AB85BC0B1875AB5200670905 /* TGDropView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TGDropView.m; sourceTree = "<group>"; };
-		AB85BC0C1875AB5200670905 /* TGDropViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TGDropViewController.h; sourceTree = "<group>"; };
-		AB85BC0D1875AB5200670905 /* TGDropViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TGDropViewController.m; sourceTree = "<group>"; };
-		AB85BC0E1875AB5200670905 /* TGDropViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = TGDropViewController.xib; sourceTree = "<group>"; };
 		AB85BC0F1875AB5200670905 /* TGFingerPrinter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TGFingerPrinter.h; sourceTree = "<group>"; };
 		AB85BC101875AB5200670905 /* TGFingerPrinter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TGFingerPrinter.m; sourceTree = "<group>"; };
 		AB85BC111875AB5200670905 /* TGGridCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TGGridCell.h; sourceTree = "<group>"; };
@@ -150,7 +154,7 @@
 		AB85BC641875B2F600670905 /* Accelerate.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accelerate.framework; path = System/Library/Frameworks/Accelerate.framework; sourceTree = SDKROOT; };
 		ABB770AA1950486600155EE7 /* SongID.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SongID.swift; sourceTree = "<group>"; };
 		ABCB68E918FD57E4009CF277 /* TEOSong.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = TEOSong.xcdatamodel; sourceTree = "<group>"; };
-		ABEC263C1951C6F200A57CE3 /* AppStoryboard.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = AppStoryboard.storyboard; sourceTree = "<group>"; };
+		ABEC263C1951C6F200A57CE3 /* Main.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Main.storyboard; sourceTree = "<group>"; };
 		B512DB84B1174F868791F7EF /* Pods.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.xcconfig; path = Pods/Pods.xcconfig; sourceTree = "<group>"; };
 		FF4446098666436AB643944F /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -180,11 +184,11 @@
 				AB85BC391875AB5200670905 /* TGWindowController.m */,
 				AB85BC3A1875AB5200670905 /* TGWindowController.xib */,
 				AB85BBEB1875AACF00670905 /* MainMenu.xib */,
-				AB85BC0E1875AB5200670905 /* TGDropViewController.xib */,
-				AB85BC0C1875AB5200670905 /* TGDropViewController.h */,
-				AB85BC0D1875AB5200670905 /* TGDropViewController.m */,
-				AB85BC0A1875AB5200670905 /* TGDropView.h */,
-				AB85BC0B1875AB5200670905 /* TGDropView.m */,
+				AB7FFB6019589BF2002D1E63 /* DropViewController.swift */,
+				AB7FFB6219589D1E002D1E63 /* DropView.swift */,
+				AB17DEF81959937400BFD25B /* CoverViewController.swift */,
+				AB17DF311959B2A200BFD25B /* PlaylistViewController.swift */,
+				AB17DF331959B2B800BFD25B /* InfoViewController.swift */,
 			);
 			name = "App start view";
 			sourceTree = "<group>";
@@ -194,6 +198,7 @@
 			children = (
 				AB85BC161875AB5200670905 /* TGMainViewController.h */,
 				AB85BC171875AB5200670905 /* TGMainViewController.m */,
+				AB1E831519586C3C00D61BCA /* MainViewController.swift */,
 				AB85BC221875AB5200670905 /* TGSongGridViewController.h */,
 				AB85BC231875AB5200670905 /* TGSongGridViewController.m */,
 				AB56D9F218EC14D5005AB947 /* CAKeyframeAnimation+Parametric.h */,
@@ -218,7 +223,7 @@
 			children = (
 				AB01DB03194F499900368693 /* TGStack.m */,
 				AB01DB05194F49B800368693 /* TGStack.h */,
-				ABEC263C1951C6F200A57CE3 /* AppStoryboard.storyboard */,
+				ABEC263C1951C6F200A57CE3 /* Main.storyboard */,
 				AB85BC0F1875AB5200670905 /* TGFingerPrinter.h */,
 				AB85BC101875AB5200670905 /* TGFingerPrinter.m */,
 				AB71279A19407C8E0002B1F8 /* CoverArtArchiveWebFetcher.swift */,
@@ -431,12 +436,11 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				AB85BC3D1875AB5200670905 /* TGDropViewController.xib in Resources */,
 				AB85BBE11875AACF00670905 /* InfoPlist.strings in Resources */,
 				AB85BC4A1875AB5200670905 /* TGSongInfoView.xib in Resources */,
 				AB85BC561875AB5200670905 /* TGWindowController.xib in Resources */,
 				AB85BC4D1875AB5200670905 /* TGSongTimelineView.xib in Resources */,
-				ABEC263D1951C6F200A57CE3 /* AppStoryboard.storyboard in Resources */,
+				ABEC263D1951C6F200A57CE3 /* Main.storyboard in Resources */,
 				AB85BBEF1875AACF00670905 /* Images.xcassets in Resources */,
 				AB85BBE71875AACF00670905 /* Credits.rtf in Resources */,
 				AB85BC411875AB5200670905 /* TGMainView.xib in Resources */,
@@ -494,9 +498,10 @@
 				AB85BC501875AB5200670905 /* TGSongUserData.m in Sources */,
 				ABCB68EA18FD57E4009CF277 /* TEOSong.xcdatamodeld in Sources */,
 				ABB770AB1950486600155EE7 /* SongID.swift in Sources */,
+				AB17DF321959B2A200BFD25B /* PlaylistViewController.swift in Sources */,
 				AB85BC421875AB5200670905 /* TGMainViewController.m in Sources */,
 				AB56D9F418EC14D5005AB947 /* CAKeyframeAnimation+Parametric.m in Sources */,
-				AB85BC3C1875AB5200670905 /* TGDropViewController.m in Sources */,
+				AB7FFB6119589BF2002D1E63 /* DropViewController.swift in Sources */,
 				AB301E7619050C830093B654 /* TEOSongData.m in Sources */,
 				AB85BC551875AB5200670905 /* TGWindowController.m in Sources */,
 				AB85BC511875AB5200670905 /* TGSweetSpotControl.m in Sources */,
@@ -509,14 +514,17 @@
 				AB85BBEA1875AACF00670905 /* TGAppDelegate.m in Sources */,
 				AB85BC451875AB5200670905 /* TGPlaylistViewController.m in Sources */,
 				AB85BC531875AB5200670905 /* TGTimelineSliderCell.m in Sources */,
+				AB17DF341959B2B800BFD25B /* InfoViewController.swift in Sources */,
+				AB1E831619586C3C00D61BCA /* MainViewController.swift in Sources */,
 				AB85BC4F1875AB5200670905 /* TGSongUIViewController.m in Sources */,
 				AB85BC4B1875AB5200670905 /* TGSongInfoViewController.m in Sources */,
+				AB17DEF91959937400BFD25B /* CoverViewController.swift in Sources */,
 				AB85BC3E1875AB5200670905 /* TGFingerPrinter.m in Sources */,
 				AB85BC471875AB5200670905 /* TGSongCellMatrix.m in Sources */,
 				AB85BC3F1875AB5200670905 /* TGGridCell.m in Sources */,
 				AB85BC431875AB5200670905 /* TGPlaylist.m in Sources */,
 				AB85BC4C1875AB5200670905 /* TGSongPool.m in Sources */,
-				AB85BC3B1875AB5200670905 /* TGDropView.m in Sources */,
+				AB7FFB6319589D1E002D1E63 /* DropView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

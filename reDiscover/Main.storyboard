@@ -1,14 +1,15 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="6154.21" systemVersion="14A261i" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" initialViewController="1rG-hg-cjj">
     <dependencies>
+        <deployment defaultVersion="101000" identifier="macosx"/>
         <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="6154.21"/>
     </dependencies>
     <scenes>
-        <!--Window Controller - Window-->
+        <!--Window Controller - Drop Window-->
         <scene sceneID="deD-lT-RaP">
             <objects>
-                <windowController id="1rG-hg-cjj" customClass="TGWindowController" sceneMemberID="viewController">
-                    <window key="window" title="Window" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" restorable="NO" oneShot="NO" releasedWhenClosed="NO" showsToolbarButton="NO" animationBehavior="default" id="wuT-Kj-Wye">
+                <windowController id="1rG-hg-cjj" sceneMemberID="viewController">
+                    <window key="window" title="Drop Window" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" restorable="NO" oneShot="NO" releasedWhenClosed="NO" showsToolbarButton="NO" animationBehavior="default" id="wuT-Kj-Wye">
                         <windowStyleMask key="styleMask" unifiedTitleAndToolbar="YES"/>
                         <rect key="contentRect" x="244" y="1000" width="300" height="300"/>
                         <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1417"/>
@@ -23,13 +24,13 @@
                 </windowController>
                 <customObject id="5fK-Zy-7Ly" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="498" y="123"/>
+            <point key="canvasLocation" x="511" y="-51"/>
         </scene>
         <!--Drop View Controller-->
         <scene sceneID="w9l-IF-kSv">
             <objects>
-                <viewController id="Nxi-KE-3bM" customClass="TGDropViewController" sceneMemberID="viewController">
-                    <view key="view" id="ZnL-KQ-Sb9" customClass="TGDropView">
+                <viewController id="Nxi-KE-3bM" customClass="DropViewController" customModule="reDiscover" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" id="ZnL-KQ-Sb9" customClass="DropView" customModule="reDiscover" customModuleProvider="target">
                         <rect key="frame" x="0.0" y="0.0" width="300" height="300"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <subviews>
@@ -47,25 +48,25 @@
                         </connections>
                     </view>
                     <connections>
-                        <segue destination="Oyu-Ii-pF3" kind="popover" popoverBehavior="t" preferredEdge="maxY" id="YlZ-Uj-5kG"/>
+                        <segue destination="Oyu-Ii-pF3" kind="custom" identifier="goMainViewSegue" id="cEk-IY-BbB"/>
                     </connections>
                 </viewController>
                 <customObject id="FXS-ra-OyA" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="918" y="123"/>
+            <point key="canvasLocation" x="920" y="-51"/>
         </scene>
-        <!--Split View Controller-->
+        <!--Main View Controller-->
         <scene sceneID="agX-Z1-Kl4">
             <objects>
-                <splitViewController storyboardIdentifier="TheSplit" id="Oyu-Ii-pF3" sceneMemberID="viewController">
+                <splitViewController storyboardIdentifier="TheSplit" id="Oyu-Ii-pF3" customClass="MainViewController" customModule="reDiscover" customModuleProvider="target" sceneMemberID="viewController">
                     <splitView key="view" dividerStyle="thin" vertical="YES" id="UEB-bm-CAZ">
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask"/>
                     </splitView>
                     <splitViewItems>
-                        <splitViewItem canCollapse="YES" id="Fo2-yW-1sw"/>
+                        <splitViewItem canCollapse="YES" collapsed="YES" id="Fo2-yW-1sw"/>
                         <splitViewItem id="z2B-ix-FrW"/>
-                        <splitViewItem canCollapse="YES" id="ucp-iB-OeV"/>
+                        <splitViewItem canCollapse="YES" collapsed="YES" id="ucp-iB-OeV"/>
                     </splitViewItems>
                     <connections>
                         <segue destination="Rgs-dl-FP4" kind="relationship" relationship="splitItem" id="g7u-kc-Tki"/>
@@ -75,12 +76,12 @@
                 </splitViewController>
                 <customObject id="8Xj-GR-W9V" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1682" y="123"/>
+            <point key="canvasLocation" x="1678" y="75"/>
         </scene>
-        <!--View Controller-->
+        <!--Playlist View Controller-->
         <scene sceneID="YEY-QU-Oe5">
             <objects>
-                <viewController id="Iyy-D3-ujX" sceneMemberID="viewController">
+                <viewController id="Iyy-D3-ujX" customClass="PlaylistViewController" sceneMemberID="viewController">
                     <view key="view" id="yFt-LL-eqB">
                         <rect key="frame" x="0.0" y="0.0" width="300" height="600"/>
                         <autoresizingMask key="autoresizingMask"/>
@@ -98,13 +99,13 @@
                 </viewController>
                 <customObject id="Twh-Be-Tlx" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1196" y="685"/>
+            <point key="canvasLocation" x="1192" y="732"/>
         </scene>
-        <!--View Controller-->
+        <!--Info View Controller-->
         <scene sceneID="DLS-FN-yxp">
             <objects>
-                <viewController id="Rgs-dl-FP4" sceneMemberID="viewController">
-                    <view key="view" horizontalCompressionResistancePriority="751" id="sWm-yH-SHi">
+                <viewController id="Rgs-dl-FP4" customClass="InfoViewController" sceneMemberID="viewController">
+                    <view key="view" id="sWm-yH-SHi">
                         <rect key="frame" x="0.0" y="0.0" width="300" height="600"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <subviews>
@@ -121,30 +122,52 @@
                 </viewController>
                 <customObject id="2Xx-lY-WnM" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2165" y="685"/>
+            <point key="canvasLocation" x="2161" y="732"/>
         </scene>
-        <!--View Controller-->
+        <!--Cover View Controller-->
         <scene sceneID="RHP-Lu-bpW">
             <objects>
-                <viewController id="3Pr-Xk-icz" sceneMemberID="viewController">
-                    <view key="view" id="T7u-Xf-78x">
+                <viewController id="3Pr-Xk-icz" customClass="CoverViewController" customModule="reDiscover" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" horizontalCompressionResistancePriority="751" id="T7u-Xf-78x">
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <subviews>
-                            <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="tEY-wN-8d4">
-                                <rect key="frame" x="210" y="344" width="265" height="28"/>
-                                <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="The Grid" id="Hq5-x3-mRQ">
+                            <segmentedControl verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="2AK-7Q-mpp">
+                                <rect key="frame" x="248" y="567" width="104" height="25"/>
+                                <segmentedCell key="cell" borderStyle="border" alignment="left" style="texturedRounded" trackingMode="selectAny" id="1Ek-ZK-mdb">
+                                    <font key="font" metaFont="system"/>
+                                    <segments>
+                                        <segment width="32"/>
+                                        <segment width="32" enabled="NO" selected="YES" tag="1"/>
+                                        <segment width="32">
+                                            <nil key="label"/>
+                                        </segment>
+                                    </segments>
+                                </segmentedCell>
+                                <connections>
+                                    <action selector="selectorAction:" target="3Pr-Xk-icz" id="qhp-U3-O28"/>
+                                </connections>
+                            </segmentedControl>
+                            <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="tEY-wN-8d4">
+                                <rect key="frame" x="269" y="292" width="62" height="17"/>
+                                <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="center" title="The Grid" id="Hq5-x3-mRQ">
                                     <font key="font" metaFont="system"/>
                                     <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
                                     <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                 </textFieldCell>
                             </textField>
                         </subviews>
+                        <constraints>
+                            <constraint firstItem="2AK-7Q-mpp" firstAttribute="top" secondItem="T7u-Xf-78x" secondAttribute="top" constant="9" id="4tY-PN-uLQ"/>
+                            <constraint firstAttribute="centerY" secondItem="tEY-wN-8d4" secondAttribute="centerY" constant="0.5" id="9Sc-Im-udg"/>
+                            <constraint firstAttribute="centerX" secondItem="2AK-7Q-mpp" secondAttribute="centerX" id="M0L-5o-Yrm"/>
+                            <constraint firstAttribute="centerX" secondItem="tEY-wN-8d4" secondAttribute="centerX" id="c8D-hF-X0j"/>
+                        </constraints>
                     </view>
                 </viewController>
                 <customObject id="iWT-eM-ZR8" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1682" y="685"/>
+            <point key="canvasLocation" x="1678" y="732"/>
         </scene>
     </scenes>
     <resources>
