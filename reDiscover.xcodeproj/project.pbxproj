@@ -17,6 +17,8 @@
 		AB3E9752187C20D600BECC09 /* TGPlaylistCellView.m in Sources */ = {isa = PBXBuildFile; fileRef = AB3E9751187C20D600BECC09 /* TGPlaylistCellView.m */; };
 		AB56D9F418EC14D5005AB947 /* CAKeyframeAnimation+Parametric.m in Sources */ = {isa = PBXBuildFile; fileRef = AB56D9F318EC14D5005AB947 /* CAKeyframeAnimation+Parametric.m */; };
 		AB71279B19407C8E0002B1F8 /* CoverArtArchiveWebFetcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB71279A19407C8E0002B1F8 /* CoverArtArchiveWebFetcher.swift */; };
+		AB7E0717195AF25600570E39 /* DropWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB7E0716195AF25600570E39 /* DropWindowController.swift */; };
+		AB7E0719195AF31700570E39 /* MainWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB7E0718195AF31700570E39 /* MainWindowController.swift */; };
 		AB7FFB6119589BF2002D1E63 /* DropViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB7FFB6019589BF2002D1E63 /* DropViewController.swift */; };
 		AB7FFB6319589D1E002D1E63 /* DropView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB7FFB6219589D1E002D1E63 /* DropView.swift */; };
 		AB85BBD71875AACF00670905 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AB85BBD61875AACF00670905 /* Cocoa.framework */; };
@@ -81,6 +83,8 @@
 		AB56D9F318EC14D5005AB947 /* CAKeyframeAnimation+Parametric.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "CAKeyframeAnimation+Parametric.m"; sourceTree = "<group>"; };
 		AB71279919407C8D0002B1F8 /* reDiscover-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "reDiscover-Bridging-Header.h"; sourceTree = "<group>"; };
 		AB71279A19407C8E0002B1F8 /* CoverArtArchiveWebFetcher.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CoverArtArchiveWebFetcher.swift; sourceTree = "<group>"; };
+		AB7E0716195AF25600570E39 /* DropWindowController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DropWindowController.swift; sourceTree = "<group>"; };
+		AB7E0718195AF31700570E39 /* MainWindowController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MainWindowController.swift; sourceTree = "<group>"; };
 		AB7FFB6019589BF2002D1E63 /* DropViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DropViewController.swift; sourceTree = "<group>"; };
 		AB7FFB6219589D1E002D1E63 /* DropView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DropView.swift; sourceTree = "<group>"; };
 		AB85BBD31875AACF00670905 /* reDiscover.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = reDiscover.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -182,6 +186,8 @@
 				AB85BBE91875AACF00670905 /* TGAppDelegate.m */,
 				AB85BC381875AB5200670905 /* TGWindowController.h */,
 				AB85BC391875AB5200670905 /* TGWindowController.m */,
+				AB7E0716195AF25600570E39 /* DropWindowController.swift */,
+				AB7E0718195AF31700570E39 /* MainWindowController.swift */,
 				AB85BC3A1875AB5200670905 /* TGWindowController.xib */,
 				AB85BBEB1875AACF00670905 /* MainMenu.xib */,
 				AB7FFB6019589BF2002D1E63 /* DropViewController.swift */,
@@ -511,6 +517,7 @@
 				AB85BC461875AB5200670905 /* TGSong.m in Sources */,
 				AB85BBE31875AACF00670905 /* main.m in Sources */,
 				AB85BC401875AB5200670905 /* TGIdleTimer.m in Sources */,
+				AB7E0719195AF31700570E39 /* MainWindowController.swift in Sources */,
 				AB85BBEA1875AACF00670905 /* TGAppDelegate.m in Sources */,
 				AB85BC451875AB5200670905 /* TGPlaylistViewController.m in Sources */,
 				AB85BC531875AB5200670905 /* TGTimelineSliderCell.m in Sources */,
@@ -524,6 +531,7 @@
 				AB85BC3F1875AB5200670905 /* TGGridCell.m in Sources */,
 				AB85BC431875AB5200670905 /* TGPlaylist.m in Sources */,
 				AB85BC4C1875AB5200670905 /* TGSongPool.m in Sources */,
+				AB7E0717195AF25600570E39 /* DropWindowController.swift in Sources */,
 				AB7FFB6319589D1E002D1E63 /* DropView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

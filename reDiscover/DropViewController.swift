@@ -17,13 +17,17 @@ class DropViewController : NSViewController, DropViewDelegate {
         dropView.delegate = self
 
     }
+    
+    override func prepareForSegue(segue: NSStoryboardSegue!, sender: AnyObject!) {
+        println("Drop View Controller preparing for segue")
+    }
         
     func dropViewDidReceiveURL(theURL: NSURL) {
         let songPool = TGSongPool()
         if songPool.validateURL(theURL) {
             println("Gogo widget")
 
-            self.performSegueWithIdentifier("goMainViewSegue", sender: self)
+            performSegueWithIdentifier("goMainViewSegue", sender: self)
         }
         println("Done")
     }
