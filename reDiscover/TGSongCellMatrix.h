@@ -32,6 +32,8 @@
 // Synchronous serial matrixAccessQueue methods
 - (NSInteger)indexOfObjectWithSongID:(id)songID;
 
+- (void)renewAndSizeRows:(NSInteger)newRows columns:(NSInteger)newCols;
+
 - (NSInteger)tagForSongWithID:(id)songID;
 - (id)songIDForSongWithTag:(NSInteger)songTag;
 

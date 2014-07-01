@@ -92,14 +92,14 @@
 
     NSPoint mouseLoc = [[self documentView] convertPoint:[theEvent locationInWindow] fromView:nil];
     NSInteger mouseRow, mouseCol;
-    [[self documentView] MAQgetRow:&mouseRow column:&mouseCol forPoint:mouseLoc];
+    [[self documentView] getRow:&mouseRow column:&mouseCol forPoint:mouseLoc];
     
-    TGGridCell *currentCell = [[self documentView] MAQcellAtRow:mouseRow column:mouseCol];
+    TGGridCell *currentCell = [[self documentView] cellAtRow:mouseRow column:mouseCol];
     if ([currentCell tag] != -1) {
         
         if (_delegate && [_delegate respondsToSelector:@selector(buttonDownInCellFrame:)]) {
             
-            NSRect theRect = [[self documentView] MAQcellFrameAtRow:mouseRow column:mouseCol];
+            NSRect theRect = [[self documentView] cellFrameAtRow:mouseRow column:mouseCol];
             [_delegate buttonDownInCellFrame:theRect];
         }
     }
@@ -111,8 +111,8 @@
     // to the coordinates of the document view (the view being scrolled by the scroll view).
     NSPoint mouseLoc = [[self documentView] convertPoint:[theEvent locationInWindow] fromView:nil];
     NSInteger mouseRow, mouseCol;
-    [[self documentView] MAQgetRow:&mouseRow column:&mouseCol forPoint:mouseLoc];
-    TGGridCell *currentCell = [[self documentView] MAQcellAtRow:mouseRow column:mouseCol];
+    [[self documentView] getRow:&mouseRow column:&mouseCol forPoint:mouseLoc];
+    TGGridCell *currentCell = [[self documentView] cellAtRow:mouseRow column:mouseCol];
     if (_delegate && [_delegate respondsToSelector:@selector(songGridScrollViewDidRightClickSongID:)]) {
         [_delegate songGridScrollViewDidRightClickSongID:[currentCell tag]];
     }
@@ -151,7 +151,7 @@
     // Find out what the mouse location is in the coordinates of the document view (the matrix).
     //NSPoint mouseLoc = [theMatrix convertPoint:locationInWindow fromView:nil];
     
-    [theMatrix MAQgetRow:&mouseRow column:&mouseCol forPoint:nowPoint];
+    [theMatrix getRow:&mouseRow column:&mouseCol forPoint:nowPoint];
 //    [theMatrix MAQgetRow:&mouseRow column:&mouseCol forPoint:mouseLoc];
     
     if ((mouseCol >= 0) && (mouseRow >= 0)) {
