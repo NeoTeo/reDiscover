@@ -17,7 +17,7 @@
         // Initialization code here.
         _activeCellCount = 0;
 
-        self.cellTagToSongID = [[NSMutableArray alloc] init];
+        cellTagToSongID = [[NSMutableArray alloc] init];
         
         [self setLayerContentsRedrawPolicy:NSViewLayerContentsRedrawOnSetNeedsDisplay];
         [self setWantsLayer:NO];
@@ -37,6 +37,30 @@
 //    [self sendAction];
 //}
 
+- (void)renewAndSizeRows:(NSInteger)newRows columns:(NSInteger)newCols {
+    dispatch_sync(_matrixAccessQueue,^{
+        [super renewRows:newRows columns:newCols];
+        [super sizeToCells];
+    });
+}
+
+- (id)songIDForSongWithTag:(NSInteger)songTag {
+    __block id songID;
+    dispatch_sync(_matrixAccessQueue,^{
+        songID = [cellTagToSongID objectAtIndex:songTag];
+    });
+    return songID;
+}
+
+
+- (NSInteger)tagForSongWithID:(id)songID {
+    __block NSInteger songTag;
+    dispatch_sync(_matrixAccessQueue,^{
+        songTag = [cellTagToSongID count];
+        [cellTagToSongID addObject:songID];
+    });
+    return songTag;
+}
 
 
 - (void)incrementActiveCellCount {
@@ -52,7 +76,7 @@
 - (NSInteger)indexOfObjectWithSongID:(id)songID {
     __block NSInteger retVal = -1;
     dispatch_sync(_matrixAccessQueue,^{
-        retVal = [_cellTagToSongID indexOfObject:songID];
+        retVal = [cellTagToSongID indexOfObject:songID];
     });
     return retVal;
 }

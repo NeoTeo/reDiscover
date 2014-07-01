@@ -228,21 +228,15 @@ static NSInteger const kUndefinedID =  -1;
         id songID = [unmappedSongIDArray objectAtIndex:randomSongIDIndex];
         [unmappedSongIDArray removeObjectAtIndex:randomSongIDIndex];
         
-        // Since we're about to add an object to the cellTagToSongID array its current count must be the
-        // index at which the object will be added. We use that for setting the tag of the cell.
-        NSInteger index = [[_songCellMatrix cellTagToSongID] count];
-        
-        // Add an entry to the songCellMatrix cellTagToSongID array
-        [[_songCellMatrix cellTagToSongID] addObject:songID];
-        
-        [theCell setTag:index];
+        [theCell setTag:[_songCellMatrix tagForSongWithID:songID]];
         
         return songID;
     } else
-        return [[_songCellMatrix cellTagToSongID] objectAtIndex:cellTag];
+        return [_songCellMatrix songIDForSongWithTag:cellTag];
     
 }
 
+/*
 -(TGGridCell*)songIDToCell:(id)songID {
     // Traverse the cellTagToSongID array and return the cell that matches it or null if none is found.
     for (int idx=0; idx < [[_songCellMatrix cellTagToSongID] count]; idx++) {
@@ -256,6 +250,7 @@ static NSInteger const kUndefinedID =  -1;
     }
     return nil;
 }
+*/
 
 - (void)runTest {
     
@@ -391,7 +386,9 @@ static NSInteger const kUndefinedID =  -1;
 - (void)animateMatrixZoom:(NSInteger)zoomQuantum {
 
     // Note which cell is the currently selected so that we can keep it in view after the zooming is done.
-    TGGridCell *selectedCell = [self songIDToCell:[_delegate lastRequestedSongID]];
+    NSInteger theTag = [_songCellMatrix tagForSongWithID:[_delegate lastRequestedSongID]];
+    TGGridCell* selectedCell = [_songCellMatrix cellWithTag:theTag];
+//    TGGridCell *selectedCell = [self songIDToCell:[_delegate lastRequestedSongID]];
     
     zoomFactor = 0.1*zoomQuantum;
     NSUInteger currentSongCount = [_songCellMatrix activeCellCount];//[[_songCellMatrix cells] count];
@@ -550,9 +547,9 @@ static NSInteger const kUndefinedID =  -1;
     
     // First we get the cell's rect.
     NSInteger row, col;
-    NSLog(@"Asking for row and col of the cell %ld",(long)theCell.tag);
+//    NSLog(@"Asking for row and col of the cell %ld",(long)theCell.tag);
     [_songCellMatrix getRow:&row column:&col ofCell:theCell];
-    NSLog(@"...and got %ld, %ld",(long)row,(long)col);
+//    NSLog(@"...and got %ld, %ld",(long)row,(long)col);
     CGRect cellRect = [_songCellMatrix cellFrameAtRow:row column:col];
     CALayer *frontLayer = [self makeLayerWithImage:theImage atRect:cellRect];
     

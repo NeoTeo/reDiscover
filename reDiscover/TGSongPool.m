@@ -433,7 +433,7 @@ static int const kSSCheckCounterSize = 10;
         imageHandler(songArt);
         return;
     }
-    
+    NSAssert(theSong != nil,@"WTF, song is nil");
     // If nothing was found, try asking the song directly.
     // This is done by chaining asynchronous requests for data from either our Core Data store, from the file system and
     // finally from the network.
