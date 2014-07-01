@@ -65,16 +65,18 @@
 
             // TEO should only do one!
             for (AVMetadataItem *metadataItem in artworks) {
+                
+                // Use the passed in callback to return image.
                 imageHandler([[NSImage alloc] initWithData:[metadataItem.value copyWithZone:nil]]);
                 return;
+            
 //                if ([metadataItem.keySpace isEqualToString:AVMetadataKeySpaceID3]) {
-//                    NSDictionary *d = [metadataItem.value copyWithZone:nil];
-//                    // Use the passed in callback to return image.
-//                    imageHandler([[NSImage alloc] initWithData:[d objectForKey:@"data"]]);
-//                    imageHandler([[NSImage alloc] initWithData:[metadataItem.value copyWithZone:nil]]);
-//                    return;
+//        
+////                    NSDictionary *d = [metadataItem.value copyWithZone:nil];
+////                    imageHandler([[NSImage alloc] initWithData:[d objectForKey:@"data"]]);
 //                    
 //                } else if ([metadataItem.keySpace isEqualToString:AVMetadataKeySpaceiTunes]) {
+//                                NSLog(@"not here.");
 //                    // Use the passed in callback to return image.
 //                    imageHandler([[NSImage alloc] initWithData:[metadataItem.value copyWithZone:nil]]);
 //                    return;

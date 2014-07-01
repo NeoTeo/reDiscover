@@ -186,9 +186,9 @@
 //    return;
     // First convert the songID to the matrix index.
 //    NSInteger cellTag = [_songCellMatrix.cellTagToSongID indexOfObject:songID];
-    NSInteger cellTag = [_songCellMatrix indexOfObjectWithSongID:songID];
+    NSInteger cellTag = [_songCellMatrix MAQindexOfObjectWithSongID:songID];
 //    NSAssert(cellTag < [_songCellMatrix cells].count , @"cellTag out of bounds");
-    TGGridCell * theCell = [_songCellMatrix cellWithTag:cellTag];
+    TGGridCell * theCell = [_songCellMatrix MAQcellWithTag:cellTag];
     NSAssert(theCell != nil, @"WTF, the cell is nil");
     // TEO This should only be animated if the cover is visible on screen.
     // If we are setting the cover for the currently playing song do a pop animation,
@@ -322,6 +322,7 @@ static NSInteger const kUndefinedID =  -1;
 
     // Resize the matrix to account for the newly added cell.
 //    [_songCellMatrix sizeToCells];
+
     [_songCellMatrix renewAndSizeRows:newRow columns:newCol];
     
     NSAssert([[_songCellMatrix cells] count] > songSerialNumber, @"Eeek. songID is bigger than the song cell matrix");
@@ -394,13 +395,14 @@ static NSInteger const kUndefinedID =  -1;
     NSInteger row,col;
     TGGridCell* existingCell = [self growMatrix];
     [_songCellMatrix incrementActiveCellCount];
+
     [_songCellMatrix getRow:&row column:&col ofCell:existingCell];
     // Add the id of this song to an array of unassigned songs.
     // We will then pick randomly from that array to assign to a cell in the matrix.
     [unmappedSongIDArray addObject:songID];
 
     
-    CGRect cellRect = [_songCellMatrix cellFrameAtRow:row column:col];
+    CGRect cellRect = [_songCellMatrix MAQcellFrameAtRow:row column:col];
     CGRect theFrame = [[self songGridScrollView] documentVisibleRect];
 
     // Only do the work if we're actually visible.
@@ -439,6 +441,7 @@ static NSInteger const kUndefinedID =  -1;
 - (void)animateMatrixZoom:(NSInteger)zoomQuantum {
 
     // Note which cell is the currently selected so that we can keep it in view after the zooming is done.
+
     NSInteger theTag = [_songCellMatrix tagForSongWithID:[_delegate lastRequestedSongID]];
     TGGridCell* selectedCell = [_songCellMatrix cellWithTag:theTag];
 //    TGGridCell *selectedCell = [self songIDToCell:[_delegate lastRequestedSongID]];
@@ -477,7 +480,7 @@ static NSInteger const kUndefinedID =  -1;
 
     // Find out the row number visible at the top.
     NSInteger theRow,theCol;
-    [_songCellMatrix getRow:&theRow column:&theCol forPoint:[_songGridScrollView documentVisibleRect].origin];
+    [_songCellMatrix MAQgetRow:&theRow column:&theCol forPoint:[_songGridScrollView documentVisibleRect].origin];
     NSLog(@"the row %ld",theRow);
 
 
@@ -506,7 +509,7 @@ static NSInteger const kUndefinedID =  -1;
             if (cellRow*_colsPerRow+cellCol < currentSongCount) {
                 
                 // Get the cell's current frame.
-                NSRect cellFrame = [_songCellMatrix cellFrameAtRow:cellRow column:cellCol];
+                NSRect cellFrame = [_songCellMatrix MAQcellFrameAtRow:cellRow column:cellCol];
                 
                 NSImageView *newURLImage = [[NSImageView alloc] initWithFrame:cellFrame];
                 
@@ -541,8 +544,8 @@ static NSInteger const kUndefinedID =  -1;
                         
                         // Ensure that the currently selected song is still visible after the zoom.
                         NSInteger curCol,curRow;
-                        [_songCellMatrix getRow:&curRow column:&curCol ofCell:selectedCell];
-                        [_songCellMatrix scrollCellToVisibleAtRow:curRow column:curCol];
+                        [_songCellMatrix MAQgetRow:&curRow column:&curCol ofCell:selectedCell];
+                        [_songCellMatrix MAQscrollCellToVisibleAtRow:curRow column:curCol];
                         
                         // Return the matrix as the scroll view's document view.
                         [bgView removeFromSuperview];
@@ -567,8 +570,8 @@ static NSInteger const kUndefinedID =  -1;
 - (void)coverFadeInAnimation:(TGGridCell *)theCell withImage:(NSImage *)theImage {
     // First we get the cell's rect.
     NSInteger row, col;
-    [_songCellMatrix getRow:&row column:&col ofCell:theCell];
-    CGRect cellRect = [_songCellMatrix cellFrameAtRow:row column:col];
+    [_songCellMatrix MAQgetRow:&row column:&col ofCell:theCell];
+    CGRect cellRect = [_songCellMatrix MAQcellFrameAtRow:row column:col];
     
     CABasicAnimation* fadeAnim = [CABasicAnimation animationWithKeyPath:@"opacity"];
     fadeAnim.fromValue = [NSNumber numberWithFloat:0.0];
@@ -601,6 +604,7 @@ static NSInteger const kUndefinedID =  -1;
     // First we get the cell's rect.
     NSInteger row, col;
 //    NSLog(@"Asking for row and col of the cell %ld",(long)theCell.tag);
+
     [_songCellMatrix getRow:&row column:&col ofCell:theCell];
 //    NSLog(@"...and got %ld, %ld",(long)row,(long)col);
     CGRect cellRect = [_songCellMatrix cellFrameAtRow:row column:col];
@@ -631,8 +635,8 @@ static NSInteger const kUndefinedID =  -1;
 - (void)coverFlipAnimationForCell:(TGGridCell *)theCell withImage:(NSImage *)theImage {
     
     NSInteger row, col;
-    [_songCellMatrix getRow:&row column:&col ofCell:theCell];
-    CGRect cellRect = [_songCellMatrix cellFrameAtRow:row column:col];
+    [_songCellMatrix MAQgetRow:&row column:&col ofCell:theCell];
+    CGRect cellRect = [_songCellMatrix MAQcellFrameAtRow:row column:col];
     
     NSImageView *frontView = [[NSImageView alloc] initWithFrame:cellRect];
     [frontView setImage:[theCell image]];
@@ -961,7 +965,7 @@ static NSInteger const kUndefinedID =  -1;
                         continue;
                     
                     NSAssert([[_songCellMatrix cells] count] > 0, @"shit no cells");
-                    TGGridCell *theCell = [_songCellMatrix cellAtRow:matrixRows column:matrixCols];
+                    TGGridCell *theCell = [_songCellMatrix MAQcellAtRow:matrixRows column:matrixCols];
                     
                     // Skip if invalid cell.
                     if (theCell == nil) {
@@ -1053,10 +1057,10 @@ static NSInteger const kUndefinedID =  -1;
     
 //    NSLog(@"The selection speed %@",NSStringFromPoint(theSpeed));
     
-    NSRect theRect = [_songCellMatrix convertRect:[_songCellMatrix cellFrameAtRow:theRow column:theColumn] toView:_songGridScrollView];
+    NSRect theRect = [_songCellMatrix convertRect:[_songCellMatrix MAQcellFrameAtRow:theRow column:theColumn] toView:_songGridScrollView];
     [_songUIViewController setUIPosition:theRect.origin withPopAnimation:YES];
     
-    TGGridCell *theCell = [_songCellMatrix cellAtRow:theRow column:theColumn];
+    TGGridCell *theCell = [_songCellMatrix MAQcellAtRow:theRow column:theColumn];
     // Early out if the coordinates are pointing to an invalid cell.
     if (theCell == nil) return;
     
@@ -1077,7 +1081,7 @@ static NSInteger const kUndefinedID =  -1;
         [[_songTimelineController songTimelinePopover] close];
     }
     
-    NSRect cellFrame = [_songCellMatrix cellFrameAtRow:theRow column:theColumn];
+    NSRect cellFrame = [_songCellMatrix MAQcellFrameAtRow:theRow column:theColumn];
     [self togglePopoverAtCellFrame:cellFrame withDelay:3.0];
 }
 
