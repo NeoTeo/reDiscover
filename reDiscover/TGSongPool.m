@@ -429,6 +429,7 @@ static int const kSSCheckCounterSize = 10;
     TGSong * theSong = [self songForID:songID];
     NSInteger artID = theSong.artID;
     if (artID >= 0) {
+        NSLog(@"song id %@ already had image id %ld",songID,(long)artID);
         NSImage *songArt = [_artArray objectAtIndex:artID];
         imageHandler(songArt);
         return;
@@ -445,9 +446,12 @@ static int const kSSCheckCounterSize = 10;
             [_artArray addObject:tmpImage];
 //            NSLog(@"Adding imaage to art array.");
             
+            /*
+             TEO For now we don't have a good way of detecting whether an image is already in the
+            // artArray so this is just filling it up with dupes. Commenting it out until a strategy is thought of.
             // Add the art index to the song.
             theSong.artID = [_artArray count]-1;
-            
+            */
             // Call the image handler with the image we recived from the song.
             imageHandler(tmpImage);
             
@@ -471,9 +475,12 @@ static int const kSSCheckCounterSize = 10;
                         // Here we can check the song's artID to see if it already has album art.
                         if ((aSong.artID != -1) && [_artArray objectAtIndex:aSong.artID] ) {
 //                            NSLog(@"Got cover art from another song in the same album!");
-            
+                            /*
+                             TEO For now we don't have a good way of detecting whether an image is already in the
+                             // artArray so this is just filling it up with dupes. Commenting it out until a strategy is thought of.
                             // Add the art index to the song.
                             theSong.artID = aSong.artID;
+                             */
                             imageHandler([_artArray objectAtIndex:aSong.artID]);
                             
                             // We've succeeded, so drop out.
@@ -493,10 +500,12 @@ static int const kSSCheckCounterSize = 10;
                     NSLog(@"found an image in the same folder as the song.");
                     // Store the image in the local store so we won't have to re-fetch it from the file.
                     [_artArray addObject:tmpImage];
-                    
+                    /*
+                     TEO For now we don't have a good way of detecting whether an image is already in the
+                     // artArray so this is just filling it up with dupes. Commenting it out until a strategy is thought of.
                     // Add the art index to the song.
                     theSong.artID = [_artArray count]-1;
-                    
+                    */
                     imageHandler(tmpImage);
                     
                     // We've succeeded, so drop out.
@@ -513,8 +522,13 @@ static int const kSSCheckCounterSize = 10;
                         // Store the image in the local store so we won't have to re-fetch it from the file.
                         [_artArray addObject:theImage];
                         
+                        /* 
+                            TEO this is the only place it still makes sense to keep the art even if it is a dupe (for now).
+                            The artArray should be stored between runs so as to avoid net access all the time
+                         */
                         // Add the art index to the song.
                         theSong.artID = [_artArray count]-1;
+                        
                         imageHandler(theImage);
                         
                         // We've succeeded, so drop out.
