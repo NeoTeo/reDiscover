@@ -3,3 +3,6 @@
 //
 
 #import "TGSongPool.h"
+
+// Temporarily need to import this until we can use the Swift MainViewController.
+#import "TGMainViewController.h"

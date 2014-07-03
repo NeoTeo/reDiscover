@@ -13,8 +13,11 @@
 //#import "TGDropView.h"
 #import "TGSongPool.h"
 
+
+#ifdef old_style
 static NSInteger const kDropViewTag = 0;
 static NSInteger const kMainViewTag = 1;
+#endif
 
 static NSString *const kDropViewName = @"TGDropViewController";
 static NSString *const kMainViewName = @"TGMainView";
@@ -44,7 +47,7 @@ static NSString *const kMainViewName = @"TGMainView";
     // Implement this method to handle any initialization after your window controller's window has been loaded from its nib file.
 }
 
-/*
+#ifdef old_style
 - (void)setActiveViewControllerToViewWithTag:(NSInteger)viewTag {
     
     if (activeViewController != nil) {
@@ -91,7 +94,8 @@ static NSString *const kMainViewName = @"TGMainView";
     }
 
 }
-*/
+#endif
+
 - (void)awakeFromNib
 {
 //    [self setActiveViewControllerToViewWithTag:kDropViewTag];
@@ -123,6 +127,7 @@ static NSString *const kMainViewName = @"TGMainView";
     TGSongPool *songPool = [[TGSongPool alloc] init];
     
     if ([songPool validateURL:theURL]) {
+#ifndef old_style
         NSLog(@"gogogo");
 //        [self setContentViewController:[[self storyboard] instantiateControllerWithIdentifier:@"TheSplit"]];
         NSLog(@"This window is %@ and the first responder is %@",[self window], [[self window] firstResponder]);
@@ -131,7 +136,7 @@ static NSString *const kMainViewName = @"TGMainView";
 
 //        [[self contentViewController] performSegueWithIdentifier:@"goMainViewSegue" sender:self];
 //        [self performSegueWithIdentifier:@"goMainViewSegue" sender:self];
-/*
+#else
         // activateIgnoringOtherApps brings the application to the front.
         [NSApp activateIgnoringOtherApps:YES];
 
@@ -147,7 +152,7 @@ static NSString *const kMainViewName = @"TGMainView";
         
         // Ensure that the songGridView receives all the events (in particular the key events).
         [[self window] makeFirstResponder:mainViewController];
-*/
+#endif
     }
 }
 

@@ -45,7 +45,7 @@ namespace Chromaprint
 		}
 
 		int NumColumns() const { return m_columns; }
-		int NumRows() const { return m_data.size() / m_columns; }
+		int NumRows() const { return (int)m_data.size() / m_columns; }
 
 		void AddRow(const std::vector<double> &row)
 		{

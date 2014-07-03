@@ -30,6 +30,20 @@ static int const kSSCheckCounterSize = 10;
 
 @implementation TGSongPool
 
+- (id)initWithURL:(NSURL*) theURL {
+    if( [self validateURL:theURL]) {
+        return [self init];
+    } else {
+        return nil;
+    }
+}
+
+- (BOOL)validateURL:(NSURL *)anURL {
+    
+    // for now just say yes
+    return YES;
+}
+
 - (id)init {
     self = [super init];
     if (self != NULL) {
@@ -271,11 +285,6 @@ static int const kSSCheckCounterSize = 10;
 //}
 
 
-- (BOOL)validateURL:(NSURL *)anURL {
-    
-    // for now just say yes
-    return YES;
-}
 
 // Traverse the passed in URL, find all music files and load their URLs into a dictionary.
 // returns true if the given url is valid and, if so, will initiate the loading of songs.
@@ -694,6 +703,8 @@ static int const kSSCheckCounterSize = 10;
         NSNumber *newPlayTime = [NSNumber numberWithDouble:currentPlayTimeInSeconds + offsetInSeconds];
         if (newPlayTime >= 0) {
             [self setSweetSpotForSong:song atTime:newPlayTime];
+            // TSD test
+            song.TEOData.selectedSweetSpot = newPlayTime;
         }
     }
     

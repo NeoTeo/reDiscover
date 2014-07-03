@@ -32,6 +32,7 @@
 - (NSInteger)indexOfObjectWithSongID:(id)songID;
 
 - (void)renewAndSizeRows:(NSInteger)newRows columns:(NSInteger)newCols;
+-(NSRect)coverFrameAtRow:(NSInteger)row column:(NSInteger)col;
 
 - (NSInteger)tagForSongWithID:(id)songID;
 - (id)songIDForSongWithTag:(NSInteger)songTag;

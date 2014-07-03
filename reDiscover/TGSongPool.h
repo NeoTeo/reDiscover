@@ -84,6 +84,7 @@
 
 
 // Methods
+- (id)initWithURL:(NSURL*) theURL;
 - (BOOL)validateURL:(NSURL *)anURL;
 - (BOOL)loadFromURL:(NSURL *)anURL ;
 //- (void)updateCache:(NSArray *)songIDArray;

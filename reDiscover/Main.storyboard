@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="6154.21" systemVersion="14A261i" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" initialViewController="1rG-hg-cjj">
     <dependencies>
+        <deployment defaultVersion="101000" identifier="macosx"/>
         <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="6154.21"/>
+        <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
     </dependencies>
     <scenes>
         <!--Window Controller - Drop Window-->
@@ -36,6 +38,9 @@
                             <imageView horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="P5B-U5-u4f">
                                 <rect key="frame" x="21" y="21" width="259" height="259"/>
                                 <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" image="DropArrow" id="9UV-0o-FxX"/>
+                                <connections>
+                                    <segue destination="cJE-xo-Vn6" kind="custom" identifier="oldStyleSegue" id="s56-iv-DYh"/>
+                                </connections>
                             </imageView>
                         </subviews>
                         <constraints>
@@ -53,6 +58,19 @@
                 <customObject id="FXS-ra-OyA" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="920" y="-51"/>
+        </scene>
+        <!--Main View Controller-->
+        <scene sceneID="XY3-af-wnw">
+            <objects>
+                <viewController id="cJE-xo-Vn6" customClass="TGMainViewController" sceneMemberID="viewController">
+                    <view key="view" id="r1l-oJ-ZPn">
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </view>
+                </viewController>
+                <customObject id="eJj-ng-8uK" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1465" y="-587"/>
         </scene>
         <!--Main View Controller-->
         <scene sceneID="agX-Z1-Kl4">
@@ -98,7 +116,7 @@
                 </viewController>
                 <customObject id="Twh-Be-Tlx" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2157" y="732"/>
+            <point key="canvasLocation" x="2224" y="732"/>
         </scene>
         <!--Playlist View Controller-->
         <scene sceneID="DLS-FN-yxp">
@@ -137,9 +155,34 @@
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <subviews>
+                            <scrollView autohidesScrollers="YES" horizontalLineScroll="10" horizontalPageScroll="10" verticalLineScroll="10" verticalPageScroll="10" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="sm2-2v-SSw">
+                                <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                                <clipView key="contentView" id="YUP-4n-22j">
+                                    <rect key="frame" x="1" y="1" width="248" height="158"/>
+                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                    <subviews>
+                                        <collectionView id="uy8-Cm-sib">
+                                            <rect key="frame" x="0.0" y="0.0" width="248" height="158"/>
+                                            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                            <color key="primaryBackgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                        </collectionView>
+                                    </subviews>
+                                </clipView>
+                                <constraints>
+                                    <constraint firstAttribute="width" secondItem="sm2-2v-SSw" secondAttribute="height" multiplier="1:1" id="Iuv-ky-xJo"/>
+                                </constraints>
+                                <scroller key="horizontalScroller" hidden="YES" verticalHuggingPriority="750" horizontal="YES" id="Uwl-pS-i21">
+                                    <rect key="frame" x="1" y="144" width="233" height="15"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                </scroller>
+                                <scroller key="verticalScroller" hidden="YES" verticalHuggingPriority="750" doubleValue="1" horizontal="NO" id="enM-a5-V8I">
+                                    <rect key="frame" x="234" y="1" width="15" height="143"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                </scroller>
+                            </scrollView>
                             <segmentedControl verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="2AK-7Q-mpp">
-                                <rect key="frame" x="248" y="567" width="104" height="25"/>
-                                <segmentedCell key="cell" borderStyle="border" alignment="left" style="texturedRounded" trackingMode="selectAny" id="1Ek-ZK-mdb">
+                                <rect key="frame" x="248" y="568" width="104" height="24"/>
+                                <segmentedCell key="cell" borderStyle="border" alignment="left" style="rounded" trackingMode="selectAny" id="1Ek-ZK-mdb">
                                     <font key="font" metaFont="system"/>
                                     <segments>
                                         <segment width="32"/>
@@ -153,20 +196,14 @@
                                     <action selector="selectorAction:" target="3Pr-Xk-icz" id="qhp-U3-O28"/>
                                 </connections>
                             </segmentedControl>
-                            <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="tEY-wN-8d4">
-                                <rect key="frame" x="269" y="292" width="62" height="17"/>
-                                <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="center" title="The Grid" id="Hq5-x3-mRQ">
-                                    <font key="font" metaFont="system"/>
-                                    <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
-                                    <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
-                                </textFieldCell>
-                            </textField>
                         </subviews>
                         <constraints>
                             <constraint firstItem="2AK-7Q-mpp" firstAttribute="top" secondItem="T7u-Xf-78x" secondAttribute="top" constant="9" id="4tY-PN-uLQ"/>
-                            <constraint firstAttribute="centerY" secondItem="tEY-wN-8d4" secondAttribute="centerY" constant="0.5" id="9Sc-Im-udg"/>
+                            <constraint firstAttribute="bottom" secondItem="sm2-2v-SSw" secondAttribute="bottom" id="Eq5-do-ygZ"/>
                             <constraint firstAttribute="centerX" secondItem="2AK-7Q-mpp" secondAttribute="centerX" id="M0L-5o-Yrm"/>
-                            <constraint firstAttribute="centerX" secondItem="tEY-wN-8d4" secondAttribute="centerX" id="c8D-hF-X0j"/>
+                            <constraint firstItem="sm2-2v-SSw" firstAttribute="leading" secondItem="T7u-Xf-78x" secondAttribute="leading" id="TXK-K7-MKN"/>
+                            <constraint firstAttribute="trailing" secondItem="sm2-2v-SSw" secondAttribute="trailing" id="WDJ-fx-Oh6"/>
+                            <constraint firstItem="sm2-2v-SSw" firstAttribute="top" secondItem="T7u-Xf-78x" secondAttribute="top" id="lzk-s1-uVb"/>
                         </constraints>
                     </view>
                 </viewController>

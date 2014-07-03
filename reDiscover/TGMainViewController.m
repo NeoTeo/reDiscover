@@ -44,6 +44,9 @@
 
 -(void)viewWillAppear {
     NSLog(@"Appearing");
+    NSAssert(_theURL != nil, @"There is no URL to load from.");
+    [self setSongPool:[[TGSongPool alloc] init]];
+    [_currentSongPool loadFromURL:_theURL];
 }
 
 

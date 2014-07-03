@@ -162,6 +162,7 @@
     return frontLayer;
 }
 
+/*
 - (void)loadGenreToColourMap {
         NSString *errorDesc = nil;
         NSPropertyListFormat format;
@@ -172,7 +173,7 @@
         // And convert the static property list into property list objects
         _genreToColourDictionary = (NSDictionary *)[NSPropertyListSerialization propertyListFromData:plistXML mutabilityOption:NSPropertyListMutableContainersAndLeaves format:&format errorDescription:&errorDesc];
 }
-
+*/
 
 - (void)getRow:(NSUInteger *)row andCol:(NSUInteger *)col forSongID:(NSUInteger)songID {
     NSAssert(_colsPerRow > 0, @"Error. 0 columns will cause a div by zero.");
@@ -260,7 +261,7 @@ static NSInteger const kUndefinedID =  -1;
     
         for (int row=0; row < rowCount; row++) {
             for (int col=0; col < colCount; col++) {
-//                NSRect cellRect = [_songCellMatrix cellFrameAtRow:row column:col];
+//                NSRect cellRect = [_songCellMatrix coverFrameAtRow:row column:col];
 //                [_songCellMatrix scrollRectToVisible:cellRect];
                 
 //                NSLog(@"the frame of the cell at %d,%d is %@",row,col,NSStringFromRect(cellRect));
@@ -270,7 +271,7 @@ static NSInteger const kUndefinedID =  -1;
 //                [_songCellMatrix setNeedsDisplay];
 
 //                [_songGridScrollView setNeedsDisplay:YES];
-//    CGRect cellRect = [_songCellMatrix cellFrameAtRow:row column:col];
+//    CGRect cellRect = [_songCellMatrix coverFrameAtRow:row column:col];
 //                [_songGridScrollView scrollPoint:cellRect.origin];
                 [self songGridScrollViewDidChangeToRow:row andColumn:col withSpeedVector:spd];
                 
@@ -402,7 +403,7 @@ static NSInteger const kUndefinedID =  -1;
     [unmappedSongIDArray addObject:songID];
 
     
-    CGRect cellRect = [_songCellMatrix cellFrameAtRow:row column:col];
+    CGRect cellRect = [_songCellMatrix coverFrameAtRow:row column:col];
     CGRect theFrame = [[self songGridScrollView] documentVisibleRect];
 
     // Only do the work if we're actually visible.
@@ -509,7 +510,7 @@ static NSInteger const kUndefinedID =  -1;
             if (cellRow*_colsPerRow+cellCol < currentSongCount) {
                 
                 // Get the cell's current frame.
-                NSRect cellFrame = [_songCellMatrix cellFrameAtRow:cellRow column:cellCol];
+                NSRect cellFrame = [_songCellMatrix coverFrameAtRow:cellRow column:cellCol];
                 
                 NSImageView *newURLImage = [[NSImageView alloc] initWithFrame:cellFrame];
                 
@@ -571,7 +572,7 @@ static NSInteger const kUndefinedID =  -1;
     // First we get the cell's rect.
     NSInteger row, col;
     [_songCellMatrix getRow:&row column:&col ofCell:theCell];
-    CGRect cellRect = [_songCellMatrix cellFrameAtRow:row column:col];
+    CGRect cellRect = [_songCellMatrix coverFrameAtRow:row column:col];
     
     CABasicAnimation* fadeAnim = [CABasicAnimation animationWithKeyPath:@"opacity"];
     fadeAnim.fromValue = [NSNumber numberWithFloat:0.0];
@@ -607,7 +608,7 @@ static NSInteger const kUndefinedID =  -1;
 
     [_songCellMatrix getRow:&row column:&col ofCell:theCell];
 //    NSLog(@"...and got %ld, %ld",(long)row,(long)col);
-    CGRect cellRect = [_songCellMatrix cellFrameAtRow:row column:col];
+    CGRect cellRect = [_songCellMatrix coverFrameAtRow:row column:col];
     CALayer *frontLayer = [self makeLayerWithImage:theImage atRect:cellRect];
     
     // This breaks if not running on main thread. But it also causes uncommitted CATransactions to occur :(
@@ -636,7 +637,7 @@ static NSInteger const kUndefinedID =  -1;
     
     NSInteger row, col;
     [_songCellMatrix getRow:&row column:&col ofCell:theCell];
-    CGRect cellRect = [_songCellMatrix cellFrameAtRow:row column:col];
+    CGRect cellRect = [_songCellMatrix coverFrameAtRow:row column:col];
     
     NSImageView *frontView = [[NSImageView alloc] initWithFrame:cellRect];
     [frontView setImage:[theCell image]];
@@ -1057,7 +1058,7 @@ static NSInteger const kUndefinedID =  -1;
     
 //    NSLog(@"The selection speed %@",NSStringFromPoint(theSpeed));
     
-    NSRect theRect = [_songCellMatrix convertRect:[_songCellMatrix cellFrameAtRow:theRow column:theColumn] toView:_songGridScrollView];
+    NSRect theRect = [_songCellMatrix convertRect:[_songCellMatrix coverFrameAtRow:theRow column:theColumn] toView:_songGridScrollView];
     [_songUIViewController setUIPosition:theRect.origin withPopAnimation:YES];
     
     TGGridCell *theCell = [_songCellMatrix cellAtRow:theRow column:theColumn];
@@ -1081,7 +1082,7 @@ static NSInteger const kUndefinedID =  -1;
         [[_songTimelineController songTimelinePopover] close];
     }
     
-    NSRect cellFrame = [_songCellMatrix cellFrameAtRow:theRow column:theColumn];
+    NSRect cellFrame = [_songCellMatrix coverFrameAtRow:theRow column:theColumn];
     [self togglePopoverAtCellFrame:cellFrame withDelay:3.0];
 }
 

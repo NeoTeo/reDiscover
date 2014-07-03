@@ -36,7 +36,11 @@
     NSString *playlistLabel;
     
     NSNumber *numnum;
+    
 }
+
+// The url from the drop view.
+@property NSURL* theURL;
 
 @property TGSongPool *currentSongPool;
 @property songPositionClass *songPosGlue;

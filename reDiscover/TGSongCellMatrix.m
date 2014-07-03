@@ -122,7 +122,7 @@
 }
 
 
--(NSRect)cellFrameAtRow:(NSInteger)row column:(NSInteger)col {
+-(NSRect)coverFrameAtRow:(NSInteger)row column:(NSInteger)col {
     __block NSRect retVal;
     dispatch_sync(_matrixAccessQueue,^{
         retVal = [super cellFrameAtRow:row column:col];

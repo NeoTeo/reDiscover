@@ -11,6 +11,8 @@ import AppKit
 
 class DropViewController : NSViewController, DropViewDelegate {
  
+    var droppedURL: NSURL?
+    
     override func awakeFromNib() {
         println("wakey wake")
         let dropView = self.view as DropView
@@ -20,15 +22,29 @@ class DropViewController : NSViewController, DropViewDelegate {
     
     override func prepareForSegue(segue: NSStoryboardSegue!, sender: AnyObject!) {
         println("Drop View Controller preparing for segue")
+        let mainVC = segue.destinationController as TGMainViewController
+        if droppedURL {
+            mainVC.theURL = droppedURL
+        } else {
+            println("Error: no song pool")
+        }
+        
     }
         
     func dropViewDidReceiveURL(theURL: NSURL) {
-        let songPool = TGSongPool()
-        if songPool.validateURL(theURL) {
+        if validateURL(theURL) {
+            droppedURL = theURL
             println("Gogo widget")
 
-            performSegueWithIdentifier("goMainViewSegue", sender: self)
+//            performSegueWithIdentifier("goMainViewSegue", sender: self)
+            performSegueWithIdentifier("oldStyleSegue", sender: self)
+            
         }
         println("Done")
+    }
+
+    func validateURL(theURL: NSURL) -> Bool {
+        // TEO For now...
+        return true
     }
 }

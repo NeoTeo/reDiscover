@@ -64,7 +64,7 @@
     if (_delegate && [_delegate respondsToSelector:@selector(songGridScrollViewDidScrollToRect:)]) {
         
         // Convert from (document view) matrix coordinates to window coordinates.
-        NSRect testRect = [[self documentView] convertRect:[[self documentView] cellFrameAtRow:mouseRow column:mouseCol] toView:self];
+        NSRect testRect = [[self documentView] convertRect:[[self documentView] coverFrameAtRow:mouseRow column:mouseCol] toView:self];
         [_delegate songGridScrollViewDidScrollToRect:testRect];
     }
 */
@@ -99,7 +99,7 @@
         
         if (_delegate && [_delegate respondsToSelector:@selector(buttonDownInCellFrame:)]) {
             
-            NSRect theRect = [[self documentView] cellFrameAtRow:mouseRow column:mouseCol];
+            NSRect theRect = [[self documentView] coverFrameAtRow:mouseRow column:mouseCol];
             [_delegate buttonDownInCellFrame:theRect];
         }
     }
