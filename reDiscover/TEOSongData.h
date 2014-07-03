@@ -9,21 +9,20 @@
 #import <Foundation/Foundation.h>
 #import <CoreData/CoreData.h>
 
-
 @interface TEOSongData : NSManagedObject
 
-@property (nonatomic, retain) NSString * album;
-@property (nonatomic, retain) NSString * artist;
-@property (nonatomic, retain) NSData * sweetSpotArray;
-@property (nonatomic, retain) NSString * urlString;
-@property (nonatomic, retain) NSString * uuid;
-@property (nonatomic, retain) NSNumber * year;
-@property (nonatomic, retain) NSString * fingerprint;
-@property (nonatomic, retain) NSString * title;
-@property (nonatomic, retain) NSString * genre;
-@property (nonatomic, retain) NSNumber * selectedSweetSpot;
+@property (nonatomic, retain) NSString*         album;
+@property (nonatomic, retain) NSString*         artist;
+@property (nonatomic, retain) NSMutableSet*     sweetSpots;
+@property (nonatomic, retain) NSString*         urlString;
+@property (nonatomic, retain) NSString*         uuid;
+@property (nonatomic, retain) NSNumber*         year;
+@property (nonatomic, retain) NSString*         fingerprint;
+@property (nonatomic, retain) NSString*         title;
+@property (nonatomic, retain) NSString*         genre;
+@property (nonatomic, retain) NSNumber*         selectedSweetSpot;
 //@property (nonatomic, retain) NSNumber * artID;
-@property (nonatomic, retain) NSData * songReleases;
+@property (nonatomic, retain) NSData*           songReleases;
 
 + (instancetype)insertItemWithURLString:(NSString*)URLString
                  inManagedObjectContext:(NSManagedObjectContext *)managedObjectContext;

@@ -13,7 +13,7 @@
 
 @dynamic album;
 @dynamic artist;
-@dynamic sweetSpotArray;
+@dynamic sweetSpots;
 @dynamic urlString;
 @dynamic uuid;
 @dynamic year;
@@ -31,14 +31,14 @@
                                                inManagedObjectContext:managedObjectContext];
     songData.album             = nil;//@"dunno";
     songData.artist            = nil;//@"dunno";
-    songData.sweetSpotArray    = nil;
+    songData.sweetSpots        = [[NSMutableSet alloc] init];
     songData.urlString         = URLString;
     songData.uuid              = nil;
     songData.year              = [NSNumber numberWithInteger:0];
     songData.genre             = nil;//@"dunno";
     songData.title             = nil;//@"dunno";
     songData.fingerprint       = nil;
-    songData.selectedSweetSpot = [NSNumber numberWithInteger:0];
+    songData.selectedSweetSpot = [NSNumber numberWithFloat:0];
 //    songData.artID             = [NSNumber numberWithInteger:-1];
     songData.songReleases      = nil;
     

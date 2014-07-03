@@ -84,6 +84,8 @@ enum {
 @property NSUInteger loadStatus;
 
 @property CMTime songDuration;
+// The songStartTime is the number of seconds into the song from which to begin playback.
+// If a sweet spot is set (in TEOData.selectedSweetspot) it should be set to that.
 @property CMTime songStartTime;
 @property int songTimeScale;
 
@@ -96,9 +98,11 @@ enum {
 // An id key into the songpool's art dictionary. Values of -1 will be no art and 0 will be the default "no cover" art.
 @property NSInteger artID;
 
+// A temporary start time request?
 @property CMTime requestedSongStartTime;
 
-// The currently selected sweet spot.
+// The currently selected sweet spot. This and the SongSweetSpots array are shadowed in the TEOSongData
+// array and should be moved in there.
 @property NSUInteger selectedSweetSpot;
 
 // All available sweet spots for the song.
@@ -111,6 +115,7 @@ enum {
 
 - (NSNumber *)startTime;
 - (void)setStartTime:(NSNumber *)startTime;
+- (void)setSweetSpot:(NSNumber*)theSS;
 //- (id)initWithURL:(NSURL *)anURL;
 - (id)init;
 - (void)loadTrackDataWithCallBackOnCompletion:(BOOL)wantsCallback;

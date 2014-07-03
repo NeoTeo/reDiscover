@@ -25,8 +25,9 @@
     // The view of this controller is the popover view (in its own window)
     
     // We set up a mouse enter/exit tracking area so we can animate it.
+    NSRect trackingRect = [self view].frame;
     NSTrackingArea *trackingArea = [[NSTrackingArea alloc]
-                                    initWithRect:[self view].frame
+                                    initWithRect:trackingRect
                                     options: (NSTrackingMouseEnteredAndExited | NSTrackingActiveInKeyWindow )
                                     owner:_timelineBar.cell userInfo:nil];
 //                                    owner:self userInfo:nil];

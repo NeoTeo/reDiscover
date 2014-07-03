@@ -277,7 +277,8 @@
 }
 
 - (NSNumber *)startTime {
-    return [NSNumber numberWithFloat:CMTimeGetSeconds([self songStartTime])];
+//    return [NSNumber numberWithFloat:CMTimeGetSeconds([self songStartTime])];
+    return self.TEOData.selectedSweetSpot;
 }
 
 
@@ -285,23 +286,30 @@
 // Since we cannot assume we know the duration we cannot check it against the given start time.
 // Because the startTime can (currently) only be set by listening to the song we have to assume it will be < song duration.
 - (void)setStartTime:(NSNumber *)startTime {
+    
     float floatStart = [startTime floatValue];
     if ( _songStatus == kSongStatusReady) {
         float floatDuration = CMTimeGetSeconds([self songDuration]);
         
-        if ((floatStart >= 0) && (floatStart < floatDuration)) {
-            //NSLog(@"setting start time to %f",floatStart);
-            [self setSongStartTime:CMTimeMakeWithSeconds(floatStart, _songTimeScale)];
-        } else {
-            // -1 means the start time hasn't been set.
-            if (floatStart != -1) {
-                NSLog(@"setStartTime error: Start time is %f",floatStart);
-            }
+        if ((floatStart < 0) || (floatStart > floatDuration)) {
+            NSLog(@"setStartTime error: Start time is %f",floatStart);
+            return;
         }
-    } else {
-        //NSLog(@"setting start time to %f without knowing duration",floatStart);
-        [self setSongStartTime:CMTimeMakeWithSeconds(floatStart, _songTimeScale)];
     }
+    // This sets song.songStartTime which we are deprecating for teo.TEOData.selectedSweetSpot and teo.TEOData.sweetSpotArray
+    [self setSongStartTime:CMTimeMakeWithSeconds(floatStart, _songTimeScale)];
+    
+    [self setSweetSpot:[NSNumber numberWithFloat:floatStart]];
+}
+
+- (void)setSweetSpot:(NSNumber*)theSS {
+    if ([theSS floatValue] == 0.0) {
+        return;
+    }
+    // put the ss in the set
+    [self.TEOData.sweetSpots addObject:theSS];
+    
+    self.TEOData.selectedSweetSpot = theSS;
 }
 
 

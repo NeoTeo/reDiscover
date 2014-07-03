@@ -95,14 +95,14 @@ static int const kSSCheckCounterSize = 10;
      
         self.sharedFileManager = [[NSFileManager alloc] init];
         
-#define TSD
-#ifdef TSD
-        // TEOSongData test
-        [self setupManagedObjectContext];
-        [self initTEOSongDataDictionary];
-        
-        // TEOSongData end
-#endif
+//#define TSD
+//#ifdef TSD
+//        // TEOSongData test
+//        [self setupManagedObjectContext];
+//        [self initTEOSongDataDictionary];
+//        
+//        // TEOSongData end
+//#endif
         
         // Get any user metadata from the local Core Data store.
         [self fetchMetadataFromLocalStore];
@@ -113,6 +113,15 @@ static int const kSSCheckCounterSize = 10;
         
         _coverArtWebFetcher = [[CoverArtArchiveWebFetcher alloc] init];
         _coverArtWebFetcher.delegate = self;
+#define TSD
+#ifdef TSD
+        // TEOSongData test
+        [self setupManagedObjectContext];
+//        [self initTEOSongDataDictionary];
+        
+        // TEOSongData end
+#endif
+
         
     }
     
@@ -135,7 +144,8 @@ static int const kSSCheckCounterSize = 10;
     [self setPrivateContext:private];
     
     // Since this could potentially take time we dispatch this block async'ly
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+// Commented out because the caller would call loadFromURL before this block was done.
+//    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         NSError* error;
         NSURL* documentsDirectory = [[NSFileManager defaultManager] URLForDirectory:NSDocumentDirectory inDomain:NSUserDomainMask appropriateForURL:nil create:YES error:NULL];
         documentsDirectory = [documentsDirectory URLByAppendingPathComponent:@"reDiscoverdb.sqlite"];
@@ -147,8 +157,9 @@ static int const kSSCheckCounterSize = 10;
         if (error) {
             NSLog(@"Error: %@",error);
         }
-        
-    });
+        NSLog(@"setupManagedObjectContext done");
+        [self initTEOSongDataDictionary];
+//    });
 }
 
 
@@ -158,7 +169,9 @@ static int const kSSCheckCounterSize = 10;
     NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:@"TEOSongData"];
     
     // fetch the data asynch'ly.
-    [self.TEOmanagedObjectContext performBlock:^{
+//    [self.TEOmanagedObjectContext performBlock:^{
+    // fetch the data synch'ly
+    [self.TEOmanagedObjectContext performBlockAndWait:^{
         NSArray *fetchedArray = nil;
         NSError *error = nil;
         fetchedArray = [self.TEOmanagedObjectContext executeFetchRequest:fetchRequest error:&error];
@@ -173,9 +186,11 @@ static int const kSSCheckCounterSize = 10;
         
         for (TEOSongData* songData in fetchedArray) {
             [tmpDictionary setObject:songData forKey:songData.urlString];
+            NSLog(@"the songData selected sweet spot %@",songData.selectedSweetSpot);
         }
         
         self.TEOSongDataDictionary = tmpDictionary;
+        NSLog(@"initTEOSongDataDictionary done");
     }];
 }
 // END TEOSongData test
@@ -703,8 +718,6 @@ static int const kSSCheckCounterSize = 10;
         NSNumber *newPlayTime = [NSNumber numberWithDouble:currentPlayTimeInSeconds + offsetInSeconds];
         if (newPlayTime >= 0) {
             [self setSweetSpotForSong:song atTime:newPlayTime];
-            // TSD test
-            song.TEOData.selectedSweetSpot = newPlayTime;
         }
     }
     
@@ -712,6 +725,9 @@ static int const kSSCheckCounterSize = 10;
 
 
 - (void)setSweetSpotForSong:(TGSong *)theSong atTime:(NSNumber *)positionInSeconds {
+    // TSD test
+    // Here we need to add a sweet spot and point to it.
+    [theSong setSweetSpot:positionInSeconds];
     
             [theSong setStartTime:positionInSeconds];
             [theSong setCurrentPlayTime:positionInSeconds];
@@ -842,7 +858,8 @@ static int const kSSCheckCounterSize = 10;
     NSNumber *startTime = [song startTime];
     
     // Request sweetspots from the sweetspot server if the song does not have a start time, has a uuid and has not exceeded its alotted queries.
-    if (([[song startTime] doubleValue] == -1) &&
+//    if (([[song startTime] doubleValue] == -1) &&
+    if (([startTime doubleValue] == -1) &&
         (song.TEOData.uuid  != nil) &&
 //        ([song songUUIDString] != nil) &&
         (song.SSCheckCountdown-- == 0)) {
