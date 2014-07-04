@@ -120,6 +120,7 @@
 - (NSNumber *)songDurationForSongID:(id)songID;
 - (NSDictionary *)songDataForSongID:(id)songID;
 - (void)offsetSweetSpotForSongID:(id)songID bySeconds:(Float64)offsetInSeconds;
+- (void)storeSweetSpotForSongID:(id)songID;
 
 // song data accessors.
 - (void)sweetSpotFromServerForSong:(TGSong *)aSong;

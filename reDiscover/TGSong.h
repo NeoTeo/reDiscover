@@ -112,7 +112,7 @@ enum {
 @property NSUInteger SSCheckCountdown;
 
 
-
+- (void)storeSelectedSweetSpot;
 - (NSNumber *)startTime;
 - (void)setStartTime:(NSNumber *)startTime;
 - (void)setSweetSpot:(NSNumber*)theSS;

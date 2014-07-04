@@ -31,7 +31,7 @@
                                                inManagedObjectContext:managedObjectContext];
     songData.album             = nil;//@"dunno";
     songData.artist            = nil;//@"dunno";
-    songData.sweetSpots        = [[NSMutableSet alloc] init];
+    songData.sweetSpots        = [[NSSet alloc] init];
     songData.urlString         = URLString;
     songData.uuid              = nil;
     songData.year              = [NSNumber numberWithInteger:0];

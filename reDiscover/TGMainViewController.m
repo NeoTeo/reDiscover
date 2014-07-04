@@ -242,7 +242,8 @@
 //        [self togglePlaylistPanel];
     } else if ([chars isEqualToString:@"s"]) {
         
-        NSLog(@"Save!");
+        NSLog(@"Store selected sweet spot and save!");
+        [_currentSongPool storeSweetSpotForSongID:lastRequestedSongID];
         [_currentSongPool storeSongData];
     } else if ([chars isEqualToString:@" "]){
         

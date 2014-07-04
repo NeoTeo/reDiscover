@@ -13,7 +13,7 @@
 
 @property (nonatomic, retain) NSString*         album;
 @property (nonatomic, retain) NSString*         artist;
-@property (nonatomic, retain) NSMutableSet*     sweetSpots;
+@property (nonatomic, retain) NSSet*            sweetSpots;
 @property (nonatomic, retain) NSString*         urlString;
 @property (nonatomic, retain) NSString*         uuid;
 @property (nonatomic, retain) NSNumber*         year;

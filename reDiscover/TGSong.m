@@ -306,12 +306,22 @@
     if ([theSS floatValue] == 0.0) {
         return;
     }
-    // put the ss in the set
-    [self.TEOData.sweetSpots addObject:theSS];
-    
+
     self.TEOData.selectedSweetSpot = theSS;
 }
 
+- (void)storeSelectedSweetSpot {
+    NSNumber* theSS = self.TEOData.selectedSweetSpot;
+    if (theSS) {
+        NSMutableSet* updatedSet = [self.TEOData.sweetSpots mutableCopy];
+        // put the ss in the set
+        [updatedSet addObject:theSS];
+        self.TEOData.sweetSpots = [updatedSet copy];
+    } else {
+        NSLog(@"No sweet spot selected!");
+    }
+    
+}
 
 - (BOOL)playStart {
     if ([self songStatus] == kSongStatusReady) {

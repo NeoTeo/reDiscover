@@ -186,7 +186,8 @@ static int const kSSCheckCounterSize = 10;
         
         for (TEOSongData* songData in fetchedArray) {
             [tmpDictionary setObject:songData forKey:songData.urlString];
-            NSLog(@"the songData selected sweet spot %@",songData.selectedSweetSpot);
+            NSLog(@"The songData selected sweet spot %@",songData.selectedSweetSpot);
+            NSLog(@"And the sweet spots: %@",songData.sweetSpots);
         }
         
         self.TEOSongDataDictionary = tmpDictionary;
@@ -779,7 +780,7 @@ static int const kSSCheckCounterSize = 10;
         return nil;
     }
     
-    return [[self songForID:songID] songSweetSpots];
+    return [[self songForID:songID].TEOData.sweetSpots sortedArrayUsingDescriptors:nil];
 }
 
 - (NSString*)albumForSongID:(id)songID {
@@ -1121,6 +1122,11 @@ static int const kSSCheckCounterSize = 10;
             [private performBlock:savePrivate];
         }
     }
+}
+
+- (void)storeSweetSpotForSongID:(id)songID {
+    TGSong *tmpSong = [self songForID:songID];
+    [tmpSong storeSelectedSweetSpot];
 }
 
 // Go through all songs and store those who have had data added to them.
