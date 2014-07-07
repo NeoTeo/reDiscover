@@ -579,8 +579,8 @@ static int const kSSCheckCounterSize = 10;
         [_coverArtWebFetcher requestAlbumArtFromWebForSong:songID imageHandler:imageHandler];
     } else {
         [theSong setFingerPrintStatus:kFingerPrintStatusRequested];
-        [songFingerPrinter requestFingerPrintForSong:theSong withHandler:^(NSString* fingerPrint){
-            
+//        [songFingerPrinter requestFingerPrintForSong:theSong withHandler:^(NSString* fingerPrint){
+        [songFingerPrinter requestFingerPrintForSong:songID withHandler:^(NSString* fingerPrint){
             [_coverArtWebFetcher requestAlbumArtFromWebForSong:songID imageHandler:imageHandler];
             
         }];
@@ -791,9 +791,19 @@ static int const kSSCheckCounterSize = 10;
     return [self songForID:songID].TEOData.songReleases;
 }
 
+- (void)setReleases:(NSData*)releases forSongID:(id)songID {
+    [self songForID:songID].TEOData.songReleases = releases;
+}
+
 - (NSString *)UUIDStringForSongID:(id)songID {
     if (![self validSongID:songID]) return nil;
     return [self songForID:songID].TEOData.uuid;
+}
+
+-(void)setUUIDString:(NSString*)theUUID forSongID:(id)songID {
+    if (![self validSongID:songID]) return;
+    // TEO may have to use a serial access queue if this is called concurrently.
+    [self songForID:songID].TEOData.uuid = theUUID ;
 }
 
 

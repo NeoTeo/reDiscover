@@ -42,16 +42,18 @@
 }
 
 // A version of the fingerprint request that uses a completion block instead of a delegate callback.
-- (void)requestFingerPrintForSong:(TGSong *)song withHandler:(void (^)(NSString*))fingerprintHandler {
+//- (void)requestFingerPrintForSong:(TGSong *)song withHandler:(void (^)(NSString*))fingerprintHandler {
+- (void)requestFingerPrintForSong:(id)songID withHandler:(void (^)(NSString*))fingerprintHandler {
 //#pragma warning returning from requestFingerPrintForSong: withHandler:
 //    return;
+    
     dispatch_async(fingerprintingQueue, ^{
         int maxLength = 120;
         char *theFingerprint;
         int duration;
         ChromaprintContext *chromaprintContext = chromaprint_new(CHROMAPRINT_ALGORITHM_DEFAULT);
-
-        [self decodeAudioFileNew:[NSURL URLWithString:song.TEOData.urlString] forContext:chromaprintContext ofLength:maxLength andDuration:&duration];
+        NSURL* songURL = [_delegate URLForSongID:songID];
+        [self decodeAudioFileNew:songURL forContext:chromaprintContext ofLength:maxLength andDuration:&duration];
 
         if (chromaprint_get_fingerprint(chromaprintContext, &theFingerprint)) {
         
@@ -74,13 +76,16 @@
                 // Later we can traverse and compare with any tags we already have.
                 if ([results count]) {
                     NSDictionary *theElement = [results objectAtIndex:0];
-                    song.TEOData.uuid =  [theElement objectForKey:@"id"];
+                    NSString* UUIDString = [theElement objectForKey:@"id"];
+                    [_delegate setUUIDString:UUIDString forSongID:songID];
+//                    song.TEOData.uuid =  [theElement objectForKey:@"id"];
                     
                     // Extract the releases for this song.
                     NSArray* releases = [theElement objectForKey:@"releases"];
-                    song.TEOData.songReleases = [NSKeyedArchiver archivedDataWithRootObject:releases];
+                    [_delegate setReleases:[NSKeyedArchiver archivedDataWithRootObject:releases] forSongID:songID];
+//                    song.TEOData.songReleases = [NSKeyedArchiver archivedDataWithRootObject:releases];
                     
-                    NSLog(@"Acoustid server returned a UUID %@",song.TEOData.uuid);
+                    NSLog(@"Acoustid server returned a UUID %@",UUIDString);
                 } else
                     NSLog(@"AcoustID returned 0 results.");
                 
@@ -96,7 +101,7 @@
             fingerprintHandler(songFingerPrint);
             
         } else
-            NSLog(@"ERROR: Fingerprinter failed to produce a fingerprint for song %@",song);
+            NSLog(@"ERROR: Fingerprinter failed to produce a fingerprint for songID %@",songID);
         
         chromaprint_free(chromaprintContext);
     });

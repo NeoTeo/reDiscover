@@ -27,7 +27,8 @@
 //- (NSArray *)requestFingerPrintForSongURL:(NSURL *)songURL;
 //- (NSArray *)requestFingerPrintForSong:(TGSong *)song;
 - (void)requestFingerPrintForSong:(TGSong *)song;
-- (void)requestFingerPrintForSong:(TGSong *)song withHandler:(void (^)(NSString*))fingerprintHandler;
+//- (void)requestFingerPrintForSong:(TGSong *)song withHandler:(void (^)(NSString*))fingerprintHandler;
+- (void)requestFingerPrintForSong:(id)songID withHandler:(void (^)(NSString*))fingerprintHandler;
 
 - (NSInteger)decodeAudioFile:(NSURL *)fileURL forContext:(ChromaprintContext *)theContext ofLength:(NSInteger)maxLength andDuration:(int *)duration;
 
@@ -43,4 +44,7 @@
 @optional
 //- (void)fingerprintReady:(NSArray *)fingerPrint ForSong:(TGSong *)song;
 - (void)fingerprintReady:(NSString *)fingerPrint ForSong:(TGSong *)song;
+- (NSURL *)URLForSongID:(id)songID;
+-(void)setUUIDString:(NSString*)theUUID forSongID:(id)songID;
+- (void)setReleases:(NSData*)releases forSongID:(id)songID;
 @end

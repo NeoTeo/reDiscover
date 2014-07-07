@@ -76,7 +76,6 @@
 // TEOSongData test
 @property NSManagedObjectContext*   privateContext;
 @property NSManagedObjectContext*   TEOmanagedObjectContext;
-//@property NSManagedObjectModel*     TEOmanagedObjectModel;
 @property NSDictionary*             TEOSongDataDictionary;
 // TEOSongData end
 
@@ -87,35 +86,22 @@
 - (id)initWithURL:(NSURL*) theURL;
 - (BOOL)validateURL:(NSURL *)anURL;
 - (BOOL)loadFromURL:(NSURL *)anURL ;
-//- (void)updateCache:(NSArray *)songIDArray;
+
 
 - (void)setRequestedPlayheadPosition:(NSNumber *)newPosition;
-
-//-(NSInteger)lastRequestedSongID;
-//- (NSInteger)currentlyPlayingSongID;
 
 - (id)currentlyPlayingSongID;
 
 
 - (void)requestImageForSongID:(id)songID withHandler:(void (^)(NSImage *))imageHandler;
-//- (void)requestImageForSongID:(NSInteger)songID withHandler:(void (^)(NSImage *))imageHandler;
 
 - (void)preloadSongArray:(NSArray *)songArray;
 #pragma mark -
 #pragma mark song data accessor methods.
 // Async methods
 - (void)requestEmbeddedMetadataForSongID:(id)songID withHandler:(void (^)(NSDictionary*))dataHandler;
-//- (void)requestEmbeddedMetadataForSongID:(NSInteger)songID withHandler:(void (^)(NSDictionary*))dataHandler;
-//- (void)requestEmbeddedMetadataForSong:(NSInteger) songID;
-//- (void)requestSongPlayback:(NSInteger)songID withStartTimeInSeconds:(NSNumber *)time;
 - (void)requestSongPlayback:(id)songID withStartTimeInSeconds:(NSNumber *)time;
 
-//- (float)fetchSweetSpotForSongID:(NSInteger)songID;
-//- (NSNumber *)songDurationForSongID:(NSInteger)songID;
-//- (NSInteger)songDurationForSongID:(NSInteger)songID;
-//- (NSDictionary *)songDataForSongID:(NSInteger)songID;
-//- (NSURL *)songURLForSongID:(NSInteger)songID;
-//- (void)offsetSweetSpotForSongID:(NSInteger) songID bySeconds:(Float64)offsetInSeconds;
 - (NSURL *)songURLForSongID:(id)songID;
 - (NSNumber *)songDurationForSongID:(id)songID;
 - (NSDictionary *)songDataForSongID:(id)songID;
@@ -124,11 +110,21 @@
 
 // song data accessors.
 - (void)sweetSpotFromServerForSong:(TGSong *)aSong;
-//- (void)sweetSpotFromServerForSongID:(NSInteger)songID;
+
+// UUID accessors.
+-(void)setUUIDString:(NSString*)theUUID forSongID:(id)songID;
 - (NSString *)UUIDStringForSongID:(id)songID;
+
+// Sweet Spot accessors.
 - (NSArray *)sweetSpotsForSongID:(id)songID;
+
+// URL accessors.
 - (NSURL *)URLForSongID:(id)songID;
+
+// Releases accessors TEO switch to use NSArray/NSSet in the managedobject same as the sweetspots
 - (NSData*)releasesForSongID:(id)songID;
+- (void)setReleases:(NSData*)releases forSongID:(id)songID;
+
 - (NSString*)albumForSongID:(id)songID;
 
 // TEO should this not be private?
