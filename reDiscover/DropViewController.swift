@@ -22,7 +22,9 @@ class DropViewController : NSViewController, DropViewDelegate {
     
     override func prepareForSegue(segue: NSStoryboardSegue!, sender: AnyObject!) {
         println("Drop View Controller preparing for segue")
+//        let mainVC = segue.destinationController as MainViewController
         let mainVC = segue.destinationController as TGMainViewController
+
         if droppedURL {
             mainVC.theURL = droppedURL
         } else {

@@ -14,15 +14,7 @@ class CoverViewController : NSViewController {
     
         let mainVC = self.parentViewController as MainViewController
         
-        // Explicit conversion from segment to panel name to avoid sync errors if one or the other changes.
-        switch sender.selectedSegment {
-        case 0:
-            mainVC.userToggledPanel(PanelNames.Playlist)
-        case 2:
-            mainVC.userToggledPanel(PanelNames.Information)
-        default:
-            break
-        }
+        mainVC.userToggledPanel(sender.selectedSegment)
     }
     
 }

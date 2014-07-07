@@ -17,6 +17,8 @@ enum PanelNames {
 
 class MainViewController : NSSplitViewController {
     
+    var theURL: NSURL?
+    
     override func performSegueWithIdentifier(identifier: String!, sender: AnyObject!) {
         println("Swift perform segue")
     }
@@ -41,31 +43,11 @@ class MainViewController : NSSplitViewController {
                 println("ANd now the first responder is \(self.view.window.firstResponder)")
     }
     
-    func userToggledPanel(panelID: PanelNames) {
-        var splitViewItem: NSSplitViewItem?
+    func userToggledPanel(panelID: Int) {
+        let splitViewItem = self.splitViewItems[panelID] as NSSplitViewItem
+        let anchor: NSLayoutAttribute = (panelID == 0) ? .Trailing : .Leading
         
-        switch panelID {
-        case .Playlist:
-            println("playlist")
-            splitViewItem = self.splitViewItems[0] as? NSSplitViewItem
-        case .Information:
-            println("info")
-            splitViewItem = self.splitViewItems[2] as? NSSplitViewItem
-        default:
-            break
-        }
-        
-        if splitViewItem? {
-            if splitViewItem!.collapsed {
-                //splitViewItem.collapsed(false)
-                println("Yes, it's collapsed.")
-                splitViewItem!.animator().collapsed = false
-            } else {
-                //                splitViewItem.collapsed(true)
-                println("Nope, not collapsed.")
-                splitViewItem!.animator().collapsed = true
-            }
-        }
-
+        self.view.window.setAnchorAttribute(anchor, forOrientation: .Horizontal)
+        splitViewItem.animator().collapsed = !splitViewItem.collapsed
     }
 }

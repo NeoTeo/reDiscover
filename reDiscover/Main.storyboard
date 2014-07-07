@@ -2,7 +2,6 @@
 <document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="6154.21" systemVersion="14A261i" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" initialViewController="1rG-hg-cjj">
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="6154.21"/>
-        <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
     </dependencies>
     <scenes>
         <!--Main Window Controller - Window-->
@@ -102,8 +101,8 @@
                         <autoresizingMask key="autoresizingMask"/>
                     </splitView>
                     <splitViewItems>
-                        <splitViewItem canCollapse="YES" collapsed="YES" holdingPriority="251" id="Fo2-yW-1sw"/>
-                        <splitViewItem holdingPriority="252" id="z2B-ix-FrW"/>
+                        <splitViewItem canCollapse="YES" collapsed="YES" id="Fo2-yW-1sw"/>
+                        <splitViewItem holdingPriority="251" id="z2B-ix-FrW"/>
                         <splitViewItem canCollapse="YES" collapsed="YES" id="ucp-iB-OeV"/>
                     </splitViewItems>
                     <connections>
@@ -124,7 +123,7 @@
                         <rect key="frame" x="0.0" y="0.0" width="300" height="600"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <subviews>
-                            <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Ypm-Rt-7MK">
+                            <textField horizontalHuggingPriority="750" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="Ypm-Rt-7MK">
                                 <rect key="frame" x="117" y="330" width="55" height="17"/>
                                 <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="The Info" id="bAb-mQ-G3A">
                                     <font key="font" metaFont="system"/>
@@ -133,6 +132,11 @@
                                 </textFieldCell>
                             </textField>
                         </subviews>
+                        <constraints>
+                            <constraint firstItem="Ypm-Rt-7MK" firstAttribute="leading" secondItem="yFt-LL-eqB" secondAttribute="leading" constant="119" id="9CX-3x-KX4"/>
+                            <constraint firstItem="Ypm-Rt-7MK" firstAttribute="top" secondItem="yFt-LL-eqB" secondAttribute="top" constant="253" id="RtZ-Ph-pdL"/>
+                            <constraint firstAttribute="trailing" secondItem="Ypm-Rt-7MK" secondAttribute="trailing" constant="130" id="VWX-G0-jEf"/>
+                        </constraints>
                     </view>
                 </viewController>
                 <customObject id="Twh-Be-Tlx" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
@@ -147,7 +151,7 @@
                         <rect key="frame" x="0.0" y="0.0" width="321" height="600"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <subviews>
-                            <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="cFV-up-GeH">
+                            <textField horizontalHuggingPriority="750" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="cFV-up-GeH">
                                 <rect key="frame" x="123" y="563" width="75" height="17"/>
                                 <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="The Playlist" id="Kdy-vj-uW1">
                                     <font key="font" metaFont="system"/>
@@ -157,10 +161,9 @@
                             </textField>
                         </subviews>
                         <constraints>
-                            <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="cFV-up-GeH" secondAttribute="trailing" constant="125" id="aPT-FB-Zso"/>
-                            <constraint firstAttribute="bottom" relation="greaterThanOrEqual" secondItem="cFV-up-GeH" secondAttribute="bottom" constant="563" id="fOu-3u-6Up"/>
-                            <constraint firstItem="cFV-up-GeH" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="sWm-yH-SHi" secondAttribute="leading" constant="125" id="gEl-p8-dbc"/>
-                            <constraint firstItem="cFV-up-GeH" firstAttribute="top" relation="greaterThanOrEqual" secondItem="sWm-yH-SHi" secondAttribute="top" constant="20" id="r3M-x7-d0p"/>
+                            <constraint firstAttribute="trailing" secondItem="cFV-up-GeH" secondAttribute="trailing" constant="125" id="aPT-FB-Zso"/>
+                            <constraint firstItem="cFV-up-GeH" firstAttribute="leading" secondItem="sWm-yH-SHi" secondAttribute="leading" constant="125" id="gEl-p8-dbc"/>
+                            <constraint firstItem="cFV-up-GeH" firstAttribute="top" secondItem="sWm-yH-SHi" secondAttribute="top" constant="20" id="kIJ-Vj-c1N"/>
                         </constraints>
                     </view>
                 </viewController>
@@ -172,36 +175,11 @@
         <scene sceneID="RHP-Lu-bpW">
             <objects>
                 <viewController id="3Pr-Xk-icz" customClass="CoverViewController" customModule="reDiscover" customModuleProvider="target" sceneMemberID="viewController">
-                    <view key="view" horizontalCompressionResistancePriority="751" id="T7u-Xf-78x">
+                    <view key="view" id="T7u-Xf-78x">
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <subviews>
-                            <scrollView autohidesScrollers="YES" horizontalLineScroll="10" horizontalPageScroll="10" verticalLineScroll="10" verticalPageScroll="10" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="sm2-2v-SSw">
-                                <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
-                                <clipView key="contentView" id="YUP-4n-22j">
-                                    <rect key="frame" x="1" y="1" width="248" height="158"/>
-                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                                    <subviews>
-                                        <collectionView id="uy8-Cm-sib">
-                                            <rect key="frame" x="0.0" y="0.0" width="248" height="158"/>
-                                            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                                            <color key="primaryBackgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
-                                        </collectionView>
-                                    </subviews>
-                                </clipView>
-                                <constraints>
-                                    <constraint firstAttribute="width" secondItem="sm2-2v-SSw" secondAttribute="height" multiplier="1:1" id="Iuv-ky-xJo"/>
-                                </constraints>
-                                <scroller key="horizontalScroller" hidden="YES" verticalHuggingPriority="750" horizontal="YES" id="Uwl-pS-i21">
-                                    <rect key="frame" x="1" y="144" width="233" height="15"/>
-                                    <autoresizingMask key="autoresizingMask"/>
-                                </scroller>
-                                <scroller key="verticalScroller" hidden="YES" verticalHuggingPriority="750" doubleValue="1" horizontal="NO" id="enM-a5-V8I">
-                                    <rect key="frame" x="234" y="1" width="15" height="143"/>
-                                    <autoresizingMask key="autoresizingMask"/>
-                                </scroller>
-                            </scrollView>
-                            <segmentedControl verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="2AK-7Q-mpp">
+                            <segmentedControl horizontalHuggingPriority="750" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="2AK-7Q-mpp">
                                 <rect key="frame" x="248" y="568" width="104" height="24"/>
                                 <segmentedCell key="cell" borderStyle="border" alignment="left" style="rounded" trackingMode="selectAny" id="1Ek-ZK-mdb">
                                     <font key="font" metaFont="system"/>
@@ -219,12 +197,10 @@
                             </segmentedControl>
                         </subviews>
                         <constraints>
+                            <constraint firstAttribute="trailing" secondItem="2AK-7Q-mpp" secondAttribute="trailing" constant="250" id="20N-jm-Nfw"/>
                             <constraint firstItem="2AK-7Q-mpp" firstAttribute="top" secondItem="T7u-Xf-78x" secondAttribute="top" constant="9" id="4tY-PN-uLQ"/>
-                            <constraint firstAttribute="bottom" secondItem="sm2-2v-SSw" secondAttribute="bottom" id="Eq5-do-ygZ"/>
+                            <constraint firstItem="2AK-7Q-mpp" firstAttribute="leading" secondItem="T7u-Xf-78x" secondAttribute="leading" constant="250" id="8Yh-iz-fMW"/>
                             <constraint firstAttribute="centerX" secondItem="2AK-7Q-mpp" secondAttribute="centerX" id="M0L-5o-Yrm"/>
-                            <constraint firstItem="sm2-2v-SSw" firstAttribute="leading" secondItem="T7u-Xf-78x" secondAttribute="leading" id="TXK-K7-MKN"/>
-                            <constraint firstAttribute="trailing" secondItem="sm2-2v-SSw" secondAttribute="trailing" id="WDJ-fx-Oh6"/>
-                            <constraint firstItem="sm2-2v-SSw" firstAttribute="top" secondItem="T7u-Xf-78x" secondAttribute="top" id="lzk-s1-uVb"/>
                         </constraints>
                     </view>
                 </viewController>
@@ -237,6 +213,6 @@
         <image name="DropArrow" width="259" height="259"/>
     </resources>
     <inferredMetricsTieBreakers>
-        <segue reference="apL-G5-YAL"/>
+        <segue reference="s56-iv-DYh"/>
     </inferredMetricsTieBreakers>
 </document>
