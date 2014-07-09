@@ -9,11 +9,12 @@
 import Foundation
 
 @objc
-class SongID {
-    let idValue: Int?
+class SongID : NSObject, Equatable {
+    var idValue: Int?
     
-    init(URL: String) {
-        idValue = URL.hashValue
+    init(string: String) {
+        idValue = string.hashValue
+        println("The idValue is \(idValue)")
     }
     
     // Alas we can't use this in reDiscover because Obj-c doesn't allow generics.
@@ -31,11 +32,14 @@ class SongID {
     //        }
     //    }
     
-    func isEqualToString(urlString: String) -> Bool {
-        return idValue == urlString.hashValue
+    override func isEqual(object: AnyObject!) -> Bool {
+        let otherSong = object as SongID
+        return idValue == otherSong.idValue
     }
-    
-    func isEqualToSongID(songID: SongID) -> Bool {
-        return songID.idValue == idValue
-    }
+}
+
+// Currently global methods are not available on the Obj-C side :(
+func == (lhs: SongID, rhs: SongID) -> Bool {
+    println("Comparing...")
+    return lhs.idValue == rhs.idValue
 }

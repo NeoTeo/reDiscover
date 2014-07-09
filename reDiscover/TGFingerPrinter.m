@@ -14,6 +14,8 @@
 #import <libavutil/opt.h>
 #import <libswresample/swresample.h>
 
+#import "rediscover-swift.h"
+
 
 // This is using the chromaprint from this workspace.
 //#import "/Users/teo/Dropbox/usr/local/include/chromaprint.h"
@@ -51,10 +53,17 @@
         int maxLength = 120;
         char *theFingerprint;
         int duration;
+
         ChromaprintContext *chromaprintContext = chromaprint_new(CHROMAPRINT_ALGORITHM_DEFAULT);
         NSURL* songURL = [_delegate URLForSongID:songID];
         [self decodeAudioFileNew:songURL forContext:chromaprintContext ofLength:maxLength andDuration:&duration];
-
+        
+        SongID* test = [[SongID alloc] initWithString:(NSString*)songID];
+        SongID* testES =[[SongID alloc] initWithString:(NSString*)songID];
+        if ([test isEqual:testES]) {
+            NSLog(@"It wooooorks");
+        }
+        
         if (chromaprint_get_fingerprint(chromaprintContext, &theFingerprint)) {
         
 //            NSLog(@"requesting UUID from generated fingerprint.");

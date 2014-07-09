@@ -186,8 +186,8 @@ static int const kSSCheckCounterSize = 10;
         
         for (TEOSongData* songData in fetchedArray) {
             [tmpDictionary setObject:songData forKey:songData.urlString];
-//            NSLog(@"The songData selected sweet spot %@",songData.selectedSweetSpot);
-//            NSLog(@"And the sweet spots: %@",songData.sweetSpots);
+            NSLog(@"The song %@ songData selected sweet spot %@",songData.urlString, songData.selectedSweetSpot);
+            NSLog(@"And the sweet spots: %@",songData.sweetSpots);
         }
         
         self.TEOSongDataDictionary = tmpDictionary;
