@@ -14,6 +14,7 @@
 		AB17DF341959B2B800BFD25B /* InfoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB17DF331959B2B800BFD25B /* InfoViewController.swift */; };
 		AB1E831619586C3C00D61BCA /* MainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB1E831519586C3C00D61BCA /* MainViewController.swift */; };
 		AB301E7619050C830093B654 /* TEOSongData.m in Sources */ = {isa = PBXBuildFile; fileRef = AB301E7519050C830093B654 /* TEOSongData.m */; };
+		AB3140CF196D5F0F00F910BE /* SongPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB3140CE196D5F0F00F910BE /* SongPlayer.swift */; };
 		AB3E9752187C20D600BECC09 /* TGPlaylistCellView.m in Sources */ = {isa = PBXBuildFile; fileRef = AB3E9751187C20D600BECC09 /* TGPlaylistCellView.m */; };
 		AB56D9F418EC14D5005AB947 /* CAKeyframeAnimation+Parametric.m in Sources */ = {isa = PBXBuildFile; fileRef = AB56D9F318EC14D5005AB947 /* CAKeyframeAnimation+Parametric.m */; };
 		AB71279B19407C8E0002B1F8 /* CoverArtArchiveWebFetcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB71279A19407C8E0002B1F8 /* CoverArtArchiveWebFetcher.swift */; };
@@ -76,6 +77,7 @@
 		AB241FD9188977AB00E8E03F /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
 		AB301E7419050C830093B654 /* TEOSongData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TEOSongData.h; sourceTree = "<group>"; };
 		AB301E7519050C830093B654 /* TEOSongData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TEOSongData.m; sourceTree = "<group>"; };
+		AB3140CE196D5F0F00F910BE /* SongPlayer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SongPlayer.swift; sourceTree = "<group>"; };
 		AB3E97481876F94700BECC09 /* libchromaprint.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libchromaprint.a; path = ../chromaprint/build/Release/libchromaprint.a; sourceTree = "<group>"; };
 		AB3E9750187C20D600BECC09 /* TGPlaylistCellView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TGPlaylistCellView.h; sourceTree = "<group>"; };
 		AB3E9751187C20D600BECC09 /* TGPlaylistCellView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TGPlaylistCellView.m; sourceTree = "<group>"; };
@@ -346,6 +348,7 @@
 		AB85BBDC1875AACF00670905 /* reDiscover */ = {
 			isa = PBXGroup;
 			children = (
+				AB3140CE196D5F0F00F910BE /* SongPlayer.swift */,
 				AB3E974A187BFC7E00BECC09 /* App start view */,
 				AB3E974B187BFD6000BECC09 /* Song grid panel */,
 				AB3E974C187BFD8700BECC09 /* Common */,
@@ -507,6 +510,7 @@
 				AB17DF321959B2A200BFD25B /* PlaylistViewController.swift in Sources */,
 				AB85BC421875AB5200670905 /* TGMainViewController.m in Sources */,
 				AB56D9F418EC14D5005AB947 /* CAKeyframeAnimation+Parametric.m in Sources */,
+				AB3140CF196D5F0F00F910BE /* SongPlayer.swift in Sources */,
 				AB7FFB6119589BF2002D1E63 /* DropViewController.swift in Sources */,
 				AB301E7619050C830093B654 /* TEOSongData.m in Sources */,
 				AB85BC551875AB5200670905 /* TGWindowController.m in Sources */,

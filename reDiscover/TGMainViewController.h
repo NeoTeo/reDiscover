@@ -1,5 +1,5 @@
 //
-//  TGViewController.h
+//  TGMainViewController.h
 //  Proto3
 //
 //  Created by Teo Sartori on 13/03/2013.
@@ -62,5 +62,6 @@
 // Delegate methods
 - (void)setSongPool:(TGSongPool *)theSongPool;
 - (id)lastRequestedSongID;
+- (id)songIDFromGridColumn:(NSInteger)theCol andRow:(NSInteger)theRow;
 
 @end

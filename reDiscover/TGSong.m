@@ -324,6 +324,8 @@
 }
 
 - (BOOL)playStart {
+    // TEO AE
+    return YES;
     if ([self songStatus] == kSongStatusReady) {
         
         if (songPlayerItem == nil) {
@@ -388,6 +390,15 @@
     [self setLoadStatus:kLoadStatusUnloaded];
     [self setSongStatus:kSongStatusUnloading];
     }
+}
+
+- (void)setCache:(AVAudioFile*) theFile {
+    cachedFile = theFile;
+    cachedFileLength = cachedFile.length;
+}
+
+- (void)clearCache {
+    cachedFile = nil;
 }
 
 //- (void)setCurrentPlayTime:(Float64)playTimeInSeconds {

@@ -569,6 +569,9 @@
     [_currentSongPool preloadSongArray:theArray];
 }
 
+- (void)cacheWithContext:(NSDictionary*)theContext {
+    [_currentSongPool cacheWithContext:theContext];
+}
 
 - (void)userSelectedSweetSpot:(NSUInteger)ssIndex {
 //    TGSong * theSong = [_currentSongPool currentlyPlayingSong];
@@ -589,6 +592,10 @@
     
     // reset the idle timer
     [_idleTimer startIdleTimer];
+}
+
+- (id)songIDFromGridColumn:(NSInteger)theCol andRow:(NSInteger)theRow {
+    return [_songGridController songIDFromGridColumn:theCol andRow:theRow];
 }
 
 @end

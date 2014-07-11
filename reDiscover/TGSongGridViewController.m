@@ -940,17 +940,21 @@ static NSInteger const kUndefinedID =  -1;
     a.repeatCount = HUGE_VAL;
     [aView.layer addAnimation:a forKey:nil];
 }
-
+/*
 // Build a list of song ids to pass to the song pool so it can cache them.
 // Internally the cache is a set to which we can add and perform other set operations on (such as differences)
-- (NSArray *)buildCacheArray:(NSUInteger)cacheType forRow:(NSInteger)theRow andColumn:(NSInteger)theColumn {
+- (NSArray *)buildCacheArrayWithStrategy:(CacheStrategy)cacheStrategy
+                            forRow:(NSInteger)theRow
+                         andColumn:(NSInteger)theColumn
+                    andSpeedVector:(NSPoint)speedVector {
+    
     // First we need to decide on a caching strategy.
     // For now we will simply do a no-brains area caching of two songs in every direction from the current cursor position.
-    // Finally we pass that list to the song pool.
+
     // Make sure we have an inited cache.
-    if (songIDCache == nil) {
-        songIDCache = [[NSMutableSet alloc] initWithCapacity:25];
-    }
+    
+    NSMutableSet* wantedCache = [[NSMutableSet alloc] initWithCapacity:25];
+    
     
     NSInteger radius = 2;
     NSInteger maxRows = [_songCellMatrix numberOfRows];
@@ -975,15 +979,36 @@ static NSInteger const kUndefinedID =  -1;
                     
                     id songID = [self cellToSongID:theCell];
                     if (songID != nil) {
-                        [songIDCache addObject:songID];
+                        [wantedCache addObject:songID];
                     }
                 }
             }
         }
     }
+    // Remove from the wanted cache what's already cached.
+    [wantedCache minusSet:songIDCache];
+    
+    // Remove from the existing cache what is not in the wanted cache.
+    [songIDCache intersectSet:wantedCache];
+    
+    // now the existing cache becomes the stale cache
+    NSSet* staleCache = songIDCache;
+    [_delegate clearSongCache:[staleCache allObjects]];
+    
+    // Now load the wantedCache
+    [_delegate loadSongCache:[wantedCache allObjects]];
+
+    songIDCache = wantedCache;
+    
 //    NSLog(@"I'm thinking %@",cellIndexArray);
     // Then we build a list of song ids.
     return [songIDCache allObjects];
+}
+*/
+
+- (id)songIDFromGridColumn:(NSInteger)theCol andRow:(NSInteger)theRow {
+    TGGridCell *theCell = [_songCellMatrix cellAtRow:theRow column:theCol];
+    return [self cellToSongID:theCell];
 }
 
 -(void)keyDown:(NSEvent *)theEvent {
@@ -1073,8 +1098,16 @@ static NSInteger const kUndefinedID =  -1;
     
     // TEO The cache should not use the userSelected methods. Make a separate wrapper.
     // Update the song cache based on the new selection.
-#pragma warning commented out for BugHunt_1
-//    NSArray *theArray =[self buildCacheArray:1 forRow:theRow andColumn:theColumn];
+// TEO TODO 001
+    NSValue* selectionPos = [NSValue valueWithPoint:NSMakePoint(theColumn, theRow)];
+    NSValue* speedVector = [NSValue valueWithPoint:theSpeed];
+    NSValue* gridDims = [NSValue valueWithPoint:NSMakePoint([_songCellMatrix numberOfColumns], [_songCellMatrix numberOfRows])];
+    [_delegate cacheWithContext:@{@"pos" : selectionPos, @"spd" : speedVector, @"gridDims" : gridDims}];
+//    NSArray *theArray =[self buildCacheArrayWithStrategy:CacheStrategy5x5Square
+//                                                  forRow:theRow
+//                                               andColumn:theColumn
+//                                          andSpeedVector:theSpeed];
+//    
 //    [[self delegate] requestSongArrayPreload:theArray];
     
     // If a popover is shown, hide it.

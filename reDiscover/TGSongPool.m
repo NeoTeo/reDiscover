@@ -6,6 +6,7 @@
 //  Copyright (c) 2013 Teo Sartori. All rights reserved.
 //
 
+#import <AVFoundation/AVFoundation.h>
 
 #import "TGSongPool.h"
 #import "TGSong.h"
@@ -20,7 +21,7 @@
 
 
 // The private interface declaration overrides the public one to declare conformity to the Delegate protocols.
-@interface TGSongPool () <TGSongDelegate,TGFingerPrinterDelegate,SongPoolAccessProtocol>
+@interface TGSongPool () <TGSongDelegate,TGFingerPrinterDelegate,SongPoolAccessProtocol,TGPlaylistViewControllerDelegate>
 @end
 
 // constant definitions
@@ -122,7 +123,11 @@ static int const kSSCheckCounterSize = 10;
         // TEOSongData end
 #endif
 
+        theSongPlayer = [[SongPlayer alloc] init];
         
+        // Starting off with an empty songID cache.
+        songIDCache = [[NSMutableSet alloc] init];
+        cacheClearingQueue = dispatch_queue_create("cache clearing q", NULL);
     }
     
     return self;
@@ -413,7 +418,7 @@ static int const kSSCheckCounterSize = 10;
                 
                 // If we're done requesting new urls and
                 // the number of completed operations is the same as the requested operations then
-                // signal that we're done loading and signal our delegate (the songgridcontroller) that we're all done.
+                // signal that we're done loading and signal our delegate that we're all done.
                 if (allURLsRequested) {
                     if ( completedOps == requestedOps) {
                         // At this point we know how many songs to display.
@@ -627,7 +632,7 @@ static int const kSSCheckCounterSize = 10;
             CFStringRef fileUTI = UTTypeCreatePreferredIdentifierForTag(kUTTagClassFilenameExtension, fileExtension, NULL);
             
             if (UTTypeConformsTo(fileUTI, kUTTypeImage)){
-                NSString* regexString = [NSString stringWithFormat:@"(cover|front|folder|%@)",[theDirectory lastPathComponent]];
+                NSString* regexString = [NSString stringWithFormat:@"(scan|album|art|cover|front|folder|%@)",[theDirectory lastPathComponent]];
                 NSLog(@"the regex string is %@",regexString);
                 // At this point we extract the file name and, using a regex look for words like cover or front.
                 NSRegularExpression* regex = [NSRegularExpression regularExpressionWithPattern:regexString
@@ -731,6 +736,11 @@ static int const kSSCheckCounterSize = 10;
     [theSong setSweetSpot:positionInSeconds];
     
             [theSong setStartTime:positionInSeconds];
+    // TEO < AE
+    [theSongPlayer setPlaybackToTime:[positionInSeconds doubleValue]];
+    return;
+    // TEO AE>
+    
             [theSong setCurrentPlayTime:positionInSeconds];
             [songsWithChangesToSave addObject:theSong];
 }
@@ -1419,6 +1429,96 @@ static int const kSSCheckCounterSize = 10;
 #pragma mark -
 // end of Core Data methods
 
+#pragma mark Caching methods
+
+- (void)cacheWithContext:(NSDictionary*)cacheContext {
+    // First we need to decide on a caching strategy.
+    // For now we will simply do a no-brains area caching of two songs in every direction from the current cursor position.
+    
+    // Make sure we have an inited cache.
+    
+    NSMutableSet* wantedCache = [[NSMutableSet alloc] initWithCapacity:25];
+   
+    
+    NSInteger radius = 2;
+    // Extract data from context
+//    NSPoint speedVector     = [[cacheContext objectForKey:@"spd"] pointValue];
+    NSPoint selectionPos    = [[cacheContext objectForKey:@"pos"] pointValue];
+    NSPoint gridDims        = [[cacheContext objectForKey:@"gridDims"] pointValue];
+    
+    for (NSInteger matrixRows=selectionPos.y-radius; matrixRows<=selectionPos.y+radius; matrixRows++) {
+        for (NSInteger matrixCols=selectionPos.x-radius; matrixCols<=selectionPos.x+radius; matrixCols++) {
+            if ((matrixRows >= 0) && (matrixRows <gridDims.y)) {
+                if((matrixCols >=0) && (matrixCols < gridDims.x)) {
+                    
+                    // skip if this is the selected cell (which is already cached or requested).
+                    if ((matrixRows == selectionPos.y) && (matrixCols == selectionPos.x))
+                        continue;
+                    
+                    id songID = [_delegate songIDFromGridColumn:matrixCols andRow:matrixRows];
+                    if (songID != nil) {
+                        [wantedCache addObject:songID];
+                    }
+                }
+            }
+        }
+    }
+    
+    // The stale cache is the existing cache - wanted cache
+    NSMutableSet* staleCache = [songIDCache mutableCopy];
+    [staleCache minusSet:wantedCache];
+    [self clearSongCache:[staleCache allObjects]];
+    
+    // Remove the what's already cached from the wanted cache and load it.
+    [wantedCache minusSet:songIDCache];
+    [self loadSongCache:[wantedCache allObjects]];
+    
+    // Remove from the existing cache what is not in the wanted cache.
+    [songIDCache minusSet:staleCache];
+    [songIDCache unionSet:wantedCache];
+}
+
+- (void)clearSongCache:(NSArray*)staleSongArray {
+    dispatch_async(cacheClearingQueue, ^{
+        for (id songID in staleSongArray) {
+            TGSong *aSong = [self songForID:songID];
+            [aSong clearCache];
+        }
+    });
+}
+
+- (void)loadSongCache:(NSArray*)desiredSongArray {
+    // First we make sure to clear any pending requests.
+    // What's on the queue is not removed until its turn.
+    [urlCachingOpQueue cancelAllOperations];
+    
+    // Then we add the tracks to cache queue.
+    [urlCachingOpQueue addOperationWithBlock:^{
+        // TEO - calling this async'ly crashes in core data.
+        // Be smarter about this. Keep track of what's cached (in a set) and only recache what's missing.
+        // The loadTrackData won't reload a loaded track but we can probably still save some loops.
+        for (id songID in desiredSongArray) {
+            TGSong *aSong = [self songForID:songID];
+            if (aSong == NULL) {
+                NSLog(@"Nope, the requested ID %@ is not in the song pool.",songID);
+                return;
+            }
+            NSLog(@"Caching %@",songID);
+            NSError* error;
+            [aSong setCache:[[AVAudioFile alloc] initForReading:[NSURL URLWithString:aSong.TEOData.urlString] error:&error]];
+            // tell the song to load its data asyncronously without requesting a callback on completion.
+            [aSong loadTrackDataWithCallBackOnCompletion:NO];
+            
+            // TEO TSD test. We should try and get the metadata so it's ready,
+            // but not so that songPoolDidLoadDataForSongID gets called for each song.
+            [self requestEmbeddedMetadataForSongID:songID withHandler:^(NSDictionary* theData){
+                //            NSLog(@"preloadSongArray got data! %@",theData);
+            }];
+        }
+        
+    }];
+}
+
 - (void)preloadSongArray:(NSArray *)songArray {
 //    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
 
@@ -1469,6 +1569,8 @@ static int const kSSCheckCounterSize = 10;
 //    }
 //}
 
+#pragma mark -
+
 - (void)requestSongPlayback:(id)songID withStartTimeInSeconds:(NSNumber *)time {
     
     TGSong *aSong = [self songForID:songID];
@@ -1517,13 +1619,25 @@ static int const kSSCheckCounterSize = 10;
     }
     
     if ([nextSong playStart]) {
+        
+        // TEO < AE
+        // if the requestedSongStartTime is -1 then play the song from the user's selected sweet spot.
+        double atTime;
+        if (CMTimeGetSeconds(nextSong.requestedSongStartTime) == -1) {
+            atTime = CMTimeGetSeconds(nextSong.songStartTime) ;
+        } else
+            atTime = CMTimeGetSeconds(nextSong.requestedSongStartTime);
+        if (atTime < 0) {
+            atTime = 0;
+        }
+        [theSongPlayer playSongwithURL:[NSURL URLWithString:nextSong.TEOData.urlString] atTime:atTime];
+        // TEO AE >
+        
         currentlyPlayingSong = nextSong;
         
         NSNumber *theSongDuration = [NSNumber numberWithDouble:[currentlyPlayingSong getDuration]];
         [self setValue:theSongDuration forKey:@"currentSongDuration"];
         
-//        NSString* test = nextSong.TEOData.fingerprint;
-//        NSLog(@"the fingerprint %@",test);
         // Song fingerprints are generated and UUID fetched during idle time in the background.
         // However, if the song about to be played hasn't got a UUID or fingerprint, an async request will be initiated here.
 //        if ([nextSong songUUIDString] == NULL) {
@@ -1627,8 +1741,6 @@ static int const kSSCheckCounterSize = 10;
 //        NSLog(@"songReadyForPlayback overridden. Song is %lu and lastRequestedSong is %lu",(unsigned long)[song songID],(unsigned long)[lastRequestedSong songID]);
     }
 }
-
-
 
 
 @end

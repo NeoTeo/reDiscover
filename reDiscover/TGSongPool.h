@@ -15,6 +15,7 @@
 @class TGSong;
 @class TGFingerPrinter;
 
+@class SongPlayer;
 @class CoverArtArchiveWebFetcher;
 @class TGStack;
 
@@ -34,6 +35,10 @@
     
     NSOperationQueue* urlLoadingOpQueue;
     NSOperationQueue* urlCachingOpQueue;
+    NSMutableSet *songIDCache;
+    
+    // This serial queue ensures all the cache clearing blocks are performed in the background.
+    dispatch_queue_t cacheClearingQueue;
     
     dispatch_queue_t playbackQueue;
     dispatch_queue_t serialDataLoad;
@@ -60,6 +65,8 @@
     
     NSNumber *playheadPos;
     NSNumber *requestedPlayheadPosition;
+    
+    SongPlayer* theSongPlayer;
 }
 
 @property TGStack* requestedSongStack;
@@ -95,7 +102,10 @@
 
 - (void)requestImageForSongID:(id)songID withHandler:(void (^)(NSImage *))imageHandler;
 
+// Caching methods
 - (void)preloadSongArray:(NSArray *)songArray;
+- (void)cacheWithContext:(NSDictionary*)cacheContext;
+    
 #pragma mark -
 #pragma mark song data accessor methods.
 // Async methods
@@ -138,23 +148,20 @@
 - (BOOL)loadMetadataIntoSong:(TGSong *)aSong;
 
 
-// DELEGATE METHODS
+// Other protocols' delegate methods that TGSongPool implements
 
-// TGFingerPrinterDelegate method
+// TGFingerPrinterDelegate protocol methods called by TGFingerPrinter
 - (void)fingerprintReady:(NSString *)fingerPrint ForSong:(TGSong *)song;
 
-// TGSongDelegate calls these methods
+// TGSongDelegate protocol methods called by TGSong
 - (void)songDidFinishPlayback:(TGSong *)song;
 -(id)lastRequestedSongID;
-
-//- (void)songDidLoadEmbeddedMetadata:(TGSong *)song;
 - (void)songDidUpdatePlayheadPosition:(NSNumber *)playheadPosition;
 - (void)songReadyForPlayback:(TGSong *)song;
 
-
 @end
 
-// Delegate method declarations.
+// TGSongPool Delegate methods that conforming classes must implement and that SongPool will call.
 @protocol TGSongPoolDelegate <NSObject>
 //@optional
 - (void)songPoolDidLoadSongURLWithID:(id)songID;
@@ -162,9 +169,7 @@
 - (void)songPoolDidStartPlayingSong:(id)songID;
 - (void)songPoolDidFinishPlayingSong:(id)songID;
 - (void)songPoolDidLoadDataForSongID:(id)songID;
-//- (void)songPoolDidLoadSongURLWithID:(NSUInteger)songID;
-//- (void)songPoolDidLoadAllURLs:(NSUInteger)numberOfURLs;
-//- (void)songPoolDidStartPlayingSong:(NSUInteger)songID;
-//- (void)songPoolDidFinishPlayingSong:(NSUInteger)songID;
-//- (void)songPoolDidLoadDataForSongID:(NSUInteger)songID;
+
+- (id)songIDFromGridColumn:(NSInteger)theCol andRow:(NSInteger)theRow;
+
 @end

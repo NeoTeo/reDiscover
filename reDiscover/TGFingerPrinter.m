@@ -58,11 +58,11 @@
         NSURL* songURL = [_delegate URLForSongID:songID];
         [self decodeAudioFileNew:songURL forContext:chromaprintContext ofLength:maxLength andDuration:&duration];
         
-        SongID* test = [[SongID alloc] initWithString:(NSString*)songID];
-        SongID* testES =[[SongID alloc] initWithString:(NSString*)songID];
-        if ([test isEqual:testES]) {
-            NSLog(@"It wooooorks");
-        }
+//        SongID* test = [[SongID alloc] initWithString:(NSString*)songID];
+//        SongID* testES =[[SongID alloc] initWithString:(NSString*)songID];
+//        if ([test isEqual:testES]) {
+//            NSLog(@"It wooooorks");
+//        }
         
         if (chromaprint_get_fingerprint(chromaprintContext, &theFingerprint)) {
         

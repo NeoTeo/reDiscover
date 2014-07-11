@@ -22,6 +22,11 @@
 @class TGSongTimelineViewController;
 @class CAKeyframeAnimation;
 
+//typedef enum {
+//    CacheStrategy5x5Square,
+//    CacheStrategyArrow
+//} CacheStrategy;
+
 // Forward declaration of protocol.
 @protocol TGSongGridViewControllerDelegate;
 @protocol TGSongTimelineViewControllerDelegate;
@@ -31,7 +36,7 @@
     float zoomFactor;
     NSMutableArray *unmappedSongIDArray;
     NSTimeInterval popupTimerStart;
-    NSMutableSet *songIDCache;
+//    NSMutableSet *songIDCache;
     
     // A queue for running the test on
     dispatch_queue_t testingQueue;
@@ -74,29 +79,30 @@
 //- (void)setCoverImage:(NSImage *)theImage forSongWithID:(NSUInteger)songID;
 - (void)setCoverImage:(NSImage *)theImage forSongWithID:(id)songID;
 
-// Delegate methods.
-// TGSongGridScrollViewDelegate methods
 
-//- (void)songGridScrollViewDidChangeToCell:(TGGridCell *)theCell withRect:(NSRect)theRect;
+// Other classes' delegate methods we implement.
+
+// TGSongGridScrollViewDelegate methods
 - (void)songGridScrollViewDidChangeToRow:(NSInteger)theRow andColumn:(NSInteger)theColumn withSpeedVector:(NSPoint)theSpeed;
-//- (void)songGridScrollViewDidChangeToRow:(NSInteger)theRow andColumn:(NSInteger)theColumn;
 - (void)songGridScrollViewDidScrollToRect:(NSRect)theRect;
 - (void)songGridScrollViewDidRightClickSongID:(NSUInteger)songID;
 
 // TGSongTimelineViewControllerDelegate methods
 - (void)userSelectedSweetSpotMarkerAtIndex:(NSUInteger)ssIndex;
 
+// TGSongPoolDelegate methods we implement
+- (id)songIDFromGridColumn:(NSInteger)theCol andRow:(NSInteger)theRow;
+
 - (void)runTest;
-
-
 @end
 
 @protocol TGSongGridViewControllerDelegate <NSObject>
-
 - (id)lastRequestedSongID;
 - (void)userSelectedSweetSpot:(NSUInteger)ssIndex;
 -(void)userSelectedSongID:(id)songID ;
-//-(void)userSelectedSongID:(NSUInteger)songID ;
-- (void)requestSongArrayPreload:(NSArray *)theArray;
-
+- (void)cacheWithContext:(NSDictionary*)theContext;
+//- (void)requestSongArrayPreload:(NSArray *)theArray;
+//- (void)clearSongCache:(NSArray*)staleSongArray;
+//- (void)loadSongCache:(NSArray*)desiredSongArray;
+- (id)songIDFromGridColumn:(NSInteger)theCol andRow:(NSInteger)theRow;
 @end

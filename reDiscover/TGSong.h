@@ -17,6 +17,7 @@
 @class AVPlayer;
 @class NSURL;
 @class TEOSongData;
+@class AVAudioFile;
 
 @protocol TGSongDelegate;
 
@@ -57,6 +58,10 @@ enum {
     AVPlayer *songPlayer;
     
     id playerObserver;
+    
+    // cached stuff
+    AVAudioFile* cachedFile;
+    int64_t cachedFileLength;
 }
 
 // Test of managed object
@@ -111,6 +116,8 @@ enum {
 // A counter to provide a variable interval between sweet-spot checks.
 @property NSUInteger SSCheckCountdown;
 
+- (void)setCache:(AVAudioFile*) theFile;
+- (void)clearCache;
 
 - (void)storeSelectedSweetSpot;
 - (NSNumber *)startTime;
