@@ -90,7 +90,7 @@
             
         });
     }];
-    NSLog(@"requestCoverImageWithHandler all done");
+//    NSLog(@"requestCoverImageWithHandler all done");
 
 }
 
@@ -393,12 +393,13 @@
 }
 
 - (void)setCache:(AVAudioFile*) theFile {
-    cachedFile = theFile;
-    cachedFileLength = cachedFile.length;
+    NSAssert(theFile != nil, @"The audio file is nil!");
+    _cachedFile = theFile;
+    _cachedFileLength = _cachedFile.length;
 }
 
 - (void)clearCache {
-    cachedFile = nil;
+    _cachedFile = nil;
 }
 
 //- (void)setCurrentPlayTime:(Float64)playTimeInSeconds {

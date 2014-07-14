@@ -9,7 +9,12 @@
 import Foundation
 
 @objc
-class SongID : NSObject, Equatable {
+protocol SongIDProtocol {
+    func isEqualToSongID(object: SongIDProtocol!) -> Bool
+}
+
+@objc
+class SongID : NSObject, SongIDProtocol {
     var idValue: Int?
     
     init(string: String) {
@@ -18,7 +23,7 @@ class SongID : NSObject, Equatable {
     }
     
     // Alas we can't use this in reDiscover because Obj-c doesn't allow generics.
-    //    func isEqual<T>(thing: T) -> Bool {
+    //    func isEqual<T: Equatable>(thing: T) -> Bool {
     //
     //        switch thing {
     //            case let someID as SongID:
@@ -32,7 +37,8 @@ class SongID : NSObject, Equatable {
     //        }
     //    }
     
-    override func isEqual(object: AnyObject!) -> Bool {
+    
+    func isEqualToSongID(object: SongIDProtocol!) -> Bool {
         let otherSong = object as SongID
         return idValue == otherSong.idValue
     }

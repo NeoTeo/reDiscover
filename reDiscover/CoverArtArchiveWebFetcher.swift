@@ -9,13 +9,6 @@
 import Foundation
 import AppKit
 
-@objc
-
-protocol SongPoolAccessProtocol {
-    func UUIDStringForSongID(songID: AnyObject) -> NSString?
-    func releasesForSongID(songID: AnyObject) -> NSData?
-    func albumForSongID(songID: AnyObject) -> NSString?
-}
 
 @objc
 

@@ -157,7 +157,7 @@
     
     if ((mouseCol >= 0) && (mouseRow >= 0)) {
         if ((mouseCol != _currentMouseCol) || (mouseRow != _currentMouseRow)) {
-            
+
             // Find the cell that corresponds to the new coordinates and ask it for its id.
             if (_delegate && [_delegate respondsToSelector:@selector(songGridScrollViewDidChangeToRow:andColumn:withSpeedVector:)]) {
                 [_delegate songGridScrollViewDidChangeToRow:mouseRow andColumn:mouseCol withSpeedVector:currentSpeed];

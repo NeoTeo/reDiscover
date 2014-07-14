@@ -75,6 +75,10 @@
     [_pushBounceAnimation setDuration:0.35];
     
     _bounceAnimation = [self makeBounceAnimation];
+    
+    // Debug
+    _debugLayerDict = [[NSMutableDictionary alloc] init];
+    
     // Now's a good time to load the genre-to-colour map
 //    [self loadGenreToColourMap];
 }
@@ -1096,9 +1100,10 @@ static NSInteger const kUndefinedID =  -1;
     
     [[self delegate] userSelectedSongID:songID];
     
-    // TEO The cache should not use the userSelected methods. Make a separate wrapper.
-    // Update the song cache based on the new selection.
-// TEO TODO 001
+
+    // Collect the context for this selection and pass it to the mainviewcontroller which will pass
+    // it on to the songpool where the cache is generated.
+    // TEO TODO 001
     NSValue* selectionPos = [NSValue valueWithPoint:NSMakePoint(theColumn, theRow)];
     NSValue* speedVector = [NSValue valueWithPoint:theSpeed];
     NSValue* gridDims = [NSValue valueWithPoint:NSMakePoint([_songCellMatrix numberOfColumns], [_songCellMatrix numberOfRows])];
@@ -1119,6 +1124,31 @@ static NSInteger const kUndefinedID =  -1;
     [self togglePopoverAtCellFrame:cellFrame withDelay:3.0];
 }
 
+
+- (void)setDebugCachedFlagForSongID:(id)songID toValue:(BOOL)value {
+    
+    // Get the cell for the id
+    TGGridCell* aCell = [_songCellMatrix cellWithTag:[_songCellMatrix tagForSongWithID:songID]];
+    NSInteger row, col;
+    [_songCellMatrix getRow:&row column:&col ofCell:aCell];
+    NSRect cellFrame = [_songCellMatrix coverFrameAtRow:row column:col];
+    NSRect cachedFrame = NSMakeRect(cellFrame.origin.x+10 , cellFrame.origin.y+10, 15, 15);
+    CALayer* theLayer = [_debugLayerDict objectForKey:songID];
+    
+    if (value) {
+        if (theLayer == nil) {
+            theLayer = [self makeLayerWithImage:[NSImage imageNamed:@"cached"] atRect:cachedFrame];
+            [_debugLayerDict setObject:theLayer forKey:songID];
+        }
+        [[[[self songGridScrollView] documentView] layer] addSublayer:theLayer];
+    } else {
+        if (theLayer) {
+            [theLayer removeFromSuperlayer];
+            [_debugLayerDict removeObjectForKey:songID];
+        }
+    }
+    
+}
 
 - (void)songGridScrollViewDidRightClickSongID:(NSUInteger)songID {
     NSLog(@"RMB");

@@ -45,7 +45,6 @@
     NSImage *theImage = [self image];
 
     if (theImage) {
-        
 //        [theImage drawInRect:cellFrame fromRect:NSZeroRect operation:NSCompositeCopy fraction:1 respectFlipped:YES hints:nil];
         // 10.9 Mavericks version of the above. Might want to check for OS version for backward compatibility.
         [[self image] drawInRect:cellFrame];

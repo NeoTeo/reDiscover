@@ -17,11 +17,7 @@
 @class TGSongUIViewController;
 //@class TGSongTimelineViewController;
 @class TGIdleTimer;
-
-@interface songPositionClass: NSObject {
-    double songTimePos;
-}
-@end
+@class DebugDisplayController;
 
 @protocol TGMainViewControllerDelegate <NSObject>
 
@@ -43,7 +39,6 @@
 @property NSURL* theURL;
 
 @property TGSongPool *currentSongPool;
-@property songPositionClass *songPosGlue;
 @property NSObjectController *myObjectController;
 
 // The three parts of the split view
@@ -53,15 +48,18 @@
 
 @property TGSongUIViewController *songUIController;
 
+@property DebugDisplayController* debugDisplayController;
+
 @property NSDictionary *genreToColourDictionary;
 
 @property TGIdleTimer *idleTimer;
 
 - (id)initWithFrame:(NSRect)theFrame;
 
-// Delegate methods
+// SongPoolDelegate methods we implement
 - (void)setSongPool:(TGSongPool *)theSongPool;
 - (id)lastRequestedSongID;
 - (id)songIDFromGridColumn:(NSInteger)theCol andRow:(NSInteger)theRow;
+- (void)setDebugCachedFlagsForSongIDArray:(NSArray*)songIDs toValue:(BOOL)value;
 
 @end

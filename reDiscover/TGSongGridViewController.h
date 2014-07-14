@@ -45,6 +45,9 @@
 
 @property id<TGSongGridViewControllerDelegate> delegate;
 
+// debug
+@property NSMutableDictionary* debugLayerDict;
+
 @property NSDictionary *genreToColourDictionary;
 // Dimensions
 @property NSUInteger interCellHSpace;
@@ -93,10 +96,15 @@
 // TGSongPoolDelegate methods we implement
 - (id)songIDFromGridColumn:(NSInteger)theCol andRow:(NSInteger)theRow;
 
+// Set the cached flag on a cell that corresponds to the songID
+- (void)setDebugCachedFlagForSongID:(id)songID toValue:(BOOL)value;
+
 - (void)runTest;
 @end
 
+
 @protocol TGSongGridViewControllerDelegate <NSObject>
+
 - (id)lastRequestedSongID;
 - (void)userSelectedSweetSpot:(NSUInteger)ssIndex;
 -(void)userSelectedSongID:(id)songID ;
@@ -105,4 +113,6 @@
 //- (void)clearSongCache:(NSArray*)staleSongArray;
 //- (void)loadSongCache:(NSArray*)desiredSongArray;
 - (id)songIDFromGridColumn:(NSInteger)theCol andRow:(NSInteger)theRow;
+
 @end
+

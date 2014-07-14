@@ -1,5 +1,5 @@
 //
-//  TGViewController.m
+//  TGMainViewController.m
 //  Proto3
 //
 //  Created by Teo Sartori on 13/03/2013.
@@ -17,26 +17,20 @@
 #import "TGSongTimelineViewController.h"
 #import "TGTimelineTransformer.h"
 
+#import "rediscover-swift.h"
 
-// Magic numbers
-#define kNewWindowWidth       800
-#define kNewWindowHeight      800
-
-@implementation songPositionClass
-
-- (double)songTimePos {
-    NSLog(@"songtimepos %f",songTimePos);
-    return songTimePos;
-}
-
-- (void)setSongTimePos:(double)newPos {
-    NSLog(@"set songtimepos %f",newPos);
-    songTimePos = newPos;
-}
-@end
 
 @interface TGMainViewController () <TGSongPoolDelegate, TGSongUIViewControllerDelegate, NSSplitViewDelegate,TGSongGridViewControllerDelegate>
-
+    // From TGSongPoolDelegate
+    //      songIDFromGridColumn:andRow
+    //
+    // From TGSongUIViewControllerDelegate
+    // From NSSplitViewDelegate
+    // From TGSongGridViewControllerDelegate
+    //      lastRequestedSongID
+    //      userSelectedSweetSpot:
+    //      userSelectedSongID:
+    //      cacheWithContext:
 @end
 
 // Main coordinating controller.
@@ -62,7 +56,7 @@
    // register the timeline transformer.
     id transformer = [[TGTimelineTransformer alloc] init];
     [NSValueTransformer setValueTransformer:transformer forName:@"TimelineTransformer"];
-    
+
 }
 
 
@@ -115,6 +109,9 @@
 
     // Make sure the splitview's subviews are resized according to the newly added constraints.
     [theSplitView adjustSubviews];
+    
+    _debugDisplayController = [[self storyboard] instantiateControllerWithIdentifier:@"DebugDisplayController"];
+    [mainView addSubview:_debugDisplayController.view];
 }
 
 
@@ -567,6 +564,15 @@
 - (void)requestSongArrayPreload:(NSArray *)theArray {
     
     [_currentSongPool preloadSongArray:theArray];
+}
+
+#pragma mark TGSongGridViewControllerDelegate method implementations
+
+- (void)setDebugCachedFlagsForSongIDArray:(NSArray*)songIDs toValue:(BOOL)value {
+    for (id songID in songIDs) {
+        [_songGridController setDebugCachedFlagForSongID:songID toValue:value];
+    }
+    
 }
 
 - (void)cacheWithContext:(NSDictionary*)theContext {

@@ -43,6 +43,10 @@
     //chromaprint_free(chromaprintContext);
 }
 
+//- (void)testFunc:(id<SongIDProtocol>) songID {
+//    NSLog(@"I gots a songID %@",songID);
+//}
+
 // A version of the fingerprint request that uses a completion block instead of a delegate callback.
 //- (void)requestFingerPrintForSong:(TGSong *)song withHandler:(void (^)(NSString*))fingerprintHandler {
 - (void)requestFingerPrintForSong:(id)songID withHandler:(void (^)(NSString*))fingerprintHandler {
@@ -60,8 +64,9 @@
         
 //        SongID* test = [[SongID alloc] initWithString:(NSString*)songID];
 //        SongID* testES =[[SongID alloc] initWithString:(NSString*)songID];
-//        if ([test isEqual:testES]) {
+//        if ([test isEqualToSongID:testES]) {
 //            NSLog(@"It wooooorks");
+//            [self testFunc:test];
 //        }
         
         if (chromaprint_get_fingerprint(chromaprintContext, &theFingerprint)) {
@@ -94,7 +99,7 @@
                     [_delegate setReleases:[NSKeyedArchiver archivedDataWithRootObject:releases] forSongID:songID];
 //                    song.TEOData.songReleases = [NSKeyedArchiver archivedDataWithRootObject:releases];
                     
-                    NSLog(@"Acoustid server returned a UUID %@",UUIDString);
+//                    NSLog(@"Acoustid server returned a UUID %@",UUIDString);
                 } else
                     NSLog(@"AcoustID returned 0 results.");
                 

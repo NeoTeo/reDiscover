@@ -58,6 +58,7 @@
 		AB85BC5A1875AD1500670905 /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AB85BC591875AD1500670905 /* CoreMedia.framework */; };
 		AB85BC5C1875AD3B00670905 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AB85BC5B1875AD3B00670905 /* QuartzCore.framework */; };
 		AB85BC5F1875AD7A00670905 /* TGSongGridScrollView.m in Sources */ = {isa = PBXBuildFile; fileRef = AB85BC5E1875AD7A00670905 /* TGSongGridScrollView.m */; };
+		AB91A02E1972D097005DF712 /* DebugDisplayController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB91A02C1972D097005DF712 /* DebugDisplayController.swift */; };
 		ABB770AB1950486600155EE7 /* SongID.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABB770AA1950486600155EE7 /* SongID.swift */; };
 		ABCB68EA18FD57E4009CF277 /* TEOSong.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = ABCB68E818FD57E4009CF277 /* TEOSong.xcdatamodeld */; };
 		ABEC263D1951C6F200A57CE3 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = ABEC263C1951C6F200A57CE3 /* Main.storyboard */; };
@@ -158,6 +159,7 @@
 		AB85BC5E1875AD7A00670905 /* TGSongGridScrollView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TGSongGridScrollView.m; sourceTree = "<group>"; };
 		AB85BC621875B2E000670905 /* libc++.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libc++.dylib"; path = "usr/lib/libc++.dylib"; sourceTree = SDKROOT; };
 		AB85BC641875B2F600670905 /* Accelerate.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accelerate.framework; path = System/Library/Frameworks/Accelerate.framework; sourceTree = SDKROOT; };
+		AB91A02C1972D097005DF712 /* DebugDisplayController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DebugDisplayController.swift; sourceTree = "<group>"; };
 		ABB770AA1950486600155EE7 /* SongID.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SongID.swift; sourceTree = "<group>"; };
 		ABCB68E918FD57E4009CF277 /* TEOSong.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = TEOSong.xcdatamodel; sourceTree = "<group>"; };
 		ABEC263C1951C6F200A57CE3 /* Main.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Main.storyboard; sourceTree = "<group>"; };
@@ -348,6 +350,7 @@
 		AB85BBDC1875AACF00670905 /* reDiscover */ = {
 			isa = PBXGroup;
 			children = (
+				AB91A02C1972D097005DF712 /* DebugDisplayController.swift */,
 				AB3140CE196D5F0F00F910BE /* SongPlayer.swift */,
 				AB3E974A187BFC7E00BECC09 /* App start view */,
 				AB3E974B187BFD6000BECC09 /* Song grid panel */,
@@ -530,6 +533,7 @@
 				AB85BC4F1875AB5200670905 /* TGSongUIViewController.m in Sources */,
 				AB85BC4B1875AB5200670905 /* TGSongInfoViewController.m in Sources */,
 				AB17DEF91959937400BFD25B /* CoverViewController.swift in Sources */,
+				AB91A02E1972D097005DF712 /* DebugDisplayController.swift in Sources */,
 				AB85BC3E1875AB5200670905 /* TGFingerPrinter.m in Sources */,
 				AB85BC471875AB5200670905 /* TGSongCellMatrix.m in Sources */,
 				AB85BC3F1875AB5200670905 /* TGGridCell.m in Sources */,

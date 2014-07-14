@@ -58,11 +58,11 @@ enum {
     AVPlayer *songPlayer;
     
     id playerObserver;
-    
-    // cached stuff
-    AVAudioFile* cachedFile;
-    int64_t cachedFileLength;
 }
+
+// cached stuff
+@property AVAudioFile* cachedFile;
+@property int64_t cachedFileLength;
 
 // Test of managed object
 //@property NSManagedObject* TEOSongData;

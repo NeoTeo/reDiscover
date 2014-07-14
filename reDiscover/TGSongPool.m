@@ -124,7 +124,7 @@ static int const kSSCheckCounterSize = 10;
 #endif
 
         theSongPlayer = [[SongPlayer alloc] init];
-        
+        theSongPlayer.delegate = self;
         // Starting off with an empty songID cache.
         songIDCache = [[NSMutableSet alloc] init];
         cacheClearingQueue = dispatch_queue_create("cache clearing q", NULL);
@@ -422,7 +422,6 @@ static int const kSSCheckCounterSize = 10;
                 if (allURLsRequested) {
                     if ( completedOps == requestedOps) {
                         // At this point we know how many songs to display.
-                        NSLog(@"Done. Found %d urls",loadedURLs);
                         
                         // Inform the delegate that we've loaded the all the URLs.
                         if ([_delegate respondsToSelector:@selector(songPoolDidLoadAllURLs:)]) {
@@ -459,7 +458,7 @@ static int const kSSCheckCounterSize = 10;
     TGSong * theSong = [self songForID:songID];
     NSInteger artID = theSong.artID;
     if (artID >= 0) {
-        NSLog(@"song id %@ already had image id %ld",songID,(long)artID);
+//        NSLog(@"song id %@ already had image id %ld",songID,(long)artID);
         NSImage *songArt = [_artArray objectAtIndex:artID];
         imageHandler(songArt);
         return;
@@ -548,7 +547,7 @@ static int const kSSCheckCounterSize = 10;
                 [self requestCoverArtForSong:songID withHandler:^(NSImage* theImage) {
                     if (theImage != nil) {
                         
-                        NSLog(@"got image from the internets!");
+//                        NSLog(@"got image from the internets!");
                         // Store the image in the local store so we won't have to re-fetch it from the file.
                         [_artArray addObject:theImage];
                         
@@ -791,6 +790,18 @@ static int const kSSCheckCounterSize = 10;
     }
     
     return [[self songForID:songID].TEOData.sweetSpots sortedArrayUsingDescriptors:nil];
+}
+
+- (NSSet*)currentCache {
+    return songIDCache;
+}
+
+- (NSNumber*)cachedLengthForSongID:(id)songID {
+    return [NSNumber numberWithLongLong:[self songForID:songID].cachedFileLength];
+}
+
+- (AVAudioFile*)cachedAudioFileForSongID:(id)songID {
+    return [self songForID:songID].cachedFile;
 }
 
 - (NSString*)albumForSongID:(id)songID {
@@ -1431,16 +1442,22 @@ static int const kSSCheckCounterSize = 10;
 
 #pragma mark Caching methods
 
+
 - (void)cacheWithContext:(NSDictionary*)cacheContext {
     // First we need to decide on a caching strategy.
     // For now we will simply do a no-brains area caching of two songs in every direction from the current cursor position.
-    
+//    [urlCachingOpQueue cancelAllOperations];
+//    
+//    NSBlockOperation* cacheOp = [[NSBlockOperation alloc] init];
+//    __weak NSBlockOperation* weakCacheOp = cacheOp;
+//    
+//    [weakCacheOp addExecutionBlock:^{
     // Make sure we have an inited cache.
     
     NSMutableSet* wantedCache = [[NSMutableSet alloc] initWithCapacity:25];
    
     
-    NSInteger radius = 2;
+    NSInteger radius = 4;
     // Extract data from context
 //    NSPoint speedVector     = [[cacheContext objectForKey:@"spd"] pointValue];
     NSPoint selectionPos    = [[cacheContext objectForKey:@"pos"] pointValue];
@@ -1452,8 +1469,12 @@ static int const kSSCheckCounterSize = 10;
                 if((matrixCols >=0) && (matrixCols < gridDims.x)) {
                     
                     // skip if this is the selected cell (which is already cached or requested).
-                    if ((matrixRows == selectionPos.y) && (matrixCols == selectionPos.x))
-                        continue;
+//                    if ((matrixRows == selectionPos.y) && (matrixCols == selectionPos.x))
+//                        continue;
+//                    if( weakCacheOp.isCancelled ) {
+//                        NSLog(@"caching cancelled.");
+//                        return;
+//                    }
                     
                     id songID = [_delegate songIDFromGridColumn:matrixCols andRow:matrixRows];
                     if (songID != nil) {
@@ -1469,19 +1490,30 @@ static int const kSSCheckCounterSize = 10;
     [staleCache minusSet:wantedCache];
     [self clearSongCache:[staleCache allObjects]];
     
+    // DEBUG
+    [_delegate setDebugCachedFlagsForSongIDArray:[staleCache allObjects] toValue:NO];
+    
     // Remove the what's already cached from the wanted cache and load it.
     [wantedCache minusSet:songIDCache];
     [self loadSongCache:[wantedCache allObjects]];
+
+    // DEBUG
+    [_delegate setDebugCachedFlagsForSongIDArray:[wantedCache allObjects] toValue:YES];
     
     // Remove from the existing cache what is not in the wanted cache.
     [songIDCache minusSet:staleCache];
     [songIDCache unionSet:wantedCache];
+    
+//    }];
+//    
+//    [urlCachingOpQueue addOperation:cacheOp];
 }
 
 - (void)clearSongCache:(NSArray*)staleSongArray {
     dispatch_async(cacheClearingQueue, ^{
         for (id songID in staleSongArray) {
             TGSong *aSong = [self songForID:songID];
+//            NSLog(@"Clearing %@ with ID %@",aSong.TEOData.title,songID);
             [aSong clearCache];
         }
     });
@@ -1503,7 +1535,8 @@ static int const kSSCheckCounterSize = 10;
                 NSLog(@"Nope, the requested ID %@ is not in the song pool.",songID);
                 return;
             }
-            NSLog(@"Caching %@",songID);
+//            NSLog(@"Caching %@ with id %@",aSong.TEOData.title,songID);
+
             NSError* error;
             [aSong setCache:[[AVAudioFile alloc] initForReading:[NSURL URLWithString:aSong.TEOData.urlString] error:&error]];
             // tell the song to load its data asyncronously without requesting a callback on completion.
@@ -1515,7 +1548,6 @@ static int const kSSCheckCounterSize = 10;
                 //            NSLog(@"preloadSongArray got data! %@",theData);
             }];
         }
-        
     }];
 }
 
@@ -1582,7 +1614,7 @@ static int const kSSCheckCounterSize = 10;
     lastRequestedSong = aSong;
     
     [aSong setRequestedSongStartTime:CMTimeMakeWithSeconds([time doubleValue], 1)];
-    NSLog(@"the urlLoadingQueue size: %lu",(unsigned long)[urlLoadingOpQueue operationCount]);
+//    NSLog(@"the urlLoadingQueue size: %lu",(unsigned long)[urlLoadingOpQueue operationCount]);
     // First cancel any pending requests in the operation queue and then add this.
     // This won't delete them from the queue but it will tell each in turn it has been cancelled.
     [urlLoadingOpQueue cancelAllOperations];
@@ -1630,7 +1662,7 @@ static int const kSSCheckCounterSize = 10;
         if (atTime < 0) {
             atTime = 0;
         }
-        [theSongPlayer playSongwithURL:[NSURL URLWithString:nextSong.TEOData.urlString] atTime:atTime];
+        [theSongPlayer playSongwithID:nextSong.songID atTime:atTime];
         // TEO AE >
         
         currentlyPlayingSong = nextSong;

@@ -55,8 +55,13 @@
 - (NSInteger)tagForSongWithID:(id)songID {
     __block NSInteger songTag;
     dispatch_sync(_matrixAccessQueue,^{
-        songTag = [cellTagToSongID count];
-        [cellTagToSongID addObject:songID];
+        NSUInteger idx = [cellTagToSongID indexOfObject:songID];
+        if (idx == NSNotFound) {
+            songTag = [cellTagToSongID count];
+            [cellTagToSongID addObject:songID];
+        } else {
+            songTag = idx;
+        }
     });
     return songTag;
 }

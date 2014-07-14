@@ -12,6 +12,9 @@ import AVFoundation
 @objc
 class SongPlayer: NSObject {
 
+    // Gives access to the song pool
+    var delegate: SongPoolAccessProtocol?
+    
     let songPlayerEngine: AVAudioEngine
 //    let songPlayerNode: AVAudioPlayerNode
     
@@ -25,8 +28,11 @@ class SongPlayer: NSObject {
 //        songPlayerEngine.attachNode(songPlayerNode)
     }
     
-    func playSongwithURL(theURL: NSURL, atTime theTime: Double) {
+    func playSongwithID(songID: AnyObject, atTime theTime: Double) {
         var error: NSError?
+        
+        if !delegate { return }
+        
         // Take a timestamp
         let startDate = NSDate()
         
@@ -41,7 +47,17 @@ class SongPlayer: NSObject {
             songPlayerNode.stop()
         }
         
-        let theFile = AVAudioFile(forReading: theURL, error: &error)
+        // First see if the file has been cached. (It's Song Pool's responsibility until we move that into SongPlayer)
+        var theFile = delegate!.cachedAudioFileForSongID(songID)
+        var theFileLength = delegate!.cachedLengthForSongID(songID).longLongValue
+        
+        if !theFile {
+            println("AVAudioFile cache miss for song ID \(songID)")
+            theFile = AVAudioFile(forReading: delegate!.songURLForSongID(songID), error: &error)
+            theFileLength = theFile.length
+        }
+        
+        println("file length: \(theFileLength)")
 
         if error {
             println("There was an error reading file.")
@@ -55,7 +71,7 @@ class SongPlayer: NSObject {
         let flDate = NSDate()
         
         // Getting the file length is really expensive (seconds!) - we want to pre load this in the bg!
-        let framesToPlay = AVAudioFrameCount(theFile.length - theFile.framePosition)
+        let framesToPlay = AVAudioFrameCount(theFileLength - theFile.framePosition)
         let fltime = NSDate().timeIntervalSinceDate(flDate)
         
 
