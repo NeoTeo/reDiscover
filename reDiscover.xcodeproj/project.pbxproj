@@ -12,6 +12,7 @@
 		AB17DEF91959937400BFD25B /* CoverViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB17DEF81959937400BFD25B /* CoverViewController.swift */; };
 		AB17DF321959B2A200BFD25B /* PlaylistViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB17DF311959B2A200BFD25B /* PlaylistViewController.swift */; };
 		AB17DF341959B2B800BFD25B /* InfoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB17DF331959B2B800BFD25B /* InfoViewController.swift */; };
+		AB1BC13F1976C91E003F02B9 /* ScrollingTextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB1BC13E1976C91E003F02B9 /* ScrollingTextView.swift */; };
 		AB1E831619586C3C00D61BCA /* MainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB1E831519586C3C00D61BCA /* MainViewController.swift */; };
 		AB301E7619050C830093B654 /* TEOSongData.m in Sources */ = {isa = PBXBuildFile; fileRef = AB301E7519050C830093B654 /* TEOSongData.m */; };
 		AB3140CF196D5F0F00F910BE /* SongPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB3140CE196D5F0F00F910BE /* SongPlayer.swift */; };
@@ -71,6 +72,7 @@
 		AB17DEF81959937400BFD25B /* CoverViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CoverViewController.swift; sourceTree = "<group>"; };
 		AB17DF311959B2A200BFD25B /* PlaylistViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlaylistViewController.swift; sourceTree = "<group>"; };
 		AB17DF331959B2B800BFD25B /* InfoViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InfoViewController.swift; sourceTree = "<group>"; };
+		AB1BC13E1976C91E003F02B9 /* ScrollingTextView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScrollingTextView.swift; sourceTree = "<group>"; };
 		AB1E831519586C3C00D61BCA /* MainViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MainViewController.swift; sourceTree = "<group>"; };
 		AB241FD21889767500E8E03F /* libbz2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libbz2.dylib; path = usr/lib/libbz2.dylib; sourceTree = SDKROOT; };
 		AB241FD41889774800E8E03F /* CoreFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreFoundation.framework; path = System/Library/Frameworks/CoreFoundation.framework; sourceTree = SDKROOT; };
@@ -352,6 +354,7 @@
 			children = (
 				AB91A02C1972D097005DF712 /* DebugDisplayController.swift */,
 				AB3140CE196D5F0F00F910BE /* SongPlayer.swift */,
+				AB1BC13E1976C91E003F02B9 /* ScrollingTextView.swift */,
 				AB3E974A187BFC7E00BECC09 /* App start view */,
 				AB3E974B187BFD6000BECC09 /* Song grid panel */,
 				AB3E974C187BFD8700BECC09 /* Common */,
@@ -525,6 +528,7 @@
 				AB85BBE31875AACF00670905 /* main.m in Sources */,
 				AB85BC401875AB5200670905 /* TGIdleTimer.m in Sources */,
 				AB7E0719195AF31700570E39 /* MainWindowController.swift in Sources */,
+				AB1BC13F1976C91E003F02B9 /* ScrollingTextView.swift in Sources */,
 				AB85BBEA1875AACF00670905 /* TGAppDelegate.m in Sources */,
 				AB85BC451875AB5200670905 /* TGPlaylistViewController.m in Sources */,
 				AB85BC531875AB5200670905 /* TGTimelineSliderCell.m in Sources */,

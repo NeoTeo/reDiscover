@@ -8,6 +8,7 @@
 
 #import <Cocoa/Cocoa.h>
 //@protocol TGSongInfoPanelDelegate;
+@class ScrollingTextView;
 
 @interface TGSongInfoViewController : NSViewController
 {
@@ -18,6 +19,7 @@
     IBOutlet NSImageView *albumCover;
     NSImage *noCoverImage;
     
+    IBOutlet ScrollingTextView *scrollTitleView;
 }
 
 @property NSNumber *flibble;

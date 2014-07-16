@@ -10,6 +10,9 @@
 #import <QuartzCore/CAAnimation.h>
 #import <QuartzCore/CATransaction.h>
 
+#import "rediscover-swift.h"
+
+
 @implementation TGSongInfoViewController
 
 - (void)awakeFromNib {
@@ -33,6 +36,9 @@
             [titleLabel setStringValue:[songDataDisplayStrings objectForKey:@"Title"]];
             [artistLabel setStringValue:[songDataDisplayStrings objectForKey:@"Artist"]];
             [albumLabel setStringValue:[songDataDisplayStrings objectForKey:@"Album"]];
+            
+            [scrollTitleView setText:[songDataDisplayStrings objectForKey:@"Title"]];
+            [scrollTitleView setSpeed:0.01];
         });
         
 //        NSLog(@"The genre? Why, %@",[songDataDisplayStrings objectForKey:@"Genre"]);
