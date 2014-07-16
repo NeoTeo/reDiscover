@@ -396,6 +396,7 @@
     NSAssert(theFile != nil, @"The audio file is nil!");
     _cachedFile = theFile;
     _cachedFileLength = _cachedFile.length;
+    NSLog(@"cached file length %lld",_cachedFileLength);
 }
 
 - (void)clearCache {

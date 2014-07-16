@@ -18,7 +18,7 @@ class SongPlayer: NSObject {
     let songPlayerEngine: AVAudioEngine
 //    let songPlayerNode: AVAudioPlayerNode
     
-    var currentlyPlaying: AVAudioPlayerNode?
+    var currentPlayerNode: AVAudioPlayerNode?
     // tmp
     var currentFile: AVAudioFile?
     
@@ -37,9 +37,10 @@ class SongPlayer: NSObject {
         let startDate = NSDate()
         
         // It would seem that the Audio Player Node is removed from the engine when the song is done playing?!
-        let songPlayerNode = currentlyPlaying ? currentlyPlaying! : AVAudioPlayerNode()
+        let songPlayerNode = currentPlayerNode ? currentPlayerNode! : AVAudioPlayerNode()
         
-        if !currentlyPlaying {
+        // If a previous node exists it must already be attached. If not, attach it.
+        if !currentPlayerNode {
             songPlayerEngine.attachNode(songPlayerNode)
         }
         
@@ -54,11 +55,11 @@ class SongPlayer: NSObject {
         if !theFile {
             println("AVAudioFile cache miss for song ID \(songID)")
             theFile = AVAudioFile(forReading: delegate!.songURLForSongID(songID), error: &error)
-            theFileLength = theFile.length
+//            theFileLength = theFile.length
+            // for now take a wild guess
+            theFileLength = Int64((theTime+20) * theFile.fileFormat.sampleRate)
         }
         
-        println("file length: \(theFileLength)")
-
         if error {
             println("There was an error reading file.")
             return
@@ -100,14 +101,15 @@ class SongPlayer: NSObject {
         
         if songPlayerNode.playing {
             println("Playing at volume \(songPlayerNode.volume)")
-            currentlyPlaying = songPlayerNode
+            currentPlayerNode = songPlayerNode
             currentFile = theFile
+                        println("Setting the current file \(theFile)")
         }
     }
 
     
     func setPlaybackToTime(timeInSeconds: Double) {
-        if let cP = currentlyPlaying {
+        if let cP = currentPlayerNode {
             if let cF = currentFile {
                 
                 let myFramePosition = AVAudioFramePosition(timeInSeconds * cF.fileFormat.sampleRate)
@@ -119,6 +121,7 @@ class SongPlayer: NSObject {
 //                cF.framePosition = myFramePosition
                 // ...it seems you have to do this instead; stop/clear, reschedule with new frame pos, start again.
                 cP.stop()
+//                cP.pause()
                 cP.scheduleSegment(cF, startingFrame: myFramePosition, frameCount: framesToPlay, atTime: nil, completionHandler: nil)
                 cP.play()
                 
@@ -126,4 +129,19 @@ class SongPlayer: NSObject {
         }
     }
     
+    func refreshPlayingFrameCount() {
+        if let cF = currentFile {
+            if let cP = currentPlayerNode {
+//                println("Frame position: \(cF.framePosition)") // this always returns 0 in beta 3
+//                cP.pause()
+                let framesToPlay = AVAudioFrameCount(cF.length - cF.framePosition)
+                cP.stop()
+                cP.scheduleSegment(cF, startingFrame: cF.framePosition, frameCount: framesToPlay, atTime: nil, completionHandler: nil)
+                cP.play()
+
+//                println("frames to play \(framesToPlay)")
+                
+            }
+        }
+    }
 }

@@ -526,7 +526,7 @@ static int const kSSCheckCounterSize = 10;
                 
                 if (tmpImage != nil) {
                     
-                    NSLog(@"found an image in the same folder as the song.");
+//                    NSLog(@"found an image in the same folder as the song.");
                     // Store the image in the local store so we won't have to re-fetch it from the file.
                     [_artArray addObject:tmpImage];
                     /*
@@ -632,7 +632,7 @@ static int const kSSCheckCounterSize = 10;
             
             if (UTTypeConformsTo(fileUTI, kUTTypeImage)){
                 NSString* regexString = [NSString stringWithFormat:@"(scan|album|art|cover|front|folder|%@)",[theDirectory lastPathComponent]];
-                NSLog(@"the regex string is %@",regexString);
+//                NSLog(@"the regex string is %@",regexString);
                 // At this point we extract the file name and, using a regex look for words like cover or front.
                 NSRegularExpression* regex = [NSRegularExpression regularExpressionWithPattern:regexString
                                                                                        options:NSRegularExpressionCaseInsensitive
@@ -642,7 +642,7 @@ static int const kSSCheckCounterSize = 10;
                 imageURLString = [imageURLString lastPathComponent];
                 NSUInteger matches = [regex numberOfMatchesInString:imageURLString options:0 range:NSMakeRange(0, [imageURLString length])];
                 if (matches > 0) {
-                    NSLog(@"The track name %@ has %ld matches",imageURLString,matches);
+//                    NSLog(@"The track name %@ has %ld matches",imageURLString,matches);
                     NSImage *theImage = [[NSImage alloc] initWithContentsOfURL:url];
                     if (theImage != nil) {
                         return theImage;
@@ -1446,18 +1446,22 @@ static int const kSSCheckCounterSize = 10;
 - (void)cacheWithContext:(NSDictionary*)cacheContext {
     // First we need to decide on a caching strategy.
     // For now we will simply do a no-brains area caching of two songs in every direction from the current cursor position.
-//    [urlCachingOpQueue cancelAllOperations];
-//    
-//    NSBlockOperation* cacheOp = [[NSBlockOperation alloc] init];
-//    __weak NSBlockOperation* weakCacheOp = cacheOp;
-//    
-//    [weakCacheOp addExecutionBlock:^{
+    
+    // We've got a new request so cancel all previous queued up requests.
+    [urlCachingOpQueue cancelAllOperations];
+    
+    NSBlockOperation* cacheOp = [[NSBlockOperation alloc] init];
+    
+    // Weakify the block reference to avoid retain cycles.
+    __weak NSBlockOperation* weakCacheOp = cacheOp;
+
+    [weakCacheOp addExecutionBlock:^{
+        
     // Make sure we have an inited cache.
-    
     NSMutableSet* wantedCache = [[NSMutableSet alloc] initWithCapacity:25];
-   
     
-    NSInteger radius = 4;
+    NSInteger radius = 2;
+        
     // Extract data from context
 //    NSPoint speedVector     = [[cacheContext objectForKey:@"spd"] pointValue];
     NSPoint selectionPos    = [[cacheContext objectForKey:@"pos"] pointValue];
@@ -1471,10 +1475,8 @@ static int const kSSCheckCounterSize = 10;
                     // skip if this is the selected cell (which is already cached or requested).
 //                    if ((matrixRows == selectionPos.y) && (matrixCols == selectionPos.x))
 //                        continue;
-//                    if( weakCacheOp.isCancelled ) {
-//                        NSLog(@"caching cancelled.");
-//                        return;
-//                    }
+                    // Check for operation cancellation
+                    if( weakCacheOp.isCancelled ) {return;}
                     
                     id songID = [_delegate songIDFromGridColumn:matrixCols andRow:matrixRows];
                     if (songID != nil) {
@@ -1484,19 +1486,24 @@ static int const kSSCheckCounterSize = 10;
             }
         }
     }
-    
+        
     // The stale cache is the existing cache - wanted cache
     NSMutableSet* staleCache = [songIDCache mutableCopy];
     [staleCache minusSet:wantedCache];
-    [self clearSongCache:[staleCache allObjects]];
     
+    // Check for operation cancellation
+    if( weakCacheOp.isCancelled ) {return;}
+        
+    // Beyond this point we can no longer cancel because we now start affecting the external state.
+    [self clearSongCache:[staleCache allObjects]];
+        
     // DEBUG
     [_delegate setDebugCachedFlagsForSongIDArray:[staleCache allObjects] toValue:NO];
     
     // Remove the what's already cached from the wanted cache and load it.
     [wantedCache minusSet:songIDCache];
     [self loadSongCache:[wantedCache allObjects]];
-
+        
     // DEBUG
     [_delegate setDebugCachedFlagsForSongIDArray:[wantedCache allObjects] toValue:YES];
     
@@ -1504,9 +1511,13 @@ static int const kSSCheckCounterSize = 10;
     [songIDCache minusSet:staleCache];
     [songIDCache unionSet:wantedCache];
     
-//    }];
-//    
-//    [urlCachingOpQueue addOperation:cacheOp];
+    }];
+    
+    cacheOp.completionBlock = ^{
+        NSLog(@"The caching block completion");
+    };
+
+    [urlCachingOpQueue addOperation:cacheOp];
 }
 
 - (void)clearSongCache:(NSArray*)staleSongArray {
@@ -1522,10 +1533,10 @@ static int const kSSCheckCounterSize = 10;
 - (void)loadSongCache:(NSArray*)desiredSongArray {
     // First we make sure to clear any pending requests.
     // What's on the queue is not removed until its turn.
-    [urlCachingOpQueue cancelAllOperations];
+//    [urlCachingOpQueue cancelAllOperations];
     
     // Then we add the tracks to cache queue.
-    [urlCachingOpQueue addOperationWithBlock:^{
+//    [urlCachingOpQueue addOperationWithBlock:^{
         // TEO - calling this async'ly crashes in core data.
         // Be smarter about this. Keep track of what's cached (in a set) and only recache what's missing.
         // The loadTrackData won't reload a loaded track but we can probably still save some loops.
@@ -1539,6 +1550,7 @@ static int const kSSCheckCounterSize = 10;
 
             NSError* error;
             [aSong setCache:[[AVAudioFile alloc] initForReading:[NSURL URLWithString:aSong.TEOData.urlString] error:&error]];
+            
             // tell the song to load its data asyncronously without requesting a callback on completion.
             [aSong loadTrackDataWithCallBackOnCompletion:NO];
             
@@ -1548,7 +1560,11 @@ static int const kSSCheckCounterSize = 10;
                 //            NSLog(@"preloadSongArray got data! %@",theData);
             }];
         }
-    }];
+    
+        // Tell the song player to refresh the frameCount of the currently playing song now that
+        // the songs have finished caching and we know the lengths.
+        [theSongPlayer refreshPlayingFrameCount];
+//    }];
 }
 
 - (void)preloadSongArray:(NSArray *)songArray {

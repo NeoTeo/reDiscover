@@ -1141,6 +1141,8 @@ static NSInteger const kUndefinedID =  -1;
             [_debugLayerDict setObject:theLayer forKey:songID];
         }
         [[[[self songGridScrollView] documentView] layer] addSublayer:theLayer];
+        [CATransaction commit];
+        
     } else {
         if (theLayer) {
             [theLayer removeFromSuperlayer];
