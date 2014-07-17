@@ -29,13 +29,4 @@
 - (void)setSongCoverImage:(NSImage *)coverImage;
 - (void)crossFadeToImage:(NSImage *)newCoverImage;
 
-//- (void)setSong:(NSUInteger)songID;
-
-//@property id<TGSongInfoPanelDelegate> delegate;
-
 @end
-
-//@protocol TGSongInfoPanelDelegate <NSObject>
-
-
-//@end

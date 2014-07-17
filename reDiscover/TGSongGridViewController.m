@@ -14,8 +14,9 @@
 #import "TGSongUIViewController.h"
 #import "TGSongInfoViewController.h"
 #import "TGSongTimelineViewController.h"
-
+#import "TGMainViewController.h"
 #import "TGSongCellMatrix.h"
+
 #import "CAKeyframeAnimation+Parametric.h"
 
 //#include <os/trace.h>
@@ -185,20 +186,16 @@
     *col = songID - (*row) * _colsPerRow;
 }
 
-// I think this wants to run on the main thread otherwise it conflicts with the view layer enumeration whenever the growMatrix is called.
 - (void)setCoverImage:(NSImage *)theImage forSongWithID:(id)songID {
-//#pragma warning setCoverImage being disabled
-//    return;
-    // First convert the songID to the matrix index.
-//    NSInteger cellTag = [_songCellMatrix.cellTagToSongID indexOfObject:songID];
+
     NSInteger cellTag = [_songCellMatrix indexOfObjectWithSongID:songID];
-//    NSAssert(cellTag < [_songCellMatrix cells].count , @"cellTag out of bounds");
     TGGridCell * theCell = [_songCellMatrix cellWithTag:cellTag];
     NSAssert(theCell != nil, @"WTF, the cell is nil");
+    
     // TEO This should only be animated if the cover is visible on screen.
     // If we are setting the cover for the currently playing song do a pop animation,
     // otherwise just fade it in.
-    if ([songID isEqualTo:[_delegate lastRequestedSongID]]) {
+    if ([songID isEqualTo:[_songPoolAPI lastRequestedSongID]]) {
         [self coverPushAndFadeAnimationForCell:theCell withImage:theImage];
     }else {
         [self coverFadeInAnimation:theCell withImage:theImage];
@@ -447,7 +444,7 @@ static NSInteger const kUndefinedID =  -1;
 
     // Note which cell is the currently selected so that we can keep it in view after the zooming is done.
 
-    NSInteger theTag = [_songCellMatrix tagForSongWithID:[_delegate lastRequestedSongID]];
+    NSInteger theTag = [_songCellMatrix tagForSongWithID:[_songPoolAPI lastRequestedSongID]];
     TGGridCell* selectedCell = [_songCellMatrix cellWithTag:theTag];
 //    TGGridCell *selectedCell = [self songIDToCell:[_delegate lastRequestedSongID]];
     
@@ -1061,13 +1058,9 @@ static NSInteger const kUndefinedID =  -1;
 
 // TGSongTimelineViewControllerDelegate methods:
 
-// This method just passes the call through from the timeline view controller to the main controller (this class' delegate).
 - (void)userSelectedSweetSpotMarkerAtIndex:(NSUInteger)ssIndex {
     
-    if([[self delegate] respondsToSelector:@selector(userSelectedSweetSpot:)]) {
-        
-        [[self delegate] userSelectedSweetSpot:ssIndex];
-    }
+    [_songPoolAPI setRequestedPlayheadPosition:[[_songPoolAPI sweetSpotsForSongID:[_songPoolAPI currentlyPlayingSongID]] objectAtIndex:ssIndex]];
 }
 
 
@@ -1098,7 +1091,7 @@ static NSInteger const kUndefinedID =  -1;
     // Early out if the cell is not pointing at an actual song.
     if (songID == nil) return;
     
-    [[self delegate] userSelectedSongID:songID];
+    [_delegate userSelectedSongID:songID];
     
 
     // Collect the context for this selection and pass it to the mainviewcontroller which will pass
@@ -1107,7 +1100,8 @@ static NSInteger const kUndefinedID =  -1;
     NSValue* selectionPos = [NSValue valueWithPoint:NSMakePoint(theColumn, theRow)];
     NSValue* speedVector = [NSValue valueWithPoint:theSpeed];
     NSValue* gridDims = [NSValue valueWithPoint:NSMakePoint([_songCellMatrix numberOfColumns], [_songCellMatrix numberOfRows])];
-    [_delegate cacheWithContext:@{@"pos" : selectionPos, @"spd" : speedVector, @"gridDims" : gridDims}];
+    
+    [_songPoolAPI cacheWithContext:@{@"pos" : selectionPos, @"spd" : speedVector, @"gridDims" : gridDims}];
 //    NSArray *theArray =[self buildCacheArrayWithStrategy:CacheStrategy5x5Square
 //                                                  forRow:theRow
 //                                               andColumn:theColumn

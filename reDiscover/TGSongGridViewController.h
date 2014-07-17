@@ -22,32 +22,36 @@
 @class TGSongTimelineViewController;
 @class CAKeyframeAnimation;
 
-//typedef enum {
-//    CacheStrategy5x5Square,
-//    CacheStrategyArrow
-//} CacheStrategy;
-
 // Forward declaration of protocol.
-@protocol TGSongGridViewControllerDelegate;
 @protocol TGSongTimelineViewControllerDelegate;
 
-@interface TGSongGridViewController : NSViewController <TGSongGridScrollViewDelegate,TGSongTimelineViewControllerDelegate>
+
+@protocol TGSongGridViewControllerDelegate <NSObject>
+
+//- (id)lastRequestedSongID;
+//- (void)userSelectedSweetSpot:(NSUInteger)ssIndex;
+//- (void)userSelectedSongID:(id)songID ;
+//- (void)cacheWithContext:(NSDictionary*)theContext;
+- (id)songIDFromGridColumn:(NSInteger)theCol andRow:(NSInteger)theRow;
+
+@end
+
+@interface TGSongGridViewController : NSViewController <TGSongGridViewControllerDelegate, TGSongGridScrollViewDelegate,TGSongTimelineViewControllerDelegate>
 {
     float zoomFactor;
     NSMutableArray *unmappedSongIDArray;
     NSTimeInterval popupTimerStart;
-//    NSMutableSet *songIDCache;
-    
-    // A queue for running the test on
+    // A queue for running the debug test on
     dispatch_queue_t testingQueue;
 
 }
 
-@property id<TGSongGridViewControllerDelegate> delegate;
+//@property id<TGSongGridViewControllerDelegate> delegate;
+@property id<TGMainViewControllerDelegate> delegate;
+@property id<SongPoolAccessProtocol>songPoolAPI;
 
 // debug
 @property NSMutableDictionary* debugLayerDict;
-
 @property NSDictionary *genreToColourDictionary;
 // Dimensions
 @property NSUInteger interCellHSpace;
@@ -55,33 +59,24 @@
 @property NSUInteger currentCellSize;
 @property NSUInteger numSongs;
 @property NSUInteger colsPerRow;
-
 @property NSImage *defaultImage;
-
-//@property TGSongPool *songPool;
-@property TGSongGridScrollView *songGridScrollView;
-@property TGSongUIViewController *songUIViewController;
-
-@property TGSongTimelineViewController *songTimelineController;
-
-//@property NSView *songGridTopView;
-@property TGSongCellMatrix *songCellMatrix;
-@property NSProgressIndicator *pgIndicator;
+// TEO Move this into a dictionary perhaps?
 @property CAKeyframeAnimation *pushBounceAnimation;
 @property CAKeyframeAnimation *bounceAnimation;
 
-// Not sure we keep this
-//@property NSInteger currentSongID;
+@property TGSongGridScrollView *songGridScrollView;
+@property TGSongUIViewController *songUIViewController;
+@property TGSongTimelineViewController *songTimelineController;
+@property TGSongCellMatrix *songCellMatrix;
+@property NSProgressIndicator *pgIndicator;
+
+
+
 
 - (id)initWithFrame:(NSRect)newFrame;
-
-//- (void)initSongGrid:(NSUInteger)songCount;
-//- (void)addMatrixCell2:(NSUInteger)songID;
 - (void)addMatrixCell2:(id)songID;
 - (void)animateMatrixZoom:(NSInteger)zoomQuantum;
-//- (void)setCoverImage:(NSImage *)theImage forSongWithID:(NSUInteger)songID;
 - (void)setCoverImage:(NSImage *)theImage forSongWithID:(id)songID;
-
 
 // Other classes' delegate methods we implement.
 
@@ -93,9 +88,6 @@
 // TGSongTimelineViewControllerDelegate methods
 - (void)userSelectedSweetSpotMarkerAtIndex:(NSUInteger)ssIndex;
 
-// TGSongPoolDelegate methods we implement
-- (id)songIDFromGridColumn:(NSInteger)theCol andRow:(NSInteger)theRow;
-
 // Set the cached flag on a cell that corresponds to the songID
 - (void)setDebugCachedFlagForSongID:(id)songID toValue:(BOOL)value;
 
@@ -103,16 +95,4 @@
 @end
 
 
-@protocol TGSongGridViewControllerDelegate <NSObject>
-
-- (id)lastRequestedSongID;
-- (void)userSelectedSweetSpot:(NSUInteger)ssIndex;
--(void)userSelectedSongID:(id)songID ;
-- (void)cacheWithContext:(NSDictionary*)theContext;
-//- (void)requestSongArrayPreload:(NSArray *)theArray;
-//- (void)clearSongCache:(NSArray*)staleSongArray;
-//- (void)loadSongCache:(NSArray*)desiredSongArray;
-- (id)songIDFromGridColumn:(NSInteger)theCol andRow:(NSInteger)theRow;
-
-@end
 

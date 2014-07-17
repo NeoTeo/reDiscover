@@ -9,13 +9,12 @@
 #import "TGPlaylistViewController.h"
 #import "TGPlaylistCellView.h"
 #import "TGPlaylist.h"
+#import "TGSongPool.h"
 
 @interface TGPlaylistViewController () <TGPlaylistDelegate>
 @end
 
 @implementation TGPlaylistViewController
-
-//@synthesize delegate;
 
 -(void)awakeFromNib {
     if (playlist == NULL) {
@@ -28,50 +27,6 @@
        
     }
 }
-
-//- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil {
-//    self = [super init];
-//    if (self) {
-//       playlist = [[TGPlaylist alloc] init];
-//    }
-//    return self;
-//}
-//
-
-//- (id)initWithDelegate:(id)delegate {
-//    self = [super initWithNibName:@"TGPlaylistView" bundle:nil];
-//    if (self) {
-//        NSLog(@"playlist view controller init");
-//        playlist = [[TGPlaylist alloc] init];
-//        _delegate = delegate;
-//        // Set the playlist's delegate as well.
-//        [playlist setDelegate:delegate];
-//    }
-//    return self;
-//}
-
-
-/*
- */
-
-//- (void)setDelegate:(id)newDelegate {
-//    delegate = newDelegate;
-//    playlist = [[TGPlaylist alloc] init];
-//    [playlist setDelegate:newDelegate];
-//    [_playlistTableView setDelegate:self];
-//    [_playlistTableView setDataSource:self];
-//}
-//
-//- (id)delegate {
-//    return delegate;
-//}
-
-//- (void)setUpPlaylistView {
-//    NSRect mainFrame = NSMakeRect(0, 0, 170, 600);
-//    NSView *playlistView = [[NSView alloc] initWithFrame:mainFrame];
-//
-//    [self setView:playlistView];
-//}
 
 -(void)addSongToPlaylist:(id)aSongID {
     [playlist addSong:aSongID atIndex:0];
@@ -93,17 +48,16 @@
 }
 
 // TGPlaylistDelegate method
-//- (NSDictionary *)songDataForSongID:(NSInteger)songID {
 - (NSDictionary *)songDataForSongID:(id)songID {
     
     // Get a mutable copy so we can add a few bits of data.
-    NSMutableDictionary *songData = [[_delegate songDataForSongID:songID] mutableCopy];
+    NSMutableDictionary *songData = [[_songPoolAPI songDataForSongID:songID] mutableCopy];
     
     // Get the song duration and floor it before adding it to the playlist data (it doesn't really use it)
-    double durationDoubleSecs =[[_delegate songDurationForSongID:songID] doubleValue];
+    double durationDoubleSecs =[[_songPoolAPI songDurationForSongID:songID] doubleValue];
     
     [songData addEntriesFromDictionary:@{@"Duration": [NSNumber numberWithInteger:durationDoubleSecs],
-                                         @"SongURL": [_delegate songURLForSongID:songID],
+                                         @"SongURL": [_songPoolAPI songURLForSongID:songID],
                                          }];
     return songData;
 }
@@ -121,8 +75,7 @@
     // Get an existing cell with the MyView identifier if it exists
     TGPlaylistCellView *resultCell = [tableView makeViewWithIdentifier:@"SongCell" owner:self];
     
-//    NSDictionary *songData = [_delegate songDataForSongID:[[playlist songIDAtIndex:row] integerValue]];
-    NSDictionary *songData = [_delegate songDataForSongID:[playlist songIDAtIndex:row]];
+    NSDictionary *songData = [_songPoolAPI songDataForSongID:[playlist songIDAtIndex:row]];
     
     // Construct the string for the playlist entry.
 //    resultCell.layer.backgroundColor = (__bridge CGColorRef)([NSColor whiteColor]);
@@ -144,14 +97,13 @@
     if (selectedRow >=0) {
         [playlist setPosInPlaylist:selectedRow];
         id newSongID = [playlist songIDAtIndex:selectedRow];
-        [_delegate requestSongPlayback:newSongID withStartTimeInSeconds:0];
+        [_songPoolAPI requestSongPlayback:newSongID withStartTimeInSeconds:0];
 //        NSInteger newSongID = [[playlist songIDAtIndex:selectedRow] integerValue];
-//        [_delegate requestSongPlayback:newSongID withStartTimeInSeconds:0];
     }
 
     [_playlistTableView deselectRow:selectedRow];
     // Make the main view controller the first responder.
-    [[[self view] window] makeFirstResponder:_mainController];
+    [[[self view] window] makeFirstResponder:(NSResponder*)_delegate];
 }
 
 @end

@@ -19,8 +19,11 @@
 @class TGIdleTimer;
 @class DebugDisplayController;
 
-@protocol TGMainViewControllerDelegate <NSObject>
+@protocol TGSongPoolDelegate;
 
+@protocol TGMainViewControllerDelegate <TGSongPoolDelegate>
+- (void)userSelectedSongID:(id)songID;
+- (void)setDebugCachedFlagsForSongIDArray:(NSArray*)songIDs toValue:(BOOL)value;
 @end
 
 @interface TGMainViewController : NSViewController <TGMainViewControllerDelegate>
@@ -56,10 +59,7 @@
 
 - (id)initWithFrame:(NSRect)theFrame;
 
-// SongPoolDelegate methods we implement
 - (void)setSongPool:(TGSongPool *)theSongPool;
-- (id)lastRequestedSongID;
-- (id)songIDFromGridColumn:(NSInteger)theCol andRow:(NSInteger)theRow;
-- (void)setDebugCachedFlagsForSongIDArray:(NSArray*)songIDs toValue:(BOOL)value;
+//- (void)setDebugCachedFlagsForSongIDArray:(NSArray*)songIDs toValue:(BOOL)value;
 
 @end

@@ -11,6 +11,7 @@
 #import "TGSongPool.h"
 #import "TGSong.h"
 #import "TGSongGridViewController.h"
+#import "TGMainViewController.h"
 
 #import "TGFingerPrinter.h"
 
@@ -52,7 +53,8 @@ static int const kSSCheckCounterSize = 10;
         requestedPlayheadPosition = [NSNumber numberWithDouble:0];
         songPoolStartCapacity = 25;
         songPoolDictionary = [[NSMutableDictionary alloc] initWithCapacity:songPoolStartCapacity];
-
+        currentlyPlayingSong = NULL;
+        
         // Make url queues and make them serial.
         urlLoadingOpQueue = [[NSOperationQueue alloc] init];
         [urlLoadingOpQueue setMaxConcurrentOperationCount:1];
@@ -62,12 +64,13 @@ static int const kSSCheckCounterSize = 10;
         playbackQueue = dispatch_queue_create("playback queue", NULL);
         serialDataLoad = dispatch_queue_create("serial data load queue", NULL);
         timelineUpdateQueue = dispatch_queue_create("timeline GUI updater queue", NULL);
-        currentlyPlayingSong = NULL;
         
-    
+        
+        // Set up session cache of image covers.
         _artArray = [[NSMutableArray alloc] initWithCapacity:100];
         [_artArray addObject:[NSImage imageNamed:@"noCover"]];
         
+        // Create and hook up the song fingerprinter.
         songFingerPrinter = [[TGFingerPrinter alloc] init];
         [songFingerPrinter setDelegate:self];
 
@@ -92,18 +95,8 @@ static int const kSSCheckCounterSize = 10;
         
         songsWithChangesToSave = [[NSMutableSet alloc] init];
         songsWithSaveError = [[NSMutableSet alloc] init];
-//        fetchedArray = nil;
      
         self.sharedFileManager = [[NSFileManager alloc] init];
-        
-//#define TSD
-//#ifdef TSD
-//        // TEOSongData test
-//        [self setupManagedObjectContext];
-//        [self initTEOSongDataDictionary];
-//        
-//        // TEOSongData end
-//#endif
         
         // Get any user metadata from the local Core Data store.
         [self fetchMetadataFromLocalStore];
@@ -114,17 +107,14 @@ static int const kSSCheckCounterSize = 10;
         
         _coverArtWebFetcher = [[CoverArtArchiveWebFetcher alloc] init];
         _coverArtWebFetcher.delegate = self;
-#define TSD
-#ifdef TSD
+        
         // TEOSongData test
         [self setupManagedObjectContext];
-//        [self initTEOSongDataDictionary];
-        
         // TEOSongData end
-#endif
 
         theSongPlayer = [[SongPlayer alloc] init];
         theSongPlayer.delegate = self;
+        
         // Starting off with an empty songID cache.
         songIDCache = [[NSMutableSet alloc] init];
         cacheClearingQueue = dispatch_queue_create("cache clearing q", NULL);
@@ -1478,7 +1468,7 @@ static int const kSSCheckCounterSize = 10;
                     // Check for operation cancellation
                     if( weakCacheOp.isCancelled ) {return;}
                     
-                    id songID = [_delegate songIDFromGridColumn:matrixCols andRow:matrixRows];
+                    id songID = [_songGridAccessAPI songIDFromGridColumn:matrixCols andRow:matrixRows];
                     if (songID != nil) {
                         [wantedCache addObject:songID];
                     }

@@ -20,7 +20,7 @@
 #import "rediscover-swift.h"
 
 
-@interface TGMainViewController () <TGSongPoolDelegate, TGSongUIViewControllerDelegate, NSSplitViewDelegate,TGSongGridViewControllerDelegate>
+@interface TGMainViewController () <TGSongUIViewControllerDelegate, NSSplitViewDelegate, TGSongPoolDelegate>
     // From TGSongPoolDelegate
     //      songIDFromGridColumn:andRow
     //
@@ -57,6 +57,9 @@
     id transformer = [[TGTimelineTransformer alloc] init];
     [NSValueTransformer setValueTransformer:transformer forName:@"TimelineTransformer"];
 
+    _songGridController = [[TGSongGridViewController alloc] initWithNibName:@"TGSongGridView" bundle:nil];
+    _playlistController = [[TGPlaylistViewController alloc] initWithNibName:@"TGPlaylistView" bundle:nil];
+    _songInfoController = [[TGSongInfoViewController alloc] initWithNibName:@"TGSongInfoView" bundle:nil];
 }
 
 
@@ -86,13 +89,14 @@
 //    [theSplitView setDividerStyle:NSSplitViewDividerStylePaneSplitter];
     [theSplitView setDelegate:self];
     
-    _songGridController = [[TGSongGridViewController alloc] initWithNibName:@"TGSongGridView" bundle:nil];
-    _playlistController = [[TGPlaylistViewController alloc] initWithNibName:@"TGPlaylistView" bundle:nil];
-    _songInfoController = [[TGSongInfoViewController alloc] initWithNibName:@"TGSongInfoView" bundle:nil];
+//    _songGridController = [[TGSongGridViewController alloc] initWithNibName:@"TGSongGridView" bundle:nil];
+//    _playlistController = [[TGPlaylistViewController alloc] initWithNibName:@"TGPlaylistView" bundle:nil];
+//    _songInfoController = [[TGSongInfoViewController alloc] initWithNibName:@"TGSongInfoView" bundle:nil];
     
    
-    [_playlistController setDelegate:_currentSongPool];
-    [_playlistController setMainController:self];
+    [_playlistController setSongPoolAPI:_currentSongPool];
+    [_playlistController setDelegate:self];
+//    [_playlistController setMainController:self];
     
     
     // Add the views to the splitview.
@@ -112,6 +116,10 @@
     
     _debugDisplayController = [[self storyboard] instantiateControllerWithIdentifier:@"DebugDisplayController"];
     [mainView addSubview:_debugDisplayController.view];
+    
+    // TEO This is where the TGSongUIViewController should be instantiated and
+    // have its delegate set to this class.
+    
 }
 
 
@@ -175,6 +183,8 @@
     [_currentSongPool setDelegate:self];
     
     [self layOutMainView];
+    // the _songGridController gets instantiated inside layoutMainView so now we can hook it up to the song pool.
+    [_currentSongPool setSongGridAccessAPI:_songGridController];
     
     if (_myObjectController == nil) {
         _myObjectController = [[NSObjectController alloc] initWithContent:_currentSongPool];
@@ -209,6 +219,8 @@
     
     // Make sure the grid controller has a way of communicating back to the main controller.
     [_songGridController setDelegate:self];
+    // Hook it up to the song pool model via its api
+    [_songGridController setSongPoolAPI:_currentSongPool];
     
     // Start the view off with both panels collapsed.
     [self togglePlaylist:nil];
@@ -216,9 +228,9 @@
 }
 
 
-- (id)lastRequestedSongID {
-    return [_currentSongPool lastRequestedSongID];
-}
+//- (id)lastRequestedSongID {
+//    return [_currentSongPool lastRequestedSongID];
+//}
 
 - (void)keyDown:(NSEvent *)theEvent {
     NSLog(@"Yep, key down in the view controller.");
@@ -273,7 +285,7 @@
     }
 }
 
-
+#pragma mark SongUIViewControllerDelegate methods
 - (void)songUIInfoButtonWasPressed {
     
 }
@@ -293,6 +305,7 @@
     [_currentSongPool offsetSweetSpotForSongID:[_currentSongPool lastRequestedSongID] bySeconds:-0.25];
 }
 
+#pragma mark -
 
 - (void)shrinkWindow {
     NSRect windowFrame = [self view].window.frame;
@@ -572,36 +585,17 @@
     for (id songID in songIDs) {
         [_songGridController setDebugCachedFlagForSongID:songID toValue:value];
     }
-    
 }
-
-- (void)cacheWithContext:(NSDictionary*)theContext {
-    [_currentSongPool cacheWithContext:theContext];
-}
-
-- (void)userSelectedSweetSpot:(NSUInteger)ssIndex {
-//    TGSong * theSong = [_currentSongPool currentlyPlayingSong];
-//    [_currentSongPool setRequestedPlayheadPosition:[[theSong songSweetSpots] objectAtIndex:ssIndex]];
-    [_currentSongPool setRequestedPlayheadPosition:[[_currentSongPool sweetSpotsForSongID:[_currentSongPool currentlyPlayingSongID]] objectAtIndex:ssIndex]];
-}
-
 
 - (void)userSelectedSongID:(id)songID {
     [_currentSongPool requestSongPlayback:songID withStartTimeInSeconds:[NSNumber numberWithInt:-1]];
-    
-    //TEO make sure this works as intended. Moved from songPoolDidLoadSongURLWithID
-            // Now that the song has been added as a cell we (async'ly) request the song's metadata which might affect the look of the cell.
-            // Successful loading is signaled through the songPoolDidLoadDataForSongID:
-            // It would be nice to do this as JIT or during idle time, but we need to know the genre straight away if we are to colorize the cells.
-    // TEO TSD
-//            [_currentSongPool requestEmbeddedMetadataForSong:songID];
     
     // reset the idle timer
     [_idleTimer startIdleTimer];
 }
 
-- (id)songIDFromGridColumn:(NSInteger)theCol andRow:(NSInteger)theRow {
-    return [_songGridController songIDFromGridColumn:theCol andRow:theRow];
-}
+//- (id)songIDFromGridColumn:(NSInteger)theCol andRow:(NSInteger)theRow {
+//    return [_songGridController songIDFromGridColumn:theCol andRow:theRow];
+//}
 
 @end
