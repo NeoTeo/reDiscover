@@ -19,7 +19,8 @@ class DebugDisplayController: NSViewController {
 //        super.init(nibName: nibName, bundle: nibBundleOrNil)
 //    }
 
-    @IBOutlet var testLabel: NSTextFieldCell
+    //MARK:
+    @IBOutlet var testLabel: NSTextFieldCell!
 
     init(coder: NSCoder!) {
         println("Debug Display Controller init with coder")

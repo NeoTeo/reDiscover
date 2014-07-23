@@ -181,8 +181,8 @@ static int const kSSCheckCounterSize = 10;
         
         for (TEOSongData* songData in fetchedArray) {
             [tmpDictionary setObject:songData forKey:songData.urlString];
-            NSLog(@"The song %@ songData selected sweet spot %@",songData.urlString, songData.selectedSweetSpot);
-            NSLog(@"And the sweet spots: %@",songData.sweetSpots);
+//            NSLog(@"The song %@ songData selected sweet spot %@",songData.urlString, songData.selectedSweetSpot);
+//            NSLog(@"And the sweet spots: %@",songData.sweetSpots);
         }
         
         self.TEOSongDataDictionary = tmpDictionary;
@@ -725,11 +725,12 @@ static int const kSSCheckCounterSize = 10;
     [theSong setSweetSpot:positionInSeconds];
     
             [theSong setStartTime:positionInSeconds];
+#ifdef AE
     // TEO < AE
     [theSongPlayer setPlaybackToTime:[positionInSeconds doubleValue]];
     return;
     // TEO AE>
-    
+#endif
             [theSong setCurrentPlayTime:positionInSeconds];
             [songsWithChangesToSave addObject:theSong];
 }
@@ -991,7 +992,7 @@ static int const kSSCheckCounterSize = 10;
 }
 
 #pragma mark -
-#pragma mark Core Data methods
+//MARK: Core Data methods
 
 - (NSEntityDescription *)createSongUserDataEntityDescription {
     NSEntityDescription *songUserDataEntityDescription = [[NSEntityDescription alloc] init];
@@ -1657,7 +1658,7 @@ static int const kSSCheckCounterSize = 10;
     }
     
     if ([nextSong playStart]) {
-        
+#ifdef AE
         // TEO < AE
         // if the requestedSongStartTime is -1 then play the song from the user's selected sweet spot.
         double atTime;
@@ -1670,7 +1671,7 @@ static int const kSSCheckCounterSize = 10;
         }
         [theSongPlayer playSongwithID:nextSong.songID atTime:atTime];
         // TEO AE >
-        
+#endif
         currentlyPlayingSong = nextSong;
         
         NSNumber *theSongDuration = [NSNumber numberWithDouble:[currentlyPlayingSong getDuration]];

@@ -94,7 +94,8 @@
 
 }
 
-
+//MARK: Why is this not done asynchronously with...
+// ...loadValuesAsynchronouslyForKeys:@[@"playable"] completionHandler:
 - (void)loadTrackDataWithCallBackOnCompletion:(BOOL)wantsCallback {
     NSURL *theURL = [NSURL URLWithString:self.TEOData.urlString];
     [self setSongStatus:kSongStatusLoading];
@@ -325,12 +326,24 @@
 
 - (BOOL)playStart {
     // TEO AE
+#ifdef AE
     return YES;
+#endif
     if ([self songStatus] == kSongStatusReady) {
         
         if (songPlayerItem == nil) {
             songPlayerItem = [AVPlayerItem playerItemWithAsset:songAsset];
         }
+        
+        // This is where I would add some KVO on the player item.
+        // It needs to happen before we associate the player item with the player because
+        // it may start changing things straight away.
+//        [songPlayerItem addObserver:self
+//                         forKeyPath:@"timebase"
+//                            options:NSKeyValueObservingOptionNew
+//                            context:presentationSizeObservationContext];
+//        See WWDC14 503 at 33:40 and NSHipster's article http://nshipster.com/key-value-observing/
+        
         if (songPlayer == nil) {
             songPlayer = [AVPlayer playerWithPlayerItem:songPlayerItem];
         }
@@ -355,6 +368,7 @@
             
             // Every 1/10 of a second update the delegate's playhead position variable.
             playerObserver = [songPlayer addPeriodicTimeObserverForInterval:eachSecond queue:timelineSerialQueue usingBlock:^void(CMTime time) {
+                
                 CMTime currentPlaybackTime = [weakSelf->songPlayer currentTime];
                 [[weakSelf delegate] songDidUpdatePlayheadPosition:[NSNumber numberWithDouble:CMTimeGetSeconds(currentPlaybackTime)]];
             }];
@@ -396,7 +410,7 @@
     NSAssert(theFile != nil, @"The audio file is nil!");
     _cachedFile = theFile;
     _cachedFileLength = _cachedFile.length;
-    NSLog(@"cached file length %lld",_cachedFileLength);
+    NSLog(@"cached file %@ of length %lld",_cachedFile,_cachedFileLength);
 }
 
 - (void)clearCache {

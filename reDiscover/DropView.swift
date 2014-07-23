@@ -17,7 +17,7 @@ class DropView : NSView {
     
     var delegate: DropViewDelegate?
     
-    @IBOutlet var dropArrowImageView: NSImageView
+    @IBOutlet var dropArrowImageView: NSImageView!
     
     override func awakeFromNib() {
         

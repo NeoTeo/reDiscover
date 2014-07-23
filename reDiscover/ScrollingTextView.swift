@@ -12,7 +12,8 @@ import Cocoa
 class ScrollingTextView: NSView {
 
     var scrollText:NSString = ""
-    var textWidth = 0.0
+    // Why this can't just be a Double I don't know.
+    var textWidth: CGFloat = 0.0
     var scrollSpeed: NSTimeInterval = 0
     var scrollTimer: NSTimer?
     var textPosition = NSZeroPoint
