@@ -514,8 +514,9 @@
     
     // Let the timelinecontroller know that we've changed song.
     // (would a song change be better signalled as a global notification?)
-    [_songGridController.songTimelineController setCurrentSongID:songID fromSongPool:_currentSongPool];
-    
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [_songGridController.songTimelineController setCurrentSongID:songID fromSongPool:_currentSongPool];
+    });
 //    NSLog(@"songPoolDidStartPlayingSong");
     // Don't wait for a result. Set to the "fetching artwork..." whilst waiting.
     NSImage* fetchingImage = [NSImage imageNamed:@"fetchingArt"];

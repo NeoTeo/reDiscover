@@ -1505,7 +1505,7 @@ static int const kSSCheckCounterSize = 10;
     }];
     
     cacheOp.completionBlock = ^{
-        NSLog(@"The caching block completion");
+        NSLog(@"The caching block %@.",weakCacheOp.isCancelled ? @"cancelled" : @"completed");
     };
 
     [urlCachingOpQueue addOperation:cacheOp];
@@ -1538,10 +1538,10 @@ static int const kSSCheckCounterSize = 10;
                 return;
             }
 //            NSLog(@"Caching %@ with id %@",aSong.TEOData.title,songID);
-
+#ifdef AE
             NSError* error;
             [aSong setCache:[[AVAudioFile alloc] initForReading:[NSURL URLWithString:aSong.TEOData.urlString] error:&error]];
-            
+#endif
             // tell the song to load its data asyncronously without requesting a callback on completion.
             [aSong loadTrackDataWithCallBackOnCompletion:NO];
             

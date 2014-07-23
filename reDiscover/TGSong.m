@@ -99,8 +99,12 @@
 - (void)loadTrackDataWithCallBackOnCompletion:(BOOL)wantsCallback {
     NSURL *theURL = [NSURL URLWithString:self.TEOData.urlString];
     [self setSongStatus:kSongStatusLoading];
-    songAsset = [AVAsset assetWithURL:theURL];
     
+    songAsset = [AVAsset assetWithURL:theURL];
+// Enabling this, aside from slowing loading, also makes scrubbing laggy.
+//        NSDictionary *songLoadingOptions = @{AVURLAssetPreferPreciseDurationAndTimingKey : @YES};
+//        songAsset = [[AVURLAsset alloc] initWithURL:theURL options:songLoadingOptions];
+
     // Get the song duration.
     //    This may block which is just how we want it.
     [self setSongDuration:[songAsset duration]];
@@ -332,7 +336,11 @@
     if ([self songStatus] == kSongStatusReady) {
         
         if (songPlayerItem == nil) {
+            NSDate* preDate = [NSDate date];
             songPlayerItem = [AVPlayerItem playerItemWithAsset:songAsset];
+            NSDate* postDate = [NSDate date];
+            NSLog(@"Creating a new AVPlayerItem took: %f",[postDate timeIntervalSinceDate:preDate]);
+//            songPlayerItem = [AVPlayerItem playerItemWithAsset:songAsset automaticallyLoadedAssetKeys:@[]];
         }
         
         // This is where I would add some KVO on the player item.
@@ -345,7 +353,10 @@
 //        See WWDC14 503 at 33:40 and NSHipster's article http://nshipster.com/key-value-observing/
         
         if (songPlayer == nil) {
+            NSDate* preDate = [NSDate date];
             songPlayer = [AVPlayer playerWithPlayerItem:songPlayerItem];
+            NSDate* postDate = [NSDate date];
+            NSLog(@"Creating a new AVPlayer took: %f",[postDate timeIntervalSinceDate:preDate]);
         }
         [songPlayer setVolume:0.2];
         
