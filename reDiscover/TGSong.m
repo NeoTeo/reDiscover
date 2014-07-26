@@ -419,8 +419,16 @@
 
 - (void)setCache:(AVAudioFile*) theFile {
     NSAssert(theFile != nil, @"The audio file is nil!");
+#ifdef AE
     _cachedFile = theFile;
     _cachedFileLength = _cachedFile.length;
+#endif
+    if( songPlayer ) {
+        // First cancel any pending prerolls
+        [songPlayer cancelPendingPrerolls];
+        // Then set a new preroll request.
+//        [songPlayer prerollAtRate:5 completionHandler:^{NSLog(@"Go preroll");}];
+    }
     NSLog(@"cached file %@ of length %lld",_cachedFile,_cachedFileLength);
 }
 

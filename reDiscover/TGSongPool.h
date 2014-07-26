@@ -26,6 +26,13 @@
 @protocol SongGridAccessProtocol;
 @protocol TGSongGridViewControllerDelegate;
 @protocol TGMainViewControllerDelegate;
+@protocol Hashable;
+
+@protocol SongIDProtocol <NSObject,Hashable>
+// We adopt the NSObject protocol which ensures that any adopter of SongIDProtocol
+// must have a isEqual and a hash property.
+-(NSInteger)hashValue;
+@end
 
 // Methods that SongPool implements for others to call.
 @protocol SongPoolAccessProtocol

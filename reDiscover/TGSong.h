@@ -11,7 +11,7 @@
 // CMTime is a struct so it can't be forward declared and must be imported.
 #import <CoreMedia/CMTime.h>
 
-// Forward declarations.
+//MARK: Forward declarations.
 @class AVURLAsset;
 @class AVPlayerItem;
 @class AVPlayer;
@@ -20,6 +20,7 @@
 @class AVAudioFile;
 
 @protocol TGSongDelegate;
+@protocol SongIDProtocol;
 
 // Enum declarations
 
@@ -77,7 +78,8 @@ enum {
 // The local and per-session temporary song id.
 //@property NSUInteger songID;
 // Do not store this as it's not the same from executions.
-@property NSString* songID;
+//@property NSString* songID;
+@property id<SongIDProtocol> songID;
 
 // The location of a song.
 //@property NSURL *songURL;

@@ -16,8 +16,8 @@ class CoverArtArchiveWebFetcher : NSObject {
 
     var delegate: SongPoolAccessProtocol?
     
-    func requestAlbumArtFromWebForSong(songID: AnyObject, imageHandler: (NSImage?) -> Void) {
-        var theImage: NSImage?
+//    func requestAlbumArtFromWebForSong(songID: AnyObject, imageHandler: (NSImage?) -> Void) {
+    func requestAlbumArtFromWebForSong(songID: SongIDProtocol, imageHandler: (NSImage?) -> Void) {        var theImage: NSImage?
         var lenient         = 0
         var foundAlbumArt   = false
         var leniencyLevel   = 0

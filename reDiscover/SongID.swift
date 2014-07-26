@@ -8,9 +8,10 @@
 
 import Foundation
 
+/*
 @objc
-protocol SongIDProtocol {
-    func isEqualToSongID(object: SongIDProtocol!) -> Bool
+protocol SongIDProtocol : NSObject {
+//    func isEqualToSongID(object: SongIDProtocol!) -> Bool
 }
 
 @objc
@@ -37,15 +38,22 @@ class SongID : NSObject, SongIDProtocol {
     //        }
     //    }
     
-    
-    func isEqualToSongID(object: SongIDProtocol!) -> Bool {
-        let otherSong = object as SongID
-        return idValue == otherSong.idValue
-    }
-}
-
-// Currently global methods are not available on the Obj-C side :(
-func == (lhs: SongID, rhs: SongID) -> Bool {
+    // Currently global functions are not available on the Obj-C side :(
+    func == (lhs: SongID, rhs: SongID) -> Bool {
     println("Comparing...")
     return lhs.idValue == rhs.idValue
+    }
+    
+//    func isEqualToSongID(object: SongIDProtocol!) -> Bool {
+//        let otherSong = object as SongID
+//        return idValue == otherSong.idValue
+//    }
 }
+
+
+// And neither are structs
+//@objc
+//struct arse {
+//    
+//}
+*/
