@@ -21,6 +21,19 @@
 #import "rediscover-swift.h"
 
 
+
+//@interface SongID : NSObject <SongIDProtocol>
+//+ (SongID *)initWithString:(NSString *)theString;
+//@end
+@implementation SongID
++ (instancetype)initWithString:(NSString *)theString {
+    SongID* theID = [[SongID alloc] init];
+    theID.idValue = theString.hash;
+    return theID;
+}
+@end
+
+
 // The private interface declaration overrides the public one to declare conformity to the Delegate protocols.
 @interface TGSongPool () <TGSongDelegate,TGFingerPrinterDelegate,SongPoolAccessProtocol,TGPlaylistViewControllerDelegate>
 @end
@@ -369,7 +382,8 @@ static int const kSSCheckCounterSize = 10;
                         [newSong setDelegate:self];
                         
                         // The song id is simply its number in the loading sequence. (for now)
-                        [newSong setSongID:[url absoluteString]];
+                        [newSong setSongID:(id<SongIDProtocol>)[url absoluteString]];
+//                        [newSong setSongID:[SongID initWithString:[url absoluteString]]];
                         
                         
                         dispatch_async(serialDataLoad, ^{

@@ -26,12 +26,18 @@
 @protocol SongGridAccessProtocol;
 @protocol TGSongGridViewControllerDelegate;
 @protocol TGMainViewControllerDelegate;
-@protocol Hashable;
 
-@protocol SongIDProtocol <NSObject,Hashable>
-// We adopt the NSObject protocol which ensures that any adopter of SongIDProtocol
-// must have a isEqual and a hash property.
--(NSInteger)hashValue;
+@protocol SongIDProtocol <NSObject>
+-(NSInteger)idValue;
+@end
+
+/**
+ The SongID is the type that identifies a song in the current instance of the application.
+ SongIDs do not persist across instances.
+ */
+@interface SongID : NSObject <SongIDProtocol>
+@property NSInteger idValue;
++ (instancetype)initWithString:(NSString *)theString;
 @end
 
 // Methods that SongPool implements for others to call.
