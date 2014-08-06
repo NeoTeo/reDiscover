@@ -25,7 +25,7 @@ class SongPlayer: NSObject {
     // tmp
     var currentFile: AVAudioFile?
     
-    init() {
+    override init() {
         songPlayerEngine = AVAudioEngine()
 //        songPlayerNode = AVAudioPlayerNode()
 //        songPlayerEngine.attachNode(songPlayerNode)
@@ -34,7 +34,7 @@ class SongPlayer: NSObject {
     func playSongwithID(songID: AnyObject, atTime theTime: Double) {
         var error: NSError?
         
-        if !delegate { return }
+        if delegate == nil { return }
     
         playingSongID = songID
         
@@ -42,10 +42,10 @@ class SongPlayer: NSObject {
         let startDate = NSDate()
         
         // It would seem that the Audio Player Node is removed from the engine when the song is done playing?!
-        let songPlayerNode = currentPlayerNode ? currentPlayerNode! : AVAudioPlayerNode()
+        let songPlayerNode = currentPlayerNode ?? AVAudioPlayerNode()
         
         // If a previous node exists it must already be attached. If not, attach it.
-        if !currentPlayerNode {
+        if currentPlayerNode == nil {
             songPlayerEngine.attachNode(songPlayerNode)
         }
 
@@ -68,7 +68,7 @@ class SongPlayer: NSObject {
             theFileLength = Int64((theTime+20) * theFile.fileFormat.sampleRate)
         }
         
-        if error {
+        if error != nil {
             println("There was an error reading file.")
             return
         }
@@ -174,7 +174,4 @@ class SongPlayer: NSObject {
         }
     }
     
-    override func observeValueForKeyPath(keyPath: String!, ofObject object: AnyObject!, change: [NSObject : AnyObject]!, context: UnsafePointer<()>) {
-        println("WTF")
-    }
 }

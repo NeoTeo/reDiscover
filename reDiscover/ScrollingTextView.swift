@@ -18,11 +18,6 @@ class ScrollingTextView: NSView {
     var scrollTimer: NSTimer?
     var textPosition = NSZeroPoint
     
-    init(frame: NSRect) {
-        super.init(frame: frame)
-        // Initialization code here.
-    }
-
     func setText(newText: NSString) {
         scrollText = newText
         textWidth = newText.sizeWithAttributes(nil).width

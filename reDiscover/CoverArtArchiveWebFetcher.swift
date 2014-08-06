@@ -23,14 +23,14 @@ class CoverArtArchiveWebFetcher : NSObject {
         var leniencyLevel   = 0
         let data            = delegate?.releasesForSongID(songID)
 
-        if !data {
+        if data == nil {
             println("the song \(songID) returned no releases")
             imageHandler(nil)
             return
         }
         
         var releases        = NSKeyedUnarchiver.unarchiveObjectWithData(data) as? [NSDictionary]
-        if !releases {
+        if releases == nil {
             println("releases could not be unarchived?! from this data: \(data)")
             return
         }

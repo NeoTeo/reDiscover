@@ -25,12 +25,11 @@ class DropViewController : NSViewController, DropViewDelegate {
 //        let mainVC = segue.destinationController as MainViewController
         let mainVC = segue.destinationController as TGMainViewController
 
-        if droppedURL {
-            mainVC.theURL = droppedURL
-        } else {
+        if droppedURL == nil {
             println("Error: no song pool")
+            return
         }
-        
+        mainVC.theURL = droppedURL
     }
         
     func dropViewDidReceiveURL(theURL: NSURL) {
