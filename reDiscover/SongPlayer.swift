@@ -19,7 +19,7 @@ class SongPlayer: NSObject {
     let songPlayerEngine: AVAudioEngine
 //    let songPlayerNode: AVAudioPlayerNode
     
-    var playingSongID: AnyObject?
+    var playingSongID: SongIDProtocol?
     
     var currentPlayerNode: AVAudioPlayerNode?
     // tmp
@@ -31,7 +31,7 @@ class SongPlayer: NSObject {
 //        songPlayerEngine.attachNode(songPlayerNode)
     }
     
-    func playSongwithID(songID: AnyObject, atTime theTime: Double) {
+    func playSongwithID(songID: SongIDProtocol, atTime theTime: Double) {
         var error: NSError?
         
         if delegate == nil { return }

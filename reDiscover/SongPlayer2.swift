@@ -40,17 +40,17 @@ class SongPlayer2: NSObject {
 
     }
     
-    func fetchPlayerItemForSongID(songID: SongIDProtocol) -> AVPlayerItem {
-        let songHash = songID.hash
-        var playerItem: AVPlayerItem?
-        if let playerItem = songPlayerCache?[songHash] {
-
-            if let songURL = delegate?.songURLForSongID(songID) {
-                
-            }
-        } else {
-            
-        }
-        return playerItem!
-    }
+//    func fetchPlayerItemForSongID(songID: SongIDProtocol) -> AVPlayerItem {
+//        let songHash = songID.hash
+//        var playerItem: AVPlayerItem?
+//        if let playerItem = songPlayerCache?[songHash] {
+//
+//            if let songURL = delegate?.songURLForSongID(songID) {
+//                
+//            }
+//        } else {
+//            
+//        }
+//        return playerItem!
+//    }
 }

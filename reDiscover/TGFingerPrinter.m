@@ -49,7 +49,7 @@
 
 // A version of the fingerprint request that uses a completion block instead of a delegate callback.
 //- (void)requestFingerPrintForSong:(TGSong *)song withHandler:(void (^)(NSString*))fingerprintHandler {
-- (void)requestFingerPrintForSong:(id)songID withHandler:(void (^)(NSString*))fingerprintHandler {
+- (void)requestFingerPrintForSong:(id<SongIDProtocol>)songID withHandler:(void (^)(NSString*))fingerprintHandler {
 //#pragma warning returning from requestFingerPrintForSong: withHandler:
 //    return;
     

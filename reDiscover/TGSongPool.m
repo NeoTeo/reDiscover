@@ -31,6 +31,38 @@
     theID.idValue = theString.hash;
     return theID;
 }
+
+- (BOOL)isEqualToSongID:(SongID *)anID {
+    if (anID.idValue == self.idValue) {
+        return YES;
+    }
+    return NO;
+}
+
+- (BOOL)isEqual:(id)object {
+    if (self == object) {
+        return YES;
+    }
+    
+    if (![object isKindOfClass:[SongID class]]) {
+        return NO;
+    }
+    
+    return [self isEqualToSongID:(SongID*)object];
+}
+
+- (NSUInteger)hash {
+    return self.idValue;
+}
+
+- (id)copyWithZone:(struct _NSZone *)zone {
+    SongID* copy = [[self class] allocWithZone:zone];
+    if (copy) {
+        copy.idValue = self.idValue;
+    }
+    return copy;
+}
+
 @end
 
 
@@ -381,10 +413,8 @@ static int const kSSCheckCounterSize = 10;
                         // Set the song pool to be a song's delegate.
                         [newSong setDelegate:self];
                         
-                        // The song id is simply its number in the loading sequence. (for now)
-                        [newSong setSongID:(id<SongIDProtocol>)[url absoluteString]];
-//                        [newSong setSongID:[SongID initWithString:[url absoluteString]]];
-                        
+                        // The song id is assigned.
+                        [newSong setSongID:[SongID initWithString:[url absoluteString]]];
                         
                         dispatch_async(serialDataLoad, ^{
                             // Only add the loaded url if it isn't already in the dictionary.
@@ -402,14 +432,17 @@ static int const kSSCheckCounterSize = 10;
                             // Try and fetch (by URL) the song's metadata from the core data store.
                             [self loadMetadataIntoSong:newSong];
                             
+                            //MARK: ARS
+                            //FIX:
                             // Add the song to the songpool.
-                            [songPoolDictionary setObject:newSong forKey:[url absoluteString]];
+                            [songPoolDictionary setObject:newSong forKey:[SongID initWithString:[url absoluteString]]];
+                            //                            [songPoolDictionary setObject:newSong forKey:[url absoluteString]];
                             
                         });
                         
                         // Inform the delegate that another song object has been loaded. This causes a cell in the song matrix to be added.
                         if ((_delegate != Nil) && [_delegate respondsToSelector:@selector(songPoolDidLoadSongURLWithID:)]) {
-                            [_delegate songPoolDidLoadSongURLWithID:[url absoluteString]];
+                            [_delegate songPoolDidLoadSongURLWithID:[SongID initWithString:[url absoluteString]]];
                         }
                     }
                 }
@@ -454,7 +487,7 @@ static int const kSSCheckCounterSize = 10;
 
 
 // This method will attempt to find the image for the song and, if found, will pass it to the given imageHandler block.
-- (void)requestImageForSongID:(id)songID withHandler:(void (^)(NSImage *))imageHandler {
+- (void)requestImageForSongID:(id<SongIDProtocol>)songID withHandler:(void (^)(NSImage *))imageHandler {
     
 //    NSLog(@"request image!");
     
@@ -503,7 +536,9 @@ static int const kSSCheckCounterSize = 10;
                     // Excluding the original song whose art we're looking for see if the others have it.
                     // Find the song from the url string.
                     // This will break until we switch song ids to be the song's url, then we can look it up directly.
-                    TGSong* aSong = [songPoolDictionary objectForKey:songDat.urlString];
+//                    TGSong* aSong = [songPoolDictionary objectForKey:songDat.urlString];
+                    //MARK: ARS
+                    TGSong* aSong = [songPoolDictionary objectForKey:[SongID initWithString:songDat.urlString]];
                     if (aSong && ![aSong isEqualTo:theSong]) {
                         // Here we can check the song's artID to see if it already has album art.
                         if ((aSong.artID != -1) && [_artArray objectAtIndex:aSong.artID] ) {
@@ -579,7 +614,7 @@ static int const kSSCheckCounterSize = 10;
     }];
 }
 
--(void)requestCoverArtForSong:(id)songID withHandler:(void (^)(NSImage*))imageHandler {
+-(void)requestCoverArtForSong:(id<SongIDProtocol>)songID withHandler:(void (^)(NSImage*))imageHandler {
     
     TGSong * theSong = [self songForID:songID];
     // If there's no uuid, request one and drop out.
@@ -666,7 +701,7 @@ static int const kSSCheckCounterSize = 10;
 // If the song already has the metadata it calls the dataHandler with the existing data.
 // If the song does not exist it logs the fact and simply returns without calling the dataHandler.
 //- (void)requestEmbeddedMetadataForSongID:(NSInteger)songID withHandler:(void (^)(NSDictionary*))dataHandler{
-- (void)requestEmbeddedMetadataForSongID:(id)songID withHandler:(void (^)(NSDictionary*))dataHandler{
+- (void)requestEmbeddedMetadataForSongID:(id<SongIDProtocol>)songID withHandler:(void (^)(NSDictionary*))dataHandler{
     dispatch_async(serialDataLoad, ^{
         TGSong *theSong = [self songForID:songID];
         if (theSong == nil) {
@@ -693,13 +728,13 @@ static int const kSSCheckCounterSize = 10;
 }
 
 
-- (NSNumber *)songDurationForSongID:(id)songID {
+- (NSNumber *)songDurationForSongID:(id<SongIDProtocol>)songID {
     float secs = CMTimeGetSeconds([[self songForID:songID] songDuration]);
     return [NSNumber numberWithDouble:secs];
 }
 
 
-- (NSURL *)songURLForSongID:(id)songID {
+- (NSURL *)songURLForSongID:(id<SongIDProtocol>)songID {
     TGSong *aSong = [self songForID:songID];
     
     if (aSong) {
@@ -709,7 +744,7 @@ static int const kSSCheckCounterSize = 10;
     return nil;
 }
 
-- (NSDictionary *)songDataForSongID:(id)songID {
+- (NSDictionary *)songDataForSongID:(id<SongIDProtocol>)songID {
     TGSong *song = [self songForID:songID];
 //    NSLog(@"songDataForSongID %ld, %@",(long)songID,song.TEOData);
     return @{@"Artist": song.TEOData.artist,
@@ -718,7 +753,7 @@ static int const kSSCheckCounterSize = 10;
              @"Genre": song.TEOData.genre};
 }
 
-- (void)offsetSweetSpotForSongID:(id)songID bySeconds:(Float64)offsetInSeconds {
+- (void)offsetSweetSpotForSongID:(id<SongIDProtocol>)songID bySeconds:(Float64)offsetInSeconds {
     TGSong *song = [self songForID:songID];
     if (song != nil) {
         Float64 currentPlayTimeInSeconds = [song getCurrentPlayTime];
@@ -782,14 +817,14 @@ static int const kSSCheckCounterSize = 10;
         NSLog(@"No data returned from sweetspot server.");
 }
 
-- (BOOL)validSongID:(id)songID {
+- (BOOL)validSongID:(id<SongIDProtocol>)songID {
     // TEO: also check for top bound.
     if (songID == nil) return NO;
 
     return YES;
 }
 
-- (NSArray *)sweetSpotsForSongID:(id)songID {
+- (NSArray *)sweetSpotsForSongID:(id<SongIDProtocol>)songID {
     if (![self validSongID:songID]) {
         return nil;
     }
@@ -801,39 +836,39 @@ static int const kSSCheckCounterSize = 10;
     return songIDCache;
 }
 
-- (NSNumber*)cachedLengthForSongID:(id)songID {
+- (NSNumber*)cachedLengthForSongID:(id<SongIDProtocol>)songID {
     return [NSNumber numberWithLongLong:[self songForID:songID].cachedFileLength];
 }
 
-- (AVAudioFile*)cachedAudioFileForSongID:(id)songID {
+- (AVAudioFile*)cachedAudioFileForSongID:(id<SongIDProtocol>)songID {
     return [self songForID:songID].cachedFile;
 }
 
-- (NSString*)albumForSongID:(id)songID {
+- (NSString*)albumForSongID:(id<SongIDProtocol>)songID {
     return [self songForID:songID].TEOData.album;
 }
 
-- (NSData*)releasesForSongID:(id)songID {
+- (NSData*)releasesForSongID:(id<SongIDProtocol>)songID {
     return [self songForID:songID].TEOData.songReleases;
 }
 
-- (void)setReleases:(NSData*)releases forSongID:(id)songID {
+- (void)setReleases:(NSData*)releases forSongID:(id<SongIDProtocol>)songID {
     [self songForID:songID].TEOData.songReleases = releases;
 }
 
-- (NSString *)UUIDStringForSongID:(id)songID {
+- (NSString *)UUIDStringForSongID:(id<SongIDProtocol>)songID {
     if (![self validSongID:songID]) return nil;
     return [self songForID:songID].TEOData.uuid;
 }
 
--(void)setUUIDString:(NSString*)theUUID forSongID:(id)songID {
+-(void)setUUIDString:(NSString*)theUUID forSongID:(id<SongIDProtocol>)songID {
     if (![self validSongID:songID]) return;
     // TEO may have to use a serial access queue if this is called concurrently.
     [self songForID:songID].TEOData.uuid = theUUID ;
 }
 
 
-- (NSURL *)URLForSongID:(id)songID {
+- (NSURL *)URLForSongID:(id<SongIDProtocol>)songID {
     if (![self validSongID:songID]) return nil;
     
     return [NSURL URLWithString:[self songForID:songID].TEOData.urlString];
@@ -841,7 +876,6 @@ static int const kSSCheckCounterSize = 10;
 }
 
 
-//- (void)sweetSpotFromServerForSongID:(NSInteger)songID {
 - (void)sweetSpotFromServerForSong:(TGSong *)aSong {
 
 //    NSString * songUUID = [aSong songUUIDString];
@@ -929,8 +963,7 @@ static int const kSSCheckCounterSize = 10;
 
 
 // TEO: Convenience method. May not need it for long.
-//- (float)fetchSweetSpotForSongID:(NSInteger)songID {
-- (float)fetchSweetSpotForSongID:(id)songID {
+- (float)fetchSweetSpotForSongID:(id<SongIDProtocol>)songID {
     TGSong *song = [self songForID:songID];
     return [[self fetchSongSweetSpot:song] floatValue];
 }
@@ -955,31 +988,16 @@ static int const kSSCheckCounterSize = 10;
 }
  */
 
-- (id)lastRequestedSongID {
+- (id<SongIDProtocol>)lastRequestedSongID {
     return [lastRequestedSong songID];
 }
 
-//- (NSInteger)lastRequestedSongID {
-//    return [lastRequestedSong songID];
-//}
-
-//- (TGSong *)currentlyPlayingSong {
-//    return currentlyPlayingSong;
-//}
-
-
-- (id)currentlyPlayingSongID {
+- (id<SongIDProtocol>)currentlyPlayingSongID {
     return [currentlyPlayingSong songID];
 }
-//- (NSInteger)currentlyPlayingSongID {
-//    return [currentlyPlayingSong songID];
-//}
 
-//-(TGSong *)songForID:(NSInteger)songID {
-//    return [songPoolDictionary objectForKey:[NSNumber numberWithInteger:songID]];
-//}
--(TGSong *)songForID:(id)songID {
-    return [songPoolDictionary objectForKey:(NSString*)songID];
+-(TGSong *)songForID:(id<SongIDProtocol>)songID {
+    return [songPoolDictionary objectForKey:songID];
 }
 
 
@@ -1160,7 +1178,7 @@ static int const kSSCheckCounterSize = 10;
     }
 }
 
-- (void)storeSweetSpotForSongID:(id)songID {
+- (void)storeSweetSpotForSongID:(id<SongIDProtocol>)songID {
     TGSong *tmpSong = [self songForID:songID];
     [tmpSong storeSelectedSweetSpot];
 }
@@ -1483,7 +1501,7 @@ static int const kSSCheckCounterSize = 10;
                     // Check for operation cancellation
                     if( weakCacheOp.isCancelled ) {return;}
                     
-                    id songID = [_songGridAccessAPI songIDFromGridColumn:matrixCols andRow:matrixRows];
+                    id<SongIDProtocol> songID = [_songGridAccessAPI songIDFromGridColumn:matrixCols andRow:matrixRows];
                     if (songID != nil) {
                         [wantedCache addObject:songID];
                     }
@@ -1527,7 +1545,7 @@ static int const kSSCheckCounterSize = 10;
 
 - (void)clearSongCache:(NSArray*)staleSongArray {
     dispatch_async(cacheClearingQueue, ^{
-        for (id songID in staleSongArray) {
+        for (id<SongIDProtocol> songID in staleSongArray) {
             TGSong *aSong = [self songForID:songID];
 //            NSLog(@"Clearing %@ with ID %@",aSong.TEOData.title,songID);
             [aSong clearCache];
@@ -1545,7 +1563,7 @@ static int const kSSCheckCounterSize = 10;
         // TEO - calling this async'ly crashes in core data.
         // Be smarter about this. Keep track of what's cached (in a set) and only recache what's missing.
         // The loadTrackData won't reload a loaded track but we can probably still save some loops.
-        for (id songID in desiredSongArray) {
+        for (id<SongIDProtocol> songID in desiredSongArray) {
             TGSong *aSong = [self songForID:songID];
             if (aSong == NULL) {
                 NSLog(@"Nope, the requested ID %@ is not in the song pool.",songID);
@@ -1583,7 +1601,7 @@ static int const kSSCheckCounterSize = 10;
         // TEO - calling this async'ly crashes in core data.
         // Be smarter about this. Keep track of what's cached (in a set) and only recache what's missing.
         // The loadTrackData won't reload a loaded track but we can probably still save some loops.
-        for (id songID in songArray) {
+        for (id<SongIDProtocol> songID in songArray) {
             TGSong *aSong = [self songForID:songID];
             if (aSong == NULL) {
                 NSLog(@"Nope, the requested ID %@ is not in the song pool.",songID);
@@ -1624,11 +1642,11 @@ static int const kSSCheckCounterSize = 10;
 
 #pragma mark -
 
-- (void)requestSongPlayback:(id)songID withStartTimeInSeconds:(NSNumber *)time {
+- (void)requestSongPlayback:(id<SongIDProtocol>)songID withStartTimeInSeconds:(NSNumber *)time {
     
     TGSong *aSong = [self songForID:songID];
     if (aSong == NULL) {
-        NSLog(@"Nope, the requested ID %@ is not in the song pool.",(NSString*)songID);
+        NSLog(@"Nope, the requested ID %@ is not in the song pool.",songID);
         return;
     }
     

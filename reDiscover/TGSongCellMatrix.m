@@ -8,6 +8,9 @@
 
 #import "TGSongCellMatrix.h"
 
+// forward declaration
+@protocol SongIDProtocol;
+
 @implementation TGSongCellMatrix
 
 - (id)initWithFrame:(NSRect)frameRect mode:(NSMatrixMode)aMode prototype:(NSCell *)aCell numberOfRows:(NSInteger)rowsHigh numberOfColumns:(NSInteger)colsWide
@@ -44,15 +47,15 @@
     });
 }
 
-- (id)songIDForSongWithTag:(NSInteger)songTag {
-    __block id songID;
+- (id<SongIDProtocol>)songIDForSongWithTag:(NSInteger)songTag {
+    __block id<SongIDProtocol> songID;
     dispatch_sync(_matrixAccessQueue,^{
         songID = [cellTagToSongID objectAtIndex:songTag];
     });
     return songID;
 }
 
-- (NSInteger)tagForSongWithID:(id)songID {
+- (NSInteger)tagForSongWithID:(id<SongIDProtocol>)songID {
     __block NSInteger songTag;
     dispatch_sync(_matrixAccessQueue,^{
         NSUInteger idx = [cellTagToSongID indexOfObject:songID];
@@ -76,7 +79,7 @@
 //    _activeCellCount--;
 }
 
-- (NSInteger)indexOfObjectWithSongID:(id)songID {
+- (NSInteger)indexOfObjectWithSongID:(id<SongIDProtocol>)songID {
     __block NSInteger retVal = -1;
     dispatch_sync(_matrixAccessQueue,^{
         retVal = [cellTagToSongID indexOfObject:songID];

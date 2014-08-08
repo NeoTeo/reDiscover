@@ -28,7 +28,7 @@
     }
 }
 
--(void)addSongToPlaylist:(id)aSongID {
+-(void)addSongToPlaylist:(id<SongIDProtocol>)aSongID {
     [playlist addSong:aSongID atIndex:0];
     [_playlistTableView reloadData];
 }
@@ -48,7 +48,7 @@
 }
 
 // TGPlaylistDelegate method
-- (NSDictionary *)songDataForSongID:(id)songID {
+- (NSDictionary *)songDataForSongID:(id<SongIDProtocol>)songID {
     
     // Get a mutable copy so we can add a few bits of data.
     NSMutableDictionary *songData = [[_songPoolAPI songDataForSongID:songID] mutableCopy];
@@ -96,7 +96,7 @@
     // Set it if it is a valid position.
     if (selectedRow >=0) {
         [playlist setPosInPlaylist:selectedRow];
-        id newSongID = [playlist songIDAtIndex:selectedRow];
+        id<SongIDProtocol> newSongID = [playlist songIDAtIndex:selectedRow];
         [_songPoolAPI requestSongPlayback:newSongID withStartTimeInSeconds:0];
 //        NSInteger newSongID = [[playlist songIDAtIndex:selectedRow] integerValue];
     }

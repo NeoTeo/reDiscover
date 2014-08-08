@@ -14,6 +14,7 @@
 // Forward declarations.
 @class TGSong;
 @protocol TGFingerPrinterDelegate;
+@protocol SongIDProtocol;
 
 @interface TGFingerPrinter : NSObject
 {
@@ -28,7 +29,7 @@
 //- (NSArray *)requestFingerPrintForSong:(TGSong *)song;
 - (void)requestFingerPrintForSong:(TGSong *)song;
 //- (void)requestFingerPrintForSong:(TGSong *)song withHandler:(void (^)(NSString*))fingerprintHandler;
-- (void)requestFingerPrintForSong:(id)songID withHandler:(void (^)(NSString*))fingerprintHandler;
+- (void)requestFingerPrintForSong:(id<SongIDProtocol>)songID withHandler:(void (^)(NSString*))fingerprintHandler;
 
 - (NSInteger)decodeAudioFile:(NSURL *)fileURL forContext:(ChromaprintContext *)theContext ofLength:(NSInteger)maxLength andDuration:(int *)duration;
 
@@ -44,7 +45,7 @@
 @optional
 //- (void)fingerprintReady:(NSArray *)fingerPrint ForSong:(TGSong *)song;
 - (void)fingerprintReady:(NSString *)fingerPrint ForSong:(TGSong *)song;
-- (NSURL *)URLForSongID:(id)songID;
--(void)setUUIDString:(NSString*)theUUID forSongID:(id)songID;
-- (void)setReleases:(NSData*)releases forSongID:(id)songID;
+- (NSURL *)URLForSongID:(id<SongIDProtocol>)songID;
+-(void)setUUIDString:(NSString*)theUUID forSongID:(id<SongIDProtocol>)songID;
+- (void)setReleases:(NSData*)releases forSongID:(id<SongIDProtocol>)songID;
 @end

@@ -14,6 +14,7 @@
 @protocol TGPlaylistViewControllerDelegate;
 @protocol TGMainViewControllerDelegate;
 @protocol SongPoolAccessProtocol;
+@protocol SongIDProtocol;
 
 @interface TGPlaylistViewController : NSViewController <NSTableViewDelegate, NSTableViewDataSource>
 {
@@ -27,9 +28,9 @@
 @property id<TGMainViewControllerDelegate> delegate;
 
 - (void)storePlaylistWithName:(NSString *)theName;
-- (void)addSongToPlaylist:(id)aSongID;
-- (void)removeSongFromPlaylist:(id)aSongID;
-- (id)getNextSongIDToPlay;
+- (void)addSongToPlaylist:(id<SongIDProtocol>)aSongID;
+- (void)removeSongFromPlaylist:(id<SongIDProtocol>)aSongID;
+- (id<SongIDProtocol>)getNextSongIDToPlay;
 
 @end
 
@@ -37,9 +38,9 @@
 @protocol TGPlaylistViewControllerDelegate <NSObject>
 
 // These are all methods defined in the SongPool class.
-- (NSDictionary *)songDataForSongID:(id)songID;
-- (NSURL *)songURLForSongID:(id)songID;
-- (NSNumber *)songDurationForSongID:(id)songID;
-- (void)requestSongPlayback:(id)songID withStartTimeInSeconds:(NSNumber *)time;
+- (NSDictionary *)songDataForSongID:(id<SongIDProtocol>)songID;
+- (NSURL *)songURLForSongID:(id<SongIDProtocol>)songID;
+- (NSNumber *)songDurationForSongID:(id<SongIDProtocol>)songID;
+- (void)requestSongPlayback:(id<SongIDProtocol>)songID withStartTimeInSeconds:(NSNumber *)time;
 
 @end

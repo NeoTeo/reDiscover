@@ -32,11 +32,17 @@
 //- (void)userSelectedSweetSpot:(NSUInteger)ssIndex;
 //- (void)userSelectedSongID:(id)songID ;
 //- (void)cacheWithContext:(NSDictionary*)theContext;
-- (id)songIDFromGridColumn:(NSInteger)theCol andRow:(NSInteger)theRow;
+
 
 @end
 
-@interface TGSongGridViewController : NSViewController <TGSongGridViewControllerDelegate, TGSongGridScrollViewDelegate,TGSongTimelineViewControllerDelegate>
+
+@protocol SongGridAccessProtocol
+- (id)songIDFromGridColumn:(NSInteger)theCol andRow:(NSInteger)theRow;
+@end
+
+//@interface TGSongGridViewController : NSViewController <TGSongGridViewControllerDelegate, TGSongGridScrollViewDelegate,TGSongTimelineViewControllerDelegate>
+@interface TGSongGridViewController : NSViewController <SongGridAccessProtocol, TGSongGridScrollViewDelegate,TGSongTimelineViewControllerDelegate>
 {
     float zoomFactor;
     NSMutableArray *unmappedSongIDArray;
@@ -74,22 +80,22 @@
 
 
 - (id)initWithFrame:(NSRect)newFrame;
-- (void)addMatrixCell2:(id)songID;
+- (void)addMatrixCell2:(id<SongIDProtocol>)songID;
 - (void)animateMatrixZoom:(NSInteger)zoomQuantum;
-- (void)setCoverImage:(NSImage *)theImage forSongWithID:(id)songID;
+- (void)setCoverImage:(NSImage *)theImage forSongWithID:(id<SongIDProtocol>)songID;
 
 // Other classes' delegate methods we implement.
 
 // TGSongGridScrollViewDelegate methods
 - (void)songGridScrollViewDidChangeToRow:(NSInteger)theRow andColumn:(NSInteger)theColumn withSpeedVector:(NSPoint)theSpeed;
 - (void)songGridScrollViewDidScrollToRect:(NSRect)theRect;
-- (void)songGridScrollViewDidRightClickSongID:(NSUInteger)songID;
+- (void)songGridScrollViewDidRightClickSongID:(id<SongIDProtocol>)songID;
 
 // TGSongTimelineViewControllerDelegate methods
 - (void)userSelectedSweetSpotMarkerAtIndex:(NSUInteger)ssIndex;
 
 // Set the cached flag on a cell that corresponds to the songID
-- (void)setDebugCachedFlagForSongID:(id)songID toValue:(BOOL)value;
+- (void)setDebugCachedFlagForSongID:(id<SongIDProtocol>)songID toValue:(BOOL)value;
 
 - (void)runTest;
 @end

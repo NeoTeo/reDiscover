@@ -24,38 +24,40 @@
 //@protocol TGSongPoolDelegate;
 //@protocol SongPoolAccessProtocol;
 @protocol SongGridAccessProtocol;
-@protocol TGSongGridViewControllerDelegate;
+//@protocol TGSongGridViewControllerDelegate;
 @protocol TGMainViewControllerDelegate;
 
 @protocol SongIDProtocol <NSObject>
--(NSInteger)idValue;
+- (BOOL)isEqual:(id)object;
+@property (readonly) NSUInteger hash;
 @end
 
 /**
  The SongID is the type that identifies a song in the current instance of the application.
  SongIDs do not persist across instances.
  */
-@interface SongID : NSObject <SongIDProtocol>
-@property NSInteger idValue;
+@interface SongID : NSObject <SongIDProtocol,NSCopying>
+@property NSUInteger idValue;
 + (instancetype)initWithString:(NSString *)theString;
+- (id)copyWithZone:(struct _NSZone *)zone;
 @end
 
 // Methods that SongPool implements for others to call.
 @protocol SongPoolAccessProtocol
-- (NSURL *)songURLForSongID:(id)songID;
-- (NSString*)UUIDStringForSongID:(id)songID;
-- (NSData*)releasesForSongID:(id)songID;
-- (NSString*)albumForSongID:(id)songID;
-- (AVAudioFile*)cachedAudioFileForSongID:(id)songID;
-- (NSNumber*)cachedLengthForSongID:(id)songID;
-- (void)requestSongPlayback:(id)songID withStartTimeInSeconds:(NSNumber *)time;
-- (NSDictionary *)songDataForSongID:(id)songID;
-- (NSNumber *)songDurationForSongID:(id)songID;
-- (id)lastRequestedSongID;
-- (id)currentlyPlayingSongID;
+- (NSURL *)songURLForSongID:(id<SongIDProtocol>)songID;
+- (NSString*)UUIDStringForSongID:(id<SongIDProtocol>)songID;
+- (NSData*)releasesForSongID:(id<SongIDProtocol>)songID;
+- (NSString*)albumForSongID:(id<SongIDProtocol>)songID;
+- (AVAudioFile*)cachedAudioFileForSongID:(id<SongIDProtocol>)songID;
+- (NSNumber*)cachedLengthForSongID:(id<SongIDProtocol>)songID;
+- (void)requestSongPlayback:(id<SongIDProtocol>)songID withStartTimeInSeconds:(NSNumber *)time;
+- (NSDictionary *)songDataForSongID:(id<SongIDProtocol>)songID;
+- (NSNumber *)songDurationForSongID:(id<SongIDProtocol>)songID;
+- (id<SongIDProtocol>)lastRequestedSongID;
+- (id<SongIDProtocol>)currentlyPlayingSongID;
 - (void)setRequestedPlayheadPosition:(NSNumber *)newPosition;
 // Sweet Spot accessors.
-- (NSArray *)sweetSpotsForSongID:(id)songID;
+- (NSArray *)sweetSpotsForSongID:(id<SongIDProtocol>)songID;
 
 - (void)cacheWithContext:(NSDictionary*)cacheContext;
 
@@ -64,11 +66,11 @@
 // TGSongPool Delegate methods that conforming classes must implement and that SongPool will call.
 @protocol TGSongPoolDelegate <NSObject>
 //@optional
-- (void)songPoolDidLoadSongURLWithID:(id)songID;
+- (void)songPoolDidLoadSongURLWithID:(id<SongIDProtocol>)songID;
 - (void)songPoolDidLoadAllURLs:(NSUInteger)numberOfURLs;
-- (void)songPoolDidStartPlayingSong:(id)songID;
-- (void)songPoolDidFinishPlayingSong:(id)songID;
-- (void)songPoolDidLoadDataForSongID:(id)songID;
+- (void)songPoolDidStartPlayingSong:(id<SongIDProtocol>)songID;
+- (void)songPoolDidFinishPlayingSong:(id<SongIDProtocol>)songID;
+- (void)songPoolDidLoadDataForSongID:(id<SongIDProtocol>)songID;
 //- (void)setDebugCachedFlagsForSongIDArray:(NSArray*)songIDs toValue:(BOOL)value;
 @end
 
@@ -121,8 +123,8 @@
 
 //@property id<TGSongPoolDelegate> delegate;
 @property id<TGMainViewControllerDelegate> delegate;
-@property id<TGSongGridViewControllerDelegate> songGridAccessAPI;
-//@property id<SongGridAccessProtocol> songGridAccessAPI;
+//@property id<TGSongGridViewControllerDelegate> songGridAccessAPI;
+@property id<SongGridAccessProtocol> songGridAccessAPI;
 
 // Holds the art associated with the songs. Songs will hold indices into the art array.
 @property NSMutableArray *artArray;
@@ -140,7 +142,7 @@
 
 
 // Methods
-- (id)initWithURL:(NSURL*) theURL;
+- (id<SongIDProtocol>)initWithURL:(NSURL*) theURL;
 - (BOOL)validateURL:(NSURL *)anURL;
 - (BOOL)loadFromURL:(NSURL *)anURL ;
 
@@ -150,7 +152,7 @@
 //- (id)currentlyPlayingSongID;
 
 
-- (void)requestImageForSongID:(id)songID withHandler:(void (^)(NSImage *))imageHandler;
+- (void)requestImageForSongID:(id<SongIDProtocol>)songID withHandler:(void (^)(NSImage *))imageHandler;
 
 // Caching methods
 - (void)preloadSongArray:(NSArray *)songArray;
@@ -159,29 +161,29 @@
 #pragma mark -
 #pragma mark song data accessor methods.
 // Async methods
-- (void)requestEmbeddedMetadataForSongID:(id)songID withHandler:(void (^)(NSDictionary*))dataHandler;
+- (void)requestEmbeddedMetadataForSongID:(id<SongIDProtocol>)songID withHandler:(void (^)(NSDictionary*))dataHandler;
 
-- (void)offsetSweetSpotForSongID:(id)songID bySeconds:(Float64)offsetInSeconds;
-- (void)storeSweetSpotForSongID:(id)songID;
+- (void)offsetSweetSpotForSongID:(id<SongIDProtocol>)songID bySeconds:(Float64)offsetInSeconds;
+- (void)storeSweetSpotForSongID:(id<SongIDProtocol>)songID;
 
 // song data accessors.
 - (void)sweetSpotFromServerForSong:(TGSong *)aSong;
 
 // UUID accessors.
--(void)setUUIDString:(NSString*)theUUID forSongID:(id)songID;
-- (NSString *)UUIDStringForSongID:(id)songID;
+-(void)setUUIDString:(NSString*)theUUID forSongID:(id<SongIDProtocol>)songID;
+- (NSString *)UUIDStringForSongID:(id<SongIDProtocol>)songID;
 
 //// Sweet Spot accessors.
 //- (NSArray *)sweetSpotsForSongID:(id)songID;
 
 // URL accessors.
-- (NSURL *)URLForSongID:(id)songID;
+- (NSURL *)URLForSongID:(id<SongIDProtocol>)songID;
 
 // Releases accessors TEO switch to use NSArray/NSSet in the managedobject same as the sweetspots
-- (NSData*)releasesForSongID:(id)songID;
-- (void)setReleases:(NSData*)releases forSongID:(id)songID;
+- (NSData*)releasesForSongID:(id<SongIDProtocol>)songID;
+- (void)setReleases:(NSData*)releases forSongID:(id<SongIDProtocol>)songID;
 
-- (NSString*)albumForSongID:(id)songID;
+- (NSString*)albumForSongID:(id<SongIDProtocol>)songID;
 
 // TEO should this not be private?
 - (NSString *)findUUIDOfSongWithURL:(NSURL *)songURL;
@@ -201,7 +203,6 @@
 
 // TGSongDelegate protocol methods called by TGSong
 - (void)songDidFinishPlayback:(TGSong *)song;
-//-(id)lastRequestedSongID;
 - (void)songDidUpdatePlayheadPosition:(NSNumber *)playheadPosition;
 - (void)songReadyForPlayback:(TGSong *)song;
 - (NSSet*)currentCache;

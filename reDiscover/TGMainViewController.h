@@ -20,9 +20,10 @@
 @class DebugDisplayController;
 
 @protocol TGSongPoolDelegate;
+@protocol SongIDProtocol;
 
 @protocol TGMainViewControllerDelegate <TGSongPoolDelegate>
-- (void)userSelectedSongID:(id)songID;
+- (void)userSelectedSongID:(id<SongIDProtocol>)songID;
 - (void)setDebugCachedFlagsForSongIDArray:(NSArray*)songIDs toValue:(BOOL)value;
 @end
 

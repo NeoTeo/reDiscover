@@ -234,7 +234,7 @@
 
 - (void)keyDown:(NSEvent *)theEvent {
     NSLog(@"Yep, key down in the view controller.");
-    id lastRequestedSongID = [_currentSongPool lastRequestedSongID];
+    id<SongIDProtocol> lastRequestedSongID = [_currentSongPool lastRequestedSongID];
     
     NSString *chars = [theEvent characters];
     if ([chars isEqualToString:@"["]) {
@@ -449,7 +449,7 @@
 
 // Called by the song pool for every song whose metadata has fully loaded.
 //- (void)songPoolDidLoadDataForSongID:(NSUInteger)songID {
-- (void)songPoolDidLoadDataForSongID:(id)songID {
+- (void)songPoolDidLoadDataForSongID:(id<SongIDProtocol>)songID {
     // Not really doing anything so return.
     return;
     NSDictionary *songData = [_currentSongPool songDataForSongID:songID];
@@ -487,7 +487,7 @@
 
 // Called by the song pool for every song what with an URL.
 // This does not guarantee that any of its data is loaded yet, in fact it's very unlikely.
-- (void)songPoolDidLoadSongURLWithID:(id)songID {
+- (void)songPoolDidLoadSongURLWithID:(id<SongIDProtocol>)songID {
     
     // We have to make sure we execute on the main thread since much of the AppKit stuff isn't thread safe.
     // addMatrixCell2 has many classes that need to run on the main thread or are otherwise thread-unsafe;
@@ -504,7 +504,7 @@
 }
 
 
-- (void)songPoolDidStartPlayingSong:(id)songID {
+- (void)songPoolDidStartPlayingSong:(id<SongIDProtocol>)songID {
 
     // Request metadata for the song and pass in the block to be called when done.
     [_currentSongPool requestEmbeddedMetadataForSongID:songID withHandler:^(NSDictionary* theData){
@@ -538,8 +538,9 @@
             [_songGridController setCoverImage:tmpImage forSongWithID:songID];
             
             // Only update the info window for the currently playing song.
-            if ([songID isEqualTo:[_currentSongPool currentlyPlayingSongID]])
-            {
+            //MARK: ARS
+//            if ([songID isEqualTo:[_currentSongPool currentlyPlayingSongID]])
+            if (songID == [_currentSongPool currentlyPlayingSongID]) {
                 [_songInfoController setSongCoverImage:tmpImage];
             }
             
@@ -549,11 +550,11 @@
     
 }
 
-- (void)songPoolDidFinishPlayingSong:(id)songID {
+- (void)songPoolDidFinishPlayingSong:(id<SongIDProtocol>)songID {
     // If the currently selected song is the same as the one that just finished, see if there is more on the playlist.
     NSLog(@"song grid controller. Song %@ finished playing.",(NSString*)songID);
     if (songID == [_currentSongPool lastRequestedSongID]) {
-        id newSongID = [_playlistController getNextSongIDToPlay];
+        id<SongIDProtocol> newSongID = [_playlistController getNextSongIDToPlay];
         if (newSongID == nil) {
             NSLog(@"No more songs in playlist.");
             return;
@@ -583,12 +584,12 @@
 #pragma mark TGSongGridViewControllerDelegate method implementations
 
 - (void)setDebugCachedFlagsForSongIDArray:(NSArray*)songIDs toValue:(BOOL)value {
-    for (id songID in songIDs) {
+    for (id<SongIDProtocol> songID in songIDs) {
         [_songGridController setDebugCachedFlagForSongID:songID toValue:value];
     }
 }
 
-- (void)userSelectedSongID:(id)songID {
+- (void)userSelectedSongID:(id<SongIDProtocol>)songID {
     [_currentSongPool requestSongPlayback:songID withStartTimeInSeconds:[NSNumber numberWithInt:-1]];
     
     // reset the idle timer

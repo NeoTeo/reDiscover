@@ -8,6 +8,9 @@
 
 #import <Cocoa/Cocoa.h>
 
+// Forward declaration.
+@protocol SongIDProtocol;
+
 @interface TGSongCellMatrix : NSMatrix
 {
     NSMutableArray* cellTagToSongID;
@@ -29,12 +32,12 @@
 -(BOOL)validateCellRow:(NSInteger)row andColumn:(NSInteger)col;
 
 // Synchronous serial matrixAccessQueue methods
-- (NSInteger)indexOfObjectWithSongID:(id)songID;
+- (NSInteger)indexOfObjectWithSongID:(id<SongIDProtocol>)songID;
 
 - (void)renewAndSizeRows:(NSInteger)newRows columns:(NSInteger)newCols;
 -(NSRect)coverFrameAtRow:(NSInteger)row column:(NSInteger)col;
 
-- (NSInteger)tagForSongWithID:(id)songID;
-- (id)songIDForSongWithTag:(NSInteger)songTag;
+- (NSInteger)tagForSongWithID:(id<SongIDProtocol>)songID;
+- (id<SongIDProtocol>)songIDForSongWithTag:(NSInteger)songTag;
 
 @end

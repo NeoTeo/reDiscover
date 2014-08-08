@@ -148,7 +148,7 @@ enum {
 
 @protocol TGSongDelegate <NSObject>
 //@optional
-- (id)lastRequestedSongID;
+- (id<SongIDProtocol>)lastRequestedSongID;
 - (void)songReadyForPlayback:(TGSong *)song;
 - (void)songDidFinishPlayback:(TGSong *)song;
 //- (void)songDidLoadEmbeddedMetadata:(TGSong *)song;

@@ -8,7 +8,9 @@
 
 #import <Foundation/Foundation.h>
 
+// Protocol forward declarations
 @protocol TGPlaylistDelegate;
+@protocol SongIDProtocol;
 
 @interface TGPlaylist : NSObject <NSTableViewDataSource> {
     NSMutableArray *songList;
@@ -19,15 +21,15 @@
 @property id<TGPlaylistDelegate> delegate;
 
 //- (void)addSong:(NSInteger)aSongID atIndex:(NSUInteger)index;
-- (void)addSong:(id)aSongID atIndex:(NSUInteger)index;
+- (void)addSong:(id<SongIDProtocol>)aSongID atIndex:(NSUInteger)index;
 - (void)removeSongAtIndex:(NSUInteger)index;
 //- (void)removeSong:(NSInteger)aSong;
-- (void)removeSong:(id)aSong;
-- (id)getNextSongIDToPlay;
+- (void)removeSong:(id<SongIDProtocol>)aSong;
+- (id<SongIDProtocol>)getNextSongIDToPlay;
 //- (NSInteger)getNextSongIDToPlay;
 - (void)storeWithName:(NSString *)theName;
 - (NSUInteger)songsInPlaylist;
-- (id)songIDAtIndex:(NSUInteger)index;
+- (id<SongIDProtocol>)songIDAtIndex:(NSUInteger)index;
 //- (NSNumber *)songIDAtIndex:(NSUInteger)index;
 @end
 
@@ -35,7 +37,7 @@
 // Delegate method declarations.
 @protocol TGPlaylistDelegate <NSObject>
 
-- (NSDictionary *)songDataForSongID:(id)songID;
+- (NSDictionary *)songDataForSongID:(id<SongIDProtocol>)songID;
 //- (NSDictionary *)songDataForSongID:(NSInteger)songID;
 //- (NSURL *)songURLForSongID:(NSInteger)songID;
 //- (NSInteger)songDurationForSongID:(NSInteger)songID;

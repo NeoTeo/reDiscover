@@ -180,13 +180,15 @@
 }
 */
 
-- (void)getRow:(NSUInteger *)row andCol:(NSUInteger *)col forSongID:(NSUInteger)songID {
-    NSAssert(_colsPerRow > 0, @"Error. 0 columns will cause a div by zero.");
-    *row = floor(songID / _colsPerRow);
-    *col = songID - (*row) * _colsPerRow;
-}
+//FIX:
+// MARK: This can never work! Is it even called?
+//- (void)getRow:(NSUInteger *)row andCol:(NSUInteger *)col forSongID:(NSUInteger)songID {
+//    NSAssert(_colsPerRow > 0, @"Error. 0 columns will cause a div by zero.");
+//    *row = floor(songID / _colsPerRow);
+//    *col = songID - (*row) * _colsPerRow;
+//}
 
-- (void)setCoverImage:(NSImage *)theImage forSongWithID:(id)songID {
+- (void)setCoverImage:(NSImage *)theImage forSongWithID:(id<SongIDProtocol>)songID {
 
     NSInteger cellTag = [_songCellMatrix indexOfObjectWithSongID:songID];
     TGGridCell * theCell = [_songCellMatrix cellWithTag:cellTag];
@@ -195,7 +197,9 @@
     // TEO This should only be animated if the cover is visible on screen.
     // If we are setting the cover for the currently playing song do a pop animation,
     // otherwise just fade it in.
-    if ([songID isEqualTo:[_songPoolAPI lastRequestedSongID]]) {
+    //MARK: ARS will this isEqualTo: work?
+//    if ([songID isEqualTo:[_songPoolAPI lastRequestedSongID]]) {
+    if (songID == [_songPoolAPI lastRequestedSongID]) {
         [self coverPushAndFadeAnimationForCell:theCell withImage:theImage];
     }else {
         [self coverFadeInAnimation:theCell withImage:theImage];
@@ -212,7 +216,7 @@
 
 static NSInteger const kUndefinedID =  -1;
 
-- (id)cellToSongID:(TGGridCell*)theCell {
+- (id<SongIDProtocol>)cellToSongID:(TGGridCell*)theCell {
     
     NSInteger cellTag = [theCell tag];
     // If the cell has not yet been connected to a song ID, pick one from the unmapped songs and connect it.
@@ -227,7 +231,7 @@ static NSInteger const kUndefinedID =  -1;
         int randomSongIDIndex = arc4random_uniform(unmappedCount);
         
         // get the randomSong id out of the array.
-        id songID = [unmappedSongIDArray objectAtIndex:randomSongIDIndex];
+        id<SongIDProtocol> songID = [unmappedSongIDArray objectAtIndex:randomSongIDIndex];
         [unmappedSongIDArray removeObjectAtIndex:randomSongIDIndex];
         
         [theCell setTag:[_songCellMatrix tagForSongWithID:songID]];
@@ -391,7 +395,7 @@ static NSInteger const kUndefinedID =  -1;
 
 // addMatrixCell2 runs on main thread.
 // Called for every new song added by the song pool (via main view controller's songPoolDidLoadSongURLWithID)
-- (void)addMatrixCell2:(id)songID {
+- (void)addMatrixCell2:(id<SongIDProtocol>)songID {
     
     // Do pop up anim before we add the actual cell.
     NSInteger row,col;
@@ -1007,7 +1011,7 @@ static NSInteger const kUndefinedID =  -1;
 }
 */
 
-- (id)songIDFromGridColumn:(NSInteger)theCol andRow:(NSInteger)theRow {
+- (id<SongIDProtocol>)songIDFromGridColumn:(NSInteger)theCol andRow:(NSInteger)theRow {
     TGGridCell *theCell = [_songCellMatrix cellAtRow:theRow column:theCol];
     return [self cellToSongID:theCell];
 }
@@ -1087,7 +1091,7 @@ static NSInteger const kUndefinedID =  -1;
     // Early out if the coordinates are pointing to an invalid cell.
     if (theCell == nil) return;
     
-    id songID = [self cellToSongID:theCell];
+    id<SongIDProtocol> songID = [self cellToSongID:theCell];
     // Early out if the cell is not pointing at an actual song.
     if (songID == nil) return;
     
@@ -1119,7 +1123,7 @@ static NSInteger const kUndefinedID =  -1;
 }
 
 
-- (void)setDebugCachedFlagForSongID:(id)songID toValue:(BOOL)value {
+- (void)setDebugCachedFlagForSongID:(id<SongIDProtocol>)songID toValue:(BOOL)value {
     
     // Get the cell for the id
     TGGridCell* aCell = [_songCellMatrix cellWithTag:[_songCellMatrix tagForSongWithID:songID]];
@@ -1146,7 +1150,7 @@ static NSInteger const kUndefinedID =  -1;
     
 }
 
-- (void)songGridScrollViewDidRightClickSongID:(NSUInteger)songID {
+- (void)songGridScrollViewDidRightClickSongID:(id<SongIDProtocol>)songID {
     NSLog(@"RMB");
     // Turn song id to song
     //[_songPool fetchSongData];

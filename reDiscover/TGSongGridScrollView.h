@@ -27,7 +27,7 @@
 - (void)songGridScrollViewDidChangeToRow:(NSInteger)theRow andColumn:(NSInteger)theColumn withSpeedVector:(NSPoint)theSpeed;
 //- (void)songGridScrollViewDidChangeToCell:(TGGridCell *)theCell withRect:(NSRect)theRect;
 //- (void)songGridScrollViewDidChangeToSongID:(NSUInteger)songID withRect:(NSRect)theRect;
-- (void)songGridScrollViewDidRightClickSongID:(NSUInteger)songID;
-- (void)songGridScrollViewDidLeftClickSongID:(NSUInteger)songID;
+//- (void)songGridScrollViewDidRightClickSongID:(NSUInteger)songID;
+//- (void)songGridScrollViewDidLeftClickSongID:(NSUInteger)songID;
 - (void)buttonDownInCellFrame:(NSRect)cellFrame;
 @end

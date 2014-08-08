@@ -107,15 +107,19 @@
 
 - (void)rightMouseDown:(NSEvent *)theEvent {
     NSLog(@"rmb");
+    return;
     // Find out where in the grid the click event occurred by converting from the window base coordinates,
     // to the coordinates of the document view (the view being scrolled by the scroll view).
     NSPoint mouseLoc = [[self documentView] convertPoint:[theEvent locationInWindow] fromView:nil];
     NSInteger mouseRow, mouseCol;
     [[self documentView] getRow:&mouseRow column:&mouseCol forPoint:mouseLoc];
     TGGridCell *currentCell = [[self documentView] cellAtRow:mouseRow column:mouseCol];
-    if (_delegate && [_delegate respondsToSelector:@selector(songGridScrollViewDidRightClickSongID:)]) {
-        [_delegate songGridScrollViewDidRightClickSongID:[currentCell tag]];
-    }
+    //FIX:
+    //MARK: ARS this should not be called either!
+
+//    if (_delegate && [_delegate respondsToSelector:@selector(songGridScrollViewDidRightClickSongID:)]) {
+//        [_delegate songGridScrollViewDidRightClickSongID:[currentCell tag]];
+//    }
 
 }
 

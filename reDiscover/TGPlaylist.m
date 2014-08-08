@@ -8,6 +8,8 @@
 
 #import "TGPlaylist.h"
 
+@protocol SongIDProtocol;
+
 @implementation TGPlaylist
 
 - (id)init {
@@ -24,17 +26,17 @@
     return [songList count];
 }
 
-- (id)songIDAtIndex:(NSUInteger)index {
+- (id<SongIDProtocol>)songIDAtIndex:(NSUInteger)index {
     return [songList objectAtIndex:index];
 }
 //- (NSNumber *)songIDAtIndex:(NSUInteger)index {
 //    return [songList objectAtIndex:index];
 //}
 
-- (void)addSong:(id)aSongID atIndex:(NSUInteger)index {
+- (void)addSong:(id<SongIDProtocol>)aSongID atIndex:(NSUInteger)index {
     [songList insertObject:aSongID atIndex:index];
 //    [songList insertObject:[NSNumber numberWithInteger:aSongID] atIndex:index];
-    NSLog(@"Added song %ld to playlist which is now %@",(long)aSongID ,songList);
+    NSLog(@"Added song %@ to playlist which is now %@",aSongID ,songList);
 }
 
 - (void)removeSongAtIndex:(NSUInteger)index {
@@ -49,7 +51,7 @@
 //}
 
 //- (NSInteger)getNextSongIDToPlay {
-- (id)getNextSongIDToPlay {
+- (id<SongIDProtocol>)getNextSongIDToPlay {
 //    NSInteger sID = -1;
     id sID = nil;
     NSUInteger songCount = [songList count];
@@ -80,7 +82,7 @@
     NSString *content = m3uHeader;
     // TEO: Do some error checking here.
 //    for (NSNumber *songID in songList) {
-    for (id songID in songList) {
+    for (id<SongIDProtocol> songID in songList) {
 //        NSInteger sID = [songID integerValue];
 //        NSDictionary *songData = [_delegate songDataForSongID:sID];
         NSDictionary *songData = [_delegate songDataForSongID:songID];
