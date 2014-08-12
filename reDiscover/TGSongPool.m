@@ -67,7 +67,9 @@
 
 
 // The private interface declaration overrides the public one to declare conformity to the Delegate protocols.
-@interface TGSongPool () <TGSongDelegate,TGFingerPrinterDelegate,SongPoolAccessProtocol,TGPlaylistViewControllerDelegate>
+//@interface TGSongPool () <TGSongDelegate,TGFingerPrinterDelegate,SongPoolAccessProtocol,TGPlaylistViewControllerDelegate>
+//@end
+@interface TGSongPool () <TGSongDelegate,TGFingerPrinterDelegate,SongPoolAccessProtocol>
 @end
 
 // constant definitions
@@ -138,8 +140,8 @@ static int const kSSCheckCounterSize = 10;
             }
         }
         
-        songsWithChangesToSave = [[NSMutableSet alloc] init];
-        songsWithSaveError = [[NSMutableSet alloc] init];
+//        songsWithChangesToSave = [[NSMutableSet alloc] init];
+//        songsWithSaveError = [[NSMutableSet alloc] init];
      
         self.sharedFileManager = [[NSFileManager alloc] init];
         
@@ -428,15 +430,9 @@ static int const kSSCheckCounterSize = 10;
                                 newSong.TEOData = teoData;
 //                                NSLog(@"new song found %@",newSong.TEOData.title);
                             }
-                        
-                            // Try and fetch (by URL) the song's metadata from the core data store.
-                            [self loadMetadataIntoSong:newSong];
                             
-                            //MARK: ARS
-                            //FIX:
                             // Add the song to the songpool.
                             [songPoolDictionary setObject:newSong forKey:[SongID initWithString:[url absoluteString]]];
-                            //                            [songPoolDictionary setObject:newSong forKey:[url absoluteString]];
                             
                         });
                         
@@ -753,6 +749,7 @@ static int const kSSCheckCounterSize = 10;
              @"Genre": song.TEOData.genre};
 }
 
+/*
 - (void)offsetSweetSpotForSongID:(id<SongIDProtocol>)songID bySeconds:(Float64)offsetInSeconds {
     TGSong *song = [self songForID:songID];
     if (song != nil) {
@@ -766,14 +763,13 @@ static int const kSSCheckCounterSize = 10;
     }
     
 }
-
-
+*/
+/*
 - (void)setSweetSpotForSong:(TGSong *)theSong atTime:(NSNumber *)positionInSeconds {
-    // TSD test
     // Here we need to add a sweet spot and point to it.
-    [theSong setSweetSpot:positionInSeconds];
+//    [theSong setSweetSpot:positionInSeconds];
     
-            [theSong setStartTime:positionInSeconds];
+    [theSong setStartTime:positionInSeconds makeSweetSpot:YES];
 #ifdef AE
     // TEO < AE
     [theSongPlayer setPlaybackToTime:[positionInSeconds doubleValue]];
@@ -781,9 +777,10 @@ static int const kSSCheckCounterSize = 10;
     // TEO AE>
 #endif
             [theSong setCurrentPlayTime:positionInSeconds];
+            //FIXME: No longer needed...I think. Make sure, then remove.
             [songsWithChangesToSave addObject:theSong];
 }
-
+*/
 
 - (void)sweetSpotToServerForSong:(TGSong *)aSong {
     double sweetSpot = [[aSong startTime] doubleValue] ;
@@ -904,14 +901,18 @@ static int const kSSCheckCounterSize = 10;
                     // We then expect an array of sweetspots.
                     NSArray *sweetSpotsFromServer = [resultDict objectForKey:@"sweetspots"];
                     if ([sweetSpotsFromServer count] > 0) {
-                        [aSong setSongSweetSpots:sweetSpotsFromServer];
-
+//                        [aSong setSongSweetSpots:sweetSpotsFromServer];
+                        NSMutableSet* tmpSet = [aSong.TEOData.sweetSpots mutableCopy];
+                        for (NSNumber* ss in sweetSpotsFromServer) {
+                            [tmpSet addObject:ss];
+                        }
+                        aSong.TEOData.sweetSpots = tmpSet;
 //                        for (NSNumber *ss in sweetSpotsFromServer) {
 //                            NSLog(@"We've got a sweet spot of %@",ss);
 //                        }
                         // TEO: temp set the start time to be the first sweet spot
                         NSNumber *sweetSpot = [sweetSpotsFromServer objectAtIndex:0];
-                        [aSong setStartTime:sweetSpot];
+                        [aSong setStartTime:sweetSpot makeSweetSpot:YES];
                     }
                 }
             } else
@@ -953,12 +954,19 @@ static int const kSSCheckCounterSize = 10;
 }
 
 
-// This method sets the playhead position of the currently playing song to the requested position and
-// also sets a sweet spot for the song which gets stored on next save.
-
+/** 
+ This method sets the playhead position (what is that?) of the currently playing song to the requested position and sets a sweet spot for the song which gets stored on next save.
+ The requestedPlayheadPosition should only result in a sweet spot when the user releases the slider.
+*/
 - (void)setRequestedPlayheadPosition:(NSNumber *)newPosition {
     requestedPlayheadPosition = newPosition;
-    [self setSweetSpotForSong:[self songForID:[self lastRequestedSongID]] atTime:newPosition];
+//    NSLog(@"setRequestedPlayheadPosition: %@",newPosition);
+    
+    TGSong* theSong = [self songForID:[self lastRequestedSongID]];
+    //[[self songForID:[self lastRequestedSongID]] setStartTime:newPosition makeSweetSpot:NO];
+    [theSong setCurrentPlayTime:newPosition];
+    [theSong setSweetSpot:newPosition];
+//    [self setSweetSpotForSong:[self songForID:[self lastRequestedSongID]] atTime:newPosition];
 }
 
 
@@ -999,25 +1007,6 @@ static int const kSSCheckCounterSize = 10;
 -(TGSong *)songForID:(id<SongIDProtocol>)songID {
     return [songPoolDictionary objectForKey:songID];
 }
-
-
-
-#ifndef TSD
-- (NSString *)getSongGenreStringForSongID:(NSInteger)songID {
-    TGSong *tmpSong = [self songForID:songID];
-    if (tmpSong) {
-        return [[tmpSong songData] objectForKey:@"Genre"];
-    } else
-        return NULL;
-}
-
-
--(NSDictionary *)getSongDisplayStrings:(NSInteger)songID {
-    TGSong *song = [self songForID:songID];
-    return [song songData];
-}
-#endif
-
 
 - (dispatch_queue_t)serialQueue {
     return playbackQueue;
@@ -1186,7 +1175,6 @@ static int const kSSCheckCounterSize = 10;
 // Go through all songs and store those who have had data added to them.
 // This includes UUID or a user selected sweet spot.
 - (void)storeSongData {
-#ifdef TSD
     // TEOSongData test
     [self saveContext:NO];
 //    NSError *TEOError;
@@ -1196,124 +1184,6 @@ static int const kSSCheckCounterSize = 10;
 //    }
     // end TEOSongData test
     return;
-#else
-    
-    
-    NSLog(@"The songs to save are these: %@",songsWithChangesToSave);
-    // Make managed objects of each of these songs. Can we check if they already are store in there?
-    //if (not already in there) {
-    //[self fetchDataFromLocalStore];
-    
-    // Before adding a new entry we check if the song already exists in the following stages:
-    // 1) Check store for a URL match. If none is found...
-    // 2)   Check store for a UUID match (if the song has one). If none is found...
-    // 3)       Check store for a fingerprint match (if the song doesn't have one, generate it). If none is found...
-    // 4)           If none is found in any of the preceding steps; make a new TGSongUserData, fill it and store it.
-    // 5) If found in any of the preceding steps; update URL, SS and store.
-    NSArray *fetchedArray = [self fetchMetadataFromLocalStore];
-    if (fetchedArray == nil) {
-        NSLog(@"ERROR in storeSongData. FetchedArray is nil.");
-        return;
-    }
-    
-    // Using the block approach as it is faster (according to Darthenius on Stack Overflow).
-    //for (id key in songsWithChangesToSave) {
-    //[songsWithChangesToSave enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop) {
-
-    // Copy the set to avoid mutation (by other threads) during enumeration.
-    NSSet *songsWithChangesToSaveCopy = [songsWithChangesToSave copy];
-
-    // Go through all songs to save and either modify an existing TGSongUserData or create a new one.
-    for (TGSong *saveSong in songsWithChangesToSaveCopy) {
-        
-        TGSongUserData *songUserData = nil;
-        
-        for (TGSongUserData *sud in fetchedArray) {
-            //NSLog(@"comparing %@ and %@",sud.songURL, saveSong.songURL);
-            if (saveSong.songURL && sud.songURL && [sud.songURL isEqualToString:[saveSong.songURL absoluteString]]) {
-                //NSLog(@"Found URL Match!");
-                songUserData = sud;
-            }
-            else if (saveSong.fingerprint && sud.songFingerPrint && [sud.songFingerPrint isEqualToString:saveSong.fingerprint])
-            {
-                // We found a fingerprint match after failing a URL match, so we must update the URL and store.
-                //NSLog(@"Found FingerPrint match");
-                songUserData = sud;
-            }
-            else if (saveSong.songUUIDString && sud.songUUID && [sud.songUUID isEqualToString:saveSong.songUUIDString])
-            {
-                // We found a UUID match after failing a fingerprint match, so we must update the URL and store.
-                //NSLog(@"Found UUID match");
-                songUserData = sud;
-            }
-        }
-
-        if (songUserData == nil) {
-            NSLog(@"Nothing found in the store. Making new entry.");
-            // Nothing found. Generate a new entry.
-            NSEntityDescription *songUserDataEntity = [[songUserDataManagedObjectModel entitiesByName] objectForKey:@"TGSongUserData"];
-            songUserData = [[TGSongUserData alloc] initWithEntity:songUserDataEntity insertIntoManagedObjectContext:songPoolManagedContext];
-        }
-        
-        [songUserData setSongURL:[[saveSong songURL] absoluteString]];
-        [songUserData setSongFingerPrint:[saveSong fingerprint]];
-        [songUserData setSongUUID:[saveSong songUUIDString]];
-        [songUserData setSongUserSweetSpot:CMTimeGetSeconds([saveSong songStartTime])];
-        
-        // Make an archive of the song's sweet spots array.
-        NSData *theSweetSpots = [NSKeyedArchiver archivedDataWithRootObject:[saveSong songSweetSpots]];
-        [songUserData setSongSweetSpots:theSweetSpots];
-        
-        // If the user has set their own sweet spot, upload it to the sweet spot server.
-        if (([saveSong songUUIDString] != nil) && (CMTimeGetSeconds([saveSong songStartTime]) != -1)) {
-            [self sweetSpotToServerForSong:saveSong];
-        }
-    }
-    
-    NSTimeInterval timerStart = [NSDate timeIntervalSinceReferenceDate];
-    NSError *error;
-    if (![songPoolManagedContext save:&error]) {
-        NSLog(@"Error while saving\n%@",
-              ([error localizedDescription] != nil) ? [error localizedDescription] : @"Unknown error.");
-        // On error go through them and extract the URL from the failed attempt, find the object that matches it and add it to the list of failed saves.
-        NSDictionary * errorDict = [error userInfo];
-        if ([[error domain] isEqualToString:NSCocoaErrorDomain]) {
-            // We keep the URLS of the failed saves in a set.
-            NSMutableSet *errorURLs = [[NSMutableSet alloc] init];
-            TGSongUserData *errorSongUserData = nil;
-            
-            if ([error code] == NSValidationMultipleErrorsError) {
-                // Deal with each.
-                NSArray *errorArray = [errorDict objectForKey:NSDetailedErrorsKey];
-                for (NSError *anError in errorArray) {
-                    errorSongUserData = [[anError userInfo] objectForKey:@"NSValidationErrorObject"];
-                    [errorURLs addObject:[errorSongUserData songURL]];
-                }
-            }
-            else {
-                errorSongUserData = [[error userInfo] objectForKey:@"NSValidationErrorObject"];
-                [errorURLs addObject:[errorSongUserData songURL]];
-            }
-            
-            // Go through the errorURLs, find the matching song in songsWithChangesToSave and add it to the songsWithSaveError.
-            for (NSString *errorURL in errorURLs) {
-                // Find the song that matches the URL string and add it to the songs with save errors.
-                for (TGSong *aSong in songsWithChangesToSaveCopy) {
-                    if ([[aSong.songURL absoluteString] isEqualToString:errorURL]) {
-                        [songsWithSaveError addObject:aSong];
-                    }
-                }
-            }
-        }
-        NSLog(@"The songsWithSaveError are %@",songsWithSaveError);
-    }
-    
-    // Remove the items in the songsWithChangesToSaveCopy from songsWithChangesToSave (as it may have had some items added in the interrim)
-    [songsWithChangesToSave minusSet:songsWithChangesToSaveCopy];
-    
-
-    NSLog(@"The save took %f seconds.",[NSDate timeIntervalSinceReferenceDate] - timerStart);
-#endif
 }
 
 
@@ -1336,88 +1206,8 @@ static int const kSSCheckCounterSize = 10;
     return fetchedArray;
 }
 
-// See if a given song has metadata available in the array fetched from the core data store.
-// If it does, copy it into the song's object.
-// Note that the songUserSweetSpot is the currently selected sweet spot and the songSweetSpots is an array of all sweet spots.
-// The search order is:
-//      1) look for a url match. All songs have an url, though it may not have been saved to the core data store.
-//      2) look for a uuid match. The uuid is obtained by sending a fingerprint to a server, so if there is a uuid there's no need to look for a fingerprint.
-//      3) look for a fingerprint. A fingerprint is generated when possible and stored until a uuid can be obtained.
 - (BOOL)loadMetadataIntoSong:(TGSong *)aSong {
-#ifdef TSD
     return YES;
-#else
-    NSArray *fetchedArray = [self fetchMetadataFromLocalStore];
-    if (fetchedArray == nil)
-        return NO;
-    
-    for (TGSongUserData *sud in fetchedArray) {
-        if ([sud.songURL isEqualToString:[aSong.songURL absoluteString]]) {
-            
-            [aSong setStartTime:[NSNumber numberWithFloat:sud.songUserSweetSpot]];
-            
-            if (sud.songFingerPrint != nil) {
-                
-                [aSong setFingerprint:sud.songFingerPrint];
-                [aSong setFingerPrintStatus:kFingerPrintStatusDone];
-            }
-            
-            [aSong setSongUUIDString:sud.songUUID];
-            
-            // The songSweetSpots is an array of other sweet spots for the song, either fetched from the sweet spot server or previously set by the user.
-            if (sud.songSweetSpots != nil) {
-                [aSong setSongSweetSpots:[NSKeyedUnarchiver unarchiveObjectWithData:sud.songSweetSpots]];
-            }
-            
-            return YES;
-        }
-        else if (aSong.songUUIDString && sud.songUUID && [sud.songUUID isEqualToString:aSong.songUUIDString]) {
-            
-            [aSong setStartTime:[NSNumber numberWithFloat:sud.songUserSweetSpot]];
-            
-            // Update the metadata of the core data version of this song.
-            
-            // Set/update the core data song url to what we found it to actually be.
-            [sud setSongURL:[[aSong songURL] absoluteString]];
-            
-            // If we have a UUID there's no need to keep the fingerprint.
-            [sud setSongFingerPrint:nil];
-
-            // Instead of saving it immediately, add it to the songs to save.
-            [songsWithChangesToSave addObject:aSong];
-            
-            if (sud.songSweetSpots != nil) {
-                [aSong setSongSweetSpots:[NSKeyedUnarchiver unarchiveObjectWithData:sud.songSweetSpots]];
-            }
-
-            return YES;
-        }
-        else if (aSong.fingerprint && sud.songFingerPrint && [sud.songFingerPrint isEqualToString:aSong.fingerprint]) {
-            //NSLog(@"Found FingerPrint match. Loading song user sweet spot and saving URL back out.");
-            
-            [aSong setStartTime:[NSNumber numberWithFloat:sud.songUserSweetSpot]];
-            
-            // Set/update the core data song url to what we found it to actually be.
-            [sud setSongURL:[[aSong songURL] absoluteString]];
-            
-            // Set the UUID if there is one.
-            if (aSong.songUUIDString != nil) {
-                [sud setSongUUID:aSong.songUUIDString];
-            }
-            
-            // Instead of saving it immediately, add it to the songs to save.
-            [songsWithChangesToSave addObject:aSong];
-
-            if (sud.songSweetSpots != nil) {
-                [aSong setSongSweetSpots:[NSKeyedUnarchiver unarchiveObjectWithData:sud.songSweetSpots]];
-            }
-
-            return YES;
-        }
-    }
-
-    return NO;
-#endif
 }
 
 
@@ -1577,7 +1367,7 @@ static int const kSSCheckCounterSize = 10;
             // tell the song to load its data asyncronously without requesting a callback on completion.
             [aSong loadTrackDataWithCallBackOnCompletion:NO];
             
-            // TEO TSD test. We should try and get the metadata so it's ready,
+            // We should try and get the metadata so it's ready,
             // but not so that songPoolDidLoadDataForSongID gets called for each song.
             [self requestEmbeddedMetadataForSongID:songID withHandler:^(NSDictionary* theData){
                 //            NSLog(@"preloadSongArray got data! %@",theData);
@@ -1590,6 +1380,7 @@ static int const kSSCheckCounterSize = 10;
 //    }];
 }
 
+/*
 - (void)preloadSongArray:(NSArray *)songArray {
 //    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
 
@@ -1611,7 +1402,7 @@ static int const kSSCheckCounterSize = 10;
             // tell the song to load its data asyncronously without requesting a callback on completion.
             [aSong loadTrackDataWithCallBackOnCompletion:NO];
             
-            // TEO TSD test. We should try and get the metadata so it's ready,
+            // We should try and get the metadata so it's ready,
             // but not so that songPoolDidLoadDataForSongID gets called for each song.
             [self requestEmbeddedMetadataForSongID:songID withHandler:^(NSDictionary* theData){
                 //            NSLog(@"preloadSongArray got data! %@",theData);
@@ -1620,29 +1411,27 @@ static int const kSSCheckCounterSize = 10;
         
     }];
 }
-//- (void)preloadSongArray:(NSArray *)songArray {
-//    NSLog(@"preloading");
-//    // Be smarter about this. Keep track of what's cached (in a set) and only recache what's missing.
-//    // The loadTrackData won't reload a loaded track but we can probably still save some loops.
-//    for (NSNumber * songID in songArray) {
-//        TGSong *aSong = [self songForID:[songID integerValue]];
-//        if (aSong == NULL) {
-//            NSLog(@"Nope, the requested ID %@ is not in the song pool.",songID);
-//            return;
-//        }
-//        [aSong loadTrackData];
-//        // TEO TSD test. We should try and get the metadata so it's ready,
-//        // but not so that songPoolDidLoadDataForSongID gets called for each song.
-////        [self requestEmbeddedMetadataForSong:[songID integerValue]];
-//        [self requestEmbeddedMetadataForSongID:[songID integerValue] withHandler:^(NSDictionary* theData){
-////            NSLog(@"preloadSongArray got data! %@",theData);
-//        }];
-//    }
-//}
+*/
 
 #pragma mark -
-
-- (void)requestSongPlayback:(id<SongIDProtocol>)songID withStartTimeInSeconds:(NSNumber *)time {
+/**
+ Initiate a request to play back the given song at its selected sweet spot.
+ :params: songID The id of the song to play.
+*/
+- (void)requestSongPlayback:(id<SongIDProtocol>)songID {
+    TGSong *aSong = [self songForID:songID];
+    if (aSong == nil) {
+        return;
+    }
+    
+    [self requestSongPlayback:songID withStartTimeInSeconds:aSong.startTime makeSweetSpot:NO];
+}
+/**
+    Initiate a request to play back the given song at the given start time in seconds.
+ :params: songID The id of the song to play.
+ :params: time The offset in seconds to start playing the song at.
+ */
+- (void)requestSongPlayback:(id<SongIDProtocol>)songID withStartTimeInSeconds:(NSNumber *)time makeSweetSpot:(BOOL)makeSS {
     
     TGSong *aSong = [self songForID:songID];
     if (aSong == NULL) {
@@ -1652,7 +1441,15 @@ static int const kSSCheckCounterSize = 10;
     
     lastRequestedSong = aSong;
     
-    [aSong setRequestedSongStartTime:CMTimeMakeWithSeconds([time doubleValue], 1)];
+    //MARK: TMP
+    // So the issue here is that there are two ways of requesting a song playback;
+    // * Set a sweet spot so that subsequent playbacks also start at the given time.
+    // * A one-off playback at the given time (eg, scrubbing or when the playlist starts a song)
+    // So, perhaps we need two separate methods or signal the intention via a parameter.
+    [aSong setStartTime:time makeSweetSpot:makeSS];
+    
+//    [aSong setRequestedSongStartTime:CMTimeMakeWithSeconds([time doubleValue], 1)];
+    
 //    NSLog(@"the urlLoadingQueue size: %lu",(unsigned long)[urlLoadingOpQueue operationCount]);
     // First cancel any pending requests in the operation queue and then add this.
     // This won't delete them from the queue but it will tell each in turn it has been cancelled.
@@ -1666,12 +1463,12 @@ static int const kSSCheckCounterSize = 10;
     }];
 }
 
-
+/// Setter for the playheadPos which is bound to the timeline and the playlist progress bars.
 - (void)setPlayheadPos:(NSNumber *)newPos {
     playheadPos = newPos;
 }
 
-
+/// Getter for the playheadPos which is bound to the timeline and the playlist progress bars.
 - (NSNumber *)playheadPos {
     return playheadPos;
 }
@@ -1688,22 +1485,8 @@ static int const kSSCheckCounterSize = 10;
         NSLog(@"currently playing is the same as next song. Early out.");
         return;
     }
-    
-    if ([nextSong playStart]) {
-#ifdef AE
-        // TEO < AE
-        // if the requestedSongStartTime is -1 then play the song from the user's selected sweet spot.
-        double atTime;
-        if (CMTimeGetSeconds(nextSong.requestedSongStartTime) == -1) {
-            atTime = CMTimeGetSeconds(nextSong.songStartTime) ;
-        } else
-            atTime = CMTimeGetSeconds(nextSong.requestedSongStartTime);
-        if (atTime < 0) {
-            atTime = 0;
-        }
-        [theSongPlayer playSongwithID:nextSong.songID atTime:atTime];
-        // TEO AE >
-#endif
+    NSNumber* theStartTime = [nextSong playStart];
+    if (theStartTime) {
         currentlyPlayingSong = nextSong;
         
         NSNumber *theSongDuration = [NSNumber numberWithDouble:[currentlyPlayingSong getDuration]];
@@ -1725,7 +1508,7 @@ static int const kSSCheckCounterSize = 10;
         }
         
         // Set the requested playheadposition tracker to the song's start time in a KVC compliant fashion.
-        [self setRequestedPlayheadPosition:[nextSong startTime]];
+        [self setRequestedPlayheadPosition:theStartTime];
         
     }
 }
@@ -1757,12 +1540,12 @@ static int const kSSCheckCounterSize = 10;
     
     [song setFingerPrintStatus:kFingerPrintStatusDone];
     
-    // Check the song user data DB to see if we have song data for the UUID/fingerprint.
-    // If found, load the data into the song.
-    if (![self loadMetadataIntoSong:song]) {
-        // If not found in the user data file, add the song to a songsWithChangesToSave dictionary so any changes to it are stored.
-        [songsWithChangesToSave addObject:song];
-    }    
+//    // Check the song user data DB to see if we have song data for the UUID/fingerprint.
+//    // If found, load the data into the song.
+//    if (![self loadMetadataIntoSong:song]) {
+//        // If not found in the user data file, add the song to a songsWithChangesToSave dictionary so any changes to it are stored.
+//        [songsWithChangesToSave addObject:song];
+//    }    
 }
 
 
@@ -1795,11 +1578,12 @@ static int const kSSCheckCounterSize = 10;
 
 // songReadyForPlayback is called (async'ly) by the song once it is fully loaded.
 - (void)songReadyForPlayback:(TGSong *)song {
-    
-    // If the song has a undefined (-1) start time, set it to whatever fetchSongSweetSpot returns.
-    if ([[song startTime] doubleValue] == -1) {
-        [song setStartTime:[self fetchSongSweetSpot:song]];
-    }
+
+    //MARK: TMP
+//     If there's a one-off start time set, use that (and reset it).
+//    if ([song startTime] == nil) {
+//        [song setStartTime:[self fetchSongSweetSpot:song] makeSweetSpot:YES];
+//    }
     
     // Make sure the last request for playback is put on a serial queue so it always is the last song left playing.
     if (song == lastRequestedSong) {
@@ -1807,9 +1591,6 @@ static int const kSSCheckCounterSize = 10;
 //            NSLog(@"putting song %lu on the playbackQueue",(unsigned long)[song songID]);
             [self playbackSong:song];
         });
-    } else {
-        
-//        NSLog(@"songReadyForPlayback overridden. Song is %lu and lastRequestedSong is %lu",(unsigned long)[song songID],(unsigned long)[lastRequestedSong songID]);
     }
 }
 

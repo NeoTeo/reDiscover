@@ -97,7 +97,7 @@
     if (selectedRow >=0) {
         [playlist setPosInPlaylist:selectedRow];
         id<SongIDProtocol> newSongID = [playlist songIDAtIndex:selectedRow];
-        [_songPoolAPI requestSongPlayback:newSongID withStartTimeInSeconds:0];
+        [_songPoolAPI requestSongPlayback:newSongID withStartTimeInSeconds:[NSNumber numberWithFloat:0] makeSweetSpot:NO];
 //        NSInteger newSongID = [[playlist songIDAtIndex:selectedRow] integerValue];
     }
 

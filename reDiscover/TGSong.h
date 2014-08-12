@@ -93,27 +93,32 @@ enum {
 @property CMTime songDuration;
 // The songStartTime is the number of seconds into the song from which to begin playback.
 // If a sweet spot is set (in TEOData.selectedSweetspot) it should be set to that.
-@property CMTime songStartTime;
+//@property CMTime songStartTime;
+//// A temporary start time request?
+//@property CMTime requestedSongStartTime;
+
 @property int songTimeScale;
 
 #define TSD
-#ifndef TSD
-// Additional song metadata.
-@property NSDictionary *songData;
-#endif
 
 // An id key into the songpool's art dictionary. Values of -1 will be no art and 0 will be the default "no cover" art.
 @property NSInteger artID;
 
-// A temporary start time request?
-@property CMTime requestedSongStartTime;
 
-// The currently selected sweet spot. This and the SongSweetSpots array are shadowed in the TEOSongData
-// array and should be moved in there.
-@property NSUInteger selectedSweetSpot;
+/**
+ The currently selected sweet spot. This and the SongSweetSpots array are shadowed in the TEOSongData
+ array and should be moved in there.
+*/
+//@property NSUInteger selectedSweetSpot;
+
+/** 
+ Holds a one-off time offset for this song that is cleared after use.
+ This is used whenever a song needs to be played from the start by the playlist.
+*/
+@property NSNumber* oneOffStartTime;
 
 // All available sweet spots for the song.
-@property NSArray *songSweetSpots;
+//@property NSArray *songSweetSpots;
 
 // A counter to provide a variable interval between sweet-spot checks.
 @property NSUInteger SSCheckCountdown;
@@ -123,24 +128,18 @@ enum {
 
 - (void)storeSelectedSweetSpot;
 - (NSNumber *)startTime;
-- (void)setStartTime:(NSNumber *)startTime;
+- (void)setStartTime:(NSNumber *)startTime makeSweetSpot:(BOOL)makeSS;
 - (void)setSweetSpot:(NSNumber*)theSS;
-//- (id)initWithURL:(NSURL *)anURL;
 - (id)init;
 - (void)loadTrackDataWithCallBackOnCompletion:(BOOL)wantsCallback;
-//- (void)loadTrackData;
-- (BOOL)playStart;
+- (NSNumber*)playStart;
 - (void)playStop;
 - (double)getDuration;
 - (Float64)getCurrentPlayTime;
 - (void)setCurrentPlayTime:(NSNumber *)playTimeInSeconds;
 - (void)requestCoverImageWithHandler:(void (^)(NSImage *))imageHandler;
-//- (void)requestSongAlbumImage:(void (^)(NSImage *))imageHandler;
-#ifndef TSD
-- (void)loadSongMetadata;
-#else
 - (BOOL)loadSongMetadata;
-#endif
+
     
 @property id <TGSongDelegate>delegate;
 @end
@@ -151,7 +150,6 @@ enum {
 - (id<SongIDProtocol>)lastRequestedSongID;
 - (void)songReadyForPlayback:(TGSong *)song;
 - (void)songDidFinishPlayback:(TGSong *)song;
-//- (void)songDidLoadEmbeddedMetadata:(TGSong *)song;
 - (void)songDidUpdatePlayheadPosition:(NSNumber *)playheadPosition;
 - (dispatch_queue_t)serialQueue;
 

@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="6154.17" systemVersion="13D65" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="6205" systemVersion="14A314h" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
-        <deployment version="1070" identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="6154.17"/>
+        <deployment version="1070" defaultVersion="101000" identifier="macosx"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="6205"/>
     </dependencies>
     <objects>
         <customObject id="-2" userLabel="File's Owner" customClass="TGSongTimelineViewController">
@@ -13,7 +13,7 @@
             </connections>
         </customObject>
         <customObject id="-1" userLabel="First Responder" customClass="FirstResponder"/>
-        <customObject id="-3" userLabel="Application"/>
+        <customObject id="-3" userLabel="Application" customClass="NSObject"/>
         <popover behavior="t" id="JLh-Cj-pgE">
             <connections>
                 <outlet property="contentViewController" destination="-2" id="xdd-0o-k6O"/>
@@ -24,7 +24,7 @@
             <subviews>
                 <slider verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="oVK-ar-APo">
                     <rect key="frame" x="18" y="18" width="619" height="21"/>
-                    <sliderCell key="cell" continuous="YES" alignment="left" maxValue="100" doubleValue="17.194685409698995" tickMarkPosition="above" sliderType="linear" id="6C3-ti-ZBr" customClass="TGTimelineSliderCell"/>
+                    <sliderCell key="cell" continuous="YES" alignment="left" maxValue="100" doubleValue="16.856317934782609" tickMarkPosition="above" sliderType="linear" id="6C3-ti-ZBr" customClass="TGTimelineSliderCell"/>
                 </slider>
             </subviews>
         </customView>

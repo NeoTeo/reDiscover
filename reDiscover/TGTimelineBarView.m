@@ -39,9 +39,9 @@
     [[NSColor darkGrayColor] setFill];
     NSRectFill(playbackRect);
     
-    [[NSColor greenColor] setFill];
-    NSRect testRect = NSMakeRect(0, 0, 2, 2);
-    NSRectFill(testRect);
+//    [[NSColor greenColor] setFill];
+//    NSRect testRect = NSMakeRect(0, 0, 20, 2);
+//    NSRectFill(testRect);
 }
 
 @end

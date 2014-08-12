@@ -19,10 +19,24 @@
     return self;
 }
 
-
+/*
 - (void)mouseEntered:(NSEvent *)theEvent {
     NSLog(@"mouse entered sweet spot");
 }
+
+-(void)mouseExited:(NSEvent *)theEvent {
+    NSLog(@"mouse exited sweet spot");
+}
+
+- (void)enableTracking {
+    NSTrackingArea *trackingArea = [[NSTrackingArea alloc]
+                                    initWithRect:self.animator.frame
+                                    options: (NSTrackingMouseEnteredAndExited | NSTrackingActiveAlways )
+                                    owner:self userInfo:nil];
+    
+    [self addTrackingArea:trackingArea];
+}
+*/
 
 - (void)drawRect:(NSRect)dirtyRect
 {

@@ -21,10 +21,7 @@
 @class AVAudioFile;
 
 // protocol forward declaration
-//@protocol TGSongPoolDelegate;
-//@protocol SongPoolAccessProtocol;
 @protocol SongGridAccessProtocol;
-//@protocol TGSongGridViewControllerDelegate;
 @protocol TGMainViewControllerDelegate;
 
 @protocol SongIDProtocol <NSObject>
@@ -50,11 +47,17 @@
 - (NSString*)albumForSongID:(id<SongIDProtocol>)songID;
 - (AVAudioFile*)cachedAudioFileForSongID:(id<SongIDProtocol>)songID;
 - (NSNumber*)cachedLengthForSongID:(id<SongIDProtocol>)songID;
-- (void)requestSongPlayback:(id<SongIDProtocol>)songID withStartTimeInSeconds:(NSNumber *)time;
+
+- (void)requestSongPlayback:(id<SongIDProtocol>)songID;
+- (void)requestSongPlayback:(id<SongIDProtocol>)songID
+     withStartTimeInSeconds:(NSNumber *)time
+             makeSweetSpot:(BOOL)makeSS;
+
 - (NSDictionary *)songDataForSongID:(id<SongIDProtocol>)songID;
 - (NSNumber *)songDurationForSongID:(id<SongIDProtocol>)songID;
 - (id<SongIDProtocol>)lastRequestedSongID;
 - (id<SongIDProtocol>)currentlyPlayingSongID;
+
 - (void)setRequestedPlayheadPosition:(NSNumber *)newPosition;
 // Sweet Spot accessors.
 - (NSArray *)sweetSpotsForSongID:(id<SongIDProtocol>)songID;
@@ -75,7 +78,8 @@
 @end
 
 // The public interface declaration doesn't implement the TGSongDelegate. The private interface declaration in the .m will.
-@interface TGSongPool : NSObject <TGPlaylistViewControllerDelegate, SongPoolAccessProtocol>
+//@interface TGSongPool : NSObject <TGPlaylistViewControllerDelegate, SongPoolAccessProtocol>
+@interface TGSongPool : NSObject <SongPoolAccessProtocol>
 {
     int loadedURLs;
     BOOL errorLoadingSongURLs;
@@ -107,12 +111,18 @@
     NSManagedObjectContext *songPoolManagedContext;
     
     // songs added to this dictionary need saving (that is, to be added to the managed object context as TGSongUserData managed objects)
-    NSMutableSet *songsWithChangesToSave;
-    NSMutableSet *songsWithSaveError;
+//    NSMutableSet *songsWithChangesToSave;
+//    NSMutableSet *songsWithSaveError;
     
     NSTimer *idleTimeFingerprinterTimer;
-    
+
+    /// The playheadPos is bound to the playlist progress indicator value property so that when the song
+    /// progresses so does the indicator.
+    /// It is also bound, via an object controller, to the popup timeline NSSlider's (timelineBar)
+    /// cell's (TGTimelineSliderCell) currentPlayheadPositionInPercent property.
     NSNumber *playheadPos;
+    
+    /// The requestedPlayheadPosition is bound,via an object controller, to the popup timeline's NSSlider (timelineBar).
     NSNumber *requestedPlayheadPosition;
     
     SongPlayer* theSongPlayer;
@@ -121,9 +131,7 @@
 @property TGStack* requestedSongStack;
 @property CoverArtArchiveWebFetcher* coverArtWebFetcher;
 
-//@property id<TGSongPoolDelegate> delegate;
 @property id<TGMainViewControllerDelegate> delegate;
-//@property id<TGSongGridViewControllerDelegate> songGridAccessAPI;
 @property id<SongGridAccessProtocol> songGridAccessAPI;
 
 // Holds the art associated with the songs. Songs will hold indices into the art array.
@@ -146,16 +154,10 @@
 - (BOOL)validateURL:(NSURL *)anURL;
 - (BOOL)loadFromURL:(NSURL *)anURL ;
 
-
-//- (void)setRequestedPlayheadPosition:(NSNumber *)newPosition;
-//
-//- (id)currentlyPlayingSongID;
-
-
 - (void)requestImageForSongID:(id<SongIDProtocol>)songID withHandler:(void (^)(NSImage *))imageHandler;
 
 // Caching methods
-- (void)preloadSongArray:(NSArray *)songArray;
+//- (void)preloadSongArray:(NSArray *)songArray;
 //- (void)cacheWithContext:(NSDictionary*)cacheContext;
 
 #pragma mark -
@@ -163,7 +165,7 @@
 // Async methods
 - (void)requestEmbeddedMetadataForSongID:(id<SongIDProtocol>)songID withHandler:(void (^)(NSDictionary*))dataHandler;
 
-- (void)offsetSweetSpotForSongID:(id<SongIDProtocol>)songID bySeconds:(Float64)offsetInSeconds;
+//- (void)offsetSweetSpotForSongID:(id<SongIDProtocol>)songID bySeconds:(Float64)offsetInSeconds;
 - (void)storeSweetSpotForSongID:(id<SongIDProtocol>)songID;
 
 // song data accessors.

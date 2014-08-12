@@ -196,9 +196,12 @@
     [transformer bind:@"maxDuration" toObject:_currentSongPool withKeyPath:@"currentSongDuration" options:nil];
    
     // Bind the playlist controller's progress indicator value parameter with the song pool's playheadPos via the timeline value transformer.
-    [[_playlistController playlistProgress] bind:@"value" toObject:_currentSongPool withKeyPath:@"playheadPos" options:@{NSValueTransformerNameBindingOption: @"TimelineTransformer"}];
+    [[_playlistController playlistProgress] bind:@"value"
+                                        toObject:_currentSongPool
+                                     withKeyPath:@"playheadPos"
+                                         options:@{NSValueTransformerNameBindingOption: @"TimelineTransformer"}];
     
-    // Bind the timeline nsslider to observe the requestedPlayheadPosition of the currently playing song via the objectcontroller using the TimelineTransformer.
+    // Bind the timeline nsslider (timelineBar) to observe the requestedPlayheadPosition of the currently playing song via the objectcontroller using the TimelineTransformer.
     [_songGridController.songTimelineController.timelineBar bind:@"value"
                                                         toObject:_myObjectController
                                                      withKeyPath:@"selection.requestedPlayheadPosition"
@@ -302,7 +305,7 @@
 
 
 - (void)songUISweetSpotButtonWasPressed {
-    [_currentSongPool offsetSweetSpotForSongID:[_currentSongPool lastRequestedSongID] bySeconds:-0.25];
+//    [_currentSongPool offsetSweetSpotForSongID:[_currentSongPool lastRequestedSongID] bySeconds:-0.25];
 }
 
 #pragma mark -
@@ -560,7 +563,7 @@
             return;
         }
         
-        [_currentSongPool requestSongPlayback:newSongID withStartTimeInSeconds:0];
+        [_currentSongPool requestSongPlayback:newSongID withStartTimeInSeconds:0 makeSweetSpot:NO];
     }
 }
 //- (void)songPoolDidFinishPlayingSong:(NSUInteger)songID {
@@ -576,10 +579,10 @@
 //}
 
 // TGSongGridViewControllerDelegate methods
-- (void)requestSongArrayPreload:(NSArray *)theArray {
-    
-    [_currentSongPool preloadSongArray:theArray];
-}
+//- (void)requestSongArrayPreload:(NSArray *)theArray {
+//    
+//    [_currentSongPool preloadSongArray:theArray];
+//}
 
 #pragma mark TGSongGridViewControllerDelegate method implementations
 
@@ -590,7 +593,7 @@
 }
 
 - (void)userSelectedSongID:(id<SongIDProtocol>)songID {
-    [_currentSongPool requestSongPlayback:songID withStartTimeInSeconds:[NSNumber numberWithInt:-1]];
+    [_currentSongPool requestSongPlayback:songID];
     
     // reset the idle timer
     [_idleTimer startIdleTimer];

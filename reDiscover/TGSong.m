@@ -14,47 +14,26 @@
 
 @implementation TGSong
 
-#ifndef TSD
-- (id)initWithURL:(NSURL *)anURL {
-    
-    self = [super init];
-    if (self) {
-        
-        _songURL = anURL;
-        _songTimeScale = 100; // Centiseconds.
-        
-        [self setSongStartTime:CMTimeMake(-1, 1)];
-//        _fingerprint = nil; removed for TEOSongData
-        _fingerPrintStatus = kFingerPrintStatusEmpty;
-        _songSweetSpots = nil;
-        _requestedSongStartTime = CMTimeMake(-1, 1);
-        _SSCheckCountdown = 0;
-        _artID = -1;
-    }
-    return self;
-}
-#endif
-
 - (id)init {
     self = [super init];
     if (self) {
         
         _songTimeScale = 100; // Centiseconds.
         
-        [self setSongStartTime:CMTimeMake(-1, 1)];
+//        [self setSongStartTime:CMTimeMake(-1, 1)];
+//        _requestedSongStartTime = CMTimeMake(-1, 1);
+
         _fingerPrintStatus = kFingerPrintStatusEmpty;
-        _songSweetSpots = nil;
-        _requestedSongStartTime = CMTimeMake(-1, 1);
+//        _songSweetSpots = nil;
         _SSCheckCountdown = 0;
         _artID = -1;
     }
     return self;
 }
-
+//TODO: Move to songpool?
 - (void)requestCoverImageWithHandler:(void (^)(NSImage *))imageHandler {
 
     if (songAsset == nil) {
-//        songAsset = [[AVURLAsset alloc] initWithURL:_songURL options:nil];
         songAsset = [[AVURLAsset alloc] initWithURL:[NSURL URLWithString:self.TEOData.urlString] options:nil];
     }
     [songAsset loadValuesAsynchronouslyForKeys:@[@"commonMetadata"] completionHandler:^{
@@ -63,26 +42,11 @@
 
             NSArray *artworks = [AVMetadataItem metadataItemsFromArray:songAsset.commonMetadata  withKey:AVMetadataCommonKeyArtwork keySpace:AVMetadataKeySpaceCommon];
 
-            // TEO should only do one!
             for (AVMetadataItem *metadataItem in artworks) {
                 
                 // Use the passed in callback to return image.
                 imageHandler([[NSImage alloc] initWithData:[metadataItem.value copyWithZone:nil]]);
                 return;
-            
-//                if ([metadataItem.keySpace isEqualToString:AVMetadataKeySpaceID3]) {
-//        
-////                    NSDictionary *d = [metadataItem.value copyWithZone:nil];
-////                    imageHandler([[NSImage alloc] initWithData:[d objectForKey:@"data"]]);
-//                    
-//                } else if ([metadataItem.keySpace isEqualToString:AVMetadataKeySpaceiTunes]) {
-//                                NSLog(@"not here.");
-//                    // Use the passed in callback to return image.
-//                    imageHandler([[NSImage alloc] initWithData:[metadataItem.value copyWithZone:nil]]);
-//                    return;
-//                    
-//                } else
-//                    NSLog(@"%@ is neither mp3 nor iTunes.",metadataItem.keySpace);
             }
             
             // No luck. Call the image handler with nil.
@@ -116,126 +80,12 @@
         [[self delegate] songReadyForPlayback:self];
     }
 }
-/*
-// Just-in-time track data loading.
-- (void)loadTrackDataWithCallBackOnCompletion:(BOOL)wantsCallback {
-    
-    // If the song is already loaded we just need to tell the delegate.
-    if ([self songStatus] == kSongStatusReady) {
-        if (wantsCallback == YES) {
-            if ([[self delegate] respondsToSelector:@selector(songReadyForPlayback:)]) {
-                [[self delegate] songReadyForPlayback:self];
-            }
-        }
-        return;
-    }
-    // Start off marking this song as currently loading.
-    [self setSongStatus:kSongStatusLoading];
-    
-    // TEO change this to comparing SongID types when we switch over to using the SongID type
-    // Check if we're still the last requested song.
-    NSString* idString = [[self delegate] lastRequestedSongID];
-    if (![idString isEqualToString:[self songID]] ) {
-        NSLog(@"early out of load track");
-        return;
-    }
-//  Loading the asset with precise duration and timing significantly slows down playback response times.
-    // If used, should only be enabled on songs that are not returning accurate timing values. (Eg. the Abba stuff)
-//    NSDictionary *songLoadingOptions = @{AVURLAssetPreferPreciseDurationAndTimingKey : @YES};
-//    songAsset = [[AVURLAsset alloc] initWithURL:_songURL options:songLoadingOptions];
-    
-// TEO can get stuck in here (Often!) semaphore_wait_trap. This is probably due to hitting GCD's 64 thread limit.
-//    songAsset = [[AVURLAsset alloc] initWithURL:_songURL options:nil];
 
-    NSURL *theURL = [NSURL URLWithString:self.TEOData.urlString];
-    songAsset = [[AVURLAsset alloc] initWithURL:theURL options:nil];
-   
-    // The keys that must be set for the completion hander to be called.
-    NSArray *keys = @[@"tracks",@"duration"];
-    
-//    NSLog(@"loadTrackDataWithCallbackOnCompletion for song %@ and wantsCallback %@",[self songID],wantsCallback?@"YES":@"NO");
-    //NSLog(@"I gots %lu",(unsigned long)[artworks count]);
-    NSAssert(songAsset, @"Song asset is missing!");
-    [songAsset loadValuesAsynchronouslyForKeys:keys completionHandler:^() {
-        NSError *error = nil;
-        AVKeyValueStatus assetStatus = [songAsset statusOfValueForKey:@"tracks" error:&error];
-        
-        switch (assetStatus) {
-            case AVKeyValueStatusLoaded:
-            {
-                if ([self loadStatus] == kLoadStatusDurationCompleted) {
-                    
-                    [self setSongStatus:kSongStatusReady];
-                   
-                } else
-                    [self setLoadStatus:kLoadStatusTrackCompleted];
-                
-                break;
-            }
-            case AVKeyValueStatusFailed:
-            {
-                NSLog(@"URL track %@ load failed.",theURL);
-                [self setLoadStatus:kLoadStatusFailed];
-                break;
-            }
-            case AVKeyValueStatusCancelled:
-            {
-                // Do whatever is appropriate for cancelation.
-                [self setLoadStatus:kLoadStatusCancelled];
-                break;
-            }
-            case AVKeyValueStatusUnknown:
-                NSLog(@"Status for song duration unknown");
-                break;
-            case AVKeyValueStatusLoading:
-                NSLog(@"Status for song duration loading");
-
-        }
-        
-        assetStatus = [songAsset statusOfValueForKey:@"duration"
-                                             error:&error];
-        switch (assetStatus) {
-            case AVKeyValueStatusLoaded:
-            {
-                
-                [self setSongDuration:songAsset.duration];
-                if ([self loadStatus] == kLoadStatusTrackCompleted) {
-                    
-                    [self setSongStatus:kSongStatusReady];
-                    
-                } else
-                    [self setLoadStatus:kLoadStatusDurationCompleted];
-        
-                //NSLog(@"The loaded song has a duration of %f",CMTimeGetSeconds(_songDuration));
-                break;
-            }
-            case AVKeyValueStatusFailed:
-            {
-                NSLog(@"URL duration %@ load failed.",theURL);
-                [self setLoadStatus:kLoadStatusDurationFailed];
-                [self setSongStatus:kSongStatusFailed];
-                break;
-            }
-            case AVKeyValueStatusCancelled:
-                NSLog(@"Status for song duration cancelled");
-                break;
-            case AVKeyValueStatusUnknown:
-                NSLog(@"Status for song duration unknown");
-                break;
-            case AVKeyValueStatusLoading:
-                NSLog(@"Status for song duration loading");
-        }
-        
-        if ((wantsCallback == YES) && [self songStatus] == kSongStatusReady) {
-            //[self songDataHasLoaded];
-            if ([[self delegate] respondsToSelector:@selector(songReadyForPlayback:)]) {
-                [[self delegate] songReadyForPlayback:self];
-            }
-        }
-    }];
-}
-*/
-
+/**
+    Load metadata from the file associated with this song and store it in the TEOData managed context.
+    @returns YES on success and NO on failure to find any metadata. 
+    In either case the TEOData will be set to some reasonable defaults.
+ */
 - (BOOL)loadSongMetadata {    
     NSString *tmpString = [self.TEOData.urlString stringByDeletingPathExtension];
     NSString* fileName = [tmpString lastPathComponent];
@@ -281,16 +131,25 @@
     return NO;
 }
 
+/**
+ Return the start time for this song, which is given by this song's selected sweet spot.
+ @returns Start time in seconds.
+ */
 - (NSNumber *)startTime {
-//    return [NSNumber numberWithFloat:CMTimeGetSeconds([self songStartTime])];
+    if (self.oneOffStartTime) {
+        return self.oneOffStartTime;
+    }
     return self.TEOData.selectedSweetSpot;
 }
 
-
-// This method can get called before the song has finished loading its duration from the datafile.
-// Since we cannot assume we know the duration we cannot check it against the given start time.
-// Because the startTime can (currently) only be set by listening to the song we have to assume it will be < song duration.
-- (void)setStartTime:(NSNumber *)startTime {
+/**
+ Set the start time for this song by creating a sweet spot at the requested time and setting it as the currently selected sweet spot.
+ :params: startTime The offset, in seconds, from the beginning of the song (time 0) that we wish this song to start playing from.
+ */
+- (void)setStartTime:(NSNumber *)startTime makeSweetSpot:(BOOL)makeSS {
+    // This method can get called before the song has finished loading its duration from the datafile.
+    // Since we cannot assume we know the duration we cannot check it against the given start time.
+    // Because the startTime can (currently) only be set by listening to the song we have to assume it will be < song duration.
     
     float floatStart = [startTime floatValue];
     if ( _songStatus == kSongStatusReady) {
@@ -302,9 +161,12 @@
         }
     }
     // This sets song.songStartTime which we are deprecating for teo.TEOData.selectedSweetSpot and teo.TEOData.sweetSpotArray
-    [self setSongStartTime:CMTimeMakeWithSeconds(floatStart, _songTimeScale)];
+//    [self setSongStartTime:CMTimeMakeWithSeconds(floatStart, _songTimeScale)];
     
-    [self setSweetSpot:[NSNumber numberWithFloat:floatStart]];
+    self.oneOffStartTime = startTime;
+    if (makeSS) {
+        [self setSweetSpot:startTime];
+    }
 }
 
 - (void)setSweetSpot:(NSNumber*)theSS {
@@ -328,12 +190,12 @@
     
 }
 
-- (BOOL)playStart {
-    // TEO AE
-#ifdef AE
-    return YES;
-#endif
+//MARK: Audio playback code.
+- (NSNumber*)playStart {
+
     if ([self songStatus] == kSongStatusReady) {
+        
+        NSNumber* theTime;
         
         if (songPlayerItem == nil) {
             NSDate* preDate = [NSDate date];
@@ -360,12 +222,16 @@
         }
         [songPlayer setVolume:0.2];
         
-        // if the requestedSongStartTime is -1 then play the song from the user's selected sweet spot.
-        if (CMTimeGetSeconds(_requestedSongStartTime) == -1) {
-            [songPlayer seekToTime:_songStartTime];
-        } else
-            [songPlayer seekToTime:_requestedSongStartTime];
+        theTime = self.oneOffStartTime;
+        if (theTime) {
+            NSLog(@"Seeking to time %f as a one off",[theTime floatValue]);
+            self.oneOffStartTime = nil;
+            NSLog(@"The current time is %f",CMTimeGetSeconds([songPlayer currentTime]));
+        } else {
+            theTime = self.TEOData.selectedSweetSpot;
+        }
         
+        [songPlayer seekToTime:CMTimeMakeWithSeconds([theTime floatValue], 1)];
 
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(playDidFinish) name:AVPlayerItemDidPlayToEndTimeNotification object:songPlayerItem];
         
@@ -386,9 +252,9 @@
         }
 
         [songPlayer play];
-        return YES;
+        return theTime;
     }
-    return NO;
+    return [NSNumber numberWithFloat:0];
 }
 
 
@@ -436,9 +302,13 @@
     _cachedFile = nil;
 }
 
-//- (void)setCurrentPlayTime:(Float64)playTimeInSeconds {
+/**
+    Immediately set the playhead to the given time offset.
+    :Param: The offset in seconds.
+ */
 - (void)setCurrentPlayTime:(NSNumber *)playTimeInSeconds {
     double playTime = [playTimeInSeconds doubleValue];
+//    NSLog(@"playTime %f",playTime);
     if ((playTime >= 0) && (playTime < CMTimeGetSeconds([self songDuration]))) {
         [songPlayer seekToTime:CMTimeMake(playTime*100, 100)];
     }
@@ -448,6 +318,7 @@
     return CMTimeGetSeconds([self songDuration]);
 }
 
+/// Gets the current play time in seconds.
 - (Float64)getCurrentPlayTime {
     if (songPlayer != nil) {
         return CMTimeGetSeconds([songPlayer currentTime]);
@@ -455,8 +326,9 @@
     return 0;
 }
 
-// TEO Never called.
-// Looks in the common metadata of the asset for the given string.
+
+/*
+/// Looks in the common metadata of the asset for the given string.
 - (NSString *)getStringValueForStringKey:(NSString *)theString fromAsset:(AVURLAsset *)theAsset
 {
     NSArray *songMeta = [theAsset commonMetadata];
@@ -474,6 +346,6 @@
     }
     return @"no data.";
 }
-
+*/
 
 @end

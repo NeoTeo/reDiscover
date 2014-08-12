@@ -14,6 +14,18 @@
 @implementation TGTimelineSliderCell
 
 
+/**
+ When the slider is released the signal is given to store the sweet spot at this position.
+ */
+- (void)stopTracking:(NSPoint)lastPoint at:(NSPoint)stopPoint inView:(NSView *)controlView mouseIsUp:(BOOL)flag {
+    NSLog(@"Done tracking!");
+//    [_theController userCreatedNewSweetSpot:<#(id)#>]
+}
+
+/**
+    Grow the timeline bar and all the sweet spot controls to twice their current height.
+    Called when the mouse pointer enters the slider cell area.
+ */
 -(void)mouseEntered:(NSEvent *)theEvent {
     
     int halfSweetSpot = kSweetSpotMarkerHeight/2;
@@ -23,12 +35,18 @@
     for (TGSweetSpotControl *spot in [sweetSpotsView subviews]) {
         
         spot.animator.frame = NSRectFromCGRect(CGRectInset(spot.frame, -halfSweetSpot, -halfSweetSpot));
+        
+
     }
     
     // Change the size of the barRect
-    timelineBar.animator.frame = NSRectFromCGRect(CGRectInset(barRect, 0, -4));
+    timelineBarView.animator.frame = NSRectFromCGRect(CGRectInset(barRect, 0, -4));
 }
 
+/**
+ Shrink the timeline bar and all the sweet spot controls to half their current height.
+ Called when the mouse pointer enters the slider cell area.
+ */
 -(void)mouseExited:(NSEvent *)theEvent {
     
     int halfSweetSpot = kSweetSpotMarkerHeight/2;
@@ -39,7 +57,7 @@
     }
     
     // Restore the size of the timeline bar.
-    timelineBar.animator.frame = barRect;
+    timelineBarView.animator.frame = barRect;
 }
 
 -(void)awakeFromNib {
@@ -58,7 +76,8 @@
     // Allow controlview to draw subviews' layers into its own.
     [_controlView setCanDrawSubviewsIntoLayer:YES];
     
-    // This doesn't seem to work - throws some uncommitted CATransaction shite I can't be arsed to look at now.
+    
+    // Throws uncommitted CATransaction when not run on the main thread.
     // Need to find out whether I can commit transaction explicitly.
 //    // Make it so that subviews can be drawn into the controlview's layer instead of their own.
 //    [_controlView setWantsLayer:YES];
@@ -69,13 +88,13 @@
                                                               frameSize.width,
                                                               frameSize.height)];
     
-    timelineBar = [[TGTimelineBarView alloc] initWithFrame:barRect];
+    timelineBarView = [[TGTimelineBarView alloc] initWithFrame:barRect];
 
     knobImage = [NSImage imageNamed:@"ssButton"];
     knobImageView = [[NSImageView alloc] init];
     [knobImageView setImage:knobImage];
     
-    [_controlView addSubview:timelineBar];
+    [_controlView addSubview:timelineBarView];
     [_controlView addSubview:sweetSpotsView];
     [_controlView addSubview:knobImageView];
     
@@ -110,7 +129,7 @@
 -(void)setCurrentPlayheadPositionInPercent:(NSNumber *)newCurrentPlayheadPositionInPercent {
     currentPlayheadPositionInPercent = newCurrentPlayheadPositionInPercent ;
     
-    [timelineBar setPlayheadPositionInPercent:[newCurrentPlayheadPositionInPercent doubleValue]];
+    [timelineBarView setPlayheadPositionInPercent:[newCurrentPlayheadPositionInPercent doubleValue]];
     
     [_controlView setNeedsDisplay:YES];
 //    NSLog(@"the controlview dims are %@",NSStringFromRect([_controlView frame]));
@@ -126,13 +145,15 @@
     // Add the new sweet spot markers.
     for (NSNumber *sspot in sweetSpots) {
         double ssXPos = CGRectGetWidth(barRect)/[songDuration doubleValue]*[sspot doubleValue];
+
         TGSweetSpotControl *aSSControl = [[TGSweetSpotControl alloc] initWithFrame:NSMakeRect(ssXPos,
                                                                                               kSweetSpotMarkerHeight,
-                                                                                              kSweetSpotMarkerHeight,
-                                                                                              kSweetSpotMarkerHeight)];
+                                                                        kSweetSpotMarkerHeight,
+                                                                        kSweetSpotMarkerHeight)];
         [aSSControl setTag:spotIndex++];
         [aSSControl setTarget:_theController];
-        [aSSControl setAction:@selector(sweetspotMarkerAction:)];
+//        [aSSControl setAction:@selector(sweetspotMarkerAction:)];
+        [aSSControl setAction:@selector(userSelectedExistingSweetSpot:)];
         [aSSControl setImage:knobImage];
         
         [sweetSpotsView addSubview:aSSControl];

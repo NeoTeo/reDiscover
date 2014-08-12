@@ -29,8 +29,6 @@
 @property NSArray *sweetSpotControls;
 
 
-- (void)updateTimelinePositionWithTime:(CMTime)newTime;
-
 - (void)showTimelinePopoverRelativeToBounds:(CGRect)theBounds ofView:(NSView *)theView;
 
 -(void)setCurrentSongID:(id<SongIDProtocol>)songID fromSongPool:(TGSongPool *)theSongPool;
@@ -42,7 +40,8 @@
 @end
 
 @protocol TGSongTimelineViewControllerDelegate
-
+- (void)userCreatedNewSweetSpot:(id)sender;
+- (void)userSelectedExistingSweetSpot:(id)sender;
 - (void)userSelectedSweetSpotMarkerAtIndex:(NSUInteger)ssIndex;
 
 @end

@@ -10,17 +10,21 @@
 
 // Forward class declaration
 @class TGTimelineBarView;
+@class SweetSpotControl;
 
 static const int kSweetSpotMarkerHeight = 8;
 static const int kTimelineBarHeight = 8;
 
-@interface TGTimelineSliderCell : NSSliderCell 
+@interface TGTimelineSliderCell : NSSliderCell
 {
     NSNumber *currentPlayheadPositionInPercent;
     NSNumber *currentSongDuration;
     
     NSRect barRect;
-    TGTimelineBarView *timelineBar;
+    
+    /// The bar in the timeline popup that shows the playback progressing.
+    TGTimelineBarView *timelineBarView;
+    
     NSView *sweetSpotsView;
     NSImage *knobImage;
     NSImageView *knobImageView;

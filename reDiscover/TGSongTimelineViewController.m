@@ -33,7 +33,7 @@
 //                                    owner:self userInfo:nil];
     
     [[self view] addTrackingArea:trackingArea];
-//    TGTimelineSliderCell *thecell = _timelineBar.cell;
+
 }
 
 
@@ -46,44 +46,18 @@
     return self;
 }
 
-//-(void)keyDown:(NSEvent *)theEvent {
-////    [super keyDown:theEvent];
-//    NSLog(@"key down in timeline controller");
-//}
-
--(void)mouseEntered:(NSEvent *)theEvent {
-// Initiate the animation that grows the timeline from a narrow strip to a taller strip with sweetspot handles.
-    NSLog(@"The subviews are %@",[[self view] subviews]);
-    NSLog(@"The slider layer is %@",[_timelineBar layer]);
-    // The timeline bar's (an NSSlider) frame is NOT the bar inside it.
-//    NSRect tlframe = [_timelineBar frame];
-////    tlframe.origin.y += tlframe.size.height;
-//    tlframe.size.height *=2;
-//    [_timelineBar setFrame:tlframe];
+- (void)userCreatedNewSweetSpot:(id)sender {
+//    [[self delegate] userCreatedSweetSpotMarkerAtIndex:[sender tag]];
 }
 
--(void)mouseExited:(NSEvent *)theEvent {
-    
-    NSLog(@"eek mouse exited popover");
-//    NSRect tlframe = [_timelineBar frame];
-//    tlframe.origin.y -= tlframe.size.height;
-//    tlframe.size.height /=2;
-//    [_timelineBar setFrame:tlframe];
-}
-//-(void)mouseMoved:(NSEvent *)theEvent {
-//    
-//    NSLog(@"eek mouse moved in popover");
-//}
--(void)mouseUp:(NSEvent *)theEvent {
-    
-    NSLog(@"mouse up in timeline controller");
-    NSLog(@"the timeline value is %f",[_timelineBar doubleValue]);
+- (void)userSelectedExistingSweetSpot:(id)sender {
+    [[self delegate] userSelectedSweetSpotMarkerAtIndex:[sender tag]];
 }
 
 - (void)sweetspotMarkerAction:(id)sender {
     // I would have preferred to set the slider's (timelineBar) value directly which, by being bound to the songpool's playheadPos, would
     // have updated the playhead, but because the slider works in percent I would not get the precision I want.
-    
+
     // This should just pass up the chain that the user wanted to change sweet spots to x.
     // It in turn should tell the main controller which has a handle to the song pool and can call its setRequestedPlayheadPosition:
     // The delegate is the TGSongGridViewController
@@ -91,38 +65,30 @@
     
 }
 
-
-//-(TGSong *)currentSong {
-//    return currentSong;
-//}
-
-//-(void)setCurrentSongID:(NSInteger)songID fromSongPool:(TGSongPool *)theSongPool {
+/**
+ Ensure the timeline cell is updated with the new song's duration and sweet spots.
+ @Param songID The id of the song we are making current.
+ @Param theSongPool The songpool where the song is held.
+ */
 -(void)setCurrentSongID:(id<SongIDProtocol>)songID fromSongPool:(TGSongPool *)theSongPool {
-    
     
     TGTimelineSliderCell *theCell = _timelineBar.cell;
     
     [theCell setTheController:self];
     
-//    NSNumber *songDuration = [NSNumber numberWithDouble:CMTimeGetSeconds([theSong songDuration])];
     NSNumber *songDuration = [theSongPool songDurationForSongID:songID];
     NSArray *songSweetSpots = [theSongPool sweetSpotsForSongID:songID];
     
     [theCell makeMarkersFromSweetSpots:songSweetSpots forSongDuration:songDuration];
-    
-}
-
-- (void)updateTimelinePositionWithTime:(CMTime)newTime {
-        // The x position is: (the width of the timeline / the total time of the song) * newTime
-    
 }
 
 
-//- (void)popGoesTheWeasel:(CGRect)theBounds :(NSView *)theView {
+/**
+ Show the timeline popover window.
+ @Param theBounds The bounds of the area from which the popover appears.
+ @Param theView The view within which the bounds refer to.
+ */
 - (void)showTimelinePopoverRelativeToBounds:(CGRect)theBounds ofView:(NSView *)theView {
     [_songTimelinePopover showRelativeToRect:theBounds ofView:theView preferredEdge:CGRectMinYEdge];
-//    [self setValue:[NSNumber numberWithDouble:42] forKey:@"arse"];
-//    NSLog(@"the timelinebar %@",_timelineBar);
-//    [_timelineBar setDoubleValue:69];
 }
 @end
