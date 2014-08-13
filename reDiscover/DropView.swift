@@ -21,21 +21,31 @@ class DropView : NSView {
     
     override func awakeFromNib() {
         
-        // This is necessary to avoid the NSImageView hijacking the drag event. Took me an afternoon to track down.
+        // Since the dropArrowImageView sits on top of the view we want to capture drag & drop for,
+        // we unregister it so that the underlying view will get the events. //GOTCHA
         dropArrowImageView.unregisterDraggedTypes()
         
         // Register for notifications of URLs and filenames.
         self.registerForDraggedTypes([NSURLPboardType,NSFilenamesPboardType])
     }
     
+    /// Method to coordinate with source about the types of drop we handle and it provides.
     override func draggingEntered(sender: NSDraggingInfo!) -> NSDragOperation {
-        return NSDragOperation.Link
+        
+        // Ensure the sender supports the link operation and assure it we do too.
+        if sender.draggingSourceOperationMask() && NSDragOperation.Link {
+            return NSDragOperation.Link
+        }
+        
+        return NSDragOperation.None
     }
     
+    /// Method to determine whether we can accept the particular drop data.
     override func prepareForDragOperation(sender: NSDraggingInfo!) -> Bool {
         return true
     }
     
+    // Method to handle the dropped data.
     override func performDragOperation(sender: NSDraggingInfo!) -> Bool {
         let pboard = sender.draggingPasteboard()
         let myArray = pboard.types as NSArray
@@ -47,5 +57,5 @@ class DropView : NSView {
         
         return true
     }
-    
+        
 }

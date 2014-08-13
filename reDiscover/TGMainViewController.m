@@ -37,12 +37,18 @@
 @implementation TGMainViewController
 
 -(void)viewWillAppear {
-    NSLog(@"Appearing");
+
+    [self.view.window makeFirstResponder:self];
+    NSLog(@"Appearing. First responder? %@",self.view.window.firstResponder == self ? @"YES" : @"NO");
+
     NSAssert(_theURL != nil, @"There is no URL to load from.");
     [self setSongPool:[[TGSongPool alloc] init]];
     [_currentSongPool loadFromURL:_theURL];
 }
 
+-(void)viewDidAppear {
+    NSLog(@"viewDidAppear. First responder? %@",self.view.window.firstResponder ? @"YES" : @"NO");
+}
 
 -(void)awakeFromNib{
     

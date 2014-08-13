@@ -17,6 +17,9 @@ class DropViewController : NSViewController, DropViewDelegate {
         println("wakey wake")
         let dropView = self.view as DropView
         dropView.delegate = self
+        
+        // We need this to bring the window to the front on app start.
+        NSApp.activateIgnoringOtherApps(true)
 
     }
     
@@ -30,6 +33,8 @@ class DropViewController : NSViewController, DropViewDelegate {
             return
         }
         mainVC.theURL = droppedURL
+//        self.view.window?.makeFirstResponder(mainVC)
+
     }
         
     func dropViewDidReceiveURL(theURL: NSURL) {
@@ -40,7 +45,11 @@ class DropViewController : NSViewController, DropViewDelegate {
 //            performSegueWithIdentifier("goMainViewSegue", sender: self)
             performSegueWithIdentifier("oldStyleSegue", sender: self)
             
+            // We need to do this again because the app is deactivated when the user clicks a folder
+            // in Finder to drag onto here.
+            NSApp.activateIgnoringOtherApps(true)
         }
+
         println("Done")
     }
 
