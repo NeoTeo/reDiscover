@@ -22,9 +22,10 @@ class DropViewController : NSViewController, DropViewDelegate {
         NSApp.activateIgnoringOtherApps(true)
 
     }
-    
+   
     override func prepareForSegue(segue: NSStoryboardSegue!, sender: AnyObject!) {
         println("Drop View Controller preparing for segue")
+
 //        let mainVC = segue.destinationController as MainViewController
         let mainVC = segue.destinationController as TGMainViewController
 
@@ -33,16 +34,14 @@ class DropViewController : NSViewController, DropViewDelegate {
             return
         }
         mainVC.theURL = droppedURL
-//        self.view.window?.makeFirstResponder(mainVC)
 
     }
-        
+    
     func dropViewDidReceiveURL(theURL: NSURL) {
         if validateURL(theURL) {
             droppedURL = theURL
             println("Gogo widget")
 
-//            performSegueWithIdentifier("goMainViewSegue", sender: self)
             performSegueWithIdentifier("oldStyleSegue", sender: self)
             
             // We need to do this again because the app is deactivated when the user clicks a folder

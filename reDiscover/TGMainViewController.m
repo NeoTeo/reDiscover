@@ -39,15 +39,11 @@
 -(void)viewWillAppear {
 
     [self.view.window makeFirstResponder:self];
-    NSLog(@"Appearing. First responder? %@",self.view.window.firstResponder == self ? @"YES" : @"NO");
 
     NSAssert(_theURL != nil, @"There is no URL to load from.");
+
     [self setSongPool:[[TGSongPool alloc] init]];
     [_currentSongPool loadFromURL:_theURL];
-}
-
--(void)viewDidAppear {
-    NSLog(@"viewDidAppear. First responder? %@",self.view.window.firstResponder ? @"YES" : @"NO");
 }
 
 -(void)awakeFromNib{
@@ -55,7 +51,6 @@
     // The idle timer produces system wide notifications of entering and exiting idle time.
     _idleTimer = [[TGIdleTimer alloc] init];
     
-       // Insert code here to initialize your application
     infoLabel = @"infoView";
     playlistLabel = @"playlistView";
     
@@ -66,6 +61,7 @@
     _songGridController = [[TGSongGridViewController alloc] initWithNibName:@"TGSongGridView" bundle:nil];
     _playlistController = [[TGPlaylistViewController alloc] initWithNibName:@"TGPlaylistView" bundle:nil];
     _songInfoController = [[TGSongInfoViewController alloc] initWithNibName:@"TGSongInfoView" bundle:nil];
+
 }
 
 

@@ -47,6 +47,7 @@ class DropView : NSView {
     
     // Method to handle the dropped data.
     override func performDragOperation(sender: NSDraggingInfo!) -> Bool {
+
         let pboard = sender.draggingPasteboard()
         let myArray = pboard.types as NSArray
         
@@ -54,7 +55,7 @@ class DropView : NSView {
             let fileURL = NSURL.URLFromPasteboard(pboard)
             delegate?.dropViewDidReceiveURL(fileURL)
         }
-        
+        println("perform returns true")
         return true
     }
         

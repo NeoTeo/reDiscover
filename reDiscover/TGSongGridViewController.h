@@ -93,6 +93,8 @@
 
 // TGSongTimelineViewControllerDelegate methods
 - (void)userSelectedSweetSpotMarkerAtIndex:(NSUInteger)ssIndex;
+- (void)userSelectedExistingSweetSpot:(id)sender;
+- (void)userCreatedNewSweetSpot:(id)sender;
 
 // Set the cached flag on a cell that corresponds to the songID
 - (void)setDebugCachedFlagForSongID:(id<SongIDProtocol>)songID toValue:(BOOL)value;

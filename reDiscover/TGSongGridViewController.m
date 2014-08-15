@@ -1067,6 +1067,14 @@ static NSInteger const kUndefinedID =  -1;
     [_songPoolAPI setRequestedPlayheadPosition:[[_songPoolAPI sweetSpotsForSongID:[_songPoolAPI currentlyPlayingSongID]] objectAtIndex:ssIndex]];
 }
 
+- (void)userSelectedExistingSweetSpot:(id)sender {
+    NSLog(@"userSelectedExistingSweetSpot called");
+}
+- (void)userCreatedNewSweetSpot:(id)sender {
+    NSLog(@"userCreatedNewSweetSpot called");    
+}
+
+
 
 // TGSongGridScrollViewDelegate methods:
 - (void)songGridScrollViewDidScrollToRect:(NSRect)theRect {

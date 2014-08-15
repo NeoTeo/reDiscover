@@ -113,7 +113,7 @@
     NSPoint mouseLoc = [[self documentView] convertPoint:[theEvent locationInWindow] fromView:nil];
     NSInteger mouseRow, mouseCol;
     [[self documentView] getRow:&mouseRow column:&mouseCol forPoint:mouseLoc];
-    TGGridCell *currentCell = [[self documentView] cellAtRow:mouseRow column:mouseCol];
+//    TGGridCell *currentCell = [[self documentView] cellAtRow:mouseRow column:mouseCol];
     //FIX:
     //MARK: ARS this should not be called either!
 

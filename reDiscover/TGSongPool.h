@@ -24,8 +24,13 @@
 @protocol SongGridAccessProtocol;
 @protocol TGMainViewControllerDelegate;
 
-@protocol SongIDProtocol <NSObject>
+/**
+*   A SongID must conform to the SongIDProtocol.
+*   To conform to the SongIDProtocol a class must also adopt the NSCopying.
+ */
+@protocol SongIDProtocol <NSObject, NSCopying>
 - (BOOL)isEqual:(id)object;
+- (id)copyWithZone:(struct _NSZone *)zone;
 @property (readonly) NSUInteger hash;
 @end
 
@@ -33,7 +38,7 @@
  The SongID is the type that identifies a song in the current instance of the application.
  SongIDs do not persist across instances.
  */
-@interface SongID : NSObject <SongIDProtocol,NSCopying>
+@interface SongID : NSObject <SongIDProtocol>
 @property NSUInteger idValue;
 + (instancetype)initWithString:(NSString *)theString;
 - (id)copyWithZone:(struct _NSZone *)zone;

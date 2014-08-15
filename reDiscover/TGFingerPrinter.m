@@ -9,7 +9,7 @@
 
 #import "TGFingerPrinter.h"
 
-#import <libavcodec/avcodec.h>
+//#import <libavcodec/avcodec.h>
 #import <libavformat/avformat.h>
 #import <libavutil/opt.h>
 #import <libswresample/swresample.h>
@@ -245,7 +245,7 @@
 	codec_ctx_opened = 1;
     
 	if (codec_ctx->channels <= 0) {
-		fprintf(stderr, "ERROR: no channels found in the audio stream\n");
+		fprintf(stderr, "WTF ERROR: no channels found in the audio stream\n");
 		goto done;
 	}
     
