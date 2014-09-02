@@ -6,15 +6,15 @@
 // project.
 
 
-// chromaprint
-#define COCOAPODS_POD_AVAILABLE_chromaprint
-#define COCOAPODS_VERSION_MAJOR_chromaprint 1
-#define COCOAPODS_VERSION_MINOR_chromaprint 2
-#define COCOAPODS_VERSION_PATCH_chromaprint 16
+// chromaprint-osx-static
+#define COCOAPODS_POD_AVAILABLE_chromaprint_osx_static
+#define COCOAPODS_VERSION_MAJOR_chromaprint_osx_static 1
+#define COCOAPODS_VERSION_MINOR_chromaprint_osx_static 0
+#define COCOAPODS_VERSION_PATCH_chromaprint_osx_static 0
 
-// ffmpegtest
-#define COCOAPODS_POD_AVAILABLE_ffmpegtest
-#define COCOAPODS_VERSION_MAJOR_ffmpegtest 1
-#define COCOAPODS_VERSION_MINOR_ffmpegtest 0
-#define COCOAPODS_VERSION_PATCH_ffmpegtest 2
+// ffmpeg-osx-static
+#define COCOAPODS_POD_AVAILABLE_ffmpeg_osx_static
+#define COCOAPODS_VERSION_MAJOR_ffmpeg_osx_static 1
+#define COCOAPODS_VERSION_MINOR_ffmpeg_osx_static 0
+#define COCOAPODS_VERSION_PATCH_ffmpeg_osx_static 0
 

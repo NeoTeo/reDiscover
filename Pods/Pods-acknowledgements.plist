@@ -14,17 +14,17 @@
 		</dict>
 		<dict>
 			<key>FooterText</key>
-			<string>this is a TEO license</string>
+			<string></string>
 			<key>Title</key>
-			<string>chromaprint</string>
+			<string>chromaprint-osx-static</string>
 			<key>Type</key>
 			<string>PSGroupSpecifier</string>
 		</dict>
 		<dict>
 			<key>FooterText</key>
-			<string>This is a TEO license</string>
+			<string></string>
 			<key>Title</key>
-			<string>ffmpegtest</string>
+			<string>ffmpeg-osx-static</string>
 			<key>Type</key>
 			<string>PSGroupSpecifier</string>
 		</dict>

@@ -1,0 +1,1 @@
+../../chromaprint-osx-static/src/silence_remover.h

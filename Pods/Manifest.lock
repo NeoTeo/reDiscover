@@ -1,13 +1,13 @@
 PODS:
-  - chromaprint (1.2.16)
-  - ffmpegtest (1.0.2)
+  - chromaprint-osx-static (1.0)
+  - ffmpeg-osx-static (1.0)
 
 DEPENDENCIES:
-  - chromaprint (= 1.2.16)
-  - ffmpegtest (= 1.0.2)
+  - chromaprint-osx-static (= 1.0)
+  - ffmpeg-osx-static (= 1.0)
 
 SPEC CHECKSUMS:
-  chromaprint: a0d8fd03871e7298aaadfaa629c17e934127f49b
-  ffmpegtest: 16d744c082b8e7eb623a3dde3b2dd6032f2ca8ba
+  chromaprint-osx-static: 6fcbea4b7a7a0585a639cbe1dae147d7e5fd4f63
+  ffmpeg-osx-static: 63ae5a75728589a6eeff44583fd68182f1bb7f6a
 
 COCOAPODS: 0.33.1

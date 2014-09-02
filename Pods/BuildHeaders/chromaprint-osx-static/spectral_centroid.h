@@ -1,0 +1,1 @@
+../../chromaprint-osx-static/src/spectral_centroid.h

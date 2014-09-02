@@ -1,1 +1,0 @@
-../../chromaprint/src/integral_image.h

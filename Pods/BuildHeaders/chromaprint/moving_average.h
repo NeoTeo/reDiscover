@@ -1,1 +1,0 @@
-../../chromaprint/src/moving_average.h

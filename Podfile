@@ -1,3 +1,3 @@
-pod 'chromaprint', '1.2.16'
-pod 'ffmpegtest', '1.0.2'
-#pod 'ffmpegtest', :podspec => '../ffmpegtest/ffmpegtest.podspec'
+platform :osx, '10.10'
+pod 'ffmpeg-osx-static', '1.0'
+pod 'chromaprint-osx-static', '1.0'

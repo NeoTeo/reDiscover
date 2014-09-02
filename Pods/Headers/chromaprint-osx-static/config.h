@@ -1,0 +1,1 @@
+../../chromaprint-osx-static/config.h

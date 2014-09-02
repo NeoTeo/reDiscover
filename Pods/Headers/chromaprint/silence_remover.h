@@ -1,1 +1,0 @@
-../../chromaprint/src/silence_remover.h

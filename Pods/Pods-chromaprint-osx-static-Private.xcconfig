@@ -1,0 +1,5 @@
+#include "Pods-chromaprint-osx-static.xcconfig"
+GCC_PREPROCESSOR_DEFINITIONS = COCOAPODS=1 ${PODS_CHROMAPRINT_OSX_STATIC_GCC_PREPROCESSOR_DEFINITIONS}
+HEADER_SEARCH_PATHS = "${PODS_ROOT}/BuildHeaders" "${PODS_ROOT}/BuildHeaders/chromaprint-osx-static" "${PODS_ROOT}/Headers" "${PODS_ROOT}/Headers/chromaprint-osx-static" "${PODS_ROOT}/Headers/ffmpeg-osx-static" "${PODS_ROOT}/Headers/ffmpeg-osx-static/libavcodec" "${PODS_ROOT}/Headers/ffmpeg-osx-static/libavdevice" "${PODS_ROOT}/Headers/ffmpeg-osx-static/libavfilter" "${PODS_ROOT}/Headers/ffmpeg-osx-static/libavformat" "${PODS_ROOT}/Headers/ffmpeg-osx-static/libavutil" "${PODS_ROOT}/Headers/ffmpeg-osx-static/libswresample" "${PODS_ROOT}/Headers/ffmpeg-osx-static/libswscale"
+OTHER_LDFLAGS = -ObjC ${PODS_CHROMAPRINT_OSX_STATIC_OTHER_LDFLAGS}
+PODS_ROOT = ${SRCROOT}

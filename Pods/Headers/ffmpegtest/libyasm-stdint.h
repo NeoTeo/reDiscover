@@ -1,1 +1,0 @@
-../../ffmpegtest/includes/libyasm-stdint.h

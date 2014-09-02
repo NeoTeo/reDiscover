@@ -17,6 +17,12 @@
 		AB301E7619050C830093B654 /* TEOSongData.m in Sources */ = {isa = PBXBuildFile; fileRef = AB301E7519050C830093B654 /* TEOSongData.m */; };
 		AB3140CF196D5F0F00F910BE /* SongPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB3140CE196D5F0F00F910BE /* SongPlayer.swift */; };
 		AB3E9752187C20D600BECC09 /* TGPlaylistCellView.m in Sources */ = {isa = PBXBuildFile; fileRef = AB3E9751187C20D600BECC09 /* TGPlaylistCellView.m */; };
+		AB4E078C19B618160052EEC0 /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = AB241FD9188977AB00E8E03F /* libz.dylib */; };
+		AB4E078D19B6181E0052EEC0 /* libiconv.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = AB0D052D1889E06400F08566 /* libiconv.dylib */; };
+		AB4E078F19B618260052EEC0 /* QTKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AB4E078E19B618260052EEC0 /* QTKit.framework */; };
+		AB4E079019B618360052EEC0 /* libc++.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = AB85BC621875B2E000670905 /* libc++.dylib */; };
+		AB4E079119B618640052EEC0 /* libbz2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = AB241FD21889767500E8E03F /* libbz2.dylib */; };
+		AB4E079219B61AEC0052EEC0 /* VideoDecodeAcceleration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AB241FD61889776700E8E03F /* VideoDecodeAcceleration.framework */; };
 		AB56D9F418EC14D5005AB947 /* CAKeyframeAnimation+Parametric.m in Sources */ = {isa = PBXBuildFile; fileRef = AB56D9F318EC14D5005AB947 /* CAKeyframeAnimation+Parametric.m */; };
 		AB71279B19407C8E0002B1F8 /* CoverArtArchiveWebFetcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB71279A19407C8E0002B1F8 /* CoverArtArchiveWebFetcher.swift */; };
 		AB7E0717195AF25600570E39 /* DropWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB7E0716195AF25600570E39 /* DropWindowController.swift */; };
@@ -85,6 +91,7 @@
 		AB3E97481876F94700BECC09 /* libchromaprint.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libchromaprint.a; path = ../chromaprint/build/Release/libchromaprint.a; sourceTree = "<group>"; };
 		AB3E9750187C20D600BECC09 /* TGPlaylistCellView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TGPlaylistCellView.h; sourceTree = "<group>"; };
 		AB3E9751187C20D600BECC09 /* TGPlaylistCellView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TGPlaylistCellView.m; sourceTree = "<group>"; };
+		AB4E078E19B618260052EEC0 /* QTKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QTKit.framework; path = System/Library/Frameworks/QTKit.framework; sourceTree = SDKROOT; };
 		AB56D9F218EC14D5005AB947 /* CAKeyframeAnimation+Parametric.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "CAKeyframeAnimation+Parametric.h"; sourceTree = "<group>"; };
 		AB56D9F318EC14D5005AB947 /* CAKeyframeAnimation+Parametric.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "CAKeyframeAnimation+Parametric.m"; sourceTree = "<group>"; };
 		AB71279919407C8D0002B1F8 /* reDiscover-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "reDiscover-Bridging-Header.h"; sourceTree = "<group>"; };
@@ -176,6 +183,12 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				AB4E079219B61AEC0052EEC0 /* VideoDecodeAcceleration.framework in Frameworks */,
+				AB4E079119B618640052EEC0 /* libbz2.dylib in Frameworks */,
+				AB4E079019B618360052EEC0 /* libc++.dylib in Frameworks */,
+				AB4E078F19B618260052EEC0 /* QTKit.framework in Frameworks */,
+				AB4E078D19B6181E0052EEC0 /* libiconv.dylib in Frameworks */,
+				AB4E078C19B618160052EEC0 /* libz.dylib in Frameworks */,
 				548F3DC769524F62AE69C0C1 /* libPods.a in Frameworks */,
 				AB85BC5C1875AD3B00670905 /* QuartzCore.framework in Frameworks */,
 				AB85BC5A1875AD1500670905 /* CoreMedia.framework in Frameworks */,
@@ -322,6 +335,7 @@
 		AB85BBD51875AACF00670905 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				AB4E078E19B618260052EEC0 /* QTKit.framework */,
 				AB0D052D1889E06400F08566 /* libiconv.dylib */,
 				AB241FD9188977AB00E8E03F /* libz.dylib */,
 				AB241FD61889776700E8E03F /* VideoDecodeAcceleration.framework */,
