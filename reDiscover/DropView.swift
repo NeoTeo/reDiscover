@@ -33,11 +33,11 @@ class DropView : NSView {
     override func draggingEntered(sender: NSDraggingInfo!) -> NSDragOperation {
         
         // Ensure the sender supports the link operation and assure it we do too.
-        if sender.draggingSourceOperationMask() && NSDragOperation.Link {
+//        if sender.draggingSourceOperationMask() && NSDragOperation.Link {
             return NSDragOperation.Link
-        }
+//        }
         
-        return NSDragOperation.None
+//        return NSDragOperation.None
     }
     
     /// Method to determine whether we can accept the particular drop data.

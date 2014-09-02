@@ -60,7 +60,7 @@ class SongPlayer: NSObject {
         var theFile = delegate!.cachedAudioFileForSongID(songID)
         var theFileLength = delegate!.cachedLengthForSongID(songID).longLongValue
         
-        if !theFile {
+        if theFile == nil {
             println("AVAudioFile cache miss for song ID \(songID)")
             theFile = AVAudioFile(forReading: delegate!.songURLForSongID(songID), error: &error)
 //            theFileLength = theFile.length

@@ -22,7 +22,7 @@ class ScrollingTextView: NSView {
         scrollText = newText
         textWidth = newText.sizeWithAttributes(nil).width
 
-        if scrollTimer == nil && scrollSpeed > 0 && scrollText != nil {
+        if scrollTimer == nil && scrollSpeed > 0 {
             scrollTimer = NSTimer.scheduledTimerWithTimeInterval(scrollSpeed, target: self, selector: "moveText:", userInfo: nil, repeats: true)
         }
     }
@@ -32,7 +32,7 @@ class ScrollingTextView: NSView {
         scrollSpeed = newSpeed
         scrollTimer?.invalidate()
         scrollTimer = nil
-        if scrollSpeed > 0.00 && scrollText != nil {
+        if scrollSpeed > 0.00 {
             scrollTimer = NSTimer.scheduledTimerWithTimeInterval(scrollSpeed, target: self, selector: "moveText:", userInfo: nil, repeats: true)
         }
     }

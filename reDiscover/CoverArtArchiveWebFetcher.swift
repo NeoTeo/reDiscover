@@ -29,7 +29,7 @@ class CoverArtArchiveWebFetcher : NSObject {
             return
         }
         
-        var releases        = NSKeyedUnarchiver.unarchiveObjectWithData(data) as? [NSDictionary]
+        var releases        = NSKeyedUnarchiver.unarchiveObjectWithData(data!) as? [NSDictionary]
         if releases == nil {
             println("releases could not be unarchived?! from this data: \(data)")
             return
@@ -50,9 +50,9 @@ class CoverArtArchiveWebFetcher : NSObject {
                     let result = NSData(contentsOfURL: coverArtArchiveURL) as NSData
                     
                     // skip if this did not return any data
-                    if result == nil {
-                        continue
-                    }
+//                    if result == nil {
+//                        continue
+//                    }
                     
                     // coverartarchive.org returns a dictionary at the top level.
                     let resultJSON = NSJSONSerialization.JSONObjectWithData(result, options: NSJSONReadingOptions.MutableContainers, error: nil) as NSDictionary
@@ -67,9 +67,9 @@ class CoverArtArchiveWebFetcher : NSObject {
                     let imageURL = NSURL.URLWithString(imageEntry["image"] as String)
                     let coverArtData = NSData(contentsOfURL: imageURL)
                     
-                    if coverArtData == nil {
-                        continue
-                    }
+//                    if coverArtData == nil {
+//                        continue
+//                    }
                     
                     let theImage = NSImage(data: coverArtData)
                     imageHandler(theImage)
