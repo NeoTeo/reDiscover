@@ -50,9 +50,10 @@ class CoverArtArchiveWebFetcher : NSObject {
                     let result = NSData(contentsOfURL: coverArtArchiveURL) as NSData
                     
                     // skip if this did not return any data
-//                    if result == nil {
-//                        continue
-//                    }
+                    if result.length == 0 {
+                        println("Data returned from url was empty");
+                        continue
+                    }
                     
                     // coverartarchive.org returns a dictionary at the top level.
                     let resultJSON = NSJSONSerialization.JSONObjectWithData(result, options: NSJSONReadingOptions.MutableContainers, error: nil) as NSDictionary
@@ -67,9 +68,10 @@ class CoverArtArchiveWebFetcher : NSObject {
                     let imageURL = NSURL.URLWithString(imageEntry["image"] as String)
                     let coverArtData = NSData(contentsOfURL: imageURL)
                     
-//                    if coverArtData == nil {
-//                        continue
-//                    }
+                    if coverArtData.length == 0 {
+                        println("No cover art data!");
+                        continue
+                    }
                     
                     let theImage = NSImage(data: coverArtData)
                     imageHandler(theImage)

@@ -270,7 +270,8 @@
 	remaining = (int)maxLength * codec_ctx->channels * codec_ctx->sample_rate;
 	chromaprint_start(theContext, codec_ctx->sample_rate, codec_ctx->channels);
     
-	frame = avcodec_alloc_frame();
+//	frame = avcodec_alloc_frame(); deprecated
+    frame = av_frame_alloc();
     
 	while (1) {
 		if (av_read_frame(format_ctx, &packet) < 0) {
@@ -278,7 +279,8 @@
 		}
         
 		if (packet.stream_index == stream_index) {
-			avcodec_get_frame_defaults(frame);
+//			avcodec_get_frame_defaults(frame); deprecated
+            av_frame_unref(frame);
             
 			got_frame = 0;
 			consumed = avcodec_decode_audio4(codec_ctx, frame, &got_frame, &packet);
@@ -331,7 +333,8 @@ finish:
     
 done:
 	if (frame) {
-		avcodec_free_frame(&frame);
+//		avcodec_free_frame(&frame); deprecated
+        av_frame_free(&frame);
 	}
 
 	if (dst_data[0]) {
@@ -442,7 +445,8 @@ done:
     remaining = (int)maxLength * codec_ctx->channels * codec_ctx->sample_rate;
     chromaprint_start(theContext, codec_ctx->sample_rate, codec_ctx->channels);
     
-    frame = avcodec_alloc_frame();
+//    frame = avcodec_alloc_frame();
+    frame = av_frame_alloc();
     
     while (1) {
         if (av_read_frame(format_ctx, &packet) < 0) {
@@ -450,7 +454,8 @@ done:
         }
         
         if (packet.stream_index == stream_index) {
-            avcodec_get_frame_defaults(frame);
+//            avcodec_get_frame_defaults(frame); deprecated
+            av_frame_unref(frame);
             
             got_frame = 0;
             consumed = avcodec_decode_audio4(codec_ctx, frame, &got_frame, &packet);
@@ -504,7 +509,8 @@ finish:
     
 done:
     if (frame) {
-        avcodec_free_frame(&frame);
+//        avcodec_free_frame(&frame); deprecated
+        av_frame_free(&frame);
     }
     
     if (dst_data[0]) {
