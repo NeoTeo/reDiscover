@@ -29,19 +29,21 @@ class DropView : NSView {
         self.registerForDraggedTypes([NSURLPboardType,NSFilenamesPboardType])
     }
     
+    
     /// Method to coordinate with source about the types of drop we handle and it provides.
     override func draggingEntered(sender: NSDraggingInfo!) -> NSDragOperation {
-        
+        let dMask = sender.draggingSourceOperationMask()
         // Ensure the sender supports the link operation and assure it we do too.
-//        if sender.draggingSourceOperationMask() && NSDragOperation.Link {
-            return NSDragOperation.Link
-//        }
-        
-//        return NSDragOperation.None
+        if (dMask.toRaw() & NSDragOperation.Link.toRaw()) != 0 {
+            return NSDragOperation.Generic
+        }
+
+        return NSDragOperation.None
     }
     
     /// Method to determine whether we can accept the particular drop data.
     override func prepareForDragOperation(sender: NSDraggingInfo!) -> Bool {
+        sender.animatesToDestination = false
         return true
     }
     
@@ -56,7 +58,11 @@ class DropView : NSView {
             delegate?.dropViewDidReceiveURL(fileURL)
         }
         println("perform returns true")
+        
         return true
     }
-        
+    
+//    override func concludeDragOperation(sender: NSDraggingInfo!) {
+//        println("Drag operation concluded.")
+//    }
 }

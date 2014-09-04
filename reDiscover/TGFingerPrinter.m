@@ -71,7 +71,7 @@
         
         if (chromaprint_get_fingerprint(chromaprintContext, &theFingerprint)) {
         
-//            NSLog(@"requesting UUID from generated fingerprint.");
+            NSLog(@"requesting UUID from generated fingerprint.");
             // Ask AcoustID for the unique id for this song.
             NSURL *acoustIDURL = [[NSURL alloc] initWithString:[NSString stringWithFormat:@"http://api.acoustid.org/v2/lookup?client=8XaBELgH&meta=releases&duration=%d&fingerprint=%s",duration,theFingerprint]];
 

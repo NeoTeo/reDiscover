@@ -782,38 +782,6 @@ static int const kSSCheckCounterSize = 10;
 }
 */
 
-- (void)sweetSpotToServerForSong:(TGSong *)aSong {
-    double sweetSpot = [[aSong startTime] doubleValue] ;
-//    NSString * songUUID = [aSong songUUIDString];
-    NSString * songUUID = aSong.TEOData.uuid;
-    
-    NSURL *requestIDURL = [[NSURL alloc] initWithString:[NSString stringWithFormat:@"http://localhost:8080/submit?songUUID=%s&songSweetSpot=%lf",[songUUID UTF8String],sweetSpot]];
-    NSLog(@"sanity check %@",requestIDURL);
-    NSData *requestData = [[NSData alloc] initWithContentsOfURL:requestIDURL];
-    
-    if (requestData != nil) {
-        NSDictionary *requestJSON = [NSJSONSerialization JSONObjectWithData:requestData options:NSJSONReadingMutableContainers error:nil];
-        
-        // First we check that the return status is ok.
-        NSString *status = [requestJSON objectForKey:@"status"];
-        //NSLog(@"the status is %@",status);
-        
-        if ([status isEqualToString:@"ok"]) {
-//            id result = [requestJSON objectForKey:@"result"];
-//            if ([result isKindOfClass:[NSDictionary class]]) {
-//                NSLog(@"the result object is a dictionary.");
-//                NSDictionary *resultDict = result;
-//                // The first element is the songUUID which hopefully matches the one we sent to the server.
-//                NSString *songUUIDFromServer = [resultDict objectForKey:@"songuuid"];
-//                NSLog(@"The song uuid from the server is %@",songUUIDFromServer);
-//                // We then expect an array of sweetspots.
-//            }
-        } else
-            NSLog(@"ERROR: The server returned status : %@",status);
-    } else
-        NSLog(@"No data returned from sweetspot server.");
-}
-
 - (BOOL)validSongID:(id<SongIDProtocol>)songID {
     // TEO: also check for top bound.
     if (songID == nil) return NO;
@@ -872,13 +840,50 @@ static int const kSSCheckCounterSize = 10;
 //    return [[self songForID:songID] songURL];
 }
 
+- (void)sweetSpotToServerForSong:(TGSong *)aSong {
+    
+    double sweetSpot = [[aSong startTime] doubleValue] ;
+    NSString * songUUID = aSong.TEOData.uuid;
+    
+    // Early out if there is no uuid.
+    if (songUUID == nil) {
+        NSLog(@"Error sending sweet spot to server. Song has no UUID");
+        return;
+    }
+    
+    
+    NSURL *requestIDURL = [[NSURL alloc] initWithString:[NSString stringWithFormat:@"http://localhost:6969/submit?songUUID=%s&songSweetSpot=%lf",[songUUID UTF8String],sweetSpot]];
+    NSLog(@"sanity check %@",requestIDURL);
+    NSData *requestData = [[NSData alloc] initWithContentsOfURL:requestIDURL];
+    
+    if (requestData != nil) {
+        NSDictionary *requestJSON = [NSJSONSerialization JSONObjectWithData:requestData options:NSJSONReadingMutableContainers error:nil];
+        
+        // First we check that the return status is ok.
+        NSString *status = [requestJSON objectForKey:@"status"];
+        //NSLog(@"the status is %@",status);
+        
+        if ([status isEqualToString:@"ok"]) {
+            //            id result = [requestJSON objectForKey:@"result"];
+            //            if ([result isKindOfClass:[NSDictionary class]]) {
+            //                NSLog(@"the result object is a dictionary.");
+            //                NSDictionary *resultDict = result;
+            //                // The first element is the songUUID which hopefully matches the one we sent to the server.
+            //                NSString *songUUIDFromServer = [resultDict objectForKey:@"songuuid"];
+            //                NSLog(@"The song uuid from the server is %@",songUUIDFromServer);
+            //                // We then expect an array of sweetspots.
+            //            }
+        } else
+            NSLog(@"ERROR: The server returned status : %@",status);
+    } else
+        NSLog(@"No data returned from sweetspot server.");
+}
 
 - (void)sweetSpotFromServerForSong:(TGSong *)aSong {
 
-//    NSString * songUUID = [aSong songUUIDString];
     NSString * songUUID = aSong.TEOData.uuid;
 
-    NSURL *theIDURL = [NSURL URLWithString:[NSString stringWithFormat:@"http://localhost:8080/lookup?songUUID=%s",[songUUID UTF8String]]];
+    NSURL *theIDURL = [NSURL URLWithString:[NSString stringWithFormat:@"http://localhost:6969/lookup?songUUID=%s",[songUUID UTF8String]]];
     NSURLRequest *request = [NSURLRequest requestWithURL:theIDURL];
     
     [NSURLConnection sendAsynchronousRequest:request queue:opQueue completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
@@ -887,29 +892,24 @@ static int const kSSCheckCounterSize = 10;
             
             // First we check that the return status is ok.
             NSString *status = [requestJSON objectForKey:@"status"];
-            //NSLog(@"the status is %@",status);
             
             if ([status isEqualToString:@"ok"]) {
                 id result = [requestJSON objectForKey:@"result"];
                 if ([result isKindOfClass:[NSDictionary class]]) {
-//                    NSLog(@"the result object is a dictionary.");
+
                     NSDictionary *resultDict = result;
                     // The first element is the songUUID which hopefully matches the one we sent to the server.
-//                    NSString *songUUIDFromServer = [resultDict objectForKey:@"songuuid"];
-//                    NSLog(@"The song uuid from the server is %@",songUUIDFromServer);
-//                    
+                    
                     // We then expect an array of sweetspots.
                     NSArray *sweetSpotsFromServer = [resultDict objectForKey:@"sweetspots"];
                     if ([sweetSpotsFromServer count] > 0) {
-//                        [aSong setSongSweetSpots:sweetSpotsFromServer];
+
                         NSMutableSet* tmpSet = [aSong.TEOData.sweetSpots mutableCopy];
                         for (NSNumber* ss in sweetSpotsFromServer) {
                             [tmpSet addObject:ss];
                         }
                         aSong.TEOData.sweetSpots = tmpSet;
-//                        for (NSNumber *ss in sweetSpotsFromServer) {
-//                            NSLog(@"We've got a sweet spot of %@",ss);
-//                        }
+
                         // TEO: temp set the start time to be the first sweet spot
                         NSNumber *sweetSpot = [sweetSpotsFromServer objectAtIndex:0];
                         [aSong setStartTime:sweetSpot makeSweetSpot:YES];
@@ -930,16 +930,12 @@ static int const kSSCheckCounterSize = 10;
     NSNumber *startTime = [song startTime];
     
     // Request sweetspots from the sweetspot server if the song does not have a start time, has a uuid and has not exceeded its alotted queries.
-//    if (([[song startTime] doubleValue] == -1) &&
-    if (([startTime doubleValue] == -1) &&
-        (song.TEOData.uuid  != nil) &&
-//        ([song songUUIDString] != nil) &&
-        (song.SSCheckCountdown-- == 0)) {
+    if (([startTime doubleValue] == 0) && (song.TEOData.uuid  != nil) && (song.SSCheckCountdown-- == 0)) {
         
         // Reset the counter.
         song.SSCheckCountdown = (NSUInteger)kSSCheckCounterSize;
         
-// TEO finish off the timestamping of server requests instead of using the countdown.
+        // TEO finish off the timestamping of server requests instead of using the countdown.
         NSDate *now = [NSDate date];
         [now timeIntervalSinceDate:now];
         [self sweetSpotFromServerForSong:song];
@@ -1581,9 +1577,10 @@ static int const kSSCheckCounterSize = 10;
 
     //MARK: TMP
 //     If there's a one-off start time set, use that (and reset it).
-//    if ([song startTime] == nil) {
-//        [song setStartTime:[self fetchSongSweetSpot:song] makeSweetSpot:YES];
-//    }
+    //if ([song startTime] == nil) {
+    if ([[song startTime] doubleValue] == 0) {
+        [song setStartTime:[self fetchSongSweetSpot:song] makeSweetSpot:YES];
+    }
     
     // Make sure the last request for playback is put on a serial queue so it always is the last song left playing.
     if (song == lastRequestedSong) {
