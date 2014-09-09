@@ -89,6 +89,14 @@
  @Param theView The view within which the bounds refer to.
  */
 - (void)showTimelinePopoverRelativeToBounds:(CGRect)theBounds ofView:(NSView *)theView {
-    [_songTimelinePopover showRelativeToRect:theBounds ofView:theView preferredEdge:CGRectMinYEdge];
+    // Since there is a gap between the top edge of the selected cell and the bottom edge of the popover
+    // it is possible for the cursor to select a different cell when moving from the cell to the popover and
+    // thus inadvertedly move the popover.
+    // To avoid this, reduce the height of the rect we pass to the popover so that there is no gap between it
+    // and the rect it belongs to.
+    int offset = 13;
+    NSRect newRect = NSMakeRect(theBounds.origin.x, theBounds.origin.y+offset, theBounds.size.width, theBounds.size.height-offset);
+    
+    [_songTimelinePopover showRelativeToRect:newRect ofView:theView preferredEdge:CGRectMinYEdge];
 }
 @end

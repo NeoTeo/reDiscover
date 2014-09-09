@@ -134,30 +134,13 @@
     NSPoint nowPoint = [[self documentView] convertPoint:locationInWindow fromView:nil];
     NSPoint currentSpeed = NSMakePoint(nowPoint.x-previousPoint.x, nowPoint.y-previousPoint.y);
     
-//    CGFloat ySpdDelta = abs(currentSpeed.y-previousSpeed.y);
-//    NSLog(@"ySpdDelta %f",ySpdDelta);
-//    for (int d=0; d<ySpdDelta; d++) {
-//        printf(">");
-//    }
-//    printf("\n");
-    
     previousPoint = nowPoint;
     previousSpeed = currentSpeed;
-    
-//    int maxDelta = 15;
-//    if ( (abs(currentSpeed.x) > maxDelta) || (abs(currentSpeed.y) > maxDelta) ) {
-//        return;
-//    }
     
     TGSongCellMatrix *theMatrix = [self documentView];
     NSInteger mouseRow, mouseCol;
     
-    // Find out what the mouse location is in the coordinates of the document view (the matrix).
-    //NSPoint mouseLoc = [theMatrix convertPoint:locationInWindow fromView:nil];
-    
-
     [theMatrix getRow:&mouseRow column:&mouseCol forPoint:nowPoint];
-//    [theMatrix getRow:&mouseRow column:&mouseCol forPoint:mouseLoc];
     
     if ((mouseCol >= 0) && (mouseRow >= 0)) {
         if ((mouseCol != _currentMouseCol) || (mouseRow != _currentMouseRow)) {

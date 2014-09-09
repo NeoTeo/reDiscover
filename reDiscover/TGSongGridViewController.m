@@ -1108,18 +1108,11 @@ static NSInteger const kUndefinedID =  -1;
 
     // Collect the context for this selection and pass it to the mainviewcontroller which will pass
     // it on to the songpool where the cache is generated.
-    // TEO TODO 001
     NSValue* selectionPos = [NSValue valueWithPoint:NSMakePoint(theColumn, theRow)];
     NSValue* speedVector = [NSValue valueWithPoint:theSpeed];
     NSValue* gridDims = [NSValue valueWithPoint:NSMakePoint([_songCellMatrix numberOfColumns], [_songCellMatrix numberOfRows])];
     
     [_songPoolAPI cacheWithContext:@{@"pos" : selectionPos, @"spd" : speedVector, @"gridDims" : gridDims}];
-//    NSArray *theArray =[self buildCacheArrayWithStrategy:CacheStrategy5x5Square
-//                                                  forRow:theRow
-//                                               andColumn:theColumn
-//                                          andSpeedVector:theSpeed];
-//    
-//    [[self delegate] requestSongArrayPreload:theArray];
     
     // If a popover is shown, hide it.
     if ([[_songTimelineController songTimelinePopover] isShown]) {

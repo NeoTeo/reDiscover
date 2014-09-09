@@ -101,24 +101,17 @@ enum {
 
 #define TSD
 
-// An id key into the songpool's art dictionary. Values of -1 will be no art and 0 will be the default "no cover" art.
+/**
+ An id key into the songpool's art dictionary. Values of -1 will be no art and 0 will be the default "no cover" art.
+ */
 @property NSInteger artID;
 
 
 /**
- The currently selected sweet spot. This and the SongSweetSpots array are shadowed in the TEOSongData
- array and should be moved in there.
-*/
-//@property NSUInteger selectedSweetSpot;
-
-/** 
  Holds a one-off time offset for this song that is cleared after use.
  This is used whenever a song needs to be played from the start by the playlist.
 */
 @property NSNumber* oneOffStartTime;
-
-// All available sweet spots for the song.
-//@property NSArray *songSweetSpots;
 
 // A counter to provide a variable interval between sweet-spot checks.
 @property NSUInteger SSCheckCountdown;

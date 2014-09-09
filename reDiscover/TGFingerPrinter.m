@@ -52,7 +52,6 @@
 - (void)requestFingerPrintForSong:(id<SongIDProtocol>)songID withHandler:(void (^)(NSString*))fingerprintHandler {
 //#pragma warning returning from requestFingerPrintForSong: withHandler:
 //    return;
-    
     dispatch_async(fingerprintingQueue, ^{
         int maxLength = 120;
         char *theFingerprint;
@@ -60,6 +59,7 @@
 
         ChromaprintContext *chromaprintContext = chromaprint_new(CHROMAPRINT_ALGORITHM_DEFAULT);
         NSURL* songURL = [_delegate URLForSongID:songID];
+        NSLog(@"requestFingerPrintForSong called with song %@",[songURL absoluteString]);
         [self decodeAudioFileNew:songURL forContext:chromaprintContext ofLength:maxLength andDuration:&duration];
         
 //        SongID* test = [[SongID alloc] initWithString:(NSString*)songID];

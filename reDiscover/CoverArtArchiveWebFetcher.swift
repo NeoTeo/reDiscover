@@ -51,7 +51,7 @@ class CoverArtArchiveWebFetcher : NSObject {
                     
                     // skip if this did not return any data
                     if result.length == 0 {
-                        println("Data returned from url was empty");
+                        //println("Data returned from url \(coverArtArchiveURL) was empty");
                         continue
                     }
                     
