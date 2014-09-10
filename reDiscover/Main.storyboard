@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="6206.9" systemVersion="14A343f" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" initialViewController="1rG-hg-cjj">
+<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="6246" systemVersion="14A343f" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" initialViewController="1rG-hg-cjj">
     <dependencies>
-        <deployment defaultVersion="101000" identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="6206.9"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="6246"/>
     </dependencies>
     <scenes>
-        <!--Window-->
+        <!--Window Controller-->
         <scene sceneID="7Rf-qs-ym5">
             <objects>
                 <windowController id="2wd-eT-9XW" customClass="MainWindowController" customModule="reDiscover" customModuleProvider="target" sceneMemberID="viewController">
@@ -27,7 +26,7 @@
             </objects>
             <point key="canvasLocation" x="530" y="-723"/>
         </scene>
-        <!--Drop Window-->
+        <!--Window Controller-->
         <scene sceneID="deD-lT-RaP">
             <objects>
                 <windowController id="1rG-hg-cjj" sceneMemberID="viewController">

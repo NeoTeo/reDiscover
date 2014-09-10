@@ -11,7 +11,6 @@ import AppKit
 
 
 @objc
-
 class CoverArtArchiveWebFetcher : NSObject {
 
     var delegate: SongPoolAccessProtocol?
@@ -45,7 +44,7 @@ class CoverArtArchiveWebFetcher : NSObject {
                 if leniencyLevel == 1 || release["title"] as? String == songAlbum {
                     
                     let releaseMBID = release["id"] as NSString
-                    let coverArtArchiveURL = NSURL.URLWithString("http://coverartarchive.org/release/\(releaseMBID)")
+                    let coverArtArchiveURL = NSURL(string:"http://coverartarchive.org/release/\(releaseMBID)")
                     // blocks (presumably) until the url returns the data. This means this function should be called on a non-main thread.
                     let result = NSData(contentsOfURL: coverArtArchiveURL) as NSData
                     
@@ -65,7 +64,7 @@ class CoverArtArchiveWebFetcher : NSObject {
                     }
                     
                     let imageEntry = images[0] as NSDictionary
-                    let imageURL = NSURL.URLWithString(imageEntry["image"] as String)
+                    let imageURL = NSURL(string: imageEntry["image"] as String)
                     let coverArtData = NSData(contentsOfURL: imageURL)
                     
                     if coverArtData.length == 0 {

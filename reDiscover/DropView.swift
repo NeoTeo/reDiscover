@@ -54,7 +54,7 @@ class DropView : NSView {
         let myArray = pboard.types as NSArray
         
         if myArray.containsObject(NSURLPboardType) {
-            let fileURL = NSURL.URLFromPasteboard(pboard)
+            let fileURL = NSURL(fromPasteboard: pboard)
             delegate?.dropViewDidReceiveURL(fileURL)
         }
         println("perform returns true")

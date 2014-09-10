@@ -869,7 +869,7 @@ static int const kSSCheckCounterSize = 10;
 }
 
 - (BOOL)sweetSpotHasBeenUploaded:(NSNumber*)theSS forSong:(TGSong*)theSong {
-    return YES;
+    return NO;
 }
 
 /** 
