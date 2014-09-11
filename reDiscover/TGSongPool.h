@@ -151,6 +151,12 @@
 @property NSDictionary*             TEOSongDataDictionary;
 // TEOSongData end
 
+/**
+ The uploaded sweet spots is a dictionary of song ids and a set of sweetspots of that song that 
+ have been uploaded to the sweet spot server. The dictionary is persisted as a core data store.
+ */
+@property NSMutableDictionary* uploadedSweetSpots;
+
 @property NSFileManager*    sharedFileManager;
 
 

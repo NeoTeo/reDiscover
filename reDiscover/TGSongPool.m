@@ -165,6 +165,8 @@ static int const kSSCheckCounterSize = 10;
         // Starting off with an empty songID cache.
         songIDCache = [[NSMutableSet alloc] init];
         cacheClearingQueue = dispatch_queue_create("cache clearing q", NULL);
+        
+        _uploadedSweetSpots = [NSMutableDictionary dictionaryWithContentsOfFile:@"uploadedSS"];
     }
     
     return self;
@@ -903,11 +905,20 @@ static int const kSSCheckCounterSize = 10;
              
              // First we check that the return status is ok.
              NSString *status = [requestJSON objectForKey:@"status"];
+             NSLog(@"The server returned status %@",status);
              
              if ([status isEqualToString:@"ok"]) {
                  NSLog(@"Upload to sweet spot server returned ok");
                  //FIXME:
                  // This is where we write to a stored list of uploaded ss's.
+                 // Get the set of uploaded ss's for this song.
+                 NSMutableSet* uploadedSS = [_uploadedSweetSpots objectForKey:aSong.songID];
+                 if (uploadedSS == nil) {
+                     uploadedSS = [[NSMutableSet alloc] init];
+                 }
+                 [uploadedSS addObject:sweetSpot];
+                 [_uploadedSweetSpots setObject:uploadedSS forKey:aSong.songID];
+                 
              } else
                  NSLog(@"ERROR: The server returned status : %@",status);
          } else
@@ -1252,6 +1263,13 @@ static int const kSSCheckCounterSize = 10;
 // This includes UUID or a user selected sweet spot.
 - (void)storeSongData {
     // TEOSongData test
+    
+    // use this for path NSSearchPathForDirectoriesInDomains(NSApplicationSupportDirectory, NSUserDomainMask, YES);
+
+    if ([[self uploadedSweetSpots] writeToFile:@"uploadedSS" atomically:YES]) {
+        NSLog(@"uploadedSS successfully written to file.");
+    }
+    
     [self saveContext:NO];
 //    NSError *TEOError;
 //    if (![self.TEOmanagedObjectContext save:&TEOError]) {
