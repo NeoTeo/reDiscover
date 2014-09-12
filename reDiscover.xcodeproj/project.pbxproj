@@ -17,6 +17,7 @@
 		AB301E7619050C830093B654 /* TEOSongData.m in Sources */ = {isa = PBXBuildFile; fileRef = AB301E7519050C830093B654 /* TEOSongData.m */; };
 		AB3140CF196D5F0F00F910BE /* SongPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB3140CE196D5F0F00F910BE /* SongPlayer.swift */; };
 		AB3E9752187C20D600BECC09 /* TGPlaylistCellView.m in Sources */ = {isa = PBXBuildFile; fileRef = AB3E9751187C20D600BECC09 /* TGPlaylistCellView.m */; };
+		AB3FF56319C1D3CE00D6C5EF /* UploadedSSData.m in Sources */ = {isa = PBXBuildFile; fileRef = AB3FF56219C1D3CE00D6C5EF /* UploadedSSData.m */; };
 		AB4E078C19B618160052EEC0 /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = AB241FD9188977AB00E8E03F /* libz.dylib */; };
 		AB4E078D19B6181E0052EEC0 /* libiconv.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = AB0D052D1889E06400F08566 /* libiconv.dylib */; };
 		AB4E078F19B618260052EEC0 /* QTKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AB4E078E19B618260052EEC0 /* QTKit.framework */; };
@@ -70,6 +71,8 @@
 		ABB770AB1950486600155EE7 /* SongID.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABB770AA1950486600155EE7 /* SongID.swift */; };
 		ABCB68EA18FD57E4009CF277 /* TEOSong.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = ABCB68E818FD57E4009CF277 /* TEOSong.xcdatamodeld */; };
 		ABEC263D1951C6F200A57CE3 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = ABEC263C1951C6F200A57CE3 /* Main.storyboard */; };
+		ABFC8EB219C19C630007ECCB /* uploadedSS.plist in Resources */ = {isa = PBXBuildFile; fileRef = ABFC8EB119C19C630007ECCB /* uploadedSS.plist */; };
+		ABFC8EB519C1BCE90007ECCB /* uploadedSS.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = ABFC8EB319C1BCE90007ECCB /* uploadedSS.xcdatamodeld */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -91,6 +94,8 @@
 		AB3E97481876F94700BECC09 /* libchromaprint.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libchromaprint.a; path = ../chromaprint/build/Release/libchromaprint.a; sourceTree = "<group>"; };
 		AB3E9750187C20D600BECC09 /* TGPlaylistCellView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TGPlaylistCellView.h; sourceTree = "<group>"; };
 		AB3E9751187C20D600BECC09 /* TGPlaylistCellView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TGPlaylistCellView.m; sourceTree = "<group>"; };
+		AB3FF56119C1D3CE00D6C5EF /* UploadedSSData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UploadedSSData.h; sourceTree = "<group>"; };
+		AB3FF56219C1D3CE00D6C5EF /* UploadedSSData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UploadedSSData.m; sourceTree = "<group>"; };
 		AB4E078E19B618260052EEC0 /* QTKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QTKit.framework; path = System/Library/Frameworks/QTKit.framework; sourceTree = SDKROOT; };
 		AB56D9F218EC14D5005AB947 /* CAKeyframeAnimation+Parametric.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "CAKeyframeAnimation+Parametric.h"; sourceTree = "<group>"; };
 		AB56D9F318EC14D5005AB947 /* CAKeyframeAnimation+Parametric.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "CAKeyframeAnimation+Parametric.m"; sourceTree = "<group>"; };
@@ -174,6 +179,8 @@
 		ABB770AA1950486600155EE7 /* SongID.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SongID.swift; sourceTree = "<group>"; };
 		ABCB68E918FD57E4009CF277 /* TEOSong.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = TEOSong.xcdatamodel; sourceTree = "<group>"; };
 		ABEC263C1951C6F200A57CE3 /* Main.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Main.storyboard; sourceTree = "<group>"; };
+		ABFC8EB119C19C630007ECCB /* uploadedSS.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = uploadedSS.plist; sourceTree = "<group>"; };
+		ABFC8EB419C1BCE90007ECCB /* uploadedSS.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = uploadedSS.xcdatamodel; sourceTree = "<group>"; };
 		B512DB84B1174F868791F7EF /* Pods.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.xcconfig; path = Pods/Pods.xcconfig; sourceTree = "<group>"; };
 		FF4446098666436AB643944F /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -260,6 +267,9 @@
 				AB85BC131875AB5200670905 /* TGIdleTimer.h */,
 				AB85BC141875AB5200670905 /* TGIdleTimer.m */,
 				ABCB68E818FD57E4009CF277 /* TEOSong.xcdatamodeld */,
+				ABFC8EB319C1BCE90007ECCB /* uploadedSS.xcdatamodeld */,
+				AB3FF56119C1D3CE00D6C5EF /* UploadedSSData.h */,
+				AB3FF56219C1D3CE00D6C5EF /* UploadedSSData.m */,
 				AB301E7419050C830093B654 /* TEOSongData.h */,
 				AB301E7519050C830093B654 /* TEOSongData.m */,
 				AB85BC271875AB5200670905 /* TGSongPool.h */,
@@ -386,6 +396,7 @@
 		AB85BBDD1875AACF00670905 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				ABFC8EB119C19C630007ECCB /* uploadedSS.plist */,
 				AB85BBDE1875AACF00670905 /* reDiscover-Info.plist */,
 				AB85BBDF1875AACF00670905 /* InfoPlist.strings */,
 				AB85BBE21875AACF00670905 /* main.m */,
@@ -474,6 +485,7 @@
 				AB85BC4D1875AB5200670905 /* TGSongTimelineView.xib in Resources */,
 				ABEC263D1951C6F200A57CE3 /* Main.storyboard in Resources */,
 				AB85BBEF1875AACF00670905 /* Images.xcassets in Resources */,
+				ABFC8EB219C19C630007ECCB /* uploadedSS.plist in Resources */,
 				AB85BBE71875AACF00670905 /* Credits.rtf in Resources */,
 				AB85BC411875AB5200670905 /* TGMainView.xib in Resources */,
 				AB85BC441875AB5200670905 /* TGPlaylistView.xib in Resources */,
@@ -524,7 +536,9 @@
 			files = (
 				AB85BC521875AB5200670905 /* TGTimelineBarView.m in Sources */,
 				AB01DB04194F499900368693 /* TGStack.m in Sources */,
+				AB3FF56319C1D3CE00D6C5EF /* UploadedSSData.m in Sources */,
 				AB85BC491875AB5200670905 /* TGSongGridViewController.m in Sources */,
+				ABFC8EB519C1BCE90007ECCB /* uploadedSS.xcdatamodeld in Sources */,
 				AB85BC4E1875AB5200670905 /* TGSongTimelineViewController.m in Sources */,
 				AB85BC5F1875AD7A00670905 /* TGSongGridScrollView.m in Sources */,
 				AB85BC501875AB5200670905 /* TGSongUserData.m in Sources */,
@@ -755,6 +769,16 @@
 			);
 			currentVersion = ABCB68E918FD57E4009CF277 /* TEOSong.xcdatamodel */;
 			path = TEOSong.xcdatamodeld;
+			sourceTree = "<group>";
+			versionGroupType = wrapper.xcdatamodel;
+		};
+		ABFC8EB319C1BCE90007ECCB /* uploadedSS.xcdatamodeld */ = {
+			isa = XCVersionGroup;
+			children = (
+				ABFC8EB419C1BCE90007ECCB /* uploadedSS.xcdatamodel */,
+			);
+			currentVersion = ABFC8EB419C1BCE90007ECCB /* uploadedSS.xcdatamodel */;
+			path = uploadedSS.xcdatamodeld;
 			sourceTree = "<group>";
 			versionGroupType = wrapper.xcdatamodel;
 		};

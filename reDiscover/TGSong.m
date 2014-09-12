@@ -216,6 +216,8 @@
         
         if (songPlayer == nil) {
             NSDate* preDate = [NSDate date];
+                
+            //FIXME: repeated EXC_BAD_ACCESS crash here
             songPlayer = [AVPlayer playerWithPlayerItem:songPlayerItem];
             NSDate* postDate = [NSDate date];
             NSLog(@"Creating a new AVPlayer took: %f",[postDate timeIntervalSinceDate:preDate]);

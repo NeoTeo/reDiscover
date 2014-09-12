@@ -124,8 +124,8 @@
 
 - (void)requestFingerPrintForSong:(TGSong *)song {
     //__block NSMutableArray *songFingerPrint = NULL;
-#pragma warning returning from requestFingerPrintForSong:
-    return;
+//#pragma warning returning from requestFingerPrintForSong:
+//    return;
     
     //NSBlockOperation *theOp = [NSBlockOperation blockOperationWithBlock:^{
     dispatch_async(fingerprintingQueue, ^{
