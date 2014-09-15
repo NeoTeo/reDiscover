@@ -276,7 +276,7 @@
         [_playlistController storePlaylistWithName:@"ProjectXPlaylist"];
     } else if ([chars isEqualToString:@"t"]){
         NSLog(@"testicle");
-        [_currentSongPool testUploadSSForSongID:lastRequestedSongID];
+//        [_currentSongPool testUploadSSForSongID:lastRequestedSongID];
         
 //        [_songGridController runTest];
 //        [_currentSongPool findUUIDOfSongWithURL:[_currentSongPool URLForSongID:lastRequestedSongID]];

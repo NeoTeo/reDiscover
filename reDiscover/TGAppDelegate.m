@@ -22,4 +22,7 @@
     [_theWindowController showWindow:self];    
 }
 
+- (void)applicationWillTerminate:(NSNotification *)notification {
+    NSLog(@"reDiscover is quitting");
+}
 @end
