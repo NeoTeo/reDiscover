@@ -978,8 +978,7 @@ static int const kSSCheckCounterSize = 10;
              NSString *status = [requestJSON objectForKey:@"status"];
              NSLog(@"The server returned status %@",status);
              
-             //if ([status isEqualToString:@"ok"]) {
-             if( 1 ){
+             if ([status isEqualToString:@"ok"]) {
                  NSLog(@"Upload to sweet spot server returned ok");
                  
                  // This is where we write to a stored list of uploaded ss's.
