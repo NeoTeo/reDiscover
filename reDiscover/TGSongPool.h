@@ -221,6 +221,9 @@
 - (void)songReadyForPlayback:(TGSong *)song;
 - (NSSet*)currentCache;
 
+//MARK: Test methods
+- (void)testUploadSSForSongID:(id<SongIDProtocol>)theID;
+
 @end
 
 

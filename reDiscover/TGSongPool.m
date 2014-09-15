@@ -198,12 +198,16 @@ static int const kSSCheckCounterSize = 10;
     [self initUploadedSweetSpots];
 }
 
+
+/**
+ Initialize the uploadedSweetSpots dictionary by loading the Core Data store and transferring the data into it.
+ */
 - (void)initUploadedSweetSpots {
     // First we fetch the data from the store.
     NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:@"UploadedSSData"];
     
     // fetch the data synch'ly
-    [self.TEOmanagedObjectContext performBlockAndWait:^{
+    [self.uploadedSweetSpotsMOC performBlockAndWait:^{
         NSArray *fetchedArray = nil;
         NSError *error = nil;
         fetchedArray = [self.uploadedSweetSpotsMOC executeFetchRequest:fetchRequest error:&error];
@@ -924,6 +928,8 @@ static int const kSSCheckCounterSize = 10;
 - (BOOL)sweetSpotHasBeenUploaded:(NSNumber*)theSS forSong:(TGSong*)theSong {
     
     UploadedSSData* ssData = (UploadedSSData*)[self.uploadedSweetSpots objectForKey:theSong.TEOData.uuid];
+    NSLog(@"sweetSpotHasBeenUploaded check %@ against the sweetspots %@",theSS,ssData.sweetSpots);
+    
     //FIXME:
     // For now just crash if nil
 //    if (ssData == nil) {
@@ -931,6 +937,11 @@ static int const kSSCheckCounterSize = 10;
 //    }
     NSSet* sweetSpots = ssData.sweetSpots;
     return [sweetSpots containsObject:theSS];
+}
+
+//MARK: test method
+- (void)testUploadSSForSongID:(id<SongIDProtocol>)theID {
+    [self sweetSpotsToServerForSong:[self songForID:theID]];
 }
 
 /** 
@@ -951,6 +962,7 @@ static int const kSSCheckCounterSize = 10;
          // First check that the sweet spot for this song has not already been uploaded by
          // consulting the local list of uploaded sweet spots.
          if ([self sweetSpotHasBeenUploaded:sweetSpot forSong:aSong]) {
+             NSLog(@"The ss %@ has already been uploaded. Skipping.",sweetSpot);
              continue;
          }
          
