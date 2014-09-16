@@ -68,6 +68,7 @@
 		AB85BC5F1875AD7A00670905 /* TGSongGridScrollView.m in Sources */ = {isa = PBXBuildFile; fileRef = AB85BC5E1875AD7A00670905 /* TGSongGridScrollView.m */; };
 		AB8A979A1981261E0006D076 /* SongPlayer2.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB8A97991981261E0006D076 /* SongPlayer2.swift */; };
 		AB91A02E1972D097005DF712 /* DebugDisplayController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB91A02C1972D097005DF712 /* DebugDisplayController.swift */; };
+		ABB33FF019C72C3800439A5E /* SweetSpotServerIO.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABB33FEF19C72C3800439A5E /* SweetSpotServerIO.swift */; };
 		ABB770AB1950486600155EE7 /* SongID.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABB770AA1950486600155EE7 /* SongID.swift */; };
 		ABCB68EA18FD57E4009CF277 /* TEOSong.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = ABCB68E818FD57E4009CF277 /* TEOSong.xcdatamodeld */; };
 		ABEC263D1951C6F200A57CE3 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = ABEC263C1951C6F200A57CE3 /* Main.storyboard */; };
@@ -176,6 +177,7 @@
 		AB85BC641875B2F600670905 /* Accelerate.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accelerate.framework; path = System/Library/Frameworks/Accelerate.framework; sourceTree = SDKROOT; };
 		AB8A97991981261E0006D076 /* SongPlayer2.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SongPlayer2.swift; sourceTree = "<group>"; };
 		AB91A02C1972D097005DF712 /* DebugDisplayController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DebugDisplayController.swift; sourceTree = "<group>"; };
+		ABB33FEF19C72C3800439A5E /* SweetSpotServerIO.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SweetSpotServerIO.swift; sourceTree = "<group>"; };
 		ABB770AA1950486600155EE7 /* SongID.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SongID.swift; sourceTree = "<group>"; };
 		ABCB68E918FD57E4009CF277 /* TEOSong.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = TEOSong.xcdatamodel; sourceTree = "<group>"; };
 		ABEC263C1951C6F200A57CE3 /* Main.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Main.storyboard; sourceTree = "<group>"; };
@@ -277,6 +279,7 @@
 				AB85BC1D1875AB5200670905 /* TGSong.h */,
 				AB85BC1E1875AB5200670905 /* TGSong.m */,
 				ABB770AA1950486600155EE7 /* SongID.swift */,
+				ABB33FEF19C72C3800439A5E /* SweetSpotServerIO.swift */,
 			);
 			name = Common;
 			sourceTree = "<group>";
@@ -537,6 +540,7 @@
 				AB85BC521875AB5200670905 /* TGTimelineBarView.m in Sources */,
 				AB01DB04194F499900368693 /* TGStack.m in Sources */,
 				AB3FF56319C1D3CE00D6C5EF /* UploadedSSData.m in Sources */,
+				ABB33FF019C72C3800439A5E /* SweetSpotServerIO.swift in Sources */,
 				AB85BC491875AB5200670905 /* TGSongGridViewController.m in Sources */,
 				ABFC8EB519C1BCE90007ECCB /* uploadedSS.xcdatamodeld in Sources */,
 				AB85BC4E1875AB5200670905 /* TGSongTimelineViewController.m in Sources */,

@@ -6,3 +6,6 @@
 
 // Temporarily need to import this until we can use the Swift MainViewController.
 #import "TGMainViewController.h"
+
+// SweetSpotServerIO needs to know about the UploadedSSData class
+#import "UploadedSSData.h"
