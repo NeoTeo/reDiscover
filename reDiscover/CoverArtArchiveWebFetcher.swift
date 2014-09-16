@@ -46,16 +46,17 @@ class CoverArtArchiveWebFetcher : NSObject {
                     let releaseMBID = release["id"] as NSString
                     let coverArtArchiveURL = NSURL(string:"http://coverartarchive.org/release/\(releaseMBID)")
                     // blocks (presumably) until the url returns the data. This means this function should be called on a non-main thread.
-                    let result = NSData(contentsOfURL: coverArtArchiveURL) as NSData
+                    if coverArtArchiveURL == nil { continue }
+                    let result = NSData(contentsOfURL: coverArtArchiveURL!)
                     
                     // skip if this did not return any data
-                    if result.length == 0 {
+                    if result == nil || result!.length == 0 {
                         //println("Data returned from url \(coverArtArchiveURL) was empty");
                         continue
                     }
                     
                     // coverartarchive.org returns a dictionary at the top level.
-                    let resultJSON = NSJSONSerialization.JSONObjectWithData(result, options: NSJSONReadingOptions.MutableContainers, error: nil) as NSDictionary
+                    let resultJSON = NSJSONSerialization.JSONObjectWithData(result!, options: NSJSONReadingOptions.MutableContainers, error: nil) as NSDictionary
                     
                     let images = resultJSON["images"] as NSArray
                     
@@ -64,10 +65,13 @@ class CoverArtArchiveWebFetcher : NSObject {
                     }
                     
                     let imageEntry = images[0] as NSDictionary
-                    let imageURL = NSURL(string: imageEntry["image"] as String)
-                    let coverArtData = NSData(contentsOfURL: imageURL)
                     
-                    if coverArtData.length == 0 {
+                    let imageURL = NSURL(string: imageEntry["image"] as String)
+                    if imageURL == nil { continue }
+                    
+                    let coverArtData = NSData(contentsOfURL: imageURL!)
+                    
+                    if coverArtData == nil || coverArtData!.length == 0 {
                         println("No cover art data!");
                         continue
                     }
