@@ -160,7 +160,10 @@ static int const kSSCheckCounterSize = 10;
         // TEOSongData test
         [self setupManagedObjectContext];
         // TEOSongData end
-        [self setupUploadedSweetSpotsMOC];
+        //[self setupUploadedSweetSpotsMOC];
+        _sweetSpotServerIO = [[SweetSpotServerIO alloc] init];
+        _sweetSpotServerIO.delegate = self;
+        
 
         theSongPlayer = [[SongPlayer alloc] init];
         theSongPlayer.delegate = self;
@@ -173,6 +176,7 @@ static int const kSSCheckCounterSize = 10;
     return self;
 }
 
+/*
 - (void)setupUploadedSweetSpotsMOC {
     
     NSError* error;
@@ -197,11 +201,12 @@ static int const kSSCheckCounterSize = 10;
     }
     [self initUploadedSweetSpots];
 }
-
+*/
 
 /**
  Initialize the uploadedSweetSpots dictionary by loading the Core Data store and transferring the data into it.
  */
+/*
 - (void)initUploadedSweetSpots {
     // First we fetch the data from the store.
     NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:@"UploadedSSData"];
@@ -226,7 +231,7 @@ static int const kSSCheckCounterSize = 10;
     }];
     
 }
-
+*/
 
 // TEOSongData test set up the Core Data context and store.
 - (void)setupManagedObjectContext {
@@ -476,16 +481,18 @@ static int const kSSCheckCounterSize = 10;
                                 newSong.TEOData = teoData;
 //                                NSLog(@"new song found %@",newSong.TEOData.title);
                                 
-                                // Upload any sweetspots that have not already been uploaded.
-                                if (newSong.TEOData.sweetSpots.count) {
-                                    [self sweetSpotsToServerForSong:newSong];
-                                }
                                 
                             }
                             
                             // Add the song to the songpool.
                             [songPoolDictionary setObject:newSong forKey:[SongID initWithString:[url absoluteString]]];
                             
+                            // Upload any sweetspots that have not already been uploaded.
+                            if (newSong.TEOData.sweetSpots.count) {
+                                //[self sweetSpotsToServerForSong:newSong];
+                                [_sweetSpotServerIO uploadSweetSpotsForSongID:newSong.songID];
+                            }
+                  
                         });
                         
                         // Inform the delegate that another song object has been loaded. This causes a cell in the song matrix to be added.
@@ -941,12 +948,14 @@ static int const kSSCheckCounterSize = 10;
 
 //MARK: test method
 - (void)testUploadSSForSongID:(id<SongIDProtocol>)theID {
-    [self sweetSpotsToServerForSong:[self songForID:theID]];
+    //[self sweetSpotsToServerForSong:[self songForID:theID]];
+    [_sweetSpotServerIO uploadSweetSpotsForSongID:theID];
 }
 
 /** 
  Traverse the song's sweet spots and upload them to the sweet spot server.
 */
+/*
  - (void)sweetSpotsToServerForSong:(TGSong *)aSong {
      
      NSString * songUUID = aSong.TEOData.uuid;
@@ -1004,7 +1013,7 @@ static int const kSSCheckCounterSize = 10;
         
      }
 }
-
+*/
 
 
 /*

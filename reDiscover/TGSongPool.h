@@ -19,6 +19,7 @@
 @class CoverArtArchiveWebFetcher;
 @class TGStack;
 @class AVAudioFile;
+@class SweetSpotServerIO;
 
 // protocol forward declaration
 @protocol SongGridAccessProtocol;
@@ -157,6 +158,8 @@
  */
 @property NSMutableDictionary* uploadedSweetSpots;
 @property NSManagedObjectContext* uploadedSweetSpotsMOC;
+
+@property SweetSpotServerIO* sweetSpotServerIO;
 
 @property NSFileManager*    sharedFileManager;
 

@@ -34,7 +34,7 @@ class DropView : NSView {
     override func draggingEntered(sender: NSDraggingInfo!) -> NSDragOperation {
         let dMask = sender.draggingSourceOperationMask()
         // Ensure the sender supports the link operation and assure it we do too.
-        if (dMask.rawValue & NSDragOperation().rawValue) != 0 {
+        if (dMask.rawValue & NSDragOperation.Link.rawValue) != 0 {
             return NSDragOperation.Generic
         }
 
