@@ -180,7 +180,7 @@ class SweetSpotServerIO: NSObject {
                 
                 if let status = requestJSON!.objectForKey("status") as String? {
                     if (status == "ok") != nil {
-                        
+                        let result: AnyObject = requestJSON!.objectForKey("result")
                     }
                 }
                 
