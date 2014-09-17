@@ -180,7 +180,23 @@ class SweetSpotServerIO: NSObject {
                 
                 if let status = requestJSON!.objectForKey("status") as String? {
                     if (status == "ok") != nil {
-                        let result: AnyObject = requestJSON!.objectForKey("result")
+                        let result: AnyObject? = requestJSON!.objectForKey("result")
+                        
+                        if result == nil { return }
+                        if result! is NSDictionary {
+                            let resultDict = result as NSDictionary
+                            let serverSweetSpots = resultDict["sweetspots"] as NSArray
+                            if serverSweetSpots.count > 0 {
+                                let tmpSet = self.delegate?.sweetSpotsForSongID(songID) as NSMutableSet
+                                for ss in serverSweetSpots {
+                                    tmpSet.addObject(ss)
+                                }
+                                
+                                self.delegate?.replaceSweetSpots(tmpSet, forSongID: songID)
+                                // The index really doesn't matter. The sweet spots are in a set which isn't sorted.
+                                self.delegate?.setActiveSweetSpotIndex(0, forSongID: songID)
+                            }
+                        }
                     }
                 }
                 

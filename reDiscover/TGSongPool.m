@@ -881,12 +881,29 @@ static int const kSSCheckCounterSize = 10;
     return YES;
 }
 
-- (NSArray *)sweetSpotsForSongID:(id<SongIDProtocol>)songID {
-    if (![self validSongID:songID]) {
-        return nil;
+- (void)setActiveSweetSpotIndex:(int)ssIndex forSongID:(id<SongIDProtocol>)songID {
+    TGSong* theSong = [self songForID:songID];
+    if (theSong == nil) {
+        return;
     }
+    if (ssIndex >= 0 && ssIndex < theSong.TEOData.sweetSpots.count ) {
+        NSArray* allSS = [theSong.TEOData.sweetSpots allObjects];
+        [theSong setStartTime:allSS[ssIndex] makeSweetSpot:YES] ;
+    }
+}
+
+- (void)replaceSweetSpots:(NSSet*)sweetSpots forSongID:(id<SongIDProtocol>)songID {
+    TGSong* theSong = [self songForID:songID];
+    if (theSong == nil) { return; }
     
-    return [[self songForID:songID].TEOData.sweetSpots sortedArrayUsingDescriptors:nil];
+    theSong.TEOData.sweetSpots = sweetSpots;
+}
+
+- (NSArray *)sweetSpotsForSongID:(id<SongIDProtocol>)songID {
+    TGSong* theSong = [self songForID:songID];
+    if (theSong == nil) { return nil; }
+    
+    return [theSong.TEOData.sweetSpots sortedArrayUsingDescriptors:nil];
 }
 
 - (NSSet*)currentCache {
@@ -932,6 +949,7 @@ static int const kSSCheckCounterSize = 10;
 //    return [[self songForID:songID] songURL];
 }
 
+/*
 - (BOOL)sweetSpotHasBeenUploaded:(NSNumber*)theSS forSong:(TGSong*)theSong {
     
     UploadedSSData* ssData = (UploadedSSData*)[self.uploadedSweetSpots objectForKey:theSong.TEOData.uuid];
@@ -945,7 +963,7 @@ static int const kSSCheckCounterSize = 10;
     NSSet* sweetSpots = ssData.sweetSpots;
     return [sweetSpots containsObject:theSS];
 }
-
+*/
 //MARK: test method
 - (void)testUploadSSForSongID:(id<SongIDProtocol>)theID {
     //[self sweetSpotsToServerForSong:[self songForID:theID]];
