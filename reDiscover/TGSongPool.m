@@ -142,9 +142,6 @@ static int const kSSCheckCounterSize = 10;
             }
         }
         
-//        songsWithChangesToSave = [[NSMutableSet alloc] init];
-//        songsWithSaveError = [[NSMutableSet alloc] init];
-     
         self.sharedFileManager = [[NSFileManager alloc] init];
         
         // Get any user metadata from the local Core Data store.
@@ -160,7 +157,8 @@ static int const kSSCheckCounterSize = 10;
         // TEOSongData test
         [self setupManagedObjectContext];
         // TEOSongData end
-        //[self setupUploadedSweetSpotsMOC];
+        
+        // The sweetSpotServerIO object handles all comms with the remote sweet spot server.
         _sweetSpotServerIO = [[SweetSpotServerIO alloc] init];
         _sweetSpotServerIO.delegate = self;
         
@@ -175,63 +173,6 @@ static int const kSSCheckCounterSize = 10;
     
     return self;
 }
-
-/*
-- (void)setupUploadedSweetSpotsMOC {
-    
-    NSError* error;
-    // init the mom with the momd
-    NSURL* modelURL = [[NSBundle mainBundle] URLForResource:@"uploadedSS" withExtension:@"momd"];
-    NSManagedObjectModel* mom = [[NSManagedObjectModel alloc] initWithContentsOfURL:modelURL];
-
-    self.uploadedSweetSpotsMOC = [[NSManagedObjectContext alloc] initWithConcurrencyType:NSMainQueueConcurrencyType];
-    
-    self.uploadedSweetSpotsMOC.persistentStoreCoordinator = [[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel:mom];
-    
-    // Build the URL where to store the data.
-    NSURL* documentsDirectory = [[NSFileManager defaultManager] URLForDirectory:NSDocumentDirectory inDomain:NSUserDomainMask appropriateForURL:nil create:YES error:NULL];
-    documentsDirectory = [documentsDirectory URLByAppendingPathComponent:@"uploadedSS.xml"];
-    
-    [self.uploadedSweetSpotsMOC.persistentStoreCoordinator addPersistentStoreWithType:NSXMLStoreType
-                                                                          configuration:nil
-                                                                                    URL:documentsDirectory
-                                                                                options:nil error:&error];
-    if (error) {
-        NSLog(@"setupUploadedSweetSpotsMOC Error: %@",error);
-    }
-    [self initUploadedSweetSpots];
-}
-*/
-
-/**
- Initialize the uploadedSweetSpots dictionary by loading the Core Data store and transferring the data into it.
- */
-/*
-- (void)initUploadedSweetSpots {
-    // First we fetch the data from the store.
-    NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:@"UploadedSSData"];
-    
-    // fetch the data synch'ly
-    [self.uploadedSweetSpotsMOC performBlockAndWait:^{
-        NSArray *fetchedArray = nil;
-        NSError *error = nil;
-        fetchedArray = [self.uploadedSweetSpotsMOC executeFetchRequest:fetchRequest error:&error];
-        if (error != nil) {
-            NSLog(@"Error while fetching uploadedSSData.\n%@",
-                  ([error localizedDescription] != nil) ? [error localizedDescription] : @"Unknown error..");
-            return;
-        }
-        self.uploadedSweetSpots = [[NSMutableDictionary alloc] init];
-        for (UploadedSSData* ssData in fetchedArray) {
-            [self.uploadedSweetSpots setObject:ssData forKey:ssData.songUUID];
-            NSLog(@"The ssData songUUID is %@ and its sweetspots %@",ssData.songUUID, ssData.sweetSpots);
-        }
-        
-        NSLog(@"initUploadedSweetSpots done. Loaded %lu objects",(unsigned long)self.uploadedSweetSpots.count);
-    }];
-    
-}
-*/
 
 // TEOSongData test set up the Core Data context and store.
 - (void)setupManagedObjectContext {
@@ -379,19 +320,6 @@ static int const kSSCheckCounterSize = 10;
     // Stop the fingerprinter.
     [idleTimeFingerprinterTimer invalidate];
 }
-
-
-
-//- (NSManagedObjectContext *)managedObjectContext {
-//    
-//    if (songPoolManagedContext == nil) {
-//        songPoolManagedContext = [[NSManagedObjectContext alloc] initWithConcurrencyType:NSPrivateQueueConcurrencyType];
-//        [songPoolManagedContext setPersistentStoreCoordinator:songPoolDataCoordinator];
-//    }
-//    
-//    return songPoolManagedContext;
-//}
-
 
 
 // Traverse the passed in URL, find all music files and load their URLs into a dictionary.
@@ -899,11 +827,11 @@ static int const kSSCheckCounterSize = 10;
     theSong.TEOData.sweetSpots = sweetSpots;
 }
 
-- (NSArray *)sweetSpotsForSongID:(id<SongIDProtocol>)songID {
+- (NSSet*)sweetSpotsForSongID:(id<SongIDProtocol>)songID {
     TGSong* theSong = [self songForID:songID];
     if (theSong == nil) { return nil; }
     
-    return [theSong.TEOData.sweetSpots sortedArrayUsingDescriptors:nil];
+    return theSong.TEOData.sweetSpots;
 }
 
 - (NSSet*)currentCache {
@@ -949,174 +877,11 @@ static int const kSSCheckCounterSize = 10;
 //    return [[self songForID:songID] songURL];
 }
 
-/*
-- (BOOL)sweetSpotHasBeenUploaded:(NSNumber*)theSS forSong:(TGSong*)theSong {
-    
-    UploadedSSData* ssData = (UploadedSSData*)[self.uploadedSweetSpots objectForKey:theSong.TEOData.uuid];
-    NSLog(@"sweetSpotHasBeenUploaded check %@ against the sweetspots %@",theSS,ssData.sweetSpots);
-    
-    //FIXME:
-    // For now just crash if nil
-//    if (ssData == nil) {
-//        return NO;
-//    }
-    NSSet* sweetSpots = ssData.sweetSpots;
-    return [sweetSpots containsObject:theSS];
-}
-*/
 //MARK: test method
 - (void)testUploadSSForSongID:(id<SongIDProtocol>)theID {
-    //[self sweetSpotsToServerForSong:[self songForID:theID]];
     [_sweetSpotServerIO uploadSweetSpotsForSongID:theID];
 }
 
-/** 
- Traverse the song's sweet spots and upload them to the sweet spot server.
-*/
-/*
- - (void)sweetSpotsToServerForSong:(TGSong *)aSong {
-     
-     NSString * songUUID = aSong.TEOData.uuid;
-     
-     // Early out if there is no uuid.
-     if (songUUID == nil) {
-         NSLog(@"Error sending sweet spot to server. Song has no UUID");
-         return;
-     }
-
-     for (NSNumber* sweetSpot in aSong.TEOData.sweetSpots) {
-         
-         // First check that the sweet spot for this song has not already been uploaded by
-         // consulting the local list of uploaded sweet spots.
-         if ([self sweetSpotHasBeenUploaded:sweetSpot forSong:aSong]) {
-             NSLog(@"The ss %@ has already been uploaded. Skipping.",sweetSpot);
-             continue;
-         }
-         
-         NSURL *requestIDURL = [[NSURL alloc] initWithString:[NSString stringWithFormat:@"http://localhost:6969/submit?songUUID=%s&songSweetSpot=%lf",[songUUID UTF8String],[sweetSpot doubleValue]]];
-         
-         NSLog(@"sanity check %@",requestIDURL);
-         NSData *requestData = [[NSData alloc] initWithContentsOfURL:requestIDURL];
-         
-         if (requestData != nil) {
-             NSDictionary *requestJSON = [NSJSONSerialization JSONObjectWithData:requestData options:NSJSONReadingMutableContainers error:nil];
-             
-             // First we check that the return status is ok.
-             NSString *status = [requestJSON objectForKey:@"status"];
-             NSLog(@"The server returned status %@",status);
-             
-             if ([status isEqualToString:@"ok"]) {
-                 NSLog(@"Upload to sweet spot server returned ok");
-                 
-                 // This is where we write to a stored list of uploaded ss's.
-                 // Get the set of uploaded ss's for this song.
-                 UploadedSSData* uploadedSS = [_uploadedSweetSpots objectForKey:songUUID];
-                 
-                 if (uploadedSS == nil) {
-                     uploadedSS = [UploadedSSData insertItemWithSongUUIDString:songUUID inManagedObjectContext:self.uploadedSweetSpotsMOC];
-                     // add the sweet spot to the newly created item.
-                     uploadedSS.sweetSpots = [[NSSet alloc] initWithObjects:sweetSpot, nil];
-                 } else {
-                     NSMutableSet* tmpSet = [uploadedSS.sweetSpots mutableCopy];
-                     [tmpSet addObject:sweetSpot];
-                     uploadedSS.sweetSpots = tmpSet;
-                 }
-                 // Add the uploadedSSData to the dictionary.
-                [_uploadedSweetSpots setObject:uploadedSS forKey:songUUID];
-                 
-             } else
-                 NSLog(@"ERROR: The server returned status : %@",status);
-         } else
-             NSLog(@"No data returned from sweetspot server.");
-        
-     }
-}
-*/
-
-
-/*
-- (void)sweetSpotToServerForSong:(TGSong *)aSong {
-    
-    double sweetSpot = [[aSong startTime] doubleValue] ;
-    NSString * songUUID = aSong.TEOData.uuid;
-    
-    // Early out if there is no uuid.
-    if (songUUID == nil) {
-        NSLog(@"Error sending sweet spot to server. Song has no UUID");
-        return;
-    }
-    
-    
-    NSURL *requestIDURL = [[NSURL alloc] initWithString:[NSString stringWithFormat:@"http://localhost:6969/submit?songUUID=%s&songSweetSpot=%lf",[songUUID UTF8String],sweetSpot]];
-    NSLog(@"sanity check %@",requestIDURL);
-    NSData *requestData = [[NSData alloc] initWithContentsOfURL:requestIDURL];
-    
-    if (requestData != nil) {
-        NSDictionary *requestJSON = [NSJSONSerialization JSONObjectWithData:requestData options:NSJSONReadingMutableContainers error:nil];
-        
-        // First we check that the return status is ok.
-        NSString *status = [requestJSON objectForKey:@"status"];
-        //NSLog(@"the status is %@",status);
-        
-        if ([status isEqualToString:@"ok"]) {
-            //            id result = [requestJSON objectForKey:@"result"];
-            //            if ([result isKindOfClass:[NSDictionary class]]) {
-            //                NSLog(@"the result object is a dictionary.");
-            //                NSDictionary *resultDict = result;
-            //                // The first element is the songUUID which hopefully matches the one we sent to the server.
-            //                NSString *songUUIDFromServer = [resultDict objectForKey:@"songuuid"];
-            //                NSLog(@"The song uuid from the server is %@",songUUIDFromServer);
-            //                // We then expect an array of sweetspots.
-            //            }
-        } else
-            NSLog(@"ERROR: The server returned status : %@",status);
-    } else
-        NSLog(@"No data returned from sweetspot server.");
-}
-*/
-
-- (void)sweetSpotFromServerForSong:(TGSong *)aSong {
-
-    NSString * songUUID = aSong.TEOData.uuid;
-
-    NSURL *theIDURL = [NSURL URLWithString:[NSString stringWithFormat:@"http://localhost:6969/lookup?songUUID=%s",[songUUID UTF8String]]];
-    NSURLRequest *request = [NSURLRequest requestWithURL:theIDURL];
-    
-    [NSURLConnection sendAsynchronousRequest:request queue:opQueue completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
-        if (data != nil) {
-            NSDictionary *requestJSON = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
-            
-            // First we check that the return status is ok.
-            NSString *status = [requestJSON objectForKey:@"status"];
-            
-            if ([status isEqualToString:@"ok"]) {
-                id result = [requestJSON objectForKey:@"result"];
-                if ([result isKindOfClass:[NSDictionary class]]) {
-
-                    NSDictionary *resultDict = result;
-                    // The first element is the songUUID which hopefully matches the one we sent to the server.
-                    
-                    // We then expect an array of sweetspots.
-                    NSArray *sweetSpotsFromServer = [resultDict objectForKey:@"sweetspots"];
-                    if ([sweetSpotsFromServer count] > 0) {
-
-                        NSMutableSet* tmpSet = [aSong.TEOData.sweetSpots mutableCopy];
-                        for (NSNumber* ss in sweetSpotsFromServer) {
-                            [tmpSet addObject:ss];
-                        }
-                        aSong.TEOData.sweetSpots = tmpSet;
-
-                        // TEO: temp set the start time to be the first sweet spot
-                        NSNumber *sweetSpot = [sweetSpotsFromServer objectAtIndex:0];
-                        [aSong setStartTime:sweetSpot makeSweetSpot:YES];
-                    }
-                }
-            } else
-                NSLog(@"ERROR: The server returned status : %@",status);
-        } else
-            NSLog(@"NSURLConnection request to sweet spot server returned nil data.");
-    }];
-}
 
 // This will fetch the song "sweet spot" (if we can't find a local one) from a remote server based on a grouping algorithm.
 // If the user has set their own "sweet spot" it overrides the server provided time and the user time is uploaded to the server to increase accuracy.
@@ -1134,7 +899,8 @@ static int const kSSCheckCounterSize = 10;
         // TEO finish off the timestamping of server requests instead of using the countdown.
         NSDate *now = [NSDate date];
         [now timeIntervalSinceDate:now];
-        [self sweetSpotFromServerForSong:song];
+//        [self sweetSpotFromServerForSong:song];
+        [_sweetSpotServerIO requestSweetSpotsForSongID:song.songID];
     }
     
     return startTime;
@@ -1147,7 +913,8 @@ static int const kSSCheckCounterSize = 10;
 
 
 /** 
- This method sets the playhead position (what is that?) of the currently playing song to the requested position and sets a sweet spot for the song which gets stored on next save.
+ This method sets the requestedPlayheadPosition (which represents the position the user has manually set with a slider)
+ of the currently playing song to newPosition and sets a sweet spot for the song which gets stored on next save.
  The requestedPlayheadPosition should only result in a sweet spot when the user releases the slider.
 */
 - (void)setRequestedPlayheadPosition:(NSNumber *)newPosition {
@@ -1155,10 +922,9 @@ static int const kSSCheckCounterSize = 10;
 //    NSLog(@"setRequestedPlayheadPosition: %@",newPosition);
     
     TGSong* theSong = [self songForID:[self lastRequestedSongID]];
-    //[[self songForID:[self lastRequestedSongID]] setStartTime:newPosition makeSweetSpot:NO];
+
     [theSong setCurrentPlayTime:newPosition];
     [theSong setSweetSpot:newPosition];
-//    [self setSweetSpotForSong:[self songForID:[self lastRequestedSongID]] atTime:newPosition];
 }
 
 
@@ -1371,16 +1137,17 @@ static int const kSSCheckCounterSize = 10;
     [self saveContext:NO];
     
     // uploadedSweetSpots save
-    NSManagedObjectContext *moc = self.uploadedSweetSpotsMOC;
-    
-    if (!moc) return;
-    if ([moc hasChanges]) {
-        [moc performBlockAndWait:^{
-            NSError *error = nil;
-            NSAssert([moc save:&error], @"Error saving uploadedSweetSpotsMOC: %@\n%@",
-                     [error localizedDescription], [error userInfo]);
-        }];
-    }
+    [_sweetSpotServerIO storeUploadedSweetSpotsDictionary];
+//    NSManagedObjectContext *moc = self.uploadedSweetSpotsMOC;
+//    
+//    if (!moc) return;
+//    if ([moc hasChanges]) {
+//        [moc performBlockAndWait:^{
+//            NSError *error = nil;
+//            NSAssert([moc save:&error], @"Error saving uploadedSweetSpotsMOC: %@\n%@",
+//                     [error localizedDescription], [error userInfo]);
+//        }];
+//    }
     
     return;
 }

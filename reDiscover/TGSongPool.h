@@ -66,7 +66,7 @@
 
 - (void)setRequestedPlayheadPosition:(NSNumber *)newPosition;
 // Sweet Spot accessors.
-- (NSArray *)sweetSpotsForSongID:(id<SongIDProtocol>)songID;
+- (NSSet*)sweetSpotsForSongID:(id<SongIDProtocol>)songID;
 - (void)replaceSweetSpots:(NSSet*)sweetSpots forSongID:(id<SongIDProtocol>)songID;
 - (void)setActiveSweetSpotIndex:(int)ssIndex forSongID:(id<SongIDProtocol>)songID;
 
@@ -158,8 +158,8 @@
  The uploaded sweet spots is a dictionary of UploadedSSData objects for songs that
  have been uploaded to the sweet spot server. The dictionary is backed by core data.
  */
-@property NSMutableDictionary* uploadedSweetSpots;
-@property NSManagedObjectContext* uploadedSweetSpotsMOC;
+//@property NSMutableDictionary* uploadedSweetSpots;
+//@property NSManagedObjectContext* uploadedSweetSpotsMOC;
 
 @property SweetSpotServerIO* sweetSpotServerIO;
 
@@ -184,9 +184,6 @@
 
 //- (void)offsetSweetSpotForSongID:(id<SongIDProtocol>)songID bySeconds:(Float64)offsetInSeconds;
 - (void)storeSweetSpotForSongID:(id<SongIDProtocol>)songID;
-
-// song data accessors.
-- (void)sweetSpotFromServerForSong:(TGSong *)aSong;
 
 // UUID accessors.
 -(void)setUUIDString:(NSString*)theUUID forSongID:(id<SongIDProtocol>)songID;

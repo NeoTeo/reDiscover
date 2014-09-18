@@ -8,6 +8,18 @@
 
 import Cocoa
 
+/**
+    The SweetSpotServerIO class handles communication with the sweet spot web server.
+
+    It maintains a locally persisted store, uploadedSweetSpots, of all the songs whose sweet spots have already been 
+    uploaded to the server in order to avoid re-sending them.
+
+    The uploadedSweetSpots is a dictionary of song ids and the sweet spots of that song that have been succesfully
+    uploaded to the server. It is written out whenever the application quits (currently saving is manual) and loaded back
+    in on application start, before the application attempts to import whatever song urls the user has passed in.
+    When TGSongPool loads a song url and sweet spots are found, it is checked, using the song's uuid, against the 
+    uploadedSweetSpots and any sweet spots not in there will be uploaded to the server.
+*/
 class SweetSpotServerIO: NSObject {
 
     let opQueue: NSOperationQueue?
@@ -81,6 +93,21 @@ class SweetSpotServerIO: NSObject {
     }
     
     
+    func storeUploadedSweetSpotsDictionary() {
+        if uploadedSweetSpotsMOC == nil {
+            println("ERROR: uploaded sweet spots managed object context is nil.")
+            return
+        }
+        
+        if uploadedSweetSpotsMOC!.hasChanges {
+            uploadedSweetSpotsMOC!.performBlockAndWait() {
+                var error: NSError?
+                assert(self.uploadedSweetSpotsMOC!.save(&error), "Error saving uploaded sweet spots MOC. \(error)")
+            }
+        }
+    }
+    
+    
     func sweetSpotHasBeenUploaded(theSS: Double, theSongID: SongIDProtocol) -> Bool {
         if let songUUID = delegate?.UUIDStringForSongID(theSongID) {
             if let ssData = uploadedSweetSpots[songUUID] as UploadedSSData? {
@@ -135,9 +162,9 @@ class SweetSpotServerIO: NSObject {
                             uploadedSS?.sweetSpots = NSSet(object: sweetSpot)
                         } else {
                             // The song already has a set of sweetspots so we need to add to it.
-                            var existingSS = uploadedSS?.sweetSpots as NSMutableSet
+                            var existingSS = uploadedSS!.sweetSpots.mutableCopy() as NSMutableSet
                             existingSS.addObject(sweetSpot)
-                            uploadedSS?.sweetSpots = existingSS
+                            uploadedSS!.sweetSpots = existingSS
                         }
                         
                         // Add the new data to the dictionary
@@ -187,12 +214,17 @@ class SweetSpotServerIO: NSObject {
                             let resultDict = result as NSDictionary
                             let serverSweetSpots = resultDict["sweetspots"] as NSArray
                             if serverSweetSpots.count > 0 {
-                                let tmpSet = self.delegate?.sweetSpotsForSongID(songID) as NSMutableSet
+                                println("the serverSweetSpots has \(serverSweetSpots.count) elements")
+                                println("the song id is \(songID )")
+                                
+                                let mutableSet = self.delegate?.sweetSpotsForSongID(songID).mutableCopy() as? NSMutableSet
+                                if mutableSet == nil { return }
+                                
                                 for ss in serverSweetSpots {
-                                    tmpSet.addObject(ss)
+                                    mutableSet!.addObject(ss)
                                 }
                                 
-                                self.delegate?.replaceSweetSpots(tmpSet, forSongID: songID)
+                                self.delegate?.replaceSweetSpots(mutableSet! as NSSet, forSongID: songID)
                                 // The index really doesn't matter. The sweet spots are in a set which isn't sorted.
                                 self.delegate?.setActiveSweetSpotIndex(0, forSongID: songID)
                             }

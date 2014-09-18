@@ -1062,9 +1062,12 @@ static NSInteger const kUndefinedID =  -1;
 
 // TGSongTimelineViewControllerDelegate methods:
 
+//MARK: Doesn't make sense to select a sweetspot by index - they are stored in an unordered set.
 - (void)userSelectedSweetSpotMarkerAtIndex:(NSUInteger)ssIndex {
     
-    [_songPoolAPI setRequestedPlayheadPosition:[[_songPoolAPI sweetSpotsForSongID:[_songPoolAPI currentlyPlayingSongID]] objectAtIndex:ssIndex]];
+    //FIXME: Change sweetspots to be stored as an array instead of a set. For now...hmmm
+    [_songPoolAPI setRequestedPlayheadPosition:[[_songPoolAPI sweetSpotsForSongID:[_songPoolAPI currentlyPlayingSongID]] anyObject]] ;
+//    [_songPoolAPI setRequestedPlayheadPosition:[[_songPoolAPI sweetSpotsForSongID:[_songPoolAPI currentlyPlayingSongID]] ;
 }
 
 - (void)userSelectedExistingSweetSpot:(id)sender {
