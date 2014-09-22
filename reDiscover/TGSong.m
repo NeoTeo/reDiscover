@@ -19,17 +19,14 @@
     if (self) {
         
         _songTimeScale = 100; // Centiseconds.
-        
-//        [self setSongStartTime:CMTimeMake(-1, 1)];
-//        _requestedSongStartTime = CMTimeMake(-1, 1);
-
         _fingerPrintStatus = kFingerPrintStatusEmpty;
-//        _songSweetSpots = nil;
         _SSCheckCountdown = 0;
         _artID = -1;
     }
     return self;
 }
+
+
 //TODO: Move to songpool?
 - (void)requestCoverImageWithHandler:(void (^)(NSImage *))imageHandler {
 
@@ -54,8 +51,6 @@
             
         });
     }];
-//    NSLog(@"requestCoverImageWithHandler all done");
-
 }
 
 //MARK: Why is this not done asynchronously with...
@@ -83,6 +78,7 @@
 
 /**
     Load metadata from the file associated with this song and store it in the TEOData managed context.
+ 
     @returns YES on success and NO on failure to find any metadata. 
     In either case the TEOData will be set to some reasonable defaults.
  */
@@ -132,24 +128,34 @@
 }
 
 /**
- Return the start time for this song, which is given by this song's selected sweet spot.
+ Return the start time for this song.
+ 
+ If the song has a previously set one-off start time set it will destructively return it.
+ Otherwise it returns this song's selected sweet spot.
+ 
  @returns Start time in seconds.
  */
 - (NSNumber *)startTime {
+
     if (self.oneOffStartTime) {
+//        NSNumber* sTime = self.oneOffStartTime;
+//        self.oneOffStartTime = nil;
+//        return sTime;
+        //MARK: wip - The method that ultimately uses the oneOffStartTime for playback should nil it.
         return self.oneOffStartTime;
     }
     return self.TEOData.selectedSweetSpot;
 }
 
 /**
- Set the start time for this song by creating a sweet spot at the requested time and setting it as the currently selected sweet spot.
- :params: startTime The offset, in seconds, from the beginning of the song (time 0) that we wish this song to start playing from.
+ Set the start time for this song.
+ If the makeSS is true a permanent sweet spot is set to the requested time and is set as the currently selected sweet spot.
+ If the makeSS is false the start time is set as a on-off and will not affect the sweet spots.
+ 
+ @params startTime The offset, in seconds, from the beginning of the song (time 0) that we wish this song to start playing from.
+ @params makeSS A Bool to signal whether to make the start time a one-off or store it as a sweet spot.
  */
 - (void)setStartTime:(NSNumber *)startTime makeSweetSpot:(BOOL)makeSS {
-    // This method can get called before the song has finished loading its duration from the datafile.
-    // Since we cannot assume we know the duration we cannot check it against the given start time.
-    // Because the startTime can (currently) only be set by listening to the song we have to assume it will be < song duration.
     
     float floatStart = [startTime floatValue];
     if ( _songStatus == kSongStatusReady) {
@@ -160,10 +166,9 @@
             return;
         }
     }
-    // This sets song.songStartTime which we are deprecating for teo.TEOData.selectedSweetSpot and teo.TEOData.sweetSpotArray
-//    [self setSongStartTime:CMTimeMakeWithSeconds(floatStart, _songTimeScale)];
     
     self.oneOffStartTime = startTime;
+    
     if (makeSS) {
         [self setSweetSpot:startTime];
     }
@@ -177,6 +182,14 @@
     self.TEOData.selectedSweetSpot = theSS;
 }
 
+/**
+ Mark this song's selectedSweetSpot for saving.
+ 
+ By moving the selectedSweetSpot into the TEOData.sweetSpots collection, which is backed by
+ a core data store, it gets saved on a subsequent call to a songpool save.
+ If the selectedSweetSpot it is set to the very beginning of the song it will be ignored 
+ because songs without sweet spots play from the beginning by default.
+ */
 - (void)storeSelectedSweetSpot {
     NSNumber* theSS = self.TEOData.selectedSweetSpot;
     if (theSS) {
@@ -223,38 +236,47 @@
             NSLog(@"Creating a new AVPlayer took: %f",[postDate timeIntervalSinceDate:preDate]);
         }
         [songPlayer setVolume:0.2];
-        
-        theTime = self.oneOffStartTime;
-        if (theTime) {
-            NSLog(@"Seeking to time %f as a one off",[theTime floatValue]);
-            self.oneOffStartTime = nil;
-            NSLog(@"The current time is %f",CMTimeGetSeconds([songPlayer currentTime]));
-        } else {
-            theTime = self.TEOData.selectedSweetSpot;
-        }
-        
-        [songPlayer seekToTime:CMTimeMakeWithSeconds([theTime floatValue], 1)];
 
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(playDidFinish) name:AVPlayerItemDidPlayToEndTimeNotification object:songPlayerItem];
+
+//        theTime = self.oneOffStartTime;
+//        if (theTime) {
+//            NSLog(@"Seeking to time %f as a one off",[theTime floatValue]);
+//            self.oneOffStartTime = nil;
+//            NSLog(@"The current time is %f",CMTimeGetSeconds([songPlayer currentTime]));
+//        } else {
+//            theTime = self.TEOData.selectedSweetSpot;
+//        }
         
-        if (playerObserver == nil) {
-            // Add a periodic observer so we can update the timeline GUI.
-            CMTime eachSecond = CMTimeMake(10, 100);
-            dispatch_queue_t timelineSerialQueue = [_delegate serialQueue];
+        // MARK: wip
+/// The above is replaced by a simple call to a smarter startTime.
+        theTime = [self startTime];
+        self.oneOffStartTime = nil;
+        
+        
+        if (theTime != nil) {
+            [songPlayer seekToTime:CMTimeMakeWithSeconds([theTime floatValue], 1)];
+
+            [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(playDidFinish) name:AVPlayerItemDidPlayToEndTimeNotification object:songPlayerItem];
             
-            // Make a weakly retained self for use inside the block to avoid retain cycle.
-            __unsafe_unretained typeof(self) weakSelf = self;
-            
-            // Every 1/10 of a second update the delegate's playhead position variable.
-            playerObserver = [songPlayer addPeriodicTimeObserverForInterval:eachSecond queue:timelineSerialQueue usingBlock:^void(CMTime time) {
+            if (playerObserver == nil) {
+                // Add a periodic observer so we can update the timeline GUI.
+                CMTime eachSecond = CMTimeMake(10, 100);
+                dispatch_queue_t timelineSerialQueue = [_delegate serialQueue];
                 
-                CMTime currentPlaybackTime = [weakSelf->songPlayer currentTime];
-                [[weakSelf delegate] songDidUpdatePlayheadPosition:[NSNumber numberWithDouble:CMTimeGetSeconds(currentPlaybackTime)]];
-            }];
-        }
+                // Make a weakly retained self for use inside the block to avoid retain cycle.
+                __unsafe_unretained typeof(self) weakSelf = self;
+                
+                // Every 1/10 of a second update the delegate's playhead position variable.
+                playerObserver = [songPlayer addPeriodicTimeObserverForInterval:eachSecond queue:timelineSerialQueue usingBlock:^void(CMTime time) {
+                    
+                    CMTime currentPlaybackTime = [weakSelf->songPlayer currentTime];
+                    [[weakSelf delegate] songDidUpdatePlayheadPosition:[NSNumber numberWithDouble:CMTimeGetSeconds(currentPlaybackTime)]];
+                }];
+            }
 
-        [songPlayer play];
-        return theTime;
+            [songPlayer play];
+            return theTime;
+        }
     }
     return [NSNumber numberWithFloat:0];
 }
@@ -278,7 +300,7 @@
     songAsset = NULL;
     songPlayerItem = NULL;
     songPlayer = NULL;
-#pragma SPEED
+//MARK: SPEED
 #pragma TEO: The unloading is not yet implemented. By setting the song status to something other than ready we reload it every time we play it.
     [self setLoadStatus:kLoadStatusUnloaded];
     [self setSongStatus:kSongStatusUnloading];
@@ -286,11 +308,11 @@
 }
 
 - (void)setCache:(AVAudioFile*) theFile {
-    NSAssert(theFile != nil, @"The audio file is nil!");
-#ifdef AE
-    _cachedFile = theFile;
-    _cachedFileLength = _cachedFile.length;
-#endif
+//    NSAssert(theFile != nil, @"The audio file is nil!");
+//#ifdef AE
+//    _cachedFile = theFile;
+//    _cachedFileLength = _cachedFile.length;
+//#endif
     if( songPlayer ) {
         // First cancel any pending prerolls
         [songPlayer cancelPendingPrerolls];
@@ -306,7 +328,8 @@
 
 /**
     Immediately set the playhead to the given time offset.
-    :Param: The offset in seconds.
+ 
+    @Params The offset in seconds.
  */
 - (void)setCurrentPlayTime:(NSNumber *)playTimeInSeconds {
     double playTime = [playTimeInSeconds doubleValue];
@@ -328,26 +351,7 @@
     return 0;
 }
 
-
-/*
-/// Looks in the common metadata of the asset for the given string.
-- (NSString *)getStringValueForStringKey:(NSString *)theString fromAsset:(AVURLAsset *)theAsset
-{
-    NSArray *songMeta = [theAsset commonMetadata];
-    
-    for (AVMetadataItem *item in songMeta ) {
-        NSString *key = [item commonKey];
-        NSString *value = [item stringValue];
-        if ([key isNotEqualTo:@"artwork"]) {
-            NSLog(@"songMeta key:%@ value:%@",key,value);
-        }
-
-        if ([key isEqualToString:theString]) {
-            return value;
-        }
-    }
-    return @"no data.";
+- (BOOL)isReadyForPlayback {
+    return [self songStatus] == kSongStatusReady;
 }
-*/
-
 @end

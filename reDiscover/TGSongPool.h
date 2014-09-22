@@ -117,11 +117,7 @@
     
     NSManagedObjectModel *songUserDataManagedObjectModel;
     NSManagedObjectContext *songPoolManagedContext;
-    
-    // songs added to this dictionary need saving (that is, to be added to the managed object context as TGSongUserData managed objects)
-//    NSMutableSet *songsWithChangesToSave;
-//    NSMutableSet *songsWithSaveError;
-    
+        
     NSTimer *idleTimeFingerprinterTimer;
 
     /// The playheadPos is bound to the playlist progress indicator value property so that when the song
@@ -154,13 +150,6 @@
 @property NSDictionary*             TEOSongDataDictionary;
 // TEOSongData end
 
-/**
- The uploaded sweet spots is a dictionary of UploadedSSData objects for songs that
- have been uploaded to the sweet spot server. The dictionary is backed by core data.
- */
-//@property NSMutableDictionary* uploadedSweetSpots;
-//@property NSManagedObjectContext* uploadedSweetSpotsMOC;
-
 @property SweetSpotServerIO* sweetSpotServerIO;
 
 @property NSFileManager*    sharedFileManager;
@@ -173,24 +162,17 @@
 
 - (void)requestImageForSongID:(id<SongIDProtocol>)songID withHandler:(void (^)(NSImage *))imageHandler;
 
-// Caching methods
-//- (void)preloadSongArray:(NSArray *)songArray;
-//- (void)cacheWithContext:(NSDictionary*)cacheContext;
 
 #pragma mark -
 #pragma mark song data accessor methods.
 // Async methods
 - (void)requestEmbeddedMetadataForSongID:(id<SongIDProtocol>)songID withHandler:(void (^)(NSDictionary*))dataHandler;
 
-//- (void)offsetSweetSpotForSongID:(id<SongIDProtocol>)songID bySeconds:(Float64)offsetInSeconds;
 - (void)storeSweetSpotForSongID:(id<SongIDProtocol>)songID;
 
 // UUID accessors.
 -(void)setUUIDString:(NSString*)theUUID forSongID:(id<SongIDProtocol>)songID;
 - (NSString *)UUIDStringForSongID:(id<SongIDProtocol>)songID;
-
-//// Sweet Spot accessors.
-//- (NSArray *)sweetSpotsForSongID:(id)songID;
 
 // URL accessors.
 - (NSURL *)URLForSongID:(id<SongIDProtocol>)songID;

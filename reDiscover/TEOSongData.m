@@ -38,7 +38,8 @@
     songData.genre             = nil;//@"dunno";
     songData.title             = nil;//@"dunno";
     songData.fingerprint       = nil;
-    songData.selectedSweetSpot = [NSNumber numberWithFloat:0];
+    // MARK: wip, if selectedSweetSpot is inited to nil things break.
+    songData.selectedSweetSpot = nil;//[NSNumber numberWithFloat:0];
 //    songData.artID             = [NSNumber numberWithInteger:-1];
     songData.songReleases      = nil;
     

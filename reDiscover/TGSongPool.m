@@ -231,8 +231,6 @@ static int const kSSCheckCounterSize = 10;
         
         for (TEOSongData* songData in fetchedArray) {
             [tmpDictionary setObject:songData forKey:songData.urlString];
-//            NSLog(@"The song %@ songData selected sweet spot %@",songData.urlString, songData.selectedSweetSpot);
-//            NSLog(@"And the sweet spots: %@",songData.sweetSpots);
         }
         
         self.TEOSongDataDictionary = tmpDictionary;
@@ -299,9 +297,10 @@ static int const kSSCheckCounterSize = 10;
     } else {
         
         // Fetch any sweet spots for this song if it doesn't have a start time or it has been a long time since the last sweet spot server update.
-        if ([[aSong startTime] doubleValue] == -1) {
-            [self fetchSongSweetSpot:aSong];
-        }
+        // MARK: wip
+//        if ([[aSong startTime] doubleValue] == -1) {
+//            [self fetchSongSweetSpot:aSong];
+//        }
 
     }
     
@@ -645,11 +644,19 @@ static int const kSSCheckCounterSize = 10;
     }
 }
 
-// Search for image files in the directory containing the given URL that match a particular pattern.
-// The patterns looked for are any of the following strings anywhere in the image file name:
-// The name of the album or
-// the words "cover", "front" or "folder".
-// Currently it simply picks the first image file that matches.
+/**
+ Search for image files in the directory containing the given URL that match a particular pattern.
+ 
+ The patterns looked for are any of the following strings anywhere in the image file name:
+
+ - The name of the album or
+
+ - the words "cover", "front" or "folder".
+ 
+ - Currently it simply picks the first image file that matches.
+
+ @params theURL The URL to search.
+ */
 -(NSImage*)searchForCoverImageAtURL:(NSURL*)theURL {
     NSString* filePathString = [[theURL filePathURL] absoluteString];
     
@@ -769,39 +776,6 @@ static int const kSSCheckCounterSize = 10;
              @"Genre": song.TEOData.genre};
 }
 
-/*
-- (void)offsetSweetSpotForSongID:(id<SongIDProtocol>)songID bySeconds:(Float64)offsetInSeconds {
-    TGSong *song = [self songForID:songID];
-    if (song != nil) {
-        Float64 currentPlayTimeInSeconds = [song getCurrentPlayTime];
-        NSLog(@"current playtime in seconds %f and offset in seconds %f",currentPlayTimeInSeconds,offsetInSeconds);
-        // Convert the current play time + offset to centiseconds.
-        NSNumber *newPlayTime = [NSNumber numberWithDouble:currentPlayTimeInSeconds + offsetInSeconds];
-        if (newPlayTime >= 0) {
-            [self setSweetSpotForSong:song atTime:newPlayTime];
-        }
-    }
-    
-}
-*/
-/*
-- (void)setSweetSpotForSong:(TGSong *)theSong atTime:(NSNumber *)positionInSeconds {
-    // Here we need to add a sweet spot and point to it.
-//    [theSong setSweetSpot:positionInSeconds];
-    
-    [theSong setStartTime:positionInSeconds makeSweetSpot:YES];
-#ifdef AE
-    // TEO < AE
-    [theSongPlayer setPlaybackToTime:[positionInSeconds doubleValue]];
-    return;
-    // TEO AE>
-#endif
-            [theSong setCurrentPlayTime:positionInSeconds];
-            //FIXME: No longer needed...I think. Make sure, then remove.
-            [songsWithChangesToSave addObject:theSong];
-}
-*/
-
 - (BOOL)validSongID:(id<SongIDProtocol>)songID {
     // TEO: also check for top bound.
     if (songID == nil) return NO;
@@ -883,23 +857,28 @@ static int const kSSCheckCounterSize = 10;
 }
 
 
-// This will fetch the song "sweet spot" (if we can't find a local one) from a remote server based on a grouping algorithm.
-// If the user has set their own "sweet spot" it overrides the server provided time and the user time is uploaded to the server to increase accuracy.
+/** 
+ This will return the "sweet spot" for the given song.
+ If no local sweet spot is found a request for sweet spots is sent to the remote sweet spot server.
+ @params song The song we want the sweet spot for.
+ @returns The currently selected sweet spot for the given song.
+*/
 - (NSNumber *)fetchSongSweetSpot:(TGSong *)song {
     
     // Get the song's start time in seconds.
     NSNumber *startTime = [song startTime];
     
-    // Request sweetspots from the sweetspot server if the song does not have a start time, has a uuid and has not exceeded its alotted queries.
-    if (([startTime doubleValue] == 0) && (song.TEOData.uuid  != nil) && (song.SSCheckCountdown-- == 0)) {
-        
+    /// Request sweetspots from the sweetspot server if the song does not have a start time, has a uuid and has not
+    /// exceeded its alotted queries.
+    
+    /// Don't use the ssCheckCountdown. Only check sweetspots on app start and only for songs that don't already have any.
+    /// A manual refresh would be the way to force a check.
+//    if (([startTime doubleValue] == 0) && (song.TEOData.uuid  != nil) && (song.SSCheckCountdown-- == 0)) {
+    if ((startTime == nil) && (song.TEOData.uuid  != nil) && (song.SSCheckCountdown-- == 0)) {
         // Reset the counter.
         song.SSCheckCountdown = (NSUInteger)kSSCheckCounterSize;
         
-        // TEO finish off the timestamping of server requests instead of using the countdown.
-        NSDate *now = [NSDate date];
-        [now timeIntervalSinceDate:now];
-//        [self sweetSpotFromServerForSong:song];
+        
         [_sweetSpotServerIO requestSweetSpotsForSongID:song.songID];
     }
     
@@ -1425,18 +1404,20 @@ static int const kSSCheckCounterSize = 10;
     [aSong setStartTime:time makeSweetSpot:makeSS];
     
 //    [aSong setRequestedSongStartTime:CMTimeMakeWithSeconds([time doubleValue], 1)];
-    
-//    NSLog(@"the urlLoadingQueue size: %lu",(unsigned long)[urlLoadingOpQueue operationCount]);
-    // First cancel any pending requests in the operation queue and then add this.
-    // This won't delete them from the queue but it will tell each in turn it has been cancelled.
-    [urlLoadingOpQueue cancelAllOperations];
-    
-    // Then add this new request.
-    [urlLoadingOpQueue addOperationWithBlock:^{
-        //    NSLog(@"loadTrackData called from requestSongPlayback");
-        // Asynch'ly start loading the track data for aSong. songReadyForPlayback will be called back when the song is good to go.
-        [aSong loadTrackDataWithCallBackOnCompletion:YES];
-    }];
+    if ([aSong isReadyForPlayback] == YES) {
+        [self songReadyForPlayback:aSong];
+    } else {
+        // First cancel any pending requests in the operation queue and then add this.
+        // This won't delete them from the queue but it will tell each in turn it has been cancelled.
+        [urlLoadingOpQueue cancelAllOperations];
+        
+        // Then add this new request.
+        [urlLoadingOpQueue addOperationWithBlock:^{
+            //    NSLog(@"loadTrackData called from requestSongPlayback");
+            // Asynch'ly start loading the track data for aSong. songReadyForPlayback will be called back when the song is good to go.
+            [aSong loadTrackDataWithCallBackOnCompletion:YES];
+        }];
+    }
 }
 
 /// Setter for the playheadPos which is bound to the timeline and the playlist progress bars.
@@ -1556,11 +1537,16 @@ static int const kSSCheckCounterSize = 10;
 // songReadyForPlayback is called (async'ly) by the song once it is fully loaded.
 - (void)songReadyForPlayback:(TGSong *)song {
 
-    //MARK: TMP
-//     If there's a one-off start time set, use that (and reset it).
-    //if ([song startTime] == nil) {
-    if ([[song startTime] doubleValue] == 0) {
-        [song setStartTime:[self fetchSongSweetSpot:song] makeSweetSpot:YES];
+//     If there's no start time, check the sweet spot server for one.
+    if ([song startTime] == nil) {
+    //MARK: wip
+//    if ([[song startTime] doubleValue] == 0) {
+        
+        /// This is never going to be fast enough
+        //[song setStartTime:[self fetchSongSweetSpot:song] makeSweetSpot:YES];
+        
+        [self fetchSongSweetSpot:song];
+        [song setStartTime:[NSNumber numberWithDouble:0] makeSweetSpot:NO];
     }
     
     // Make sure the last request for playback is put on a serial queue so it always is the last song left playing.

@@ -132,6 +132,8 @@ enum {
 - (void)setCurrentPlayTime:(NSNumber *)playTimeInSeconds;
 - (void)requestCoverImageWithHandler:(void (^)(NSImage *))imageHandler;
 - (BOOL)loadSongMetadata;
+/// returns true if the song is ready for playback.
+- (BOOL)isReadyForPlayback;
 
     
 @property id <TGSongDelegate>delegate;
