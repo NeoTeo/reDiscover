@@ -12,7 +12,8 @@
 
 @interface UploadedSSData : NSManagedObject
 
-@property (nonatomic, retain) NSSet* sweetSpots;
+//wip @property (nonatomic, retain) NSSet* sweetSpots;
+@property (nonatomic, retain) NSArray* sweetSpots;
 @property (nonatomic, retain) NSString* songUUID;
 
 + (instancetype)insertItemWithSongUUIDString:(NSString*)songUUID inManagedObjectContext:(NSManagedObjectContext*)managedObjectContext;

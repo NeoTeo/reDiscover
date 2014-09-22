@@ -31,14 +31,13 @@
                                                inManagedObjectContext:managedObjectContext];
     songData.album             = nil;//@"dunno";
     songData.artist            = nil;//@"dunno";
-    songData.sweetSpots        = [[NSSet alloc] init];
+    songData.sweetSpots        = [[NSArray alloc] init]; //[[NSSet alloc] init];  wip
     songData.urlString         = URLString;
     songData.uuid              = nil;
     songData.year              = [NSNumber numberWithInteger:0];
     songData.genre             = nil;//@"dunno";
     songData.title             = nil;//@"dunno";
     songData.fingerprint       = nil;
-    // MARK: wip, if selectedSweetSpot is inited to nil things break.
     songData.selectedSweetSpot = nil;//[NSNumber numberWithFloat:0];
 //    songData.artID             = [NSNumber numberWithInteger:-1];
     songData.songReleases      = nil;

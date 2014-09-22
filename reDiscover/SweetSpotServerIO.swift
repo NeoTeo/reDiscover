@@ -111,7 +111,7 @@ class SweetSpotServerIO: NSObject {
     func sweetSpotHasBeenUploaded(theSS: Double, theSongID: SongIDProtocol) -> Bool {
         if let songUUID = delegate?.UUIDStringForSongID(theSongID) {
             if let ssData = uploadedSweetSpots[songUUID] as UploadedSSData? {
-                if let sweetSpots = ssData.sweetSpots as NSSet? {
+                if let sweetSpots = ssData.sweetSpots as NSArray? {
                     return sweetSpots.containsObject(theSS)
                 }
             }
@@ -159,12 +159,13 @@ class SweetSpotServerIO: NSObject {
                         if uploadedSS == nil {
                             // The song has no existing sweetspots so we create a new set with the sweet spot.
                             uploadedSS = UploadedSSData.insertItemWithSongUUIDString(songUUID!, inManagedObjectContext: uploadedSweetSpotsMOC) as UploadedSSData
-                            uploadedSS?.sweetSpots = NSSet(object: sweetSpot)
+                            uploadedSS?.sweetSpots = NSArray(object: sweetSpot)
                         } else {
                             // The song already has a set of sweetspots so we need to add to it.
-                            var existingSS = uploadedSS!.sweetSpots.mutableCopy() as NSMutableSet
+//                            var existingSS = uploadedSS!.sweetSpots.mutableCopy() as NSMutableArray
+                            var existingSS = NSMutableArray(array: uploadedSS!.sweetSpots)
                             existingSS.addObject(sweetSpot)
-                            uploadedSS!.sweetSpots = existingSS
+                            uploadedSS!.sweetSpots = existingSS.copy() as NSArray
                         }
                         
                         // Add the new data to the dictionary
@@ -182,7 +183,8 @@ class SweetSpotServerIO: NSObject {
 //        return true;
 //    }
     
-    func requestSweetSpotsForSongID(songID: SongIDProtocol) -> NSSet? {
+//wip    func requestSweetSpotsForSongID(songID: SongIDProtocol) -> NSSet? {
+    func requestSweetSpotsForSongID(songID: SongIDProtocol) -> NSArray? {
         let songUUID = delegate?.UUIDStringForSongID(songID)
         if songUUID == nil {
             println("uploadSweetSpotsForSongID ERROR: song has no UUID")
@@ -206,39 +208,38 @@ class SweetSpotServerIO: NSObject {
                 }
                 
                 if let status = requestJSON!.objectForKey("status") as String? {
-                    if (status == "ok") != nil {
-                        let result: AnyObject? = requestJSON!.objectForKey("result")
+                    if (status == "ok") == nil { return }
                         
-                        if result == nil { return }
-                        if result! is NSDictionary {
-                            let resultDict = result as NSDictionary
-                            let serverSweetSpots = resultDict["sweetspots"] as NSArray
-                            if serverSweetSpots.count > 0 {
-                                println("the serverSweetSpots has \(serverSweetSpots.count) elements")
-                                println("the song id is \(songID )")
-                                
-                                let mutableSet = self.delegate?.sweetSpotsForSongID(songID).mutableCopy() as? NSMutableSet
-                                if mutableSet == nil { return }
-                                
+                    let result: AnyObject? = requestJSON!.objectForKey("result")
+                    if result == nil { return }
+                    
+                    // if result == nil || result! is NSDictionary) == false { return }
+                    // Use the line above to avoid the line below.
+                    if result! is NSDictionary {
+                        let resultDict = result as NSDictionary
+                        let serverSweetSpots = resultDict["sweetspots"] as NSArray
+                        if serverSweetSpots.count > 0 {
+                            println("the serverSweetSpots has \(serverSweetSpots.count) elements")
+                            println("the song id is \(songID )")
+                            
+//wip let mutableSet = self.delegate?.sweetSpotsForSongID(songID).mutableCopy() as? NSMutableSet
+                            if let songSS = self.delegate?.sweetSpotsForSongID(songID) {
+                                let mutableSS = NSMutableArray(array: songSS)
+                            
                                 for ss in serverSweetSpots {
-                                    mutableSet!.addObject(ss)
+                                    mutableSS.addObject(ss)
                                 }
-                                
-                                self.delegate?.replaceSweetSpots(mutableSet! as NSSet, forSongID: songID)
+                            
+                                self.delegate?.replaceSweetSpots(mutableSS as NSArray, forSongID: songID)
                                 // The index really doesn't matter. The sweet spots are in a set which isn't sorted.
                                 self.delegate?.setActiveSweetSpotIndex(0, forSongID: songID)
                             }
                         }
                     }
                 }
-                
-                
             }
         })
         
-        var theSweetSpots: NSSet?
-        
-        
-        return theSweetSpots;
+        return nil;
     }
 }

@@ -297,7 +297,7 @@ static int const kSSCheckCounterSize = 10;
     } else {
         
         // Fetch any sweet spots for this song if it doesn't have a start time or it has been a long time since the last sweet spot server update.
-        // MARK: wip
+        //FIXME:
 //        if ([[aSong startTime] doubleValue] == -1) {
 //            [self fetchSongSweetSpot:aSong];
 //        }
@@ -785,23 +785,24 @@ static int const kSSCheckCounterSize = 10;
 
 - (void)setActiveSweetSpotIndex:(int)ssIndex forSongID:(id<SongIDProtocol>)songID {
     TGSong* theSong = [self songForID:songID];
-    if (theSong == nil) {
+    if (theSong == nil || theSong.TEOData == nil || theSong.TEOData.sweetSpots == nil) {
+        NSLog(@"setActiveSweetSpotIndex ERROR: unexpected nil");
         return;
     }
+    
     if (ssIndex >= 0 && ssIndex < theSong.TEOData.sweetSpots.count ) {
-        NSArray* allSS = [theSong.TEOData.sweetSpots allObjects];
-        [theSong setStartTime:allSS[ssIndex] makeSweetSpot:YES] ;
+        [theSong setStartTime:theSong.TEOData.sweetSpots[ssIndex] makeSweetSpot:YES] ;
     }
 }
 
-- (void)replaceSweetSpots:(NSSet*)sweetSpots forSongID:(id<SongIDProtocol>)songID {
+- (void)replaceSweetSpots:(NSArray*)sweetSpots forSongID:(id<SongIDProtocol>)songID {
     TGSong* theSong = [self songForID:songID];
     if (theSong == nil) { return; }
     
     theSong.TEOData.sweetSpots = sweetSpots;
 }
 
-- (NSSet*)sweetSpotsForSongID:(id<SongIDProtocol>)songID {
+- (NSArray*)sweetSpotsForSongID:(id<SongIDProtocol>)songID {
     TGSong* theSong = [self songForID:songID];
     if (theSong == nil) { return nil; }
     
@@ -1539,12 +1540,8 @@ static int const kSSCheckCounterSize = 10;
 
 //     If there's no start time, check the sweet spot server for one.
     if ([song startTime] == nil) {
-    //MARK: wip
-//    if ([[song startTime] doubleValue] == 0) {
-        
-        /// This is never going to be fast enough
-        //[song setStartTime:[self fetchSongSweetSpot:song] makeSweetSpot:YES];
-        
+        //MARK: NEXT
+        //FIXME: Consider passing in a completion block/closure to update playback when the sweet spots come in.
         [self fetchSongSweetSpot:song];
         [song setStartTime:[NSNumber numberWithDouble:0] makeSweetSpot:NO];
     }

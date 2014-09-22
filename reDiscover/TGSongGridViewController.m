@@ -1065,9 +1065,9 @@ static NSInteger const kUndefinedID =  -1;
 //MARK: Doesn't make sense to select a sweetspot by index - they are stored in an unordered set.
 - (void)userSelectedSweetSpotMarkerAtIndex:(NSUInteger)ssIndex {
     
-    //FIXME: Change sweetspots to be stored as an array instead of a set. For now...hmmm
-    [_songPoolAPI setRequestedPlayheadPosition:[[_songPoolAPI sweetSpotsForSongID:[_songPoolAPI currentlyPlayingSongID]] anyObject]] ;
-//    [_songPoolAPI setRequestedPlayheadPosition:[[_songPoolAPI sweetSpotsForSongID:[_songPoolAPI currentlyPlayingSongID]] ;
+//    [_songPoolAPI setRequestedPlayheadPosition:[[_songPoolAPI sweetSpotsForSongID:[_songPoolAPI currentlyPlayingSongID]] anyObject]] ;
+    NSNumber* sweetSpotTime = [[_songPoolAPI sweetSpotsForSongID:[_songPoolAPI currentlyPlayingSongID]] objectAtIndex:ssIndex];
+    [_songPoolAPI setRequestedPlayheadPosition:sweetSpotTime];
 }
 
 - (void)userSelectedExistingSweetSpot:(id)sender {

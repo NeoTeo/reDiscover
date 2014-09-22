@@ -138,10 +138,6 @@
 - (NSNumber *)startTime {
 
     if (self.oneOffStartTime) {
-//        NSNumber* sTime = self.oneOffStartTime;
-//        self.oneOffStartTime = nil;
-//        return sTime;
-        //MARK: wip - The method that ultimately uses the oneOffStartTime for playback should nil it.
         return self.oneOffStartTime;
     }
     return self.TEOData.selectedSweetSpot;
@@ -193,10 +189,13 @@
 - (void)storeSelectedSweetSpot {
     NSNumber* theSS = self.TEOData.selectedSweetSpot;
     if (theSS) {
-        NSMutableSet* updatedSet = [self.TEOData.sweetSpots mutableCopy];
-        // put the ss in the set
-        [updatedSet addObject:theSS];
-        self.TEOData.sweetSpots = [updatedSet copy];
+//wip        NSMutableSet* updatedSet = [self.TEOData.sweetSpots mutableCopy];
+        NSMutableArray* updatedSS = [NSMutableArray arrayWithArray:self.TEOData.sweetSpots];
+        //MARK: Add a check for dupes.
+        // put the ss in the array
+        [updatedSS addObject:theSS];
+
+        self.TEOData.sweetSpots = [updatedSS copy];
     } else {
         NSLog(@"No sweet spot selected!");
     }
@@ -238,17 +237,7 @@
         [songPlayer setVolume:0.2];
 
 
-//        theTime = self.oneOffStartTime;
-//        if (theTime) {
-//            NSLog(@"Seeking to time %f as a one off",[theTime floatValue]);
-//            self.oneOffStartTime = nil;
-//            NSLog(@"The current time is %f",CMTimeGetSeconds([songPlayer currentTime]));
-//        } else {
-//            theTime = self.TEOData.selectedSweetSpot;
-//        }
-        
-        // MARK: wip
-/// The above is replaced by a simple call to a smarter startTime.
+        // Since we're about to play back at the one off start time, copy the value and nil it.
         theTime = [self startTime];
         self.oneOffStartTime = nil;
         
