@@ -142,6 +142,9 @@
 //    }
 //    return self.TEOData.selectedSweetSpot;
 //}
+- (NSNumber*)currentSweetSpot {
+    return self.TEOData.selectedSweetSpot;
+}
 
 - (void)makeSweetSpotAtTime:(NSNumber*)startTime {
     float floatStart = [startTime floatValue];

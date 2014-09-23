@@ -120,8 +120,9 @@ enum {
 - (void)clearCache;
 
 - (void)storeSelectedSweetSpot;
-- (NSNumber *)startTime;
+//- (NSNumber *)startTime;
 //- (void)setStartTime:(NSNumber *)startTime makeSweetSpot:(BOOL)makeSS;
+- (NSNumber*)currentSweetSpot;
 - (void)makeSweetSpotAtTime:(NSNumber*)startTime;
 - (void)setSweetSpot:(NSNumber*)theSS;
 - (id)init;

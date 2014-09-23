@@ -868,7 +868,8 @@ static int const kSSCheckCounterSize = 10;
 - (NSNumber *)fetchSongSweetSpot:(TGSong *)song {
     
     // Get the song's start time in seconds.
-    NSNumber *startTime = [song startTime];
+//    NSNumber *startTime = [song startTime];
+    NSNumber *startTime = [song currentSweetSpot];
     
     /// Request sweetspots from the sweetspot server if the song does not have a start time, has a uuid and has not
     /// exceeded its alotted queries.
@@ -1381,7 +1382,7 @@ static int const kSSCheckCounterSize = 10;
         return;
     }
     
-    [self requestSongPlayback:songID withStartTimeInSeconds:aSong.startTime makeSweetSpot:NO];
+    [self requestSongPlayback:songID withStartTimeInSeconds:aSong.currentSweetSpot makeSweetSpot:NO];
 }
 /**
     Initiate a request to play back the given song at the given start time in seconds.
@@ -1404,8 +1405,9 @@ static int const kSSCheckCounterSize = 10;
     // * A one-off playback at the given time (eg, scrubbing or when the playlist starts a song)
     // So, perhaps we need two separate methods or signal the intention via a parameter.
     //wip [aSong setStartTime:time makeSweetSpot:makeSS]; // wip change this to just makeSweetSpot: as startTime is no longer a song property.
-    [aSong makeSweetSpotAtTime:time];
-    
+    if ( makeSS ) {
+        [aSong makeSweetSpotAtTime:time];
+    }
 //    [aSong setRequestedSongStartTime:CMTimeMakeWithSeconds([time doubleValue], 1)];
     if ([aSong isReadyForPlayback] == YES) {
         [self songReadyForPlayback:aSong atTime:time];
@@ -1551,7 +1553,7 @@ static int const kSSCheckCounterSize = 10;
         //FIXME: Consider passing in a completion block/closure to update playback when the sweet spots come in.
         [self fetchSongSweetSpot:song];
         //wip [song setStartTime:[NSNumber numberWithDouble:0] makeSweetSpot:NO];
-        [song makeSweetSpotAtTime:[NSNumber numberWithDouble:0.0]];
+        startTime = [NSNumber numberWithDouble:0.0];
     }
     
     // Make sure the last request for playback is put on a serial queue so it always is the last song left playing.
