@@ -65,63 +65,28 @@ enum {
 @property AVAudioFile* cachedFile;
 @property int64_t cachedFileLength;
 
-// Test of managed object
-//@property NSManagedObject* TEOSongData;
 @property TEOSongData* TEOData;
-
-// the acoustic fingerprint of the song.
-//@property NSString *fingerprint;
-
-// Stores the UUID obtained from an acoustid server given a fingerprint.
-//@property NSString *songUUIDString;
-
-// The local and per-session temporary song id.
-//@property NSUInteger songID;
-// Do not store this as it's not the same from executions.
-//@property NSString* songID;
 @property id<SongIDProtocol> songID;
-
-// The location of a song.
-//@property NSURL *songURL;
-
-
 // State of various activities.
 @property NSUInteger fingerPrintStatus;
 @property NSUInteger songStatus;
 @property NSUInteger loadStatus;
 
 @property CMTime songDuration;
-// The songStartTime is the number of seconds into the song from which to begin playback.
-// If a sweet spot is set (in TEOData.selectedSweetspot) it should be set to that.
-//@property CMTime songStartTime;
-//// A temporary start time request?
-//@property CMTime requestedSongStartTime;
-
 @property int songTimeScale;
 
 #define TSD
 
-/**
- An id key into the songpool's art dictionary. Values of -1 will be no art and 0 will be the default "no cover" art.
- */
+/// An id key into the songpool's art dictionary. Values of -1 will be no art and 0 will be the default "no cover" art.
 @property NSInteger artID;
 
-
-/**
- Holds a one-off time offset for this song that is cleared after use.
- This is used whenever a song needs to be played from the start by the playlist.
-*/
-//@property NSNumber* oneOffStartTime;
-
-// A counter to provide a variable interval between sweet-spot checks.
+/// A counter to provide a variable interval between sweet-spot checks.
 @property NSUInteger SSCheckCountdown;
 
 - (void)setCache:(AVAudioFile*) theFile;
 - (void)clearCache;
 
 - (void)storeSelectedSweetSpot;
-//- (NSNumber *)startTime;
-//- (void)setStartTime:(NSNumber *)startTime makeSweetSpot:(BOOL)makeSS;
 - (NSNumber*)currentSweetSpot;
 - (void)makeSweetSpotAtTime:(NSNumber*)startTime;
 - (void)setSweetSpot:(NSNumber*)theSS;

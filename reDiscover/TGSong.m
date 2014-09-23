@@ -223,8 +223,6 @@
 
     if ([self songStatus] == kSongStatusReady) {
         
-//wip        NSNumber* theTime;
-        
         if (songPlayerItem == nil) {
             NSDate* preDate = [NSDate date];
             songPlayerItem = [AVPlayerItem playerItemWithAsset:songAsset];
@@ -251,17 +249,9 @@
             NSLog(@"Creating a new AVPlayer took: %f",[postDate timeIntervalSinceDate:preDate]);
         }
         [songPlayer setVolume:0.2];
-
-
-        // Since we're about to play back at the one off start time, copy the value and nil it.
-// wip
-//        theTime = [self startTime];
-//        self.oneOffStartTime = nil;
         
         
-//        if (theTime != nil) {
         if (startTime != nil) {
-//            [songPlayer seekToTime:CMTimeMakeWithSeconds([theTime floatValue], 1)];
             [songPlayer seekToTime:CMTimeMakeWithSeconds([startTime floatValue], 1)];
             [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(playDidFinish) name:AVPlayerItemDidPlayToEndTimeNotification object:songPlayerItem];
             
@@ -282,10 +272,8 @@
             }
 
             [songPlayer play];
-//wip            return theTime;
         }
     }
-    //wip return [NSNumber numberWithFloat:0];
 }
 
 

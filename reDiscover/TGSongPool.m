@@ -791,7 +791,6 @@ static int const kSSCheckCounterSize = 10;
     }
     
     if (ssIndex >= 0 && ssIndex < theSong.TEOData.sweetSpots.count ) {
-        //wip [theSong setStartTime:theSong.TEOData.sweetSpots[ssIndex] makeSweetSpot:YES] ;
         [theSong makeSweetSpotAtTime:theSong.TEOData.sweetSpots[ssIndex]];
     }
 }
@@ -1112,6 +1111,7 @@ static int const kSSCheckCounterSize = 10;
     [tmpSong storeSelectedSweetSpot];
 }
 
+// Currently only called manually by pressing the s key.
 // Go through all songs and store those who have had data added to them.
 // This includes UUID or a user selected sweet spot.
 - (void)storeSongData {
@@ -1120,16 +1120,6 @@ static int const kSSCheckCounterSize = 10;
     
     // uploadedSweetSpots save
     [_sweetSpotServerIO storeUploadedSweetSpotsDictionary];
-//    NSManagedObjectContext *moc = self.uploadedSweetSpotsMOC;
-//    
-//    if (!moc) return;
-//    if ([moc hasChanges]) {
-//        [moc performBlockAndWait:^{
-//            NSError *error = nil;
-//            NSAssert([moc save:&error], @"Error saving uploadedSweetSpotsMOC: %@\n%@",
-//                     [error localizedDescription], [error userInfo]);
-//        }];
-//    }
     
     return;
 }
@@ -1338,39 +1328,6 @@ static int const kSSCheckCounterSize = 10;
 //    }];
 }
 
-/*
-- (void)preloadSongArray:(NSArray *)songArray {
-//    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-
-    // First we make sure to clear any pending requests
-    [urlCachingOpQueue cancelAllOperations];
-    
-    // Then we add the tracks to cache queue.
-    [urlCachingOpQueue addOperationWithBlock:^{
-        // TEO - calling this async'ly crashes in core data.
-        // Be smarter about this. Keep track of what's cached (in a set) and only recache what's missing.
-        // The loadTrackData won't reload a loaded track but we can probably still save some loops.
-        for (id<SongIDProtocol> songID in songArray) {
-            TGSong *aSong = [self songForID:songID];
-            if (aSong == NULL) {
-                NSLog(@"Nope, the requested ID %@ is not in the song pool.",songID);
-                return;
-            }
-            NSLog(@"Caching %@",songID);
-            // tell the song to load its data asyncronously without requesting a callback on completion.
-            [aSong loadTrackDataWithCallBackOnCompletion:NO];
-            
-            // We should try and get the metadata so it's ready,
-            // but not so that songPoolDidLoadDataForSongID gets called for each song.
-            [self requestEmbeddedMetadataForSongID:songID withHandler:^(NSDictionary* theData){
-                //            NSLog(@"preloadSongArray got data! %@",theData);
-            }];
-        }
-        
-    }];
-}
-*/
-
 #pragma mark -
 /**
  Initiate a request to play back the given song at its selected sweet spot.
@@ -1399,16 +1356,10 @@ static int const kSSCheckCounterSize = 10;
     
     lastRequestedSong = aSong;
     
-    //MARK: TMP
-    // So the issue here is that there are two ways of requesting a song playback;
-    // * Set a sweet spot so that subsequent playbacks also start at the given time.
-    // * A one-off playback at the given time (eg, scrubbing or when the playlist starts a song)
-    // So, perhaps we need two separate methods or signal the intention via a parameter.
-    //wip [aSong setStartTime:time makeSweetSpot:makeSS]; // wip change this to just makeSweetSpot: as startTime is no longer a song property.
     if ( makeSS ) {
         [aSong makeSweetSpotAtTime:time];
     }
-//    [aSong setRequestedSongStartTime:CMTimeMakeWithSeconds([time doubleValue], 1)];
+
     if ([aSong isReadyForPlayback] == YES) {
         [self songReadyForPlayback:aSong atTime:time];
     } else {
@@ -1418,7 +1369,6 @@ static int const kSSCheckCounterSize = 10;
         
         // Then add this new request.
         [urlLoadingOpQueue addOperationWithBlock:^{
-            //    NSLog(@"loadTrackData called from requestSongPlayback");
             // Asynch'ly start loading the track data for aSong. songReadyForPlayback will be called back when the song is good to go.
             [aSong loadTrackDataWithCallBackOnCompletion:YES withStartTime:time];
         }];
@@ -1447,10 +1397,9 @@ static int const kSSCheckCounterSize = 10;
         NSLog(@"currently playing is the same as next song. Early out.");
         return;
     }
-    //wip NSNumber* theStartTime = [nextSong playStart];
+
     [nextSong playAtTime:startTime];
     
-    //wip if (theStartTime) {
     if (startTime != nil) {
         currentlyPlayingSong = nextSong;
         
@@ -1459,7 +1408,6 @@ static int const kSSCheckCounterSize = 10;
         
         // Song fingerprints are generated and UUID fetched during idle time in the background.
         // However, if the song about to be played hasn't got a UUID or fingerprint, an async request will be initiated here.
-//        if ([nextSong songUUIDString] == NULL) {
         if (nextSong.TEOData.uuid == NULL) {
             if ([nextSong fingerPrintStatus] == kFingerPrintStatusEmpty) {
                 [nextSong setFingerPrintStatus:kFingerPrintStatusRequested];
@@ -1474,7 +1422,6 @@ static int const kSSCheckCounterSize = 10;
         }
         
         // Set the requested playheadposition tracker to the song's start time in a KVC compliant fashion.
-//wip        [self setRequestedPlayheadPosition:theStartTime];
         [self setRequestedPlayheadPosition:startTime];
         
     }
@@ -1488,19 +1435,14 @@ static int const kSSCheckCounterSize = 10;
 #pragma mark TGFingerPrinterDelegate methods
 // Called by the finger printer when it has finished fingerprinting a song.
 - (void)fingerprintReady:(NSString *)fingerPrint ForSong:(TGSong *)song {
-    //NSLog(@"fingerprintReady received for song %@",[song songURL]);
     
     // At this point we should check if the fingerprint resulted in a songUUID.
     // If it did not we keep the finger print so we don't have to re-generate it, otherwise we can delete the it.
-//    if ([song songUUIDString] == nil) {
     if (song.TEOData.uuid == nil) {
         NSLog(@"No UUID found, keeping fingerprint.");
-//        [song setFingerprint:fingerPrint];
         song.TEOData.fingerprint = fingerPrint;
     }
     else {
-        // The song has a UUID, so there's no need to keep the fingerprint.
-//        [song setFingerprint:nil];
         // TEO - Is there any reason for not keeping the fingerprint (aside from memory)?
         song.TEOData.fingerprint = nil;
     }
@@ -1547,12 +1489,10 @@ static int const kSSCheckCounterSize = 10;
 - (void)songReadyForPlayback:(TGSong *)song atTime:(NSNumber*)startTime {
 
 //     If there's no start time, check the sweet spot server for one.
-    //wip if ([song startTime] == nil) {
     if (startTime == nil) {
         //MARK: NEXT
         //FIXME: Consider passing in a completion block/closure to update playback when the sweet spots come in.
         [self fetchSongSweetSpot:song];
-        //wip [song setStartTime:[NSNumber numberWithDouble:0] makeSweetSpot:NO];
         startTime = [NSNumber numberWithDouble:0.0];
     }
     
