@@ -791,7 +791,8 @@ static int const kSSCheckCounterSize = 10;
     }
     
     if (ssIndex >= 0 && ssIndex < theSong.TEOData.sweetSpots.count ) {
-        [theSong setStartTime:theSong.TEOData.sweetSpots[ssIndex] makeSweetSpot:YES] ;
+        //wip [theSong setStartTime:theSong.TEOData.sweetSpots[ssIndex] makeSweetSpot:YES] ;
+        [theSong makeSweetSpotAtTime:theSong.TEOData.sweetSpots[ssIndex]];
     }
 }
 
@@ -1402,7 +1403,8 @@ static int const kSSCheckCounterSize = 10;
     // * Set a sweet spot so that subsequent playbacks also start at the given time.
     // * A one-off playback at the given time (eg, scrubbing or when the playlist starts a song)
     // So, perhaps we need two separate methods or signal the intention via a parameter.
-    [aSong setStartTime:time makeSweetSpot:makeSS]; // wip change this to just makeSweetSpot: as startTime is no longer a song property.
+    //wip [aSong setStartTime:time makeSweetSpot:makeSS]; // wip change this to just makeSweetSpot: as startTime is no longer a song property.
+    [aSong makeSweetSpotAtTime:time];
     
 //    [aSong setRequestedSongStartTime:CMTimeMakeWithSeconds([time doubleValue], 1)];
     if ([aSong isReadyForPlayback] == YES) {
@@ -1548,7 +1550,8 @@ static int const kSSCheckCounterSize = 10;
         //MARK: NEXT
         //FIXME: Consider passing in a completion block/closure to update playback when the sweet spots come in.
         [self fetchSongSweetSpot:song];
-        [song setStartTime:[NSNumber numberWithDouble:0] makeSweetSpot:NO];
+        //wip [song setStartTime:[NSNumber numberWithDouble:0] makeSweetSpot:NO];
+        [song makeSweetSpotAtTime:[NSNumber numberWithDouble:0.0]];
     }
     
     // Make sure the last request for playback is put on a serial queue so it always is the last song left playing.

@@ -135,24 +135,15 @@
  
  @returns Start time in seconds.
  */
-- (NSNumber *)startTime {
+//- (NSNumber *)startTime {
+//
+//    if (self.oneOffStartTime) {
+//        return self.oneOffStartTime;
+//    }
+//    return self.TEOData.selectedSweetSpot;
+//}
 
-    if (self.oneOffStartTime) {
-        return self.oneOffStartTime;
-    }
-    return self.TEOData.selectedSweetSpot;
-}
-
-/**
- Set the start time for this song.
- If the makeSS is true a permanent sweet spot is set to the requested time and is set as the currently selected sweet spot.
- If the makeSS is false the start time is set as a on-off and will not affect the sweet spots.
- 
- @params startTime The offset, in seconds, from the beginning of the song (time 0) that we wish this song to start playing from.
- @params makeSS A Bool to signal whether to make the start time a one-off or store it as a sweet spot.
- */
-- (void)setStartTime:(NSNumber *)startTime makeSweetSpot:(BOOL)makeSS {
-    
+- (void)makeSweetSpotAtTime:(NSNumber*)startTime {
     float floatStart = [startTime floatValue];
     if ( _songStatus == kSongStatusReady) {
         float floatDuration = CMTimeGetSeconds([self songDuration]);
@@ -163,12 +154,35 @@
         }
     }
     
-    self.oneOffStartTime = startTime;
-    
-    if (makeSS) {
-        [self setSweetSpot:startTime];
-    }
+    [self setSweetSpot:startTime];
 }
+
+/**
+ Set the start time for this song.
+ If the makeSS is true a permanent sweet spot is set to the requested time and is set as the currently selected sweet spot.
+ If the makeSS is false the start time is set as a on-off and will not affect the sweet spots.
+ 
+ @params startTime The offset, in seconds, from the beginning of the song (time 0) that we wish this song to start playing from.
+ @params makeSS A Bool to signal whether to make the start time a one-off or store it as a sweet spot.
+ */
+//- (void)setStartTime:(NSNumber *)startTime makeSweetSpot:(BOOL)makeSS {
+//    
+//    float floatStart = [startTime floatValue];
+//    if ( _songStatus == kSongStatusReady) {
+//        float floatDuration = CMTimeGetSeconds([self songDuration]);
+//        
+//        if ((floatStart < 0) || (floatStart > floatDuration)) {
+//            NSLog(@"setStartTime error: Start time is %f",floatStart);
+//            return;
+//        }
+//    }
+//    
+//    self.oneOffStartTime = startTime;
+//    
+//    if (makeSS) {
+//        [self setSweetSpot:startTime];
+//    }
+//}
 
 - (void)setSweetSpot:(NSNumber*)theSS {
     if ([theSS floatValue] == 0.0) {

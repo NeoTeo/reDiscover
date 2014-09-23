@@ -111,7 +111,7 @@ enum {
  Holds a one-off time offset for this song that is cleared after use.
  This is used whenever a song needs to be played from the start by the playlist.
 */
-@property NSNumber* oneOffStartTime;
+//@property NSNumber* oneOffStartTime;
 
 // A counter to provide a variable interval between sweet-spot checks.
 @property NSUInteger SSCheckCountdown;
@@ -121,7 +121,8 @@ enum {
 
 - (void)storeSelectedSweetSpot;
 - (NSNumber *)startTime;
-- (void)setStartTime:(NSNumber *)startTime makeSweetSpot:(BOOL)makeSS;
+//- (void)setStartTime:(NSNumber *)startTime makeSweetSpot:(BOOL)makeSS;
+- (void)makeSweetSpotAtTime:(NSNumber*)startTime;
 - (void)setSweetSpot:(NSNumber*)theSS;
 - (id)init;
 - (void)loadTrackDataWithCallBackOnCompletion:(BOOL)wantsCallback withStartTime:(NSNumber*)startTime;
