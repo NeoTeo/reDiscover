@@ -125,7 +125,7 @@ enum {
 - (void)setSweetSpot:(NSNumber*)theSS;
 - (id)init;
 - (void)loadTrackDataWithCallBackOnCompletion:(BOOL)wantsCallback;
-- (NSNumber*)playStart;
+- (void)playAtTime:(NSNumber*)startTime;
 - (void)playStop;
 - (double)getDuration;
 - (Float64)getCurrentPlayTime;
@@ -143,7 +143,7 @@ enum {
 @protocol TGSongDelegate <NSObject>
 //@optional
 - (id<SongIDProtocol>)lastRequestedSongID;
-- (void)songReadyForPlayback:(TGSong *)song;
+- (void)songReadyForPlayback:(TGSong *)song atTime:(NSNumber*)startTime;
 - (void)songDidFinishPlayback:(TGSong *)song;
 - (void)songDidUpdatePlayheadPosition:(NSNumber *)playheadPosition;
 - (dispatch_queue_t)serialQueue;

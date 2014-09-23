@@ -183,7 +183,6 @@ class SweetSpotServerIO: NSObject {
 //        return true;
 //    }
     
-//wip    func requestSweetSpotsForSongID(songID: SongIDProtocol) -> NSSet? {
     func requestSweetSpotsForSongID(songID: SongIDProtocol) -> NSArray? {
         let songUUID = delegate?.UUIDStringForSongID(songID)
         if songUUID == nil {
@@ -222,7 +221,6 @@ class SweetSpotServerIO: NSObject {
                             println("the serverSweetSpots has \(serverSweetSpots.count) elements")
                             println("the song id is \(songID )")
                             
-//wip let mutableSet = self.delegate?.sweetSpotsForSongID(songID).mutableCopy() as? NSMutableSet
                             if let songSS = self.delegate?.sweetSpotsForSongID(songID) {
                                 let mutableSS = NSMutableArray(array: songSS)
                             

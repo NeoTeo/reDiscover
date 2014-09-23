@@ -66,8 +66,6 @@
 
 - (void)setRequestedPlayheadPosition:(NSNumber *)newPosition;
 // Sweet Spot accessors.
-//wip - (NSSet*)sweetSpotsForSongID:(id<SongIDProtocol>)songID;
-//wip - (void)replaceSweetSpots:(NSSet*)sweetSpots forSongID:(id<SongIDProtocol>)songID;
 - (NSArray*)sweetSpotsForSongID:(id<SongIDProtocol>)songID;
 - (void)replaceSweetSpots:(NSArray*)sweetSpots forSongID:(id<SongIDProtocol>)songID;
 - (void)setActiveSweetSpotIndex:(int)ssIndex forSongID:(id<SongIDProtocol>)songID;
@@ -204,7 +202,7 @@
 // TGSongDelegate protocol methods called by TGSong
 - (void)songDidFinishPlayback:(TGSong *)song;
 - (void)songDidUpdatePlayheadPosition:(NSNumber *)playheadPosition;
-- (void)songReadyForPlayback:(TGSong *)song;
+- (void)songReadyForPlayback:(TGSong *)song atTime:(NSNumber*)startTime;
 - (NSSet*)currentCache;
 
 //MARK: Test methods

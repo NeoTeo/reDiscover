@@ -189,7 +189,6 @@
 - (void)storeSelectedSweetSpot {
     NSNumber* theSS = self.TEOData.selectedSweetSpot;
     if (theSS) {
-//wip        NSMutableSet* updatedSet = [self.TEOData.sweetSpots mutableCopy];
         NSMutableArray* updatedSS = [NSMutableArray arrayWithArray:self.TEOData.sweetSpots];
         //MARK: Add a check for dupes.
         // put the ss in the array
@@ -203,11 +202,11 @@
 }
 
 //MARK: Audio playback code.
-- (NSNumber*)playStart {
+- (void)playAtTime:(NSNumber*)startTime {
 
     if ([self songStatus] == kSongStatusReady) {
         
-        NSNumber* theTime;
+//wip        NSNumber* theTime;
         
         if (songPlayerItem == nil) {
             NSDate* preDate = [NSDate date];
@@ -238,13 +237,15 @@
 
 
         // Since we're about to play back at the one off start time, copy the value and nil it.
-        theTime = [self startTime];
-        self.oneOffStartTime = nil;
+// wip
+//        theTime = [self startTime];
+//        self.oneOffStartTime = nil;
         
         
-        if (theTime != nil) {
-            [songPlayer seekToTime:CMTimeMakeWithSeconds([theTime floatValue], 1)];
-
+//        if (theTime != nil) {
+        if (startTime != nil) {
+//            [songPlayer seekToTime:CMTimeMakeWithSeconds([theTime floatValue], 1)];
+            [songPlayer seekToTime:CMTimeMakeWithSeconds([startTime floatValue], 1)];
             [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(playDidFinish) name:AVPlayerItemDidPlayToEndTimeNotification object:songPlayerItem];
             
             if (playerObserver == nil) {
@@ -264,10 +265,10 @@
             }
 
             [songPlayer play];
-            return theTime;
+//wip            return theTime;
         }
     }
-    return [NSNumber numberWithFloat:0];
+    //wip return [NSNumber numberWithFloat:0];
 }
 
 

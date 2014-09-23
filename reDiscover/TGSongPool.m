@@ -1432,7 +1432,7 @@ static int const kSSCheckCounterSize = 10;
 }
 
 
-- (void)playbackSong:(TGSong *)nextSong {
+- (void)playbackSong:(TGSong *)nextSong atTime:(NSNumber*)startTime {
     
     // Between checking and stopping another thread can modify the currentlyPlayingSong thus causing the song to not be stopped.
     if (currentlyPlayingSong != nextSong) {
@@ -1443,8 +1443,11 @@ static int const kSSCheckCounterSize = 10;
         NSLog(@"currently playing is the same as next song. Early out.");
         return;
     }
-    NSNumber* theStartTime = [nextSong playStart];
-    if (theStartTime) {
+    //wip NSNumber* theStartTime = [nextSong playStart];
+    [nextSong playAtTime:startTime];
+    
+    //wip if (theStartTime) {
+    if (startTime != nil) {
         currentlyPlayingSong = nextSong;
         
         NSNumber *theSongDuration = [NSNumber numberWithDouble:[currentlyPlayingSong getDuration]];
@@ -1467,7 +1470,8 @@ static int const kSSCheckCounterSize = 10;
         }
         
         // Set the requested playheadposition tracker to the song's start time in a KVC compliant fashion.
-        [self setRequestedPlayheadPosition:theStartTime];
+//wip        [self setRequestedPlayheadPosition:theStartTime];
+        [self setRequestedPlayheadPosition:startTime];
         
     }
 }
@@ -1536,10 +1540,11 @@ static int const kSSCheckCounterSize = 10;
 }
 
 // songReadyForPlayback is called (async'ly) by the song once it is fully loaded.
-- (void)songReadyForPlayback:(TGSong *)song {
+- (void)songReadyForPlayback:(TGSong *)song atTime:(NSNumber*)startTime {
 
 //     If there's no start time, check the sweet spot server for one.
-    if ([song startTime] == nil) {
+    //wip if ([song startTime] == nil) {
+    if (startTime == nil) {
         //MARK: NEXT
         //FIXME: Consider passing in a completion block/closure to update playback when the sweet spots come in.
         [self fetchSongSweetSpot:song];
@@ -1550,7 +1555,7 @@ static int const kSSCheckCounterSize = 10;
     if (song == lastRequestedSong) {
         dispatch_async(playbackQueue, ^{
 //            NSLog(@"putting song %lu on the playbackQueue",(unsigned long)[song songID]);
-            [self playbackSong:song];
+            [self playbackSong:song atTime:startTime];
         });
     }
 }

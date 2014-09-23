@@ -21,7 +21,6 @@
 @dynamic title;
 @dynamic genre;
 @dynamic selectedSweetSpot;
-//@dynamic artID;
 @dynamic songReleases;
 
 + (instancetype)insertItemWithURLString:(NSString*)URLString
@@ -29,17 +28,16 @@
 {
     TEOSongData* songData = [NSEntityDescription insertNewObjectForEntityForName:self.entityName
                                                inManagedObjectContext:managedObjectContext];
-    songData.album             = nil;//@"dunno";
-    songData.artist            = nil;//@"dunno";
-    songData.sweetSpots        = [[NSArray alloc] init]; //[[NSSet alloc] init];  wip
+    songData.album             = nil;
+    songData.artist            = nil;
+    songData.sweetSpots        = [[NSArray alloc] init];
     songData.urlString         = URLString;
     songData.uuid              = nil;
     songData.year              = [NSNumber numberWithInteger:0];
-    songData.genre             = nil;//@"dunno";
-    songData.title             = nil;//@"dunno";
+    songData.genre             = nil;
+    songData.title             = nil;
     songData.fingerprint       = nil;
-    songData.selectedSweetSpot = nil;//[NSNumber numberWithFloat:0];
-//    songData.artID             = [NSNumber numberWithInteger:-1];
+    songData.selectedSweetSpot = nil;
     songData.songReleases      = nil;
     
     return songData;
