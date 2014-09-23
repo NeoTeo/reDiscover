@@ -124,7 +124,7 @@ enum {
 - (void)setStartTime:(NSNumber *)startTime makeSweetSpot:(BOOL)makeSS;
 - (void)setSweetSpot:(NSNumber*)theSS;
 - (id)init;
-- (void)loadTrackDataWithCallBackOnCompletion:(BOOL)wantsCallback;
+- (void)loadTrackDataWithCallBackOnCompletion:(BOOL)wantsCallback withStartTime:(NSNumber*)startTime;
 - (void)playAtTime:(NSNumber*)startTime;
 - (void)playStop;
 - (double)getDuration;

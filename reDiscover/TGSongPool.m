@@ -1318,7 +1318,7 @@ static int const kSSCheckCounterSize = 10;
 //            [aSong setCache:[[AVAudioFile alloc] initForReading:[NSURL URLWithString:aSong.TEOData.urlString] error:&error]];
 //#endif
             // tell the song to load its data asyncronously without requesting a callback on completion.
-            [aSong loadTrackDataWithCallBackOnCompletion:NO];
+            [aSong loadTrackDataWithCallBackOnCompletion:NO withStartTime:nil];
             
             // We should try and get the metadata so it's ready,
             // but not so that songPoolDidLoadDataForSongID gets called for each song.
@@ -1402,11 +1402,11 @@ static int const kSSCheckCounterSize = 10;
     // * Set a sweet spot so that subsequent playbacks also start at the given time.
     // * A one-off playback at the given time (eg, scrubbing or when the playlist starts a song)
     // So, perhaps we need two separate methods or signal the intention via a parameter.
-    [aSong setStartTime:time makeSweetSpot:makeSS];
+    [aSong setStartTime:time makeSweetSpot:makeSS]; // wip change this to just makeSweetSpot: as startTime is no longer a song property.
     
 //    [aSong setRequestedSongStartTime:CMTimeMakeWithSeconds([time doubleValue], 1)];
     if ([aSong isReadyForPlayback] == YES) {
-        [self songReadyForPlayback:aSong];
+        [self songReadyForPlayback:aSong atTime:time];
     } else {
         // First cancel any pending requests in the operation queue and then add this.
         // This won't delete them from the queue but it will tell each in turn it has been cancelled.
@@ -1416,7 +1416,7 @@ static int const kSSCheckCounterSize = 10;
         [urlLoadingOpQueue addOperationWithBlock:^{
             //    NSLog(@"loadTrackData called from requestSongPlayback");
             // Asynch'ly start loading the track data for aSong. songReadyForPlayback will be called back when the song is good to go.
-            [aSong loadTrackDataWithCallBackOnCompletion:YES];
+            [aSong loadTrackDataWithCallBackOnCompletion:YES withStartTime:time];
         }];
     }
 }
