@@ -898,12 +898,14 @@ static int const kSSCheckCounterSize = 10;
  of the currently playing song to newPosition and sets a sweet spot for the song which gets stored on next save.
  The requestedPlayheadPosition should only result in a sweet spot when the user releases the slider.
 */
+//- (void)setRequestedPlayheadPosition:(NSNumber *)newPosition forSongID:(id<SongIDProtocol>)songID {
 - (void)setRequestedPlayheadPosition:(NSNumber *)newPosition {
     requestedPlayheadPosition = newPosition;
 //    NSLog(@"setRequestedPlayheadPosition: %@",newPosition);
     
     TGSong* theSong = [self songForID:[self lastRequestedSongID]];
-
+//    TGSong* theSong = [self songForID:songID];
+    
     [theSong setCurrentPlayTime:newPosition];
     [theSong setSweetSpot:newPosition];
 }
@@ -1422,8 +1424,8 @@ static int const kSSCheckCounterSize = 10;
         }
         
         // Set the requested playheadposition tracker to the song's start time in a KVC compliant fashion.
+        //[self setRequestedPlayheadPosition:startTime forSongID:currentlyPlayingSong.songID];
         [self setRequestedPlayheadPosition:startTime];
-        
     }
 }
 
@@ -1480,7 +1482,10 @@ static int const kSSCheckCounterSize = 10;
 //    
 //}
 
-// Delegate method that allows a song to set the songpool's playhead position tracker variable.
+/**
+ Delegate method that allows a song to set the songpool's playhead position tracker variable.
+ Because the playheadPosition is bound to the TGTimelineSliderCell's currentPlayheadPositionInPercent this moves the slider knob.
+ */
 - (void)songDidUpdatePlayheadPosition:(NSNumber *)playheadPosition {
     [self setValue:playheadPosition forKey:@"playheadPos"];
 }

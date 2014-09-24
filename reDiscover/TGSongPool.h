@@ -65,6 +65,8 @@
 - (id<SongIDProtocol>)currentlyPlayingSongID;
 
 - (void)setRequestedPlayheadPosition:(NSNumber *)newPosition;
+//- (void)setRequestedPlayheadPosition:(NSNumber*)newPosition forSongID:(id<SongIDProtocol>)songID;
+
 // Sweet Spot accessors.
 - (NSArray*)sweetSpotsForSongID:(id<SongIDProtocol>)songID;
 - (void)replaceSweetSpots:(NSArray*)sweetSpots forSongID:(id<SongIDProtocol>)songID;
