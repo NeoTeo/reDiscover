@@ -400,9 +400,12 @@ static int const kSSCheckCounterSize = 10;
                             TEOSongData* teoData = [self.TEOSongDataDictionary objectForKey:[url absoluteString]];
                             if (!teoData) {
                                 // this needs to happen on the managed object context's own thread
-    [self.TEOmanagedObjectContext performBlock:^{
-                                newSong.TEOData = [TEOSongData insertItemWithURLString:[url absoluteString] inManagedObjectContext:self.TEOmanagedObjectContext];
-    }];
+                                [self.TEOmanagedObjectContext performBlock:^{
+                                    newSong.TEOData = [TEOSongData insertItemWithURLString:[url absoluteString] inManagedObjectContext:self.TEOmanagedObjectContext];
+                                }];
+                                
+                                //wip ev
+                                [[NSNotificationCenter defaultCenter] postNotificationName:@"TGNewSongLoaded" object:newSong];
                             } else {
                                 // At this point we have found the song in the local store so we hook it up to the song instance for this run.
                                 newSong.TEOData = teoData;
@@ -865,17 +868,19 @@ static int const kSSCheckCounterSize = 10;
  @returns The currently selected sweet spot for the given song.
 */
 - (NSNumber *)fetchSongSweetSpot:(TGSong *)song {
-    
+//- (NSNumber *)fetchSongSweetSpot:(TGSong *)song withHandler:(void (^)(NSNumber*))sweetSpotHandler {
     // Get the song's start time in seconds.
 //    NSNumber *startTime = [song startTime];
     NSNumber *startTime = [song currentSweetSpot];
     
     /// Request sweetspots from the sweetspot server if the song does not have a start time, has a uuid and has not
     /// exceeded its alotted queries.
-    
+
+    //FIXME:
     /// Don't use the ssCheckCountdown. Only check sweetspots on app start and only for songs that don't already have any.
     /// A manual refresh would be the way to force a check.
-//    if (([startTime doubleValue] == 0) && (song.TEOData.uuid  != nil) && (song.SSCheckCountdown-- == 0)) {
+    /// Also, if there's no uuid, should we send off for fingerprinting and uuid lookup or should this occur higher up the stack
+    /// and the check for uuid should opt out sooner...
     if ((startTime == nil) && (song.TEOData.uuid  != nil) && (song.SSCheckCountdown-- == 0)) {
         // Reset the counter.
         song.SSCheckCountdown = (NSUInteger)kSSCheckCounterSize;
@@ -906,17 +911,10 @@ static int const kSSCheckCounterSize = 10;
     TGSong* theSong = [self songForID:[self lastRequestedSongID]];
 //    TGSong* theSong = [self songForID:songID];
     
+    // Set the current playback time and the currently selected sweet spot to the new position.
     [theSong setCurrentPlayTime:newPosition];
     [theSong setSweetSpot:newPosition];
 }
-
-
-// TEO: Convenience method. May not need it for long.
-- (float)fetchSweetSpotForSongID:(id<SongIDProtocol>)songID {
-    TGSong *song = [self songForID:songID];
-    return [[self fetchSongSweetSpot:song] floatValue];
-}
-
 
 /*
 // updateCache:
@@ -1493,12 +1491,24 @@ static int const kSSCheckCounterSize = 10;
 // songReadyForPlayback is called (async'ly) by the song once it is fully loaded.
 - (void)songReadyForPlayback:(TGSong *)song atTime:(NSNumber*)startTime {
 
-//     If there's no start time, check the sweet spot server for one.
+//     If there's no start time, check the sweet spot server for one. If one is found set the startTime to it.
     if (startTime == nil) {
+        startTime = [self fetchSongSweetSpot:song];
+        if (startTime == nil) {
+            startTime = [NSNumber numberWithDouble:0.0];
+        }
+        
+        
         //MARK: NEXT
-        //FIXME: Consider passing in a completion block/closure to update playback when the sweet spots come in.
-        [self fetchSongSweetSpot:song];
-        startTime = [NSNumber numberWithDouble:0.0];
+//        // Fetch the song's sweet spots and pass a handler that will play back the song at the sweet spot if one is found.
+//        [self fetchSongSweetSpot:song withHandler:^(NSNumber* theSweetSpot) {
+//            // wip, this just repeats the stuff below.
+//            if (song == lastRequestedSong) {
+//                dispatch_async(playbackQueue, ^{
+//                    [self playbackSong:song atTime:theSweetSpot];
+//                });
+//            }
+//        }];
     }
     
     // Make sure the last request for playback is put on a serial queue so it always is the last song left playing.
