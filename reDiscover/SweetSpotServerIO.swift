@@ -126,7 +126,7 @@ class SweetSpotServerIO: NSObject {
             println("uploadSweetSpotsForSongID ERROR: song has no UUID")
             return false
         }
-        if let sweetSpots = delegate?.sweetSpotsForSongID(songID) {
+        if let sweetSpots = delegate?.sweetSpotsForSongID(songID) as NSArray? {
             for sweetSpot in sweetSpots {
                 if sweetSpotHasBeenUploaded(sweetSpot as Double, theSongID: songID) {
                     println("Has been uploaded")

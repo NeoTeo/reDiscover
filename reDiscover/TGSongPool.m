@@ -394,7 +394,7 @@ static int const kSSCheckCounterSize = 10;
                         
                         // The song id is assigned.
                         [newSong setSongID:[SongID initWithString:[url absoluteString]]];
-                        
+                        NSAssert(serialDataLoad != nil, @"WTF serialDataLoad is nil!");
                         dispatch_async(serialDataLoad, ^{
                             // Only add the loaded url if it isn't already in the dictionary.
                             TEOSongData* teoData = [self.TEOSongDataDictionary objectForKey:[url absoluteString]];
@@ -419,7 +419,6 @@ static int const kSSCheckCounterSize = 10;
                             
                             // Upload any sweetspots that have not already been uploaded.
                             if (newSong.TEOData.sweetSpots.count) {
-                                //[self sweetSpotsToServerForSong:newSong];
                                 [_sweetSpotServerIO uploadSweetSpotsForSongID:newSong.songID];
                             }
                   
