@@ -44,6 +44,16 @@
     return self;
 }
 
+@synthesize songPoolAPI = _songPoolAPI;
+
+- (id<SongPoolAccessProtocol>)songPoolAPI {
+    return _songPoolAPI;
+}
+
+- (void)setSongPoolAPI:(id<SongPoolAccessProtocol>)songPoolAPI {
+    _songPoolAPI = songPoolAPI;
+    _songTimelineController.songPoolAPI = songPoolAPI;
+}
 
 -(void)awakeFromNib {
     zoomFactor = 1.0;

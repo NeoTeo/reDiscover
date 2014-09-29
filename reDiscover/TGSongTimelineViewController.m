@@ -33,7 +33,7 @@
 //                                    owner:self userInfo:nil];
     
     [[self view] addTrackingArea:trackingArea];
-
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateSweetSpots:) name:@"SweetSpotsUpdated" object:nil];
 }
 
 
@@ -44,6 +44,14 @@
         // Initialization code here.
     }
     return self;
+}
+
+- (void)updateSweetSpots:(NSNotification*)notification {
+    id<SongIDProtocol> songID = notification.object;
+
+    NSLog(@"song timeline notified of sweet spot update with songID %@.",songID);
+    //wipEv
+    [self setCurrentSongID:songID];
 }
 
 - (void)userCreatedNewSweetSpot:(id)sender {
@@ -70,16 +78,17 @@
  @Param songID The id of the song we are making current.
  @Param theSongPool The songpool where the song is held.
  */
--(void)setCurrentSongID:(id<SongIDProtocol>)songID fromSongPool:(TGSongPool *)theSongPool {
+-(void)setCurrentSongID:(id<SongIDProtocol>)songID { //wipEv fromSongPool:(TGSongPool *)theSongPool {
     
     TGTimelineSliderCell *theCell = _timelineBar.cell;
     
     [theCell setTheController:self];
     
-    NSNumber *songDuration = [theSongPool songDurationForSongID:songID];
-    NSArray *songSweetSpots = [theSongPool sweetSpotsForSongID:songID];
-    
-    [theCell makeMarkersFromSweetSpots:songSweetSpots forSongDuration:songDuration];
+    NSNumber *songDuration = [_songPoolAPI songDurationForSongID:songID];
+    NSArray *songSweetSpots = [_songPoolAPI sweetSpotsForSongID:songID];
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [theCell makeMarkersFromSweetSpots:songSweetSpots forSongDuration:songDuration];
+    });
 }
 
 

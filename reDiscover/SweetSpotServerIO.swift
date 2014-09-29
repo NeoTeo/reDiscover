@@ -221,6 +221,7 @@ class SweetSpotServerIO: NSObject {
                             println("the serverSweetSpots has \(serverSweetSpots.count) elements")
                             println("the song id is \(songID )")
                             
+                            // If the song already has sweet spots add the server's sweet spots to them.
                             if let songSS = self.delegate?.sweetSpotsForSongID(songID) {
                                 let mutableSS = NSMutableArray(array: songSS)
                             
@@ -229,9 +230,13 @@ class SweetSpotServerIO: NSObject {
                                 }
                             
                                 self.delegate?.replaceSweetSpots(mutableSS as NSArray, forSongID: songID)
-                                // The index really doesn't matter. The sweet spots are in a set which isn't sorted.
-                                self.delegate?.setActiveSweetSpotIndex(0, forSongID: songID)
+                                
+                            } else {
+                                self.delegate?.replaceSweetSpots(serverSweetSpots, forSongID: songID)
                             }
+                            
+                            // Set the first sweet spot to be the active one.
+                            self.delegate?.setActiveSweetSpotIndex(0, forSongID: songID)
                         }
                     }
                 }

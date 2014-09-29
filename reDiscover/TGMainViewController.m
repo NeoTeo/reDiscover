@@ -100,7 +100,6 @@
     [_playlistController setDelegate:self];
 //    [_playlistController setMainController:self];
     
-    
     // Add the views to the splitview.
     [theSplitView addSubview:[_playlistController view]];
     [theSplitView addSubview:[_songGridController view]];
@@ -521,10 +520,10 @@
     
     // Let the timelinecontroller know that we've changed song.
     // (would a song change be better signalled as a global notification?)
-    dispatch_async(dispatch_get_main_queue(), ^{
-        [_songGridController.songTimelineController setCurrentSongID:songID fromSongPool:_currentSongPool];
-    });
-//    NSLog(@"songPoolDidStartPlayingSong");
+    //MARK: wipEv change this to a notification
+    [_songGridController.songTimelineController setCurrentSongID:songID];
+    
+
     // Don't wait for a result. Set to the "fetching artwork..." whilst waiting.
     NSImage* fetchingImage = [NSImage imageNamed:@"fetchingArt"];
     [_songGridController setCoverImage:fetchingImage forSongWithID:songID];
@@ -546,7 +545,6 @@
             
             // Only update the info window for the currently playing song.
             //MARK: ARS
-//            if ([songID isEqualTo:[_currentSongPool currentlyPlayingSongID]])
             if (songID == [_currentSongPool currentlyPlayingSongID]) {
                 [_songInfoController setSongCoverImage:tmpImage];
             }

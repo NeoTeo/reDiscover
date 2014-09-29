@@ -404,7 +404,7 @@ static int const kSSCheckCounterSize = 10;
                                     newSong.TEOData = [TEOSongData insertItemWithURLString:[url absoluteString] inManagedObjectContext:self.TEOmanagedObjectContext];
                                 }];
                                 
-                                //wip ev
+                                //wipEv
                                 [[NSNotificationCenter defaultCenter] postNotificationName:@"TGNewSongLoaded" object:newSong];
                             } else {
                                 // At this point we have found the song in the local store so we hook it up to the song instance for this run.
@@ -802,6 +802,10 @@ static int const kSSCheckCounterSize = 10;
     if (theSong == nil) { return; }
     
     theSong.TEOData.sweetSpots = sweetSpots;
+    
+    //wipEv
+    // We should signal that the song's sweet spots have changed.
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"SweetSpotsUpdated" object:theSong.songID];
 }
 
 - (NSArray*)sweetSpotsForSongID:(id<SongIDProtocol>)songID {

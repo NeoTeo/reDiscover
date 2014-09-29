@@ -35,7 +35,7 @@
         fingerprintingQueue = dispatch_queue_create("fingerprinting queue", NULL);
 //        fingerprintingQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0);
         
-        //wip ev
+        //wipEv
         //register for events that a new song has been loaded.
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(fingerprintNewSong:) name:@"TGNewSongLoaded" object:nil];
 
@@ -46,7 +46,7 @@
 - (void)fingerprintNewSong:(NSNotification*)notification {
     TGSong* song = (TGSong*)notification.object;
     NSLog(@"fingerprintNewSong with %@",song);
-    //wip ev This should be observed by the code that exchanges the fingerprint for a uuid (which happens to be this class as well)
+    //wipEv This should be observed by the code that exchanges the fingerprint for a uuid (which happens to be this class as well)
     [[NSNotificationCenter defaultCenter] postNotificationName:@"TGNewSongFingerprinted" object:song];
 }
 
