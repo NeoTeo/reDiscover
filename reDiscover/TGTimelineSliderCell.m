@@ -138,26 +138,29 @@
 
 -(void)makeMarkersFromSweetSpots:(NSArray *)sweetSpots forSongDuration:(NSNumber *)songDuration {
     
-    int spotIndex = 0;
-    // Clear out the existing sweet spot markers from the sweetSpotsView.
-    [[sweetSpotsView subviews] makeObjectsPerformSelector:@selector(removeFromSuperviewWithoutNeedingDisplay)];
-    
-    // Add the new sweet spot markers.
-    for (NSNumber *sspot in sweetSpots) {
-        double ssXPos = CGRectGetWidth(barRect)/[songDuration doubleValue]*[sspot doubleValue];
-
-        TGSweetSpotControl *aSSControl = [[TGSweetSpotControl alloc] initWithFrame:NSMakeRect(ssXPos,
-                                                                                              kSweetSpotMarkerHeight,
-                                                                        kSweetSpotMarkerHeight,
-                                                                        kSweetSpotMarkerHeight)];
-        [aSSControl setTag:spotIndex++];
-        [aSSControl setTarget:_theController];
-//        [aSSControl setAction:@selector(sweetspotMarkerAction:)];
-        [aSSControl setAction:@selector(userSelectedExistingSweetSpot:)];
-        [aSSControl setImage:knobImage];
+    // Adding and removing subviews need to happen on the main thread.
+    dispatch_async(dispatch_get_main_queue(), ^{
+        int spotIndex = 0;
+        // Clear out the existing sweet spot markers from the sweetSpotsView.
+        [[sweetSpotsView subviews] makeObjectsPerformSelector:@selector(removeFromSuperviewWithoutNeedingDisplay)];
         
-        [sweetSpotsView addSubview:aSSControl];
-    }
+        // Add the new sweet spot markers.
+        for (NSNumber *sspot in sweetSpots) {
+            double ssXPos = CGRectGetWidth(barRect)/[songDuration doubleValue]*[sspot doubleValue];
+
+            TGSweetSpotControl *aSSControl = [[TGSweetSpotControl alloc] initWithFrame:NSMakeRect(ssXPos,
+                                                                                                  kSweetSpotMarkerHeight,
+                                                                            kSweetSpotMarkerHeight,
+                                                                            kSweetSpotMarkerHeight)];
+            [aSSControl setTag:spotIndex++];
+            [aSSControl setTarget:_theController];
+    //        [aSSControl setAction:@selector(sweetspotMarkerAction:)];
+            [aSSControl setAction:@selector(userSelectedExistingSweetSpot:)];
+            [aSSControl setImage:knobImage];
+            
+            [sweetSpotsView addSubview:aSSControl];
+        }
+    });
 }
 
 

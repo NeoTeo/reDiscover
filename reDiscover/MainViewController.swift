@@ -19,15 +19,15 @@ class MainViewController : NSSplitViewController {
     
     var theURL: NSURL?
     
-    override func performSegueWithIdentifier(identifier: String!, sender: AnyObject!) {
+    override func performSegueWithIdentifier(identifier: String, sender: AnyObject!) {
         println("Swift perform segue")
     }
     
-    override func prepareForSegue(segue: NSStoryboardSegue!, sender: AnyObject!) {
+    override func prepareForSegue(segue: NSStoryboardSegue, sender: AnyObject!) {
         println("Swift prepare for segue")
     }
     
-    override func keyDown(theEvent: NSEvent!) {
+    override func keyDown(theEvent: NSEvent) {
         println("A key \(theEvent.characters) was pressed")
         println("ANd now the first responder is \(self.view.window?.firstResponder)")
 

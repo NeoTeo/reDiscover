@@ -86,9 +86,8 @@
     
     NSNumber *songDuration = [_songPoolAPI songDurationForSongID:songID];
     NSArray *songSweetSpots = [_songPoolAPI sweetSpotsForSongID:songID];
-    dispatch_async(dispatch_get_main_queue(), ^{
-        [theCell makeMarkersFromSweetSpots:songSweetSpots forSongDuration:songDuration];
-    });
+    
+    [theCell makeMarkersFromSweetSpots:songSweetSpots forSongDuration:songDuration];
 }
 
 

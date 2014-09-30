@@ -25,15 +25,10 @@
 //    NSOperationQueue *opQueue;
 }
 
-//- (NSArray *)requestFingerPrintForSongURL:(NSURL *)songURL;
-//- (NSArray *)requestFingerPrintForSong:(TGSong *)song;
-- (void)requestFingerPrintForSong:(TGSong *)song;
-//- (void)requestFingerPrintForSong:(TGSong *)song withHandler:(void (^)(NSString*))fingerprintHandler;
+- (void)requestFingerPrintForSongID:(id<SongIDProtocol>)songID;
 - (void)requestFingerPrintForSong:(id<SongIDProtocol>)songID withHandler:(void (^)(NSString*))fingerprintHandler;
 
 - (NSInteger)decodeAudioFile:(NSURL *)fileURL forContext:(ChromaprintContext *)theContext ofLength:(NSInteger)maxLength andDuration:(int *)duration;
-
-//-(void)requestCoverArtForSong:(TGSong*)song withHandler:(void (^)(NSImage*))imageHandler;
 
 @property id<TGFingerPrinterDelegate> delegate;
 
@@ -43,8 +38,7 @@
 
 @protocol TGFingerPrinterDelegate <NSObject>
 @optional
-//- (void)fingerprintReady:(NSArray *)fingerPrint ForSong:(TGSong *)song;
-- (void)fingerprintReady:(NSString *)fingerPrint ForSong:(TGSong *)song;
+- (void)fingerprintReady:(NSString *)fingerPrint forSongID:(id<SongIDProtocol>)songID;
 - (NSURL *)URLForSongID:(id<SongIDProtocol>)songID;
 -(void)setUUIDString:(NSString*)theUUID forSongID:(id<SongIDProtocol>)songID;
 - (void)setReleases:(NSData*)releases forSongID:(id<SongIDProtocol>)songID;

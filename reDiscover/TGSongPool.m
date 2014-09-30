@@ -291,7 +291,7 @@ static int const kSSCheckCounterSize = 10;
         if ([aSong fingerPrintStatus] == kFingerPrintStatusEmpty) {
             NSLog(@"idleTimeRequestFingerprint generating fingerprint for song %@",aSong);
             [aSong setFingerPrintStatus:kFingerPrintStatusRequested];
-            [songFingerPrinter requestFingerPrintForSong:aSong];
+            [songFingerPrinter requestFingerPrintForSongID:aSong.songID];
             interval = 3;
         }
     } else {
@@ -1415,7 +1415,7 @@ static int const kSSCheckCounterSize = 10;
             if ([nextSong fingerPrintStatus] == kFingerPrintStatusEmpty) {
                 [nextSong setFingerPrintStatus:kFingerPrintStatusRequested];
                 NSLog(@"playbacksong calling requestFingerPrintForSong");
-                [songFingerPrinter requestFingerPrintForSong:nextSong];
+                [songFingerPrinter requestFingerPrintForSongID:nextSong.songID];
             }
         }
 
@@ -1437,7 +1437,9 @@ static int const kSSCheckCounterSize = 10;
 // TGfingerPrinterDelegate methods.
 #pragma mark TGFingerPrinterDelegate methods
 // Called by the finger printer when it has finished fingerprinting a song.
-- (void)fingerprintReady:(NSString *)fingerPrint ForSong:(TGSong *)song {
+- (void)fingerprintReady:(NSString *)fingerPrint forSongID:(id<SongIDProtocol>)songID {
+
+    TGSong* song = [self songForID:songID];
     
     // At this point we should check if the fingerprint resulted in a songUUID.
     // If it did not we keep the finger print so we don't have to re-generate it, otherwise we can delete the it.
@@ -1451,13 +1453,6 @@ static int const kSSCheckCounterSize = 10;
     }
     
     [song setFingerPrintStatus:kFingerPrintStatusDone];
-    
-//    // Check the song user data DB to see if we have song data for the UUID/fingerprint.
-//    // If found, load the data into the song.
-//    if (![self loadMetadataIntoSong:song]) {
-//        // If not found in the user data file, add the song to a songsWithChangesToSave dictionary so any changes to it are stored.
-//        [songsWithChangesToSave addObject:song];
-//    }    
 }
 
 

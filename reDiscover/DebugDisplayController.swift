@@ -22,7 +22,7 @@ class DebugDisplayController: NSViewController {
     //MARK:
     @IBOutlet var testLabel: NSTextFieldCell!
 
-    required init(coder: NSCoder!) {
+    required init?(coder: NSCoder) {
         println("Debug Display Controller init with coder")
         super.init(coder: coder)
     }

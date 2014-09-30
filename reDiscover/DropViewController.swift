@@ -23,7 +23,7 @@ class DropViewController : NSViewController, DropViewDelegate {
 
     }
    
-    override func prepareForSegue(segue: NSStoryboardSegue!, sender: AnyObject!) {
+    override func prepareForSegue(segue: NSStoryboardSegue, sender: AnyObject!) {
         println("Drop View Controller preparing for segue")
 
 //        let mainVC = segue.destinationController as MainViewController

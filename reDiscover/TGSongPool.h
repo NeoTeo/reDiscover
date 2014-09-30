@@ -199,7 +199,8 @@
 // Other protocols' delegate methods that TGSongPool implements
 
 // TGFingerPrinterDelegate protocol methods called by TGFingerPrinter
-- (void)fingerprintReady:(NSString *)fingerPrint ForSong:(TGSong *)song;
+//- (void)fingerprintReady:(NSString *)fingerPrint ForSong:(TGSong *)song;
+- (void)fingerprintReady:(NSString *)fingerPrint forSongID:(id<SongIDProtocol>)songID;
 
 // TGSongDelegate protocol methods called by TGSong
 - (void)songDidFinishPlayback:(TGSong *)song;

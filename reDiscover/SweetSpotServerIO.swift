@@ -59,8 +59,7 @@ class SweetSpotServerIO: NSObject {
                 // Build the URL where to store the data.
                 let documentsDirectory = NSFileManager.defaultManager().URLForDirectory(.DocumentDirectory, inDomain: .UserDomainMask, appropriateForURL: nil, create: true, error: &error)?.URLByAppendingPathComponent("uploadedSS.xml")
 
-                uploadedSweetSpotsMOC?.persistentStoreCoordinator.addPersistentStoreWithType(NSXMLStoreType,configuration: nil,URL: documentsDirectory, options: nil, error: &error)
-                
+                uploadedSweetSpotsMOC?.persistentStoreCoordinator?.addPersistentStoreWithType(NSXMLStoreType,configuration: nil,URL: documentsDirectory, options: nil, error: &error)
                 if error != nil {
                     println("SweetSpotServerIO init error: \(error)")
                 }

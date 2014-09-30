@@ -76,7 +76,7 @@ class CoverArtArchiveWebFetcher : NSObject {
                         continue
                     }
                     
-                    let theImage = NSImage(data: coverArtData)
+                    let theImage = NSImage(data: coverArtData!)
                     imageHandler(theImage)
                     
                     // We're done here.

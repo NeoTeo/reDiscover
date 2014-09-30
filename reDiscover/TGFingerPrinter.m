@@ -62,8 +62,7 @@
 // A version of the fingerprint request that uses a completion block instead of a delegate callback.
 //- (void)requestFingerPrintForSong:(TGSong *)song withHandler:(void (^)(NSString*))fingerprintHandler {
 - (void)requestFingerPrintForSong:(id<SongIDProtocol>)songID withHandler:(void (^)(NSString*))fingerprintHandler {
-//#pragma warning returning from requestFingerPrintForSong: withHandler:
-//    return;
+
     dispatch_async(fingerprintingQueue, ^{
         int maxLength = 120;
         char *theFingerprint;
@@ -74,16 +73,12 @@
         NSLog(@"requestFingerPrintForSong called with song %@",[songURL absoluteString]);
         [self decodeAudioFileNew:songURL forContext:chromaprintContext ofLength:maxLength andDuration:&duration];
         
-//        SongID* test = [[SongID alloc] initWithString:(NSString*)songID];
-//        SongID* testES =[[SongID alloc] initWithString:(NSString*)songID];
-//        if ([test isEqualToSongID:testES]) {
-//            NSLog(@"It wooooorks");
-//            [self testFunc:test];
-//        }
-        
         if (chromaprint_get_fingerprint(chromaprintContext, &theFingerprint)) {
-        
+            
             NSLog(@"requesting UUID from generated fingerprint.");
+            [self requestUUIDForSongID:songID withDuration:duration andFingerPrint:theFingerprint];
+            
+            /*
             // Ask AcoustID for the unique id for this song.
             NSURL *acoustIDURL = [[NSURL alloc] initWithString:[NSString stringWithFormat:@"http://api.acoustid.org/v2/lookup?client=8XaBELgH&meta=releases&duration=%d&fingerprint=%s",duration,theFingerprint]];
 
@@ -104,25 +99,21 @@
                     NSDictionary *theElement = [results objectAtIndex:0];
                     NSString* UUIDString = [theElement objectForKey:@"id"];
                     [_delegate setUUIDString:UUIDString forSongID:songID];
-//                    song.TEOData.uuid =  [theElement objectForKey:@"id"];
                     
                     // Extract the releases for this song.
                     NSArray* releases = [theElement objectForKey:@"releases"];
                     [_delegate setReleases:[NSKeyedArchiver archivedDataWithRootObject:releases] forSongID:songID];
-//                    song.TEOData.songReleases = [NSKeyedArchiver archivedDataWithRootObject:releases];
-                    
-//                    NSLog(@"Acoustid server returned a UUID %@",UUIDString);
                 } else
                     NSLog(@"AcoustID returned 0 results.");
                 
 
             } else
                 NSLog(@"ERROR: AcoustID server returned %@",status);
-            
+            */
             NSString *songFingerPrint = [NSString stringWithCString:theFingerprint encoding:NSASCIIStringEncoding];
             // Deallocate the fingerprint data.
             chromaprint_dealloc(theFingerprint);
-        
+             
             // Call the handler with the generated fingerprint.
             fingerprintHandler(songFingerPrint);
             
@@ -134,71 +125,66 @@
 }
 
 
-- (void)requestFingerPrintForSong:(TGSong *)song {
-    //__block NSMutableArray *songFingerPrint = NULL;
-//#pragma warning returning from requestFingerPrintForSong:
-//    return;
-    
-    //NSBlockOperation *theOp = [NSBlockOperation blockOperationWithBlock:^{
+- (void)requestFingerPrintForSongID:(id<SongIDProtocol>)songID {
+
     dispatch_async(fingerprintingQueue, ^{
+        
         int maxLength = 120;
         char *theFingerprint;
         int duration;
         ChromaprintContext *chromaprintContext = chromaprint_new(CHROMAPRINT_ALGORITHM_DEFAULT);
-
-        [self decodeAudioFile:[NSURL URLWithString:song.TEOData.urlString] forContext:chromaprintContext ofLength:maxLength andDuration:&duration];
+        NSURL* songURL = [_delegate URLForSongID:songID];
+        
+        [self decodeAudioFile:songURL forContext:chromaprintContext ofLength:maxLength andDuration:&duration];
 
         if (chromaprint_get_fingerprint(chromaprintContext, &theFingerprint)) {
-        
-//            NSLog(@"requesting UUID from generated fingerprint.");
-            // Ask AcoustID for the unique id for this song.
-//            NSURL *acoustIDURL = [[NSURL alloc] initWithString:[NSString stringWithFormat:@"http://api.acoustid.org/v2/lookup?client=8XaBELgH&duration=%d&fingerprint=%s",duration,theFingerprint]];
-            NSURL *acoustIDURL = [[NSURL alloc] initWithString:[NSString stringWithFormat:@"http://api.acoustid.org/v2/lookup?client=8XaBELgH&meta=releases&duration=%d&fingerprint=%s",duration,theFingerprint]];
-
-            NSData *acoustiData = [[NSData alloc] initWithContentsOfURL:acoustIDURL];
-            if ([acoustiData length] == 0 ) {
-                NSLog(@"ERROR: requestFingerPrintForSong - no acoustic data!");
-                return;
-            }
-            NSDictionary *acoustiJSON = [NSJSONSerialization JSONObjectWithData:acoustiData options:NSJSONReadingMutableContainers error:nil];
-//            NSLog(@"The json data is this %@",acoustiJSON);
             
-            // First we check that the return status is ok.
-            NSString *status = [acoustiJSON objectForKey:@"status"];
-            if ([status isEqualToString:@"ok"]) {
-                NSArray *results = [acoustiJSON objectForKey:@"results"];
-                // The first element is the one with the highest score so we take that (for now).
-                // Later we can traverse and compare with any tags we already have.
-                if ([results count]) {
-                    NSDictionary *theElement = [results objectAtIndex:0];
-                    song.TEOData.uuid =  [theElement objectForKey:@"id"];
-                    
-                    // Extract the releases for this song.
-                    NSArray* releases = [theElement objectForKey:@"releases"];
-                    song.TEOData.songReleases = [NSKeyedArchiver archivedDataWithRootObject:releases];
-                    
-//                    NSLog(@"Acoustid server returned a UUID %@",song.TEOData.uuid);
-                } else
-                    NSLog(@"AcoustID returned 0 results.");
-                
-
-            } else
-                NSLog(@"ERROR: AcoustID server returned %@",status);
+            [self requestUUIDForSongID:songID withDuration:duration andFingerPrint:theFingerprint];
             
             NSString *songFingerPrint = [NSString stringWithCString:theFingerprint encoding:NSASCIIStringEncoding];
-            // Deallocate the fingerprint data.
-            chromaprint_dealloc(theFingerprint);
-        
-            if ([_delegate respondsToSelector:@selector(fingerprintReady:ForSong:)]) {
-                [_delegate fingerprintReady:songFingerPrint ForSong:song];
+            if ([_delegate respondsToSelector:@selector(fingerprintReady:forSongID:)]) {
+                [_delegate fingerprintReady:songFingerPrint forSongID:songID];
             }
+
         } else
-            NSLog(@"ERROR: Fingerprinter failed to produce a fingerprint for song %@",song);
+            NSLog(@"ERROR: Fingerprinter failed to produce a fingerprint for songID %@",songID);
+        
         
         chromaprint_free(chromaprintContext);
     });
 }
 
+- (void)requestUUIDForSongID:(id<SongIDProtocol>)songID withDuration:(int)duration andFingerPrint:(char*)theFingerprint {
+    
+    NSURL *acoustIDURL = [[NSURL alloc] initWithString:[NSString stringWithFormat:@"http://api.acoustid.org/v2/lookup?client=8XaBELgH&meta=releases&duration=%d&fingerprint=%s",duration,theFingerprint]];
+    NSData *acoustiData = [[NSData alloc] initWithContentsOfURL:acoustIDURL];
+    
+    if ([acoustiData length] == 0 ) {
+        NSLog(@"ERROR: requestFingerPrintForSong - no acoustic data!");
+        return;
+    }
+    NSDictionary *acoustiJSON = [NSJSONSerialization JSONObjectWithData:acoustiData options:NSJSONReadingMutableContainers error:nil];
+    
+    // First we check that the return status is ok.
+    NSString *status = [acoustiJSON objectForKey:@"status"];
+    if ([status isEqualToString:@"ok"]) {
+        NSArray *results = [acoustiJSON objectForKey:@"results"];
+        // The first element is the one with the highest score so we take that (for now).
+        // Later we can traverse and compare with any tags we already have.
+        if ([results count]) {
+
+            NSDictionary *theElement = [results objectAtIndex:0];
+            [_delegate setUUIDString:[theElement objectForKey:@"id"] forSongID:songID];
+            
+            // Extract the releases for this song.
+            NSArray* releases = [theElement objectForKey:@"releases"];
+            [_delegate setReleases:[NSKeyedArchiver archivedDataWithRootObject:releases] forSongID:songID];
+        } else
+            NSLog(@"AcoustID returned 0 results.");
+        
+    } else
+        NSLog(@"ERROR: AcoustID server returned %@",status);
+}
 
 
 
