@@ -291,7 +291,14 @@ static int const kSSCheckCounterSize = 10;
         if ([aSong fingerPrintStatus] == kFingerPrintStatusEmpty) {
             NSLog(@"idleTimeRequestFingerprint generating fingerprint for song %@",aSong);
             [aSong setFingerPrintStatus:kFingerPrintStatusRequested];
-            [songFingerPrinter requestFingerPrintForSongID:aSong.songID];
+//            [songFingerPrinter requestFingerPrintForSongID:aSong.songID];
+            [songFingerPrinter requestFingerPrintForSong:aSong.songID withHandler:^(NSString* fingerPrint){
+                if (fingerPrint == nil) {
+                    NSLog(@"requestFingerprintForSong ERROR: NO FINGERPRINT");
+                    return;
+                }
+                [self fingerprintReady:fingerPrint forSongID:aSong.songID];
+            }];
             interval = 3;
         }
     } else {
@@ -1414,8 +1421,17 @@ static int const kSSCheckCounterSize = 10;
         if (nextSong.TEOData.uuid == NULL) {
             if ([nextSong fingerPrintStatus] == kFingerPrintStatusEmpty) {
                 [nextSong setFingerPrintStatus:kFingerPrintStatusRequested];
+                
                 NSLog(@"playbacksong calling requestFingerPrintForSong");
-                [songFingerPrinter requestFingerPrintForSongID:nextSong.songID];
+                //[songFingerPrinter requestFingerPrintForSongID:nextSong.songID];
+                
+                [songFingerPrinter requestFingerPrintForSong:nextSong.songID withHandler:^(NSString* fingerPrint){
+                    if (fingerPrint == nil) {
+                        NSLog(@"requestFingerprintForSong ERROR: NO FINGERPRINT");
+                        return;
+                    }
+                    [self fingerprintReady:fingerPrint forSongID:nextSong.songID];
+                }];
             }
         }
 

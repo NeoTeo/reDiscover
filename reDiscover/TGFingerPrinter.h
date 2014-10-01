@@ -25,7 +25,7 @@
 //    NSOperationQueue *opQueue;
 }
 
-- (void)requestFingerPrintForSongID:(id<SongIDProtocol>)songID;
+//- (void)requestFingerPrintForSongID:(id<SongIDProtocol>)songID;
 - (void)requestFingerPrintForSong:(id<SongIDProtocol>)songID withHandler:(void (^)(NSString*))fingerprintHandler;
 
 - (NSInteger)decodeAudioFile:(NSURL *)fileURL forContext:(ChromaprintContext *)theContext ofLength:(NSInteger)maxLength andDuration:(int *)duration;
