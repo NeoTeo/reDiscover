@@ -37,7 +37,7 @@
 
 @protocol TGFingerPrinterDelegate <NSObject>
 @optional
-- (void)fingerprintReady:(NSString *)fingerPrint forSongID:(id<SongIDProtocol>)songID;
+//- (void)fingerprintReady:(NSString *)fingerPrint forSongID:(id<SongIDProtocol>)songID;
 - (NSURL *)URLForSongID:(id<SongIDProtocol>)songID;
 -(void)setUUIDString:(NSString*)theUUID forSongID:(id<SongIDProtocol>)songID;
 - (void)setReleases:(NSData*)releases forSongID:(id<SongIDProtocol>)songID;

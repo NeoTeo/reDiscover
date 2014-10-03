@@ -262,13 +262,15 @@
         
         NSLog(@"space!");
         [self songUISweetSpotButtonWasPressed];
+        
     } else if ([chars isEqualToString:@"l"]){
         
-        NSLog(@"list sweetspots");
-//        TGSong *actionSong = [_currentSongPool songForID:lastRequestedSongID];
+        NSLog(@"List sweetspots for song with Id: %@",lastRequestedSongID);
+
         NSLog(@"The UUID is %@",[_currentSongPool UUIDStringForSongID:lastRequestedSongID]);
-        
+        NSLog(@"The song has a fingerprint: %@",[_currentSongPool fingerprintExistsForSongID:lastRequestedSongID]?@"Yes":@"No");
         NSLog(@"The sweetspots are %@",[_currentSongPool sweetSpotsForSongID:lastRequestedSongID]);
+        
     } else if ([chars isEqualToString:@"p"]){
         
         NSLog(@"Playlist generation.");

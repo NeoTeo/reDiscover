@@ -187,6 +187,7 @@
 
 // TEO should this not be private?
 - (NSString *)findUUIDOfSongWithURL:(NSURL *)songURL;
+- (BOOL)fingerprintExistsForSongID:(id<SongIDProtocol>)songID;
 
 #pragma mark -
 #pragma mark core data methods
@@ -200,7 +201,7 @@
 
 // TGFingerPrinterDelegate protocol methods called by TGFingerPrinter
 //- (void)fingerprintReady:(NSString *)fingerPrint ForSong:(TGSong *)song;
-- (void)fingerprintReady:(NSString *)fingerPrint forSongID:(id<SongIDProtocol>)songID;
+//- (void)fingerprintReady:(NSString *)fingerPrint forSongID:(id<SongIDProtocol>)songID;
 
 // TGSongDelegate protocol methods called by TGSong
 - (void)songDidFinishPlayback:(TGSong *)song;

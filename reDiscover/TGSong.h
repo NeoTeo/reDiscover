@@ -97,7 +97,7 @@ enum {
 - (double)getDuration;
 - (Float64)getCurrentPlayTime;
 - (void)setCurrentPlayTime:(NSNumber *)playTimeInSeconds;
-- (void)requestCoverImageWithHandler:(void (^)(NSImage *))imageHandler;
+- (void)searchMetadataForCoverImageWithHandler:(void (^)(NSImage *))imageHandler;
 - (BOOL)loadSongMetadata;
 /// returns true if the song is ready for playback.
 - (BOOL)isReadyForPlayback;

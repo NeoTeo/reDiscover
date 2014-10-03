@@ -28,7 +28,7 @@
 
 
 //TODO: Move to songpool?
-- (void)requestCoverImageWithHandler:(void (^)(NSImage *))imageHandler {
+- (void)searchMetadataForCoverImageWithHandler:(void (^)(NSImage *))imageHandler {
 
     if (songAsset == nil) {
         songAsset = [[AVURLAsset alloc] initWithURL:[NSURL URLWithString:self.TEOData.urlString] options:nil];
@@ -71,7 +71,7 @@
         [self setSongStatus:kSongStatusReady];
         
         if (!wantsCallback) return;
-        
+        //MARK: consider a closure instead.
         [[self delegate] songReadyForPlayback:self atTime:startTime];
     }
 }

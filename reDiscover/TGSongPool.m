@@ -69,14 +69,11 @@
 
 
 // The private interface declaration overrides the public one to declare conformity to the Delegate protocols.
-//@interface TGSongPool () <TGSongDelegate,TGFingerPrinterDelegate,SongPoolAccessProtocol,TGPlaylistViewControllerDelegate>
-//@end
 @interface TGSongPool () <TGSongDelegate,TGFingerPrinterDelegate,SongPoolAccessProtocol>
 @end
 
 // constant definitions
 static int const kSSCheckCounterSize = 10;
-//#define kSSCheckCounterSize 10
 
 
 @implementation TGSongPool
@@ -89,6 +86,9 @@ static int const kSSCheckCounterSize = 10;
     }
 }
 
+/**
+ Check that the given URL is a valid directory.
+*/
 - (BOOL)validateURL:(NSURL *)anURL {
     
     // for now just say yes
@@ -151,20 +151,20 @@ static int const kSSCheckCounterSize = 10;
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(idleTimeBegins) name:@"TGIdleTimeBegins" object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(idleTimeEnds) name:@"TGIdleTimeEnds" object:nil];
         
+        /// The CoverArtArchiveWebFetcher handles all comms with the remote cover art archive.
         _coverArtWebFetcher = [[CoverArtArchiveWebFetcher alloc] init];
         _coverArtWebFetcher.delegate = self;
         
-        // TEOSongData test
+        // Set up TEOSongData
         [self setupManagedObjectContext];
-        // TEOSongData end
         
         // The sweetSpotServerIO object handles all comms with the remote sweet spot server.
         _sweetSpotServerIO = [[SweetSpotServerIO alloc] init];
         _sweetSpotServerIO.delegate = self;
         
-
-        theSongPlayer = [[SongPlayer alloc] init];
-        theSongPlayer.delegate = self;
+        /// The class that plays back the audio. Not currently used.
+//        theSongPlayer = [[SongPlayer alloc] init];
+//        theSongPlayer.delegate = self;
         
         // Starting off with an empty songID cache.
         songIDCache = [[NSMutableSet alloc] init];
@@ -174,7 +174,9 @@ static int const kSSCheckCounterSize = 10;
     return self;
 }
 
-// TEOSongData test set up the Core Data context and store.
+/**
+ TEOSongData set up the Core Data context and store.
+*/
 - (void)setupManagedObjectContext {
     
     NSURL* modelURL = [[NSBundle mainBundle] URLForResource:@"TEOSong" withExtension:@"momd"];
@@ -501,12 +503,11 @@ static int const kSSCheckCounterSize = 10;
     // This is done by chaining asynchronous requests for data from either our Core Data store, from the file system and
     // finally from the network.
     // Request a cover image from the song passing in a block we want executed on resolution.
-    [theSong requestCoverImageWithHandler:^(NSImage *tmpImage) {
+    [theSong searchMetadataForCoverImageWithHandler:^(NSImage *tmpImage) {
         
         if (tmpImage != nil) {
             // Store the image in the local store so we won't have to re-fetch it from the file.
             [_artArray addObject:tmpImage];
-//            NSLog(@"Adding imaage to art array.");
             
             /*
              TEO For now we don't have a good way of detecting whether an image is already in the
@@ -525,7 +526,9 @@ static int const kSSCheckCounterSize = 10;
             
         } else {
             // Search strategies:
+            //
             // 1. See if other songs from the same album have album art in their metadata.
+            //
             // This will produce the wrong result for the (rare) albums where each song has a separate image.
             // Additionally this only produces album art once other songs' album art has been resolved which only
             // happens when the song is actively selected and played.
@@ -558,9 +561,10 @@ static int const kSSCheckCounterSize = 10;
                         }
                     }
                 }
-                
-                // 2. Search the directory where the songID song is located for images.
-                
+              
+                //
+                // 2. Search the directory where the song is located for images.
+                //
                 // Get the song's URL
                 NSURL*      theURL = [NSURL URLWithString:theSong.TEOData.urlString];
                 NSImage*    tmpImage = [self searchForCoverImageAtURL:theURL];
@@ -587,9 +591,9 @@ static int const kSSCheckCounterSize = 10;
                     return;
                 }
                 
+                //
                 // 3. Look up track then album then artist name online.
-                
-                
+                //
                 [self requestCoverArtFromWebForSong:songID withHandler:^(NSImage* theImage) {
                     if (theImage != nil) {
                         
@@ -639,17 +643,31 @@ static int const kSSCheckCounterSize = 10;
     if (theSong.TEOData.uuid != NULL) {
         [_coverArtWebFetcher requestAlbumArtFromWebForSong:songID imageHandler:imageHandler];
     } else {
-        [theSong setFingerPrintStatus:kFingerPrintStatusRequested];
-//        [songFingerPrinter requestFingerPrintForSong:theSong withHandler:^(NSString* fingerPrint){
-                        NSLog(@"requestCoverArtForSong calling requestFingerPrintForSong");
-        [songFingerPrinter requestFingerPrintForSong:songID withHandler:^(NSString* fingerPrint){
-            if (fingerPrint == nil) {
-                NSLog(@"requestCoverArtForSong ERROR: NO FINGERPRINT");
-                return;
-            }
-            [_coverArtWebFetcher requestAlbumArtFromWebForSong:songID imageHandler:imageHandler];
-            
-        }];
+        // At this point it could be the case that the song already has a fingerprint but no UUID
+        // either because it is waiting for the server to return it or because the server could not
+        // map the fingerprint to a uuid.
+        if (([theSong fingerPrintStatus] == kFingerPrintStatusDone) || ([theSong fingerPrintStatus] == kFingerPrintStatusRequested)){
+            NSLog(@"We have a fingerprint but no UUID (yet). The status is %lu",(unsigned long)[theSong fingerPrintStatus]);
+            imageHandler(nil);
+        } else {
+            [theSong setFingerPrintStatus:kFingerPrintStatusRequested];
+
+            NSLog(@"requestCoverArtForSong calling requestFingerPrintForSong");
+            [songFingerPrinter requestFingerPrintForSong:songID withHandler:^(NSString* fingerPrint){
+                if (fingerPrint == nil) {
+                    NSLog(@"requestCoverArtForSong ERROR: NO FINGERPRINT");
+                    [theSong setFingerPrintStatus:kFingerPrintStatusFailed];
+                    return;
+                }
+                
+                [self fingerprintReady:fingerPrint forSongID:songID];
+                
+                // Only request the album art from web server if we have a uuid to send them.
+                if ([self UUIDStringForSongID:songID] != nil) {
+                    [_coverArtWebFetcher requestAlbumArtFromWebForSong:songID imageHandler:imageHandler];
+                }
+            }];
+        }
     }
 }
 
@@ -746,9 +764,9 @@ static int const kSSCheckCounterSize = 10;
         [self.TEOmanagedObjectContext performBlock:^{
             // If the metadata has not yet been set, do it.
             if (theSong.TEOData.title == nil) {
-                [theSong loadSongMetadata];
+                    [theSong loadSongMetadata];
             }
-            
+        
             // Since the containing block is performed on the main thread and we want to spend as little on the main as possible doing this
             // we set the rest (dataHandler) off on a separate thread.
             dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
@@ -857,7 +875,6 @@ static int const kSSCheckCounterSize = 10;
     [self songForID:songID].TEOData.uuid = theUUID ;
 }
 
-
 - (NSURL *)URLForSongID:(id<SongIDProtocol>)songID {
     if (![self validSongID:songID]) return nil;
     
@@ -866,6 +883,11 @@ static int const kSSCheckCounterSize = 10;
 }
 
 //MARK: test method
+
+- (BOOL)fingerprintExistsForSongID:(id<SongIDProtocol>)songID {
+    if (![self validSongID:songID]) return NO;
+    return [self songForID:songID].TEOData.fingerprint != nil;
+}
 - (void)testUploadSSForSongID:(id<SongIDProtocol>)theID {
     [_sweetSpotServerIO uploadSweetSpotsForSongID:theID];
 }
@@ -1180,6 +1202,7 @@ static int const kSSCheckCounterSize = 10;
     }];
 }
 
+/*
 // Not currently used.
 - (NSString *)findUUIDOfSongWithURL:(NSURL *)songURL {
     NSString *theUUIDString = @"arses";
@@ -1197,6 +1220,7 @@ static int const kSSCheckCounterSize = 10;
     
     return theUUIDString;
 }
+*/
 
 #pragma mark -
 // end of Core Data methods
@@ -1238,8 +1262,9 @@ static int const kSSCheckCounterSize = 10;
                 if((matrixCols >=0) && (matrixCols < gridDims.x)) {
                     
                     // skip if this is the selected cell (which is already cached or requested).
-//                    if ((matrixRows == selectionPos.y) && (matrixCols == selectionPos.x))
-//                        continue;
+                    //wipwip
+                    if ((matrixRows == selectionPos.y) && (matrixCols == selectionPos.x))
+                        continue;
                     // Check for operation cancellation
                     if( weakCacheOp.isCancelled ) {return;}
                     
@@ -1398,7 +1423,7 @@ static int const kSSCheckCounterSize = 10;
 
 - (void)playbackSong:(TGSong *)nextSong atTime:(NSNumber*)startTime {
     
-    // Between checking and stopping another thread can modify the currentlyPlayingSong thus causing the song to not be stopped.
+    // Between checking and stopping, another thread can modify the currentlyPlayingSong thus causing the song to not be stopped.
     if (currentlyPlayingSong != nextSong) {
         [currentlyPlayingSong playStop];
     }
@@ -1407,7 +1432,7 @@ static int const kSSCheckCounterSize = 10;
         NSLog(@"currently playing is the same as next song. Early out.");
         return;
     }
-
+    NSAssert(startTime != nil, @"Start time is nil!");
     [nextSong playAtTime:startTime];
     
     if (startTime != nil) {
@@ -1435,6 +1460,7 @@ static int const kSSCheckCounterSize = 10;
             }
         }
 
+        //MARK: consider using an event to signal this instead.
         // Inform the delegate that we've started playing the song.
         if ([_delegate respondsToSelector:@selector(songPoolDidStartPlayingSong:)]) {
             [_delegate songPoolDidStartPlayingSong:[nextSong songID]];
@@ -1446,15 +1472,8 @@ static int const kSSCheckCounterSize = 10;
     }
 }
 
-
-#pragma mark -
-#pragma mark Delegate Methods
-
-// TGfingerPrinterDelegate methods.
-#pragma mark TGFingerPrinterDelegate methods
-// Called by the finger printer when it has finished fingerprinting a song.
 - (void)fingerprintReady:(NSString *)fingerPrint forSongID:(id<SongIDProtocol>)songID {
-
+    
     TGSong* song = [self songForID:songID];
     
     // At this point we should check if the fingerprint resulted in a songUUID.
@@ -1464,14 +1483,16 @@ static int const kSSCheckCounterSize = 10;
         song.TEOData.fingerprint = fingerPrint;
     }
     else {
-        // TEO - Is there any reason for not keeping the fingerprint (aside from memory)?
+        //MARK: TEO - Is there any reason for not keeping the fingerprint (aside from memory)?
+        NSLog(@"Deleting fingerprint for song Id %@ since it now has a UUID.",songID);
         song.TEOData.fingerprint = nil;
     }
     
     [song setFingerPrintStatus:kFingerPrintStatusDone];
 }
 
-
+#pragma mark -
+#pragma mark Delegate Methods
 
 // TSGSongDelegate methods.
 #pragma mark TGSongDelegate methods

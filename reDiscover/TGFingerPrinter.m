@@ -69,7 +69,7 @@
 
         ChromaprintContext *chromaprintContext = chromaprint_new(CHROMAPRINT_ALGORITHM_DEFAULT);
         NSURL* songURL = [_delegate URLForSongID:songID];
-        NSLog(@"requestFingerPrintForSong called with song %@",[songURL absoluteString]);
+        NSLog(@"requestFingerPrintForSong called with song Id %@",songID);
         [self decodeAudioFileNew:songURL forContext:chromaprintContext ofLength:maxLength andDuration:&duration];
         
         if (chromaprint_get_fingerprint(chromaprintContext, &theFingerprint)) {
@@ -91,36 +91,6 @@
     });
 }
 
-/*
-- (void)requestFingerPrintForSongID:(id<SongIDProtocol>)songID {
-
-    dispatch_async(fingerprintingQueue, ^{
-        
-        int maxLength = 120;
-        char *theFingerprint;
-        int duration;
-        ChromaprintContext *chromaprintContext = chromaprint_new(CHROMAPRINT_ALGORITHM_DEFAULT);
-        NSURL* songURL = [_delegate URLForSongID:songID];
-        
-        [self decodeAudioFile:songURL forContext:chromaprintContext ofLength:maxLength andDuration:&duration];
-
-        if (chromaprint_get_fingerprint(chromaprintContext, &theFingerprint)) {
-            
-            [self requestUUIDForSongID:songID withDuration:duration andFingerPrint:theFingerprint];
-            
-            NSString *songFingerPrint = [NSString stringWithCString:theFingerprint encoding:NSASCIIStringEncoding];
-            if ([_delegate respondsToSelector:@selector(fingerprintReady:forSongID:)]) {
-                [_delegate fingerprintReady:songFingerPrint forSongID:songID];
-            }
-
-        } else
-            NSLog(@"ERROR: Fingerprinter failed to produce a fingerprint for songID %@",songID);
-        
-        
-        chromaprint_free(chromaprintContext);
-    });
-}
-*/
 - (void)requestUUIDForSongID:(id<SongIDProtocol>)songID withDuration:(int)duration andFingerPrint:(char*)theFingerprint {
     
     NSURL *acoustIDURL = [[NSURL alloc] initWithString:[NSString stringWithFormat:@"http://api.acoustid.org/v2/lookup?client=8XaBELgH&meta=releases&duration=%d&fingerprint=%s",duration,theFingerprint]];
