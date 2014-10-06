@@ -490,7 +490,7 @@ static int const kSSCheckCounterSize = 10;
     TGSong * theSong = [self songForID:songID];
     NSInteger artID = theSong.artID;
     if (artID >= 0) {
-        NSLog(@"song id %@ already had image id %ld",songID,(long)artID);
+        //NSLog(@"song id %@ already had image id %ld",songID,(long)artID);
         NSImage *songArt = [_artArray objectAtIndex:artID];
         if (imageHandler != nil) {
             imageHandler(songArt);
@@ -637,7 +637,6 @@ static int const kSSCheckCounterSize = 10;
  The given hander is passed down to the cover art fetcher and is called by it on termination.
  */
 -(void)requestCoverArtFromWebForSong:(id<SongIDProtocol>)songID withHandler:(void (^)(NSImage*))imageHandler {
-    
     TGSong * theSong = [self songForID:songID];
     // If there's no uuid, request one and pass it the art fetcher as a handler.
     if (theSong.TEOData.uuid != NULL) {
@@ -1236,6 +1235,23 @@ static int const kSSCheckCounterSize = 10;
     // First we need to decide on a caching strategy.
     // For now we will simply do a no-brains area caching of two songs in every direction from the current cursor position.
     
+    NSDate* preBuildDate = [NSDate date];
+    NSDate* preDate = [NSDate date];
+    
+    // Extract data from context
+    NSPoint speedVector     = [[cacheContext objectForKey:@"spd"] pointValue];
+    NSPoint selectionPos    = [[cacheContext objectForKey:@"pos"] pointValue];
+    NSPoint gridDims        = [[cacheContext objectForKey:@"gridDims"] pointValue];
+
+    // Early out for speed scrolling. No point in caching if we're flying by.
+    // At some point use this for smarter caching.
+//    if (speedVector.y > 2) {
+//        NSLog(@">>>>>>>>>>>>>>>>>>>>>");
+//        NSLog(@"Speed cutoff enabled.");//wipwip
+//        NSLog(@"<<<<<<<<<<<<<<<<<<<<<");
+//        return;
+//    }
+    
     // We've got a new request so cancel all previous queued up requests.
     [urlCachingOpQueue cancelAllOperations];
     
@@ -1251,11 +1267,6 @@ static int const kSSCheckCounterSize = 10;
     
     NSInteger radius = 2;
         
-    // Extract data from context
-//    NSPoint speedVector     = [[cacheContext objectForKey:@"spd"] pointValue];
-    NSPoint selectionPos    = [[cacheContext objectForKey:@"pos"] pointValue];
-    NSPoint gridDims        = [[cacheContext objectForKey:@"gridDims"] pointValue];
-    
     for (NSInteger matrixRows=selectionPos.y-radius; matrixRows<=selectionPos.y+radius; matrixRows++) {
         for (NSInteger matrixCols=selectionPos.x-radius; matrixCols<=selectionPos.x+radius; matrixCols++) {
             if ((matrixRows >= 0) && (matrixRows <gridDims.y)) {
@@ -1292,6 +1303,10 @@ static int const kSSCheckCounterSize = 10;
     
     // Remove the what's already cached from the wanted cache and load it.
     [wantedCache minusSet:songIDCache];
+        
+    NSDate* postBuildDate = [NSDate date];
+    NSLog(@"Building the cache took: %f",[postBuildDate timeIntervalSinceDate:preDate]);
+        
     [self loadSongCache:[wantedCache allObjects]];
         
     // DEBUG
@@ -1308,6 +1323,9 @@ static int const kSSCheckCounterSize = 10;
     };
 
     [urlCachingOpQueue addOperation:cacheOp];
+    
+    NSDate* postDate = [NSDate date];
+    NSLog(@"caching took: %f",[postDate timeIntervalSinceDate:preDate]);
 }
 
 - (void)clearSongCache:(NSArray*)staleSongArray {

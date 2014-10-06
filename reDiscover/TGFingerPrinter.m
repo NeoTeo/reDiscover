@@ -32,12 +32,13 @@
         av_register_all();
         av_log_set_level(AV_LOG_ERROR);
 //        chromaprintContext = chromaprint_new(CHROMAPRINT_ALGORITHM_DEFAULT);
+//wipwip
         fingerprintingQueue = dispatch_queue_create("fingerprinting queue", NULL);
-//        fingerprintingQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0);
+        //fingerprintingQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0);//wipwip
         
         //wipEv
         //register for events that a new song has been loaded.
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(fingerprintNewSong:) name:@"TGNewSongLoaded" object:nil];
+//        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(fingerprintNewSong:) name:@"TGNewSongLoaded" object:nil];
 
     }
     return self;
@@ -61,7 +62,6 @@
 
 // A version of the fingerprint request that uses a completion block instead of a delegate callback.
 - (void)requestFingerPrintForSong:(id<SongIDProtocol>)songID withHandler:(void (^)(NSString*))fingerprintHandler {
-
     dispatch_async(fingerprintingQueue, ^{
         int maxLength = 120;
         char *theFingerprint;
