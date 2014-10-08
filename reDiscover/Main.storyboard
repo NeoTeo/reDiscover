@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="6246" systemVersion="14A361c" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" initialViewController="1rG-hg-cjj">
+<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="6249" systemVersion="14A386a" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" initialViewController="1rG-hg-cjj">
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="6246"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="6249"/>
     </dependencies>
     <scenes>
         <!--Window Controller-->
@@ -85,11 +85,11 @@
                         <autoresizingMask key="autoresizingMask"/>
                         <subviews>
                             <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="FnG-AK-nSw">
-                                <rect key="frame" x="175" y="136" width="100" height="28"/>
-                                <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="center" title="Debug" id="PBX-aj-L8L">
-                                    <font key="font" metaFont="systemBold"/>
+                                <rect key="frame" x="150" y="119" width="150" height="62"/>
+                                <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="center" title="Debug" drawsBackground="YES" id="PBX-aj-L8L">
+                                    <font key="font" metaFont="systemBold" size="41"/>
                                     <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
-                                    <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                    <color key="backgroundColor" red="1" green="0.86752494582626638" blue="0.51352771029171562" alpha="1" colorSpace="calibratedRGB"/>
                                 </textFieldCell>
                             </textField>
                         </subviews>
@@ -101,7 +101,7 @@
                 </viewController>
                 <customObject id="VqJ-on-Y9G" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1276" y="-1390"/>
+            <point key="canvasLocation" x="812" y="489"/>
         </scene>
         <!--Main View Controller-->
         <scene sceneID="XY3-af-wnw">

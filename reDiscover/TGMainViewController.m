@@ -114,10 +114,12 @@
 
     // Make sure the splitview's subviews are resized according to the newly added constraints.
     [theSplitView adjustSubviews];
-    
+/*
+    // Make and add debugDisplay
     _debugDisplayController = [[self storyboard] instantiateControllerWithIdentifier:@"DebugDisplayController"];
+    [_debugDisplayController viewWillAppear];
     [mainView addSubview:_debugDisplayController.view];
-    
+*/
     // TEO This is where the TGSongUIViewController should be instantiated and
     // have its delegate set to this class.
     
@@ -519,6 +521,8 @@
         // Tell the info panel to change to display the new song's data.
         [_songInfoController setSong:theData];
     }];
+    return;//wipwip
+    
     
     // Let the timelinecontroller know that we've changed song.
     // (would a song change be better signalled as a global notification?)

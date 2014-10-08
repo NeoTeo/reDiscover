@@ -57,16 +57,24 @@
 // ...loadValuesAsynchronouslyForKeys:@[@"playable"] completionHandler:
 - (void)loadTrackDataWithCallBackOnCompletion:(BOOL)wantsCallback withStartTime:(NSNumber*)startTime {
     NSURL *theURL = [NSURL URLWithString:self.TEOData.urlString];
+    
     [self setSongStatus:kSongStatusLoading];
     
-    songAsset = [AVAsset assetWithURL:theURL];
+    // What if the asset is already available?
+    if (songAsset == nil) {
+        songAsset = [AVAsset assetWithURL:theURL];
+    }
+
 // Enabling this, aside from slowing loading, also makes scrubbing laggy.
 //        NSDictionary *songLoadingOptions = @{AVURLAssetPreferPreciseDurationAndTimingKey : @YES};
 //        songAsset = [[AVURLAsset alloc] initWithURL:theURL options:songLoadingOptions];
 
     // Get the song duration.
     //    This may block which is just how we want it.
-    [self setSongDuration:[songAsset duration]];
+    if (CMTimeGetSeconds(self.songDuration) == 0) {
+        [self setSongDuration:[songAsset duration]];
+    }
+
     if ([songAsset isPlayable]) {
         [self setSongStatus:kSongStatusReady];
         

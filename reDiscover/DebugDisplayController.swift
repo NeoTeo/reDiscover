@@ -20,7 +20,7 @@ class DebugDisplayController: NSViewController {
 //    }
 
     //MARK:
-    @IBOutlet var testLabel: NSTextFieldCell!
+    @IBOutlet var testLabel: NSTextField!
 
     required init?(coder: NSCoder) {
         println("Debug Display Controller init with coder")
@@ -29,10 +29,12 @@ class DebugDisplayController: NSViewController {
     
     override func loadView()  {
         println("Debug Display Controller loadview")
-//        Crashes. That's how fucked beta 3 is.
-//        testLabel.stringValue = "ARSE"
     }
     
+    override func viewDidAppear() {
+        println("About to set debug label text string")
+        self.testLabel.stringValue = "ARSE"
+    }
     func displayCachedCells(cache: NSSet, songPool: SongPoolAccessProtocol) {
         // traverse the cache and get the frame of each of the songs.
         for songID in cache {

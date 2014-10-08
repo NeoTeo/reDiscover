@@ -104,12 +104,13 @@ static int const kSSCheckCounterSize = 10;
         songPoolDictionary = [[NSMutableDictionary alloc] initWithCapacity:songPoolStartCapacity];
         currentlyPlayingSong = NULL;
         
-        // Make url queues and make them serial.
+        /// Make url queues and make them serial so they can be cancelled.
         urlLoadingOpQueue = [[NSOperationQueue alloc] init];
         [urlLoadingOpQueue setMaxConcurrentOperationCount:1];
         urlCachingOpQueue = [[NSOperationQueue alloc] init];
         [urlCachingOpQueue setMaxConcurrentOperationCount:1];
         
+        // Actual serial queues.
         playbackQueue = dispatch_queue_create("playback queue", NULL);
         serialDataLoad = dispatch_queue_create("serial data load queue", NULL);
         timelineUpdateQueue = dispatch_queue_create("timeline GUI updater queue", NULL);
@@ -185,8 +186,10 @@ static int const kSSCheckCounterSize = 10;
     
     NSManagedObjectContext* private = [[NSManagedObjectContext alloc] initWithConcurrencyType:NSPrivateQueueConcurrencyType];
     [private setPersistentStoreCoordinator:psc];
-    
+
+    // This causes access to TEOSongData to happen on the main thread slowing everything down :(
     self.TEOmanagedObjectContext = [[NSManagedObjectContext alloc] initWithConcurrencyType:NSMainQueueConcurrencyType];
+
     [self.TEOmanagedObjectContext setParentContext:private];
     [self setPrivateContext:private];
     
@@ -342,7 +345,7 @@ static int const kSSCheckCounterSize = 10;
     __block int completedOps = 0;
     opQueue = [[NSOperationQueue alloc] init];
     
-    NSLog(@"loadFromURL running on the main thread? %@",[NSThread mainThread]?@"Yep":@"Nope");
+    NSLog(@"loadFromURL running on the main thread? %@",[NSThread isMainThread]?@"Yep":@"Nope");
     
 //    NSFileManager *fileManager = [[NSFileManager alloc] init];
     
@@ -757,15 +760,19 @@ static int const kSSCheckCounterSize = 10;
             NSLog(@"requestEmbeddedMetadataForSongID - no such song!");
             return ;
         }
-        
+        /*
         // Because loadSongMetadata writes to the managed object, we perform it on the context's thread.
         // TEO see if there's a way of avoiding this.
         [self.TEOmanagedObjectContext performBlock:^{
+            if ([NSThread isMainThread] == YES) {
+                NSLog(@"requestEmbeddedMetadataForSongID MOC access running on main thread!");
+            }
+
             // If the metadata has not yet been set, do it.
             if (theSong.TEOData.title == nil) {
-                    [theSong loadSongMetadata];
+                    [theSong loadSongMetadata];//wipwip this is where things lag because it is happening on the main thread.
             }
-        
+ 
             // Since the containing block is performed on the main thread and we want to spend as little on the main as possible doing this
             // we set the rest (dataHandler) off on a separate thread.
             dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
@@ -773,6 +780,7 @@ static int const kSSCheckCounterSize = 10;
                 dataHandler([self songDataForSongID:songID]);
             });
         }];
+        */
     });
 }
 
@@ -1235,11 +1243,13 @@ static int const kSSCheckCounterSize = 10;
     // First we need to decide on a caching strategy.
     // For now we will simply do a no-brains area caching of two songs in every direction from the current cursor position.
     
+    return; // wip return so we don't do any caching.
+    
     NSDate* preBuildDate = [NSDate date];
     NSDate* preDate = [NSDate date];
     
     // Extract data from context
-    NSPoint speedVector     = [[cacheContext objectForKey:@"spd"] pointValue];
+//    NSPoint speedVector     = [[cacheContext objectForKey:@"spd"] pointValue];
     NSPoint selectionPos    = [[cacheContext objectForKey:@"pos"] pointValue];
     NSPoint gridDims        = [[cacheContext objectForKey:@"gridDims"] pointValue];
 
@@ -1298,14 +1308,14 @@ static int const kSSCheckCounterSize = 10;
     // Beyond this point we can no longer cancel because we now start affecting the external state.
     [self clearSongCache:[staleCache allObjects]];
         
-    // DEBUG
+    // DEBUG
     [_delegate setDebugCachedFlagsForSongIDArray:[staleCache allObjects] toValue:NO];
-    
+
     // Remove the what's already cached from the wanted cache and load it.
     [wantedCache minusSet:songIDCache];
         
     NSDate* postBuildDate = [NSDate date];
-    NSLog(@"Building the cache took: %f",[postBuildDate timeIntervalSinceDate:preDate]);
+    NSLog(@"Building the cache took: %f",[postBuildDate timeIntervalSinceDate:preBuildDate]);
         
     [self loadSongCache:[wantedCache allObjects]];
         
@@ -1346,6 +1356,9 @@ static int const kSSCheckCounterSize = 10;
     // What's on the queue is not removed until its turn.
 //    [urlCachingOpQueue cancelAllOperations];
     
+    NSLog(@"Wait!");
+    [NSThread sleepForTimeInterval:10.0f];
+    NSLog(@"Carry on.");
     // Then we add the tracks to cache queue.
 //    [urlCachingOpQueue addOperationWithBlock:^{
         // TEO - calling this async'ly crashes in core data.
@@ -1365,14 +1378,17 @@ static int const kSSCheckCounterSize = 10;
             // tell the song to load its data asyncronously without requesting a callback on completion.
             [aSong loadTrackDataWithCallBackOnCompletion:NO withStartTime:nil];
             
+            //MARK: These two requests really ought to be initiated by the above loadTrackData... call.
             // We should try and get the metadata so it's ready,
             // but not so that songPoolDidLoadDataForSongID gets called for each song.
+/* wipwip These are already being called via the above call to loadTrackData...
             [self requestEmbeddedMetadataForSongID:songID withHandler:^(NSDictionary* theData){
                 //            NSLog(@"preloadSongArray got data! %@",theData);
             }];
-            
+
             // We should also initiate the caching of the album art.
             [self requestImageForSongID:songID withHandler:nil];
+*/
         }
     
         // Tell the song player to refresh the frameCount of the currently playing song now that
@@ -1406,9 +1422,9 @@ static int const kSSCheckCounterSize = 10;
         NSLog(@"Nope, the requested ID %@ is not in the song pool.",songID);
         return;
     }
-    
+     
     lastRequestedSong = aSong;
-    
+
     if ( makeSS ) {
         [aSong makeSweetSpotAtTime:time];
     }
@@ -1458,7 +1474,7 @@ static int const kSSCheckCounterSize = 10;
         
         NSNumber *theSongDuration = [NSNumber numberWithDouble:[currentlyPlayingSong getDuration]];
         [self setValue:theSongDuration forKey:@"currentSongDuration"];
-        
+
         // Song fingerprints are generated and UUID fetched during idle time in the background.
         // However, if the song about to be played hasn't got a UUID or fingerprint, an async request will be initiated here.
         if (nextSong.TEOData.uuid == NULL) {
@@ -1483,7 +1499,7 @@ static int const kSSCheckCounterSize = 10;
         if ([_delegate respondsToSelector:@selector(songPoolDidStartPlayingSong:)]) {
             [_delegate songPoolDidStartPlayingSong:[nextSong songID]];
         }
-        
+
         // Set the requested playheadposition tracker to the song's start time in a KVC compliant fashion.
         //[self setRequestedPlayheadPosition:startTime forSongID:currentlyPlayingSong.songID];
         [self setRequestedPlayheadPosition:startTime];

@@ -95,11 +95,24 @@
     BOOL errorLoadingSongURLs;
     BOOL allURLsLoaded;
     BOOL allURLsRequested;
-    // concurrent queue used for asynch resource loading.
-    NSOperationQueue *opQueue;
     
+    /// Concurrent queue used for asynch resource loading.
+    NSOperationQueue *opQueue;
+
+    /**
+     urlLoadingOpQueue is a concurrent queue set to do at most one concurrent operation at a time
+     effectively making it serial. The reason we use an operation queue is that only
+     they allow cancellation after being added to the queue.
+     */
     NSOperationQueue* urlLoadingOpQueue;
+    
+    /**
+     urlCachingOpQueue is a concurrent queue set to do at most one concurrent operation at a time
+     effectively making it serial. The reason we use an operation queue is that only
+     they allow cancellation after being added to the queue.
+     */
     NSOperationQueue* urlCachingOpQueue;
+    
     NSMutableSet *songIDCache;
     
     // This serial queue ensures all the cache clearing blocks are performed in the background.
@@ -186,7 +199,7 @@
 - (NSString*)albumForSongID:(id<SongIDProtocol>)songID;
 
 // TEO should this not be private?
-- (NSString *)findUUIDOfSongWithURL:(NSURL *)songURL;
+//- (NSString *)findUUIDOfSongWithURL:(NSURL *)songURL;
 - (BOOL)fingerprintExistsForSongID:(id<SongIDProtocol>)songID;
 
 #pragma mark -
