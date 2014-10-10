@@ -45,8 +45,11 @@
 - (id)copyWithZone:(struct _NSZone *)zone;
 @end
 
+
+
 // Methods that SongPool implements for others to call.
 @protocol SongPoolAccessProtocol
+
 - (NSURL *)songURLForSongID:(id<SongIDProtocol>)songID;
 - (NSString*)UUIDStringForSongID:(id<SongIDProtocol>)songID;
 - (NSData*)releasesForSongID:(id<SongIDProtocol>)songID;
@@ -74,7 +77,10 @@
 
 - (void)cacheWithContext:(NSDictionary*)cacheContext;
 
+- (NSManagedObjectContext*)TEOSongDataMOC;
 @end
+
+
 
 // TGSongPool Delegate methods that conforming classes must implement and that SongPool will call.
 @protocol TGSongPoolDelegate <NSObject>

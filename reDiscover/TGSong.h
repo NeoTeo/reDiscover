@@ -21,6 +21,7 @@
 
 @protocol TGSongDelegate;
 @protocol SongIDProtocol;
+@protocol SongPoolAccessProtocol;
 
 // Enum declarations
 
@@ -65,7 +66,9 @@ enum {
 @property AVAudioFile* cachedFile;
 @property int64_t cachedFileLength;
 
+@property NSManagedObjectContext* TEODataMOC;
 @property TEOSongData* TEOData;
+
 @property id<SongIDProtocol> songID;
 // State of various activities.
 @property NSUInteger fingerPrintStatus;
@@ -74,6 +77,32 @@ enum {
 
 @property CMTime songDuration;
 @property int songTimeScale;
+
+/// wipwip
+- (NSString*)album;
+- (void)setAlbum:(NSString*)theString;
+- (NSString*)artist;
+- (void)setArtist:(NSString*)theString;
+- (NSArray*)sweetSpots;
+- (void)setSweetSpots:(NSArray*)theArray;
+- (NSString*)URLString;
+- (void)setURLString:(NSString*)theString;
+- (NSString*)UUID;
+- (void)setUUID:(NSString*)theString;
+- (NSNumber*)year;
+- (void)setYear:(NSNumber*)theNumber;
+- (NSString*)fingerprint;
+- (void)setFingerprint:(NSString*)theString;
+- (NSString*)title;
+- (void)setTitle:(NSString*)theString;
+- (NSString*)genre;
+- (void)setGenre:(NSString*)theString;
+- (NSNumber*)selectedSweetSpot;
+- (void)setSelectedSweetSpot:(NSNumber*)theNumber;
+- (NSData*)songReleases;
+- (void)setSongReleases:(NSData*)theData;
+
+// wipwip
 
 #define TSD
 
@@ -102,7 +131,7 @@ enum {
 /// returns true if the song is ready for playback.
 - (BOOL)isReadyForPlayback;
 
-    
+@property id<SongPoolAccessProtocol>songPoolAPI;
 @property id <TGSongDelegate>delegate;
 @end
 

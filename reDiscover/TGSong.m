@@ -7,6 +7,7 @@
 //
 
 #import "TGSong.h"
+#import "TGSongPool.h"
 #import "TEOSongData.h"
 
 #import <AVFoundation/AVFoundation.h>
@@ -31,7 +32,8 @@
 - (void)searchMetadataForCoverImageWithHandler:(void (^)(NSImage *))imageHandler {
 
     if (songAsset == nil) {
-        songAsset = [[AVURLAsset alloc] initWithURL:[NSURL URLWithString:self.TEOData.urlString] options:nil];
+//        songAsset = [[AVURLAsset alloc] initWithURL:[NSURL URLWithString:self.TEOData.urlString] options:nil];
+        songAsset = [[AVURLAsset alloc] initWithURL:[NSURL URLWithString:self.URLString] options:nil];
     }
     [songAsset loadValuesAsynchronouslyForKeys:@[@"commonMetadata"] completionHandler:^{
         
@@ -56,8 +58,8 @@
 //MARK: Why is this not done asynchronously with...
 // ...loadValuesAsynchronouslyForKeys:@[@"playable"] completionHandler:
 - (void)loadTrackDataWithCallBackOnCompletion:(BOOL)wantsCallback withStartTime:(NSNumber*)startTime {
-    NSURL *theURL = [NSURL URLWithString:self.TEOData.urlString];
-    
+//    NSURL *theURL = [NSURL URLWithString:self.TEOData.urlString];
+    NSURL *theURL = [NSURL URLWithString:self.URLString];
     [self setSongStatus:kSongStatusLoading];
     
     // What if the asset is already available?
@@ -91,7 +93,8 @@
     In either case the TEOData will be set to some reasonable defaults.
  */
 - (BOOL)loadSongMetadata {    
-    NSString *tmpString = [self.TEOData.urlString stringByDeletingPathExtension];
+//    NSString *tmpString = [self.TEOData.urlString stringByDeletingPathExtension];
+    NSString *tmpString = [self.URLString stringByDeletingPathExtension];
     NSString* fileName = [tmpString lastPathComponent];
     tmpString =[tmpString stringByDeletingLastPathComponent];
     NSString* album = [tmpString lastPathComponent];
@@ -99,33 +102,43 @@
     NSString* artist = [tmpString lastPathComponent];
     
     // Get other metadata via the MDItem of the file.
-    NSURL *theURL = [NSURL URLWithString:self.TEOData.urlString];
+//    NSURL *theURL = [NSURL URLWithString:self.TEOData.urlString];
+    NSURL *theURL = [NSURL URLWithString:self.URLString];
+
     MDItemRef metadata = MDItemCreate(NULL, (__bridge CFStringRef)[theURL path]);
     
     // Add reasonable defaults
-    self.TEOData.artist = [artist stringByRemovingPercentEncoding];//@"Unknown";
-    self.TEOData.title  = [fileName stringByRemovingPercentEncoding];//@"Unknown";
-    self.TEOData.album  = [album stringByRemovingPercentEncoding];//@"Unknown";
-    self.TEOData.genre  = @"Unknown";
+//    self.TEOData.artist = [artist stringByRemovingPercentEncoding];//@"Unknown";
+//    self.TEOData.title  = [fileName stringByRemovingPercentEncoding];//@"Unknown";
+//    self.TEOData.album  = [album stringByRemovingPercentEncoding];//@"Unknown";
+//    self.TEOData.genre  = @"Unknown";
+    self.artist = [artist stringByRemovingPercentEncoding];//@"Unknown";
+    self.title  = [fileName stringByRemovingPercentEncoding];//@"Unknown";
+    self.album  = [album stringByRemovingPercentEncoding];//@"Unknown";
+    self.genre  = @"Unknown";
     
     if (metadata) {
         NSString* aString;
         NSArray* artists;
         
         if ((artists = CFBridgingRelease(MDItemCopyAttribute(metadata, kMDItemAuthors)))) {
-           self.TEOData.artist = [artists objectAtIndex:0];
+//           self.TEOData.artist = [artists objectAtIndex:0];
+            self.artist = [artists objectAtIndex:0];
         }
         
         if ((aString = CFBridgingRelease(MDItemCopyAttribute(metadata, kMDItemTitle)))) {
-            self.TEOData.title = aString;
+            //self.TEOData.title = aString;
+            self.title = aString;
         }
         
         if ((aString = CFBridgingRelease(MDItemCopyAttribute(metadata, kMDItemAlbum)))) {
-            self.TEOData.album = aString;
+            //self.TEOData.album = aString;
+            self.album = aString;
         }
         
         if ((aString = CFBridgingRelease(MDItemCopyAttribute(metadata, kMDItemMusicalGenre)))) {
-            self.TEOData.genre = aString;
+            //self.TEOData.genre = aString;
+            self.genre = aString;
         }
         
         // Make sure that sucker is released.
@@ -151,7 +164,8 @@
 //    return self.TEOData.selectedSweetSpot;
 //}
 - (NSNumber*)currentSweetSpot {
-    return self.TEOData.selectedSweetSpot;
+    //return self.TEOData.selectedSweetSpot;
+    return self.selectedSweetSpot;
 }
 
 - (void)makeSweetSpotAtTime:(NSNumber*)startTime {
@@ -200,7 +214,8 @@
         return;
     }
 
-    self.TEOData.selectedSweetSpot = theSS;
+    //self.TEOData.selectedSweetSpot = theSS;
+    self.selectedSweetSpot = theSS;
 }
 
 /**
@@ -212,14 +227,17 @@
  because songs without sweet spots play from the beginning by default.
  */
 - (void)storeSelectedSweetSpot {
-    NSNumber* theSS = self.TEOData.selectedSweetSpot;
+    //NSNumber* theSS = self.TEOData.selectedSweetSpot;
+    NSNumber* theSS = self.selectedSweetSpot;
     if (theSS) {
-        NSMutableArray* updatedSS = [NSMutableArray arrayWithArray:self.TEOData.sweetSpots];
+//        NSMutableArray* updatedSS = [NSMutableArray arrayWithArray:self.TEOData.sweetSpots];
+        NSMutableArray* updatedSS = [NSMutableArray arrayWithArray:self.sweetSpots];
         //MARK: Add a check for dupes.
         // put the ss in the array
         [updatedSS addObject:theSS];
 
-        self.TEOData.sweetSpots = [updatedSS copy];
+        //self.TEOData.sweetSpots = [updatedSS copy];
+        self.sweetSpots = [updatedSS copy];
     } else {
         NSLog(@"No sweet spot selected!");
     }
@@ -357,4 +375,204 @@
 - (BOOL)isReadyForPlayback {
     return [self songStatus] == kSongStatusReady;
 }
+
+/// TEOSongData access methods.
+/// These are provided to ensure that access is done through the managed object context.
+- (NSDictionary*)songMetaData {
+    
+    if (_songPoolAPI == nil) { return nil; }
+    
+    __block NSDictionary* metaDataDict = nil;
+    [_songPoolAPI.TEOSongDataMOC performBlock:^{
+        // Not sure here, but I think I need to copy the various elements because they are part of a Managed Object
+        metaDataDict = @{
+                         @"Album"               : self.TEOData.album,
+                         @"Artist"              : self.TEOData.artist,
+                         @"Sweetspots"          : self.TEOData.sweetSpots,
+                         @"URLString"           : self.TEOData.urlString,
+                         @"UUID"                : self.TEOData.uuid,
+                         @"Year"                : self.TEOData.year,
+                         @"Fingerprint"         : self.TEOData.fingerprint,
+                         @"Title"               : self.TEOData.title,
+                         @"Genre"               : self.TEOData.genre,
+                         @"SelectedSweetSpot"   : self.TEOData.selectedSweetSpot
+                         };
+    }];
+    
+    return metaDataDict;
+}
+
+- (void)setSongMetaData:(NSDictionary*)newMetaData {
+    
+    if (_songPoolAPI == nil) { return; }
+    
+    [_songPoolAPI.TEOSongDataMOC performBlock:^{
+        NSString* album         = [newMetaData objectForKey:@"Album"];
+        NSString* artist        = [newMetaData objectForKey:@"Artist"];
+        NSArray* sweetSpots     = [newMetaData objectForKey:@"SweetSpots"];
+        NSString* uRL           = [newMetaData objectForKey:@"URLString"];
+        NSString* uUID          = [newMetaData objectForKey:@"UUID"];
+        NSNumber* year          = [newMetaData objectForKey:@"Year"];
+        NSString* fingerprint   = [newMetaData objectForKey:@"Fingerprint"];
+        NSString* title         = [newMetaData objectForKey:@"Title"];
+        NSString* genre         = [newMetaData objectForKey:@"Genre"];
+        NSNumber* selectedSS    = [newMetaData objectForKey:@"SelectedSweetSpot"];
+        
+        if (album) { self.TEOData.album = album; }
+        if (artist) { self.TEOData.artist = artist; }
+        if (sweetSpots) { self.TEOData.sweetSpots = sweetSpots; }
+        if (uRL) { self.TEOData.urlString = uRL; }
+        if (uUID) { self.TEOData.uuid = uUID; }
+        if (year) { self.TEOData.year = year; }
+        if (fingerprint) { self.TEOData.fingerprint = fingerprint; }
+        if (title) { self.TEOData.title = title; }
+        if (genre) { self.TEOData.genre = genre; }
+        if (selectedSS) { self.TEOData.selectedSweetSpot = selectedSS; }
+    }];
+}
+
+- (NSString*)album {
+    __block NSString* theString = nil;
+    [_songPoolAPI.TEOSongDataMOC performBlockAndWait:^{
+        theString = self.TEOData.album;
+    }];
+    return theString;
+}
+- (void)setAlbum:(NSString*)theString {
+    [_songPoolAPI.TEOSongDataMOC performBlock:^{
+        self.TEOData.album = theString;
+    }];
+}
+
+- (NSString*)artist {
+    __block NSString* theString = nil;
+    [_songPoolAPI.TEOSongDataMOC performBlockAndWait:^{
+        theString = self.TEOData.artist;
+    }];
+    return theString;
+}
+- (void)setArtist:(NSString*)theString {
+    [_songPoolAPI.TEOSongDataMOC performBlock:^{
+        self.TEOData.artist = theString;
+    }];
+}
+
+- (NSArray*)sweetSpots {
+    __block NSArray* theArray = nil;
+    [_songPoolAPI.TEOSongDataMOC performBlockAndWait:^{
+        theArray = self.TEOData.sweetSpots;
+    }];
+    return theArray;
+}
+- (void)setSweetSpots:(NSArray*)theArray {
+    [_songPoolAPI.TEOSongDataMOC performBlock:^{
+        self.TEOData.sweetSpots = theArray;
+    }];
+}
+
+- (NSString*)URLString {
+    __block NSString* theString = nil;
+    [_songPoolAPI.TEOSongDataMOC performBlockAndWait:^{
+        theString = self.TEOData.urlString;
+    }];
+    return theString;
+}
+- (void)setURLString:(NSString*)theString {
+    [_songPoolAPI.TEOSongDataMOC performBlock:^{
+        self.TEOData.urlString = theString;
+    }];
+}
+
+- (NSString*)UUID {
+    __block NSString* theString = nil;
+    [_songPoolAPI.TEOSongDataMOC performBlockAndWait:^{
+        theString = self.TEOData.uuid;
+    }];
+    return theString;
+}
+- (void)setUUID:(NSString*)theString {
+    [_songPoolAPI.TEOSongDataMOC performBlock:^{
+        self.TEOData.uuid = theString;
+    }];
+}
+
+- (NSNumber*)year {
+    __block NSNumber* theNumber = nil;
+    [_songPoolAPI.TEOSongDataMOC performBlockAndWait:^{
+        theNumber = self.TEOData.year;
+    }];
+    return theNumber;
+}
+- (void)setYear:(NSNumber*)theNumber {
+    [_songPoolAPI.TEOSongDataMOC performBlock:^{
+        self.TEOData.year = theNumber;
+    }];
+}
+
+- (NSString*)fingerprint {
+    __block NSString* theString = nil;
+    [_songPoolAPI.TEOSongDataMOC performBlockAndWait:^{
+        theString = self.TEOData.fingerprint;
+    }];
+    return theString;
+}
+- (void)setFingerprint:(NSString*)theString {
+    [_songPoolAPI.TEOSongDataMOC performBlock:^{
+        self.TEOData.fingerprint = theString;
+    }];
+}
+
+- (NSString*)title {
+    __block NSString* theString = nil;
+    [_songPoolAPI.TEOSongDataMOC performBlockAndWait:^{
+        theString = self.TEOData.title;
+    }];
+    return theString;
+}
+- (void)setTitle:(NSString*)theString {
+    [_songPoolAPI.TEOSongDataMOC performBlock:^{
+        self.TEOData.title = theString;
+    }];
+}
+
+- (NSString*)genre {
+    __block NSString* theString = nil;
+    [_songPoolAPI.TEOSongDataMOC performBlockAndWait:^{
+        theString = self.TEOData.genre;
+    }];
+    return theString;
+}
+- (void)setGenre:(NSString*)theString {
+    [_songPoolAPI.TEOSongDataMOC performBlock:^{
+        self.TEOData.genre = theString;
+    }];
+}
+
+- (NSNumber*)selectedSweetSpot {
+    __block NSNumber* theNumber = nil;
+    [_songPoolAPI.TEOSongDataMOC performBlockAndWait:^{
+        theNumber = self.TEOData.selectedSweetSpot;
+    }];
+    return theNumber;
+}
+- (void)setSelectedSweetSpot:(NSNumber*)theNumber {
+    [_songPoolAPI.TEOSongDataMOC performBlock:^{
+        self.TEOData.selectedSweetSpot = theNumber;
+    }];
+}
+
+- (NSData*)songReleases {
+    __block NSData* theData = nil;
+    [_songPoolAPI.TEOSongDataMOC performBlockAndWait:^{
+        theData = self.TEOData.songReleases;
+    }];
+    return theData;
+}
+- (void)setSongReleases:(NSData*)theData {
+    [_songPoolAPI.TEOSongDataMOC performBlock:^{
+        self.TEOData.songReleases = theData;
+    }];
+}
+
+
 @end

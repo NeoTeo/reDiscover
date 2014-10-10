@@ -71,7 +71,29 @@ class SweetSpotServerIO: NSObject {
     func initUploadedSweetSpots() {
         var error: NSError?
         let fetchRequest = NSFetchRequest(entityName: "UploadedSSData")
-        
+//MARK: Enable this when the wipwip work is done
+        /*
+        let async = NSAsynchronousFetchRequest(fetchRequest: fetchRequest){
+            (result:NSAsynchronousFetchResult!) -> Void in
+
+            if let fetchedArray = result.finalResult {
+                for ss in fetchedArray {
+                    let ssData = ss as UploadedSSData
+                    self.uploadedSweetSpots[ssData.songUUID] = ssData
+                    println("The ssData songUUID is \(ssData.songUUID) and its sweetspots \(ssData.sweetSpots)")
+                }
+                println("initUploadedSweetSpots done. Loaded \(self.uploadedSweetSpots.count)")
+            }
+        }
+        uploadedSweetSpotsMOC?.performBlock {
+            let results = self.uploadedSweetSpotsMOC?.executeRequest(async, error: &error) as NSAsynchronousFetchResult
+            if error != nil {
+                println(error?.localizedDescription ?? "Unknown error.")
+                return
+            }
+        }
+*/
+  
         uploadedSweetSpotsMOC?.performBlockAndWait(){
             if let fetchedArray = self.uploadedSweetSpotsMOC?.executeFetchRequest(fetchRequest, error: &error) {
                 if error != nil {
@@ -79,7 +101,6 @@ class SweetSpotServerIO: NSObject {
                     return
                 }
                 
-//                self.uploadedSweetSpots = [String:UploadedSSData]()
                 for ss in fetchedArray {
                     let ssData = ss as UploadedSSData
                     self.uploadedSweetSpots[ssData.songUUID] = ssData
@@ -89,6 +110,7 @@ class SweetSpotServerIO: NSObject {
                 println("initUploadedSweetSpots done. Loaded \(self.uploadedSweetSpots.count)")
             }
         }
+  
     }
     
     
