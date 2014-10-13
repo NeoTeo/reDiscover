@@ -521,7 +521,7 @@
         // Tell the info panel to change to display the new song's data.
         [_songInfoController setSong:theData];
     }];
-    return;//wipwip
+    return;//wipwip The following still causes some lag.
     
     
     // Let the timelinecontroller know that we've changed song.

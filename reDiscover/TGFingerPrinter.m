@@ -32,6 +32,7 @@
         av_register_all();
         av_log_set_level(AV_LOG_ERROR);
 //        chromaprintContext = chromaprint_new(CHROMAPRINT_ALGORITHM_DEFAULT);
+        
 //wipwip
         fingerprintingQueue = dispatch_queue_create("fingerprinting queue", NULL);
         //fingerprintingQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0);//wipwip

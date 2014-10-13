@@ -184,13 +184,22 @@ static int const kSSCheckCounterSize = 10;
     NSManagedObjectModel* mom = [[NSManagedObjectModel alloc] initWithContentsOfURL:modelURL];
     NSPersistentStoreCoordinator* psc = [[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel:mom];
     
+    /** 
+    A MOC whose parent context is nil is considered a root context and is connected directly to the persistent store coordinator.
+    If a MOC has a parent context the MOC's fetch and save ops are mediated by the parent context.
+    This means the parent context can, on its own private thread, service the requests from various children on different threads.
+    Changes to a context are only committed one store up. If you save a child context, changes are pushed to its parent.
+    Only when the root context is saved are the changes committed to the store (by the persistent store coordinator associated with the root context).
+    A parent context does *not* pull from its children before it saves, so the children must save before the parent.
+    */
     NSManagedObjectContext* private = [[NSManagedObjectContext alloc] initWithConcurrencyType:NSPrivateQueueConcurrencyType];
     [private setPersistentStoreCoordinator:psc];
 
-    // This causes access to TEOSongData access to happen on the main thread slowing everything down :(
+    // This causes all access to TEOSongData to happen on the main thread slowing everything down :(
 //    self.TEOmanagedObjectContext = [[NSManagedObjectContext alloc] initWithConcurrencyType:NSMainQueueConcurrencyType];
     self.TEOmanagedObjectContext = [[NSManagedObjectContext alloc] initWithConcurrencyType:NSPrivateQueueConcurrencyType];
 
+    //MARK: This may now be unnecessary since the TEOMOC is running on its own private queue.
     [self.TEOmanagedObjectContext setParentContext:private];
     [self setPrivateContext:private];
     
@@ -776,24 +785,24 @@ static int const kSSCheckCounterSize = 10;
         ///* wipwip
         // Because loadSongMetadata writes to the managed object, we perform it on the context's thread.
         // TEO see if there's a way of avoiding this.
-        [self.TEOmanagedObjectContext performBlock:^{
-            if ([NSThread isMainThread] == YES) {
-                NSLog(@"requestEmbeddedMetadataForSongID MOC access running on main thread!");
-            }
+        //[self.TEOmanagedObjectContext performBlock:^{
+//            if ([NSThread isMainThread] == YES) {
+//                NSLog(@"requestEmbeddedMetadataForSongID MOC access running on main thread!");
+//            }
 
             // If the metadata has not yet been set, do it.
 //            if (theSong.TEOData.title == nil) {
             if (theSong.title == nil) {
-                    [theSong loadSongMetadata];//wipwip this is where things lag because it is happening on the main thread.
+                    [theSong loadSongMetadata];
             }
  
             // Since the containing block is performed on the main thread and we want to spend as little on the main as possible doing this
             // we set the rest (dataHandler) off on a separate thread.
-            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            //dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
                 // call the datahandler with whatever metadata the song loaded.
                 dataHandler([self songDataForSongID:songID]);
-            });
-        }];
+            //});
+//        }];
         //*/
     });
 }

@@ -23,6 +23,7 @@
         _fingerPrintStatus = kFingerPrintStatusEmpty;
         _SSCheckCountdown = 0;
         _artID = -1;
+        _songDuration = CMTimeMakeWithSeconds(0, 1);
     }
     return self;
 }
