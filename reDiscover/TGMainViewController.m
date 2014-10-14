@@ -521,7 +521,7 @@
         // Tell the info panel to change to display the new song's data.
         [_songInfoController setSong:theData];
     }];
-    return;//wipwip The following still causes some lag.
+
     
     
     // Let the timelinecontroller know that we've changed song.
@@ -529,6 +529,7 @@
     //MARK: wipEv change this to a notification
     [_songGridController.songTimelineController setCurrentSongID:songID];
     
+    return;//wipwip The following still causes some lag.
 
     // Don't wait for a result. Set to the "fetching artwork..." whilst waiting.
     NSImage* fetchingImage = [NSImage imageNamed:@"fetchingArt"];

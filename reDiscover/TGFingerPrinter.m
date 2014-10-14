@@ -62,12 +62,18 @@
 //}
 
 // A version of the fingerprint request that uses a completion block instead of a delegate callback.
+/**
+ Produces a fingerprint from the song with songID using AcoustID and uses the generated fingerprint to 
+ request a unique id from the AcoustID web service.
+ @params songID The id of the song to fingerprint
+ @params fingerprintHandler A closure that handles the generated fingerprint.
+ */
 - (void)requestFingerPrintForSong:(id<SongIDProtocol>)songID withHandler:(void (^)(NSString*))fingerprintHandler {
     dispatch_async(fingerprintingQueue, ^{
         int maxLength = 120;
         char *theFingerprint;
         int duration;
-
+        
         ChromaprintContext *chromaprintContext = chromaprint_new(CHROMAPRINT_ALGORITHM_DEFAULT);
         NSURL* songURL = [_delegate URLForSongID:songID];
         NSLog(@"requestFingerPrintForSong called with song Id %@",songID);
@@ -75,7 +81,10 @@
         
         if (chromaprint_get_fingerprint(chromaprintContext, &theFingerprint)) {
             
-            NSLog(@"requesting UUID from generated fingerprint.");
+            //MARK: This needs to be extracted from the fingerprinting so we can use whatever uuid method we like
+            // independently of the fingerprinter.
+            // Since this is synchronous the call will block until either it succeeded or failed to fetch an UUId.
+            NSLog(@"requesting UUId from generated fingerprint.");
             [self requestUUIDForSongID:songID withDuration:duration andFingerPrint:theFingerprint];
             
             NSString *songFingerPrint = [NSString stringWithCString:theFingerprint encoding:NSASCIIStringEncoding];
@@ -86,7 +95,7 @@
             fingerprintHandler(songFingerPrint);
             
         } else
-            NSLog(@"ERROR: Fingerprinter failed to produce a fingerprint for songID %@",songID);
+            NSLog(@"ERROR: Fingerprinter failed to produce a fingerprint for songId %@",songID);
         
         chromaprint_free(chromaprintContext);
     });

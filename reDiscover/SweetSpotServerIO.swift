@@ -257,7 +257,7 @@ class SweetSpotServerIO: NSObject {
                             }
                             
                             // Set the first sweet spot to be the active one.
-                            self.delegate?.setActiveSweetSpotIndex(0, forSongID: songID)
+//                            self.delegate?.setActiveSweetSpotIndex(0, forSongID: songID)
                         }
                     }
                 }
