@@ -918,6 +918,15 @@ static int const kSSCheckCounterSize = 10;
     if (![self validSongID:songID]) return;
     // TEO may have to use a serial access queue if this is called concurrently.
     [self songForID:songID].UUID = theUUID ;
+    
+    //MARK: TEO - Is there any reason for not keeping the fingerprint (aside from memory)?
+    NSLog(@"Deleting fingerprint for song Id %@ since it now has a UUID.",songID);
+    TGSong* theSong = [self songForID:songID];
+    theSong.fingerprint = nil;
+    
+    // With an UUId (re)try to fetch the sweet spots from the server.
+    [self fetchSongSweetSpot:theSong];
+
 }
 
 - (NSURL *)URLForSongID:(id<SongIDProtocol>)songID {
@@ -1551,14 +1560,6 @@ static int const kSSCheckCounterSize = 10;
     if (song.UUID == nil) {
         NSLog(@"No UUID found, keeping fingerprint.");
         song.fingerprint = fingerPrint;
-    }
-    else {
-        //MARK: TEO - Is there any reason for not keeping the fingerprint (aside from memory)?
-        NSLog(@"Deleting fingerprint for song Id %@ since it now has a UUID.",songID);
-        song.fingerprint = nil;
-        
-        // With an UUId (re)try to fetch the sweet spots from the server.
-        [self fetchSongSweetSpot:song];
     }
     
     [song setFingerPrintStatus:kFingerPrintStatusDone];
