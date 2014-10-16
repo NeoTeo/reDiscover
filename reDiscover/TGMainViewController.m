@@ -529,14 +529,15 @@
     //MARK: wipEv change this to a notification
     [_songGridController.songTimelineController setCurrentSongID:songID];
     
-    return;//wipwip The following still causes some lag.
+
 
     // Don't wait for a result. Set to the "fetching artwork..." whilst waiting.
     NSImage* fetchingImage = [NSImage imageNamed:@"fetchingArt"];
     [_songGridController setCoverImage:fetchingImage forSongWithID:songID];
     [_songInfoController setSongCoverImage:fetchingImage];
-//#pragma warning disabled call to requestImageForSongID
-//    return;
+    
+        return;//wipwip The following still causes some lag.
+    
     // Then async'ly request an album image for the song and pass it a block callback.
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         [_currentSongPool requestImageForSongID:songID withHandler:^(NSImage *tmpImage) {
