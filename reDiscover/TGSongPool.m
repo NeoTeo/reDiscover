@@ -195,32 +195,26 @@ static int const kSSCheckCounterSize = 10;
     NSManagedObjectContext* private = [[NSManagedObjectContext alloc] initWithConcurrencyType:NSPrivateQueueConcurrencyType];
     [private setPersistentStoreCoordinator:psc];
 
-    // This causes all access to TEOSongData to happen on the main thread slowing everything down :(
-//    self.TEOmanagedObjectContext = [[NSManagedObjectContext alloc] initWithConcurrencyType:NSMainQueueConcurrencyType];
     self.TEOmanagedObjectContext = [[NSManagedObjectContext alloc] initWithConcurrencyType:NSPrivateQueueConcurrencyType];
 
     //MARK: This may now be unnecessary since the TEOMOC is running on its own private queue.
     [self.TEOmanagedObjectContext setParentContext:private];
     [self setPrivateContext:private];
     
-    // Since this could potentially take time we dispatch this block async'ly
-// Commented out because the caller would call loadFromURL before this block was done.
-//    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        NSError* error;
-        NSURL* documentsDirectory = [[NSFileManager defaultManager] URLForDirectory:NSDocumentDirectory inDomain:NSUserDomainMask appropriateForURL:nil create:YES error:NULL];
-        documentsDirectory = [documentsDirectory URLByAppendingPathComponent:@"reDiscoverdb.sqlite"];
-        
-        [self.TEOmanagedObjectContext.persistentStoreCoordinator addPersistentStoreWithType:NSSQLiteStoreType
-                                                                              configuration:nil
-                                                                                        URL:documentsDirectory
-                                                                                    options:nil error:&error];
-        if (error) {
-            NSLog(@"Error: %@",error);
-        }
-        NSLog(@"setupManagedObjectContext done");
-        [self initTEOSongDataDictionary];
+    NSError* error;
+    NSURL* documentsDirectory = [[NSFileManager defaultManager] URLForDirectory:NSDocumentDirectory inDomain:NSUserDomainMask appropriateForURL:nil create:YES error:NULL];
+    documentsDirectory = [documentsDirectory URLByAppendingPathComponent:@"reDiscoverdb.sqlite"];
     
-//    });
+    [self.TEOmanagedObjectContext.persistentStoreCoordinator addPersistentStoreWithType:NSSQLiteStoreType
+                                                                          configuration:nil
+                                                                                    URL:documentsDirectory
+                                                                                options:nil error:&error];
+    if (error) {
+        NSLog(@"Error: %@",error);
+    }
+    NSLog(@"setupManagedObjectContext done");
+    [self initTEOSongDataDictionary];
+    
 }
 
 - (NSManagedObjectContext*)TEOSongDataMOC {
@@ -330,7 +324,7 @@ static int const kSSCheckCounterSize = 10;
 - (void)fetchUUIdForSongId:(id<SongIDProtocol>)songID {
     TGSong* aSong = [self songForID:songID];
     if ([aSong fingerPrintStatus] == kFingerPrintStatusEmpty) {
-        NSLog(@"idleTimeRequestFingerprint generating fingerprint for song %@",aSong);
+        NSLog(@"SongPool fetchUUIdForSongId about to request a fingerprint for song %@",aSong);
         
         [aSong setFingerPrintStatus:kFingerPrintStatusRequested];
         
@@ -512,7 +506,7 @@ static int const kSSCheckCounterSize = 10;
     Attempt to find the cover image for the song using a variety of strategies and, if found, will pass the image to the given imageHandler block.
  */
 - (void)requestImageForSongID:(id<SongIDProtocol>)songID withHandler:(void (^)(NSImage *))imageHandler {
-    
+
     // First we should check if the song has an image stashed in the songpool local/temporary store.
     TGSong * theSong = [self songForID:songID];
     NSInteger artID = theSong.artID;
@@ -529,22 +523,25 @@ static int const kSSCheckCounterSize = 10;
     
     NSAssert(theSong != nil,@"WTF, song is nil");
     
+    
+    
     // If nothing was found, try asking the song directly.
     // This is done by chaining asynchronous requests for data from either our Core Data store, from the file system and
     // finally from the network.
     // Request a cover image from the song passing in a block we want executed on resolution.
     [theSong searchMetadataForCoverImageWithHandler:^(NSImage *tmpImage) {
-        
+    
         if (tmpImage != nil) {
             // Store the image in the local store so we won't have to re-fetch it from the file.
             [_artArray addObject:tmpImage];
-            
             /*
              TEO For now we don't have a good way of detecting whether an image is already in the
             // artArray so this is just filling it up with dupes. Commenting it out until a strategy is thought of.
             // Add the art index to the song.
             theSong.artID = [_artArray count]-1;
             */
+            
+            // wipwip Since the following call can happen without lagging it cannot be the imageHandler that is causing it.
             // Call the image handler with the image we recived from the song.
             if (imageHandler != nil) {
                 imageHandler(tmpImage);
@@ -554,6 +551,7 @@ static int const kSSCheckCounterSize = 10;
             return;
             
         } else {
+
             // Search strategies:
             //
             // 1. See if other songs from the same album have album art in their metadata.
@@ -561,14 +559,18 @@ static int const kSSCheckCounterSize = 10;
             // This will produce the wrong result for the (rare) albums where each song has a separate image.
             // Additionally this only produces album art once other songs' album art has been resolved which only
             // happens when the song is actively selected and played.
-            [self requestSongsFromAlbumWithName:theSong.album withHandler:^(NSArray* songs) {            
-            
+            [self requestSongsFromAlbumWithName:theSong.album withHandler:^(NSArray* songs) {
+                
+return;//wipwip endpoint The following still causes some lag.
+                
+                // Excluding the original song whose art we're looking for see if the others have it.
                 for (TEOSongData* songDat in songs) {
-                    // Excluding the original song whose art we're looking for see if the others have it.
+                    
                     // Find the song from the url string.
-                    // This will break until we switch song ids to be the song's url, then we can look it up directly.
                     TGSong* aSong = [songPoolDictionary objectForKey:[SongID initWithString:songDat.urlString]];
+                    
                     if (aSong && ![aSong isEqualTo:theSong]) {
+                        
                         // Here we can check the song's artID to see if it already has album art.
                         if ((aSong.artID != -1) && [_artArray objectAtIndex:aSong.artID] ) {
                             /*
@@ -916,11 +918,9 @@ static int const kSSCheckCounterSize = 10;
 
 -(void)setUUIDString:(NSString*)theUUID forSongID:(id<SongIDProtocol>)songID {
     if (![self validSongID:songID]) return;
-    // TEO may have to use a serial access queue if this is called concurrently.
+    
     [self songForID:songID].UUID = theUUID ;
     
-    //MARK: TEO - Is there any reason for not keeping the fingerprint (aside from memory)?
-    NSLog(@"Deleting fingerprint for song Id %@ since it now has a UUID.",songID);
     TGSong* theSong = [self songForID:songID];
     theSong.fingerprint = nil;
     
@@ -1236,22 +1236,22 @@ static int const kSSCheckCounterSize = 10;
 
 // Fetch all songs from the given album asynchronously and call the given songArrayHandler block with the result.
 -(void)requestSongsFromAlbumWithName:(NSString*)albumName withHandler:(void (^)(NSArray*))songArrayHandler {
-    
     NSFetchRequest *fetch = [NSFetchRequest fetchRequestWithEntityName:@"TEOSongData"];
+
     NSPredicate *thePredicate = [NSPredicate predicateWithFormat:@"album = %@",albumName];
     [fetch setPredicate:thePredicate];
     
     // Perform the fetch on the context's own thread to avoid threading problems.
     [self.TEOmanagedObjectContext performBlock:^{
-        
         NSError *error = nil;
+        NSLog(@"About to sleep thread: %@",[NSThread currentThread]);
+        [NSThread sleepForTimeInterval:50];
+        return; // wipwip
+        // wipwip This is causing the stutter. Find out how to use a NSFetchedResultsController instead.
         NSArray* results = [self.TEOmanagedObjectContext executeFetchRequest:fetch error:&error];
-        
-        // Since the containing block is performed on the main thread and we want to spend as little on the main as possible doing this
-        // we set the rest (songArrayHandler) off on a separate thread.
-        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            songArrayHandler(results);
-        });
+    return; // wipwip
+        songArrayHandler(results);
+
     }];
 }
 

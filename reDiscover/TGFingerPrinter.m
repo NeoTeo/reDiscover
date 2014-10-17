@@ -76,7 +76,7 @@
         
         ChromaprintContext *chromaprintContext = chromaprint_new(CHROMAPRINT_ALGORITHM_DEFAULT);
         NSURL* songURL = [_delegate URLForSongID:songID];
-        NSLog(@"requestFingerPrintForSong called with song Id %@",songID);
+//        NSLog(@"requestFingerPrintForSong called with song Id %@",songID);
         [self decodeAudioFileNew:songURL forContext:chromaprintContext ofLength:maxLength andDuration:&duration];
         
         if (chromaprint_get_fingerprint(chromaprintContext, &theFingerprint)) {
@@ -84,7 +84,7 @@
             //MARK: This needs to be extracted from the fingerprinting so we can use whatever uuid method we like
             // independently of the fingerprinter.
             // Since this is synchronous the call will block until either it succeeded or failed to fetch an UUId.
-            NSLog(@"requesting UUId from generated fingerprint.");
+//            NSLog(@"requesting UUId from generated fingerprint.");
             [self requestUUIDForSongID:songID withDuration:duration andFingerPrint:theFingerprint];
             
             NSString *songFingerPrint = [NSString stringWithCString:theFingerprint encoding:NSASCIIStringEncoding];

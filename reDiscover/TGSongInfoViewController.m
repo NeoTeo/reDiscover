@@ -48,6 +48,7 @@
 }
 
 - (void)crossFadeToImage:(NSImage *)newCoverImage {
+
     if (albumCover.layer != nil) {
         
         NSAnimationContext.currentContext.allowsImplicitAnimation = YES;

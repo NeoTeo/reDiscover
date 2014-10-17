@@ -522,26 +522,21 @@
         [_songInfoController setSong:theData];
     }];
 
-    
-    
     // Let the timelinecontroller know that we've changed song.
     // (would a song change be better signalled as a global notification?)
     //MARK: wipEv change this to a notification
     [_songGridController.songTimelineController setCurrentSongID:songID];
     
-
-
     // Don't wait for a result. Set to the "fetching artwork..." whilst waiting.
     NSImage* fetchingImage = [NSImage imageNamed:@"fetchingArt"];
     [_songGridController setCoverImage:fetchingImage forSongWithID:songID];
     [_songInfoController setSongCoverImage:fetchingImage];
     
-        return;//wipwip The following still causes some lag.
-    
+
     // Then async'ly request an album image for the song and pass it a block callback.
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+    dispatch_async(dispatch_get_global_queue(QOS_CLASS_USER_INTERACTIVE, 0), ^{
         [_currentSongPool requestImageForSongID:songID withHandler:^(NSImage *tmpImage) {
-            
+    return;//wipwip The following still causes some lag.
             // none of the attempts returned an image so just show the no cover cover.
             if (tmpImage == nil) {
                 tmpImage = [NSImage imageNamed:@"noCover"];
@@ -560,7 +555,7 @@
             
         }];
     });
-    
+    NSLog(@"songPoolDidStartPlayingSong on thread %@ returning",[NSThread currentThread]);
 }
 
 - (void)songPoolDidFinishPlayingSong:(id<SongIDProtocol>)songID {

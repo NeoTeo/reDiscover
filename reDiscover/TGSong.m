@@ -33,9 +33,9 @@
 - (void)searchMetadataForCoverImageWithHandler:(void (^)(NSImage *))imageHandler {
 
     if (songAsset == nil) {
-//        songAsset = [[AVURLAsset alloc] initWithURL:[NSURL URLWithString:self.TEOData.urlString] options:nil];
         songAsset = [[AVURLAsset alloc] initWithURL:[NSURL URLWithString:self.URLString] options:nil];
     }
+    
     [songAsset loadValuesAsynchronouslyForKeys:@[@"commonMetadata"] completionHandler:^{
         
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
@@ -251,10 +251,10 @@
     if ([self songStatus] == kSongStatusReady) {
         
         if (songPlayerItem == nil) {
-            NSDate* preDate = [NSDate date];
+//            NSDate* preDate = [NSDate date];
             songPlayerItem = [AVPlayerItem playerItemWithAsset:songAsset];
-            NSDate* postDate = [NSDate date];
-            NSLog(@"Creating a new AVPlayerItem took: %f",[postDate timeIntervalSinceDate:preDate]);
+//            NSDate* postDate = [NSDate date];
+//            NSLog(@"Creating a new AVPlayerItem took: %f",[postDate timeIntervalSinceDate:preDate]);
 //            songPlayerItem = [AVPlayerItem playerItemWithAsset:songAsset automaticallyLoadedAssetKeys:@[]];
         }
         
@@ -268,12 +268,12 @@
 //        See WWDC14 503 at 33:40 and NSHipster's article http://nshipster.com/key-value-observing/
         
         if (songPlayer == nil) {
-            NSDate* preDate = [NSDate date];
-                
+//            NSDate* preDate = [NSDate date];
+            
             //FIXME: repeated EXC_BAD_ACCESS crash here
             songPlayer = [AVPlayer playerWithPlayerItem:songPlayerItem];
-            NSDate* postDate = [NSDate date];
-            NSLog(@"Creating a new AVPlayer took: %f",[postDate timeIntervalSinceDate:preDate]);
+//            NSDate* postDate = [NSDate date];
+//            NSLog(@"Creating a new AVPlayer took: %f",[postDate timeIntervalSinceDate:preDate]);
         }
         [songPlayer setVolume:0.2];
         
