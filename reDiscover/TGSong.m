@@ -59,7 +59,7 @@
 //MARK: Why is this not done asynchronously with...
 // ...loadValuesAsynchronouslyForKeys:@[@"playable"] completionHandler:
 - (void)loadTrackDataWithCallBackOnCompletion:(BOOL)wantsCallback withStartTime:(NSNumber*)startTime {
-//    NSURL *theURL = [NSURL URLWithString:self.TEOData.urlString];
+
     NSURL *theURL = [NSURL URLWithString:self.urlString];
     [self setSongStatus:kSongStatusLoading];
     

@@ -1524,7 +1524,7 @@ return;//wipwip endpoint The following still causes some lag.
 //    }];
 }
 
-#pragma mark -
+
 /**
  Initiate a request to play back the given song at its selected sweet spot.
  :params: songID The id of the song to play.
@@ -1537,8 +1537,12 @@ return;//wipwip endpoint The following still causes some lag.
     
     [self requestSongPlayback:songID withStartTimeInSeconds:aSong.currentSweetSpot makeSweetSpot:NO];
 }
+
+
 /**
     Initiate a request to play back the given song at the given start time in seconds.
+ This is called on the main thread for serial access to the lastRequestedSong property.
+ 
  :params: songID The id of the song to play.
  :params: time The offset in seconds to start playing the song at.
  */
@@ -1549,25 +1553,43 @@ return;//wipwip endpoint The following still causes some lag.
         NSLog(@"Nope, the requested ID %@ is not in the song pool.",songID);
         return;
     }
-     
+    
     lastRequestedSong = aSong;
-
+    NSLog(@"requestSongPlayback just set lastRequestedSong to %@",lastRequestedSong.songID);
+    
     if ( makeSS ) {
         [aSong makeSweetSpotAtTime:time];
     }
 
     if ([aSong isReadyForPlayback] == YES) {
+        NSLog(@"Ready");
         [self songReadyForPlayback:aSong atTime:time];
     } else {
+        NSLog(@"Not ready");
         // First cancel any pending requests in the operation queue and then add this.
         // This won't delete them from the queue but it will tell each in turn it has been cancelled.
         [urlLoadingOpQueue cancelAllOperations];
+
         
-        // Then add this new request.
-        [urlLoadingOpQueue addOperationWithBlock:^{
+        NSBlockOperation* cacheOp = [[NSBlockOperation alloc] init];
+        // Weakify the block reference to avoid retain cycles.
+        __weak NSBlockOperation* weakCacheOp = cacheOp;
+
+        [weakCacheOp addExecutionBlock:^{
+            // Check for operation cancellation
+            if( weakCacheOp.isCancelled ) {return;}
+            
             // Asynch'ly start loading the track data for aSong. songReadyForPlayback will be called back when the song is good to go.
             [aSong loadTrackDataWithCallBackOnCompletion:YES withStartTime:time];
         }];
+        
+        // For debug checking
+        cacheOp.completionBlock = ^{
+            NSLog(@"The loadTrackDataWithCallBackOnCompletion block was %@.",weakCacheOp.isCancelled ? @"cancelled" : @"completed");
+        };
+        
+        [urlLoadingOpQueue addOperation:cacheOp];
+
     }
 }
 
@@ -1587,10 +1609,12 @@ return;//wipwip endpoint The following still causes some lag.
     // Between checking and stopping, another thread can modify the currentlyPlayingSong thus causing the song to not be stopped.
     if (currentlyPlayingSong != nextSong) {
         [currentlyPlayingSong playStop];
-    }
-    
-    if (currentlyPlayingSong == nextSong) {
+    } else {
         NSLog(@"currently playing is the same as next song. Early out.");
+        return;
+    }
+    if (nextSong != lastRequestedSong) {
+        NSLog(@"NOoOoooOOOOOOOOoooooooOOOOOO");
         return;
     }
     NSAssert(startTime != nil, @"Start time is nil!");
@@ -1686,14 +1710,14 @@ return;//wipwip endpoint The following still causes some lag.
 // songReadyForPlayback is called (async'ly) by the song once it is fully loaded.
 - (void)songReadyForPlayback:(TGSong *)song atTime:(NSNumber*)startTime {
 
-//     If there's no start time, check the sweet spot server for one. If one is found set the startTime to it.
-    if (startTime == nil) {
-        startTime = [self fetchSongSweetSpot:song];
-        if (startTime == nil) {
-            startTime = [NSNumber numberWithDouble:0.0];
-        }
-        
-        
+    
+    //     If there's no start time, check the sweet spot server for one. If one is found set the startTime to it.
+//    if (startTime == nil) {
+//        startTime = [self fetchSongSweetSpot:song];
+//        if (startTime == nil) {
+//            startTime = [NSNumber numberWithDouble:0.0];
+//        }
+ 
         //MARK: NEXT
 //        // Fetch the song's sweet spots and pass a handler that will play back the song at the sweet spot if one is found.
 //        [self fetchSongSweetSpot:song withHandler:^(NSNumber* theSweetSpot) {
@@ -1704,14 +1728,36 @@ return;//wipwip endpoint The following still causes some lag.
 //                });
 //            }
 //        }];
-    }
+//    }
     
     // Make sure the last request for playback is put on a serial queue so it always is the last song left playing.
     if (song == lastRequestedSong) {
+        NSLog(@"about to play song which is equal to lastRequestedSong %@",lastRequestedSong.songID);
+        //     If there's no start time, check the sweet spot server for one. If one is found set the startTime to it.
+        if (startTime == nil) {
+            startTime = [self fetchSongSweetSpot:song];
+            if (startTime == nil) {
+                startTime = [NSNumber numberWithDouble:0.0];
+            }
+        }
+//TODO:
+        /*
+         So, we just did a check if the song is still the lastRequestedSong but then, if it is,
+         put a call to playbackSong onto a serial playbackQueue which 
+         
+         a) is not cleared as new items are added on and 
+         b) does not guarantee that the call will occur before lastRequestedSong changes again.
+         
+         A check inside the playbackSong that simply drops out if it no longer is the lastRequestedSong sorts 
+         it out but perhaps it would be better to solve this differently...
+         Eg. use an opQueue and cancel it before adding a new song? Though that may still let a stale one through.
+         */
         dispatch_async(playbackQueue, ^{
 //            NSLog(@"putting song %lu on the playbackQueue",(unsigned long)[song songID]);
             [self playbackSong:song atTime:startTime];
         });
+    } else {
+        NSLog(@"Song %@ rejected for not being the lastRequestedSong.",song.songID);
     }
 }
 
