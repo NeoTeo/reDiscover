@@ -23,7 +23,6 @@
 #import "rediscover-swift.h"
 
 
-
 //@interface SongID : NSObject <SongIDProtocol>
 //+ (SongID *)initWithString:(NSString *)theString;
 //@end
@@ -73,8 +72,9 @@
 @end
 
 // constant definitions
-static int const kSSCheckCounterSize = 10;
-
+static int const kSSCheckCounterSize    = 10;
+static int const kDefaultAlbumSongCount = 8;
+static int const kSongPoolStartCapacity = 250;
 
 @implementation TGSongPool
 
@@ -100,8 +100,8 @@ static int const kSSCheckCounterSize = 10;
     if (self != NULL) {
         
         requestedPlayheadPosition = [NSNumber numberWithDouble:0];
-        songPoolStartCapacity = 25;
-        songPoolDictionary = [[NSMutableDictionary alloc] initWithCapacity:songPoolStartCapacity];
+        
+        songPoolDictionary = [[NSMutableDictionary alloc] initWithCapacity:kSongPoolStartCapacity];
         currentlyPlayingSong = NULL;
         
         /// Make url queues and make them serial so they can be cancelled.
@@ -124,7 +124,7 @@ static int const kSSCheckCounterSize = 10;
         songFingerPrinter = [[TGFingerPrinter alloc] init];
         [songFingerPrinter setDelegate:self];
 
-        
+        /* cdfix
         // Core Data initialization.
         {
             // Create the entity description.
@@ -142,11 +142,11 @@ static int const kSSCheckCounterSize = 10;
                 [songPoolManagedContext setPersistentStoreCoordinator:songPoolPersistentStoreCoordinator];
             }
         }
-        
+        */
         self.sharedFileManager = [[NSFileManager alloc] init];
         
         // Get any user metadata from the local Core Data store.
-        [self fetchMetadataFromLocalStore];
+        //cdfix [self fetchMetadataFromLocalStore];
 
         // Register to be notified of idle time starting and ending.
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(idleTimeBegins) name:@"TGIdleTimeBegins" object:nil];
@@ -300,7 +300,7 @@ static int const kSSCheckCounterSize = 10;
     // Unless a fingerprint is actually requested we set the interval until the next timer to as little as possible.
     NSInteger interval = 0;
     
-    if (aSong.UUID == NULL) {
+    if (aSong.uuid == NULL) {
         [self fetchUUIdForSongId:aSong.songID];
         interval = 3;
     } else {
@@ -325,7 +325,6 @@ static int const kSSCheckCounterSize = 10;
     TGSong* aSong = [self songForID:songID];
     if ([aSong fingerPrintStatus] == kFingerPrintStatusEmpty) {
         NSLog(@"SongPool fetchUUIdForSongId about to request a fingerprint for song %@",aSong);
-        
         [aSong setFingerPrintStatus:kFingerPrintStatusRequested];
         
         [songFingerPrinter requestFingerPrintForSong:aSong.songID withHandler:^(NSString* fingerPrint){
@@ -431,23 +430,34 @@ static int const kSSCheckCounterSize = 10;
                         [newSong setSongID:[SongID initWithString:[url absoluteString]]];
                         NSAssert(serialDataLoad != nil, @"WTF serialDataLoad is nil!");
                         dispatch_async(serialDataLoad, ^{
-                            // Only add the loaded url if it isn't already in the dictionary.
+                            
+                            // cdfix This should no longer hook up the song to a managed object but instead
+                            // it should copy the data across and let the array go. We do not want to have to access
+                            // the properties through a managed context as that requires us to go through its thread
+                            // which can deadlock/delay on concurrent access.
+                            
+                            
                             TEOSongData* teoData = [self.TEOSongDataDictionary objectForKey:[url absoluteString]];
+                            // cdfix
+                            [self copyData:teoData toSong:newSong forURL:[url absoluteString]];
+ 
+                       /*
+                            // Only add the loaded url if it isn't already in the dictionary.
                             if (!teoData) {
                                 // this needs to happen on the managed object context's own thread
                                 [self.TEOmanagedObjectContext performBlock:^{
                                     newSong.TEOData = [TEOSongData insertItemWithURLString:[url absoluteString] inManagedObjectContext:self.TEOmanagedObjectContext];
                                 }];
                                 
-                                //wipEv
                                 [[NSNotificationCenter defaultCenter] postNotificationName:@"TGNewSongLoaded" object:newSong];
                             } else {
                                 // At this point we have found the song in the local store so we hook it up to the song instance for this run.
                                 newSong.TEOData = teoData;
                             }
-                            
+                         */
                             // Add the song to the songpool.
-                            [songPoolDictionary setObject:newSong forKey:[SongID initWithString:[url absoluteString]]];
+                            [songPoolDictionary setObject:newSong forKey:newSong.songID];
+                            
                             
                             // Upload any sweetspots that have not already been uploaded.
                             if (newSong.sweetSpots.count) {
@@ -500,7 +510,48 @@ static int const kSSCheckCounterSize = 10;
     
     return YES;
 }
+/*
+ @property NSString*         album;
+ @property NSString*         artist;
+ @property NSArray*          sweetSpots;
+ @property NSString*         urlString;
+ @property NSString*         uuid;
+ @property NSNumber*         year;
+ @property NSString*         fingerprint;
+ @property NSString*         title;
+ @property NSString*         genre;
+ @property NSNumber*         selectedSweetSpot;
+ @property NSData*           songReleases;
+ */
 
+- (void) copyData:(TEOSongData*)songData toSong:(TGSong*)aSong forURL:(NSString*)songURL {
+    
+    // If there is no existing song Data we create one...(not sure if this should be deferred to when we actually save)
+    if (songData == nil) {
+        // this needs to happen on the managed object context's own thread
+        [self.TEOmanagedObjectContext performBlock:^{
+            [TEOSongData insertItemWithURLString:songURL inManagedObjectContext:self.TEOmanagedObjectContext];
+            aSong.urlString = songURL;
+            aSong.sweetSpots = [[NSArray alloc] init];
+            aSong.year = [NSNumber numberWithInteger:0];
+        }];
+    } else {
+
+        // At this point we have found the song in the local store so we copy the data across.
+        aSong.album             = songData.album;
+        aSong.artist            = songData.artist;
+        aSong.sweetSpots        = songData.sweetSpots;
+        aSong.urlString         = songData.urlString;
+        aSong.uuid              = songData.uuid;
+        aSong.year              = songData.year;
+        aSong.fingerprint       = songData.fingerprint;
+        aSong.title             = songData.title;
+        aSong.genre             = songData.genre;
+        aSong.selectedSweetSpot = songData.selectedSweetSpot;
+        aSong.songReleases      = songData.songReleases;
+        
+    }
+}
 
 /**
     Attempt to find the cover image for the song using a variety of strategies and, if found, will pass the image to the given imageHandler block.
@@ -559,15 +610,16 @@ static int const kSSCheckCounterSize = 10;
             // This will produce the wrong result for the (rare) albums where each song has a separate image.
             // Additionally this only produces album art once other songs' album art has been resolved which only
             // happens when the song is actively selected and played.
-            [self requestSongsFromAlbumWithName:theSong.album withHandler:^(NSArray* songs) {
-                
+//            [self requestSongIdsFromAlbumWithName:theSong.album withHandler:^(NSArray* songs) {
+            [self requestSongIdsFromAlbumWithName:theSong.album withHandler:^(NSArray* songIds) {
 return;//wipwip endpoint The following still causes some lag.
                 
                 // Excluding the original song whose art we're looking for see if the others have it.
-                for (TEOSongData* songDat in songs) {
-                    
+//                for (TEOSongData* songDat in songs) {
+                for (id<SongIDProtocol> songId in songIds) {
                     // Find the song from the url string.
-                    TGSong* aSong = [songPoolDictionary objectForKey:[SongID initWithString:songDat.urlString]];
+//                    TGSong* aSong = [songPoolDictionary objectForKey:[SongID initWithString:songDat.urlString]];
+                    TGSong* aSong = [self songForID:songId];
                     
                     if (aSong && ![aSong isEqualTo:theSong]) {
                         
@@ -593,7 +645,7 @@ return;//wipwip endpoint The following still causes some lag.
                 // 2. Search the directory where the song is located for images.
                 //
                 // Get the song's URL
-                NSURL*      theURL = [NSURL URLWithString:theSong.URLString];
+                NSURL*      theURL = [NSURL URLWithString:theSong.urlString];
                 
                 NSImage*    tmpImage = [self searchForCoverImageAtURL:theURL];
                 
@@ -666,7 +718,7 @@ return;//wipwip endpoint The following still causes some lag.
     TGSong * theSong = [self songForID:songID];
     
     // If there's no uuid, request one and pass it the art fetcher as a handler.
-    if (theSong.UUID != NULL) {
+    if (theSong.uuid != NULL) {
         [_coverArtWebFetcher requestAlbumArtFromWebForSong:songID imageHandler:imageHandler];
     } else {
         // At this point it could be the case that the song already has a fingerprint but no UUID
@@ -800,7 +852,28 @@ return;//wipwip endpoint The following still causes some lag.
         
         // If the metadata has not yet been set, do it.
         if (theSong.title == nil) {
-                [theSong loadSongMetadata];
+            [theSong loadSongMetadata];
+            
+            // If the song's album is not the default value,
+            // add album the song belongs to the list of albums
+            if ([theSong.album isEqualToString:@"Unknown"] == NO) {
+                if (_allAlbums == nil) {
+                    _allAlbums = [[NSMutableDictionary alloc] initWithCapacity:kSongPoolStartCapacity/8];
+                }
+                
+                // First see if the album is already there.
+                NSSet* albumSongs = [_allAlbums objectForKey:theSong.album];
+                if (albumSongs == nil) {
+                    NSMutableSet* songSet = [NSMutableSet setWithCapacity:kDefaultAlbumSongCount];
+                    [songSet addObject:theSong.songID];
+                    [_allAlbums setObject:songSet forKey:theSong.album];
+                } else {
+                    NSMutableSet* songSet = [_allAlbums objectForKey:theSong.album];
+                    [songSet addObject:theSong.songID];
+                }
+                
+            }
+            
         }
 
         dataHandler([self songDataForSongID:songID]);
@@ -819,7 +892,7 @@ return;//wipwip endpoint The following still causes some lag.
     TGSong *aSong = [self songForID:songID];
     
     if (aSong) {
-        return [NSURL URLWithString:[self songForID:songID].URLString];
+        return [NSURL URLWithString:[self songForID:songID].urlString];
     }
     
     return nil;
@@ -847,7 +920,8 @@ return;//wipwip endpoint The following still causes some lag.
 
     TGSong* theSong = [self songForID:songID];
 
-    if (theSong == nil || theSong.TEOData == nil || theSong.sweetSpots == nil) {
+//    if (theSong == nil || theSong.TEOData == nil || theSong.sweetSpots == nil) {
+    if (theSong == nil || theSong.sweetSpots == nil) {
         NSLog(@"setActiveSweetSpotIndex ERROR: unexpected nil");
         return;
     }
@@ -913,13 +987,13 @@ return;//wipwip endpoint The following still causes some lag.
 
 - (NSString *)UUIDStringForSongID:(id<SongIDProtocol>)songID {
     if (![self validSongID:songID]) return nil;
-    return [self songForID:songID].UUID;
+    return [self songForID:songID].uuid;
 }
 
 -(void)setUUIDString:(NSString*)theUUID forSongID:(id<SongIDProtocol>)songID {
     if (![self validSongID:songID]) return;
     
-    [self songForID:songID].UUID = theUUID ;
+    [self songForID:songID].uuid = theUUID ;
     
     TGSong* theSong = [self songForID:songID];
     theSong.fingerprint = nil;
@@ -932,7 +1006,7 @@ return;//wipwip endpoint The following still causes some lag.
 - (NSURL *)URLForSongID:(id<SongIDProtocol>)songID {
     if (![self validSongID:songID]) return nil;
     
-    return [NSURL URLWithString:[self songForID:songID].URLString];
+    return [NSURL URLWithString:[self songForID:songID].urlString];
 }
 
 //MARK: test method
@@ -967,7 +1041,7 @@ return;//wipwip endpoint The following still causes some lag.
     /// A manual refresh would be the way to force a check.
     /// Also, if there's no uuid, should we send off for fingerprinting and uuid lookup or should this occur higher up the stack
     /// and the check for uuid should opt out sooner...
-    if ((startTime == nil) && (song.UUID != nil) && (song.SSCheckCountdown-- == 0)) {
+    if ((startTime == nil) && (song.uuid != nil) && (song.SSCheckCountdown-- == 0)) {
         // Reset the counter.
         song.SSCheckCountdown = (NSUInteger)kSSCheckCounterSize;
         
@@ -1038,7 +1112,7 @@ return;//wipwip endpoint The following still causes some lag.
 
 #pragma mark -
 //MARK: Core Data methods
-
+/*
 - (NSEntityDescription *)createSongUserDataEntityDescription {
     NSEntityDescription *songUserDataEntityDescription = [[NSEntityDescription alloc] init];
     [songUserDataEntityDescription setName:@"TGSongUserData"];
@@ -1082,8 +1156,9 @@ return;//wipwip endpoint The following still causes some lag.
     
     return songUserDataEntityDescription;
 }
+*/
 
-
+/*
 - (NSManagedObjectModel *)createSongUserDataManagedObjectModelWithEntityDescription:(NSEntityDescription *)songUserDataEntityDescription {
     // Create the managed model.
     NSManagedObjectModel *songUserDataMOM = [[NSManagedObjectModel alloc] init];
@@ -1103,8 +1178,9 @@ return;//wipwip endpoint The following still causes some lag.
     
     return songUserDataMOM;
 }
+*/
 
-
+/*
 - (NSPersistentStoreCoordinator *)createSongPoolPersistentStoreCoordinatorWithManagedObjectModel:(NSManagedObjectModel *)theMOM {
     // We only need one NSPersistentStoreCoordinator per program.
     NSPersistentStoreCoordinator *songPoolPSC = [[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel:theMOM];
@@ -1129,10 +1205,10 @@ return;//wipwip endpoint The following still causes some lag.
     
     return songPoolPSC;
 }
+*/
 
 
-
-
+/*
 - (NSURL *)applicationSongUserDataDirectory {
     
     static NSURL *songUserDataDirectory = nil;
@@ -1162,6 +1238,7 @@ return;//wipwip endpoint The following still causes some lag.
     
     return songUserDataDirectory;
 }
+*/
 
 - (void)saveContext:(BOOL)wait {
     NSManagedObjectContext *moc = self.TEOmanagedObjectContext;
@@ -1233,27 +1310,36 @@ return;//wipwip endpoint The following still causes some lag.
     return YES;
 }
 
-
-// Fetch all songs from the given album asynchronously and call the given songArrayHandler block with the result.
--(void)requestSongsFromAlbumWithName:(NSString*)albumName withHandler:(void (^)(NSArray*))songArrayHandler {
-    NSFetchRequest *fetch = [NSFetchRequest fetchRequestWithEntityName:@"TEOSongData"];
-
-    NSPredicate *thePredicate = [NSPredicate predicateWithFormat:@"album = %@",albumName];
-    [fetch setPredicate:thePredicate];
-    
-    // Perform the fetch on the context's own thread to avoid threading problems.
-    [self.TEOmanagedObjectContext performBlock:^{
-        NSError *error = nil;
-        NSLog(@"About to sleep thread: %@",[NSThread currentThread]);
-        [NSThread sleepForTimeInterval:50];
-        return; // wipwip
-        // wipwip This is causing the stutter. Find out how to use a NSFetchedResultsController instead.
-        NSArray* results = [self.TEOmanagedObjectContext executeFetchRequest:fetch error:&error];
-    return; // wipwip
-        songArrayHandler(results);
-
-    }];
+-(void)requestSongIdsFromAlbumWithName:(NSString*)albumName withHandler:(void (^)(NSArray*))songArrayHandler {
+    NSArray* theSongs = [_allAlbums objectForKey:albumName];
+    songArrayHandler(theSongs);
 }
+
+// cdfix
+//// Fetch all songs from the given album asynchronously and call the given songArrayHandler block with the result.
+//-(void)requestSongsFromAlbumWithName:(NSString*)albumName withHandler:(void (^)(NSArray*))songArrayHandler {
+//    NSFetchRequest *fetch = [NSFetchRequest fetchRequestWithEntityName:@"TEOSongData"];
+//
+//    NSPredicate *thePredicate = [NSPredicate predicateWithFormat:@"album = %@",albumName];
+//    [fetch setPredicate:thePredicate];
+//    //MARK: cdfix - this won't find anything because the album data et al. is not added to the managed object until come save time.
+//    // Doing it this way is also nonperformant since this is being called as the user is scrolling through songs and needs to be
+//    // as responsive as possible.
+//    // What we should do instead is, in loadURL, build a dictionary of albums where the key is the album name, and the value is
+//    // a set of songs (which each have artist(s) associated with them. From here we then simply look up the album and extract the songs in it.
+//    // Perform the fetch on the context's own thread to avoid threading problems.
+//    [self.TEOmanagedObjectContext performBlock:^{
+//        NSError *error = nil;
+////        NSLog(@"About to sleep thread: %@",[NSThread currentThread]);
+////        [NSThread sleepForTimeInterval:50];
+////        return; // wipwip
+//        // wipwip This is causing the stutter. Find out how to use a NSFetchedResultsController instead.
+//        NSArray* results = [self.TEOmanagedObjectContext executeFetchRequest:fetch error:&error];
+////    return; // wipwip
+//        songArrayHandler(results);
+//
+//    }];
+//}
 
 /*
 // Not currently used.
@@ -1518,7 +1604,7 @@ return;//wipwip endpoint The following still causes some lag.
 
         // Song fingerprints are generated and UUID fetched during idle time in the background.
         // However, if the song about to be played hasn't got a UUID or fingerprint, an async request will be initiated here.
-        if (nextSong.UUID == NULL) {
+        if (nextSong.uuid == NULL) {
             [self fetchUUIdForSongId:nextSong.songID];
             /*
             if ([nextSong fingerPrintStatus] == kFingerPrintStatusEmpty) {
@@ -1557,7 +1643,7 @@ return;//wipwip endpoint The following still causes some lag.
     
     // At this point we should check if the fingerprint resulted in a songUUID.
     // If it did not we keep the finger print so we don't have to re-generate it, otherwise we can delete the it.
-    if (song.UUID == nil) {
+    if (song.uuid == nil) {
         NSLog(@"No UUID found, keeping fingerprint.");
         song.fingerprint = fingerPrint;
     }

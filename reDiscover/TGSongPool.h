@@ -165,11 +165,13 @@
 // Holds the playhead position of the currently playing song.
 @property NSNumber *currentSongDuration;
 
-// TEOSongData test
+/// Holds sets of song Ids keyed by album name. So looking up Cobra would return a set of song ids that belong to that album.
+@property NSMutableDictionary* allAlbums;
+
+
 @property NSManagedObjectContext*   privateContext;
 @property NSManagedObjectContext*   TEOmanagedObjectContext;
 @property NSDictionary*             TEOSongDataDictionary;
-// TEOSongData end
 
 @property SweetSpotServerIO* sweetSpotServerIO;
 
@@ -184,8 +186,7 @@
 - (void)requestImageForSongID:(id<SongIDProtocol>)songID withHandler:(void (^)(NSImage *))imageHandler;
 
 
-#pragma mark -
-#pragma mark song data accessor methods.
+//MARK: Song data accessor methods. -
 // Async methods
 - (void)requestEmbeddedMetadataForSongID:(id<SongIDProtocol>)songID withHandler:(void (^)(NSDictionary*))dataHandler;
 
@@ -208,8 +209,7 @@
 //- (NSString *)findUUIDOfSongWithURL:(NSURL *)songURL;
 - (BOOL)fingerprintExistsForSongID:(id<SongIDProtocol>)songID;
 
-#pragma mark -
-#pragma mark core data methods
+//MARK: Core Data methods -
 // Core Data methods
 - (void)storeSongData;
 - (NSArray *)fetchMetadataFromLocalStore;
@@ -217,11 +217,6 @@
 
 
 // Other protocols' delegate methods that TGSongPool implements
-
-// TGFingerPrinterDelegate protocol methods called by TGFingerPrinter
-//- (void)fingerprintReady:(NSString *)fingerPrint ForSong:(TGSong *)song;
-//- (void)fingerprintReady:(NSString *)fingerPrint forSongID:(id<SongIDProtocol>)songID;
-
 // TGSongDelegate protocol methods called by TGSong
 - (void)songDidFinishPlayback:(TGSong *)song;
 - (void)songDidUpdatePlayheadPosition:(NSNumber *)playheadPosition;

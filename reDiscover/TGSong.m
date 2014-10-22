@@ -33,7 +33,7 @@
 - (void)searchMetadataForCoverImageWithHandler:(void (^)(NSImage *))imageHandler {
 
     if (songAsset == nil) {
-        songAsset = [[AVURLAsset alloc] initWithURL:[NSURL URLWithString:self.URLString] options:nil];
+        songAsset = [[AVURLAsset alloc] initWithURL:[NSURL URLWithString:self.urlString] options:nil];
     }
     
     [songAsset loadValuesAsynchronouslyForKeys:@[@"commonMetadata"] completionHandler:^{
@@ -60,7 +60,7 @@
 // ...loadValuesAsynchronouslyForKeys:@[@"playable"] completionHandler:
 - (void)loadTrackDataWithCallBackOnCompletion:(BOOL)wantsCallback withStartTime:(NSNumber*)startTime {
 //    NSURL *theURL = [NSURL URLWithString:self.TEOData.urlString];
-    NSURL *theURL = [NSURL URLWithString:self.URLString];
+    NSURL *theURL = [NSURL URLWithString:self.urlString];
     [self setSongStatus:kSongStatusLoading];
     
     // What if the asset is already available?
@@ -93,9 +93,10 @@
     @returns YES on success and NO on failure to find any metadata. 
     In either case the TEOData will be set to some reasonable defaults.
  */
-- (BOOL)loadSongMetadata {    
+- (BOOL)loadSongMetadata {
+    //TODO: use the verbose url type.
 //    NSString *tmpString = [self.TEOData.urlString stringByDeletingPathExtension];
-    NSString *tmpString = [self.URLString stringByDeletingPathExtension];
+    NSString *tmpString = [self.urlString stringByDeletingPathExtension];
     NSString* fileName = [tmpString lastPathComponent];
     tmpString =[tmpString stringByDeletingLastPathComponent];
     NSString* album = [tmpString lastPathComponent];
@@ -104,7 +105,7 @@
     
     // Get other metadata via the MDItem of the file.
 //    NSURL *theURL = [NSURL URLWithString:self.TEOData.urlString];
-    NSURL *theURL = [NSURL URLWithString:self.URLString];
+    NSURL *theURL = [NSURL URLWithString:self.urlString];
 
     MDItemRef metadata = MDItemCreate(NULL, (__bridge CFStringRef)[theURL path]);
     
@@ -115,7 +116,7 @@
 //    self.TEOData.genre  = @"Unknown";
     self.artist = [artist stringByRemovingPercentEncoding];//@"Unknown";
     self.title  = [fileName stringByRemovingPercentEncoding];//@"Unknown";
-    self.album  = [album stringByRemovingPercentEncoding];//@"Unknown";
+    self.album  = @"Unknown";//[album stringByRemovingPercentEncoding];//@"Unknown";
     self.genre  = @"Unknown";
     
     if (metadata) {
@@ -377,6 +378,7 @@
     return [self songStatus] == kSongStatusReady;
 }
 
+/*
 /// TEOSongData access methods.
 /// These are provided to ensure that access is done through the managed object context.
 - (NSDictionary*)songMetaData {
@@ -574,6 +576,6 @@
         self.TEOData.songReleases = theData;
     }];
 }
-
+*/
 
 @end

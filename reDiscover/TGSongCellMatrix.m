@@ -144,26 +144,26 @@
 }
 
 
-// Speed optimisations
-- (BOOL)isOpaque {
-    return NO;
-}
+
+//- (BOOL)isOpaque {
+//    return NO;
+//}
+//
+
+//- (BOOL)wantsDefaultClipping {
+//    return NO;
+//}
 
 
-- (BOOL)wantsDefaultClipping {
-    return NO;
-}
+//- (void)getNumberOfVisibleRows:(NSInteger *)rowCount columns:(NSInteger *)colCount {
+//    *colCount = [self frame].size.width / [self cellSize].width;
+//    *rowCount = [self frame].size.height / [self cellSize].height;
+//}
 
 
-- (void)getNumberOfVisibleRows:(NSInteger *)rowCount columns:(NSInteger *)colCount {
-    *colCount = [self frame].size.width / [self cellSize].width;
-    *rowCount = [self frame].size.height / [self cellSize].height;
-}
-
-
-- (void)clearView {
-    NSRectFill([self frame]);
-}
+//- (void)clearView {
+//    NSRectFill([self frame]);
+//}
 //- (void)drawRect:(NSRect)dirtyRect
 //{
 //    [super drawRect:dirtyRect];

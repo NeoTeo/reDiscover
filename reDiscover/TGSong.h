@@ -62,12 +62,27 @@ enum {
     id playerObserver;
 }
 
+// song data that is shadowed and saved by TEOSongData in the SongPool
+@property NSString*         album;
+@property NSString*         artist;
+@property NSArray*          sweetSpots;
+@property NSString*         urlString;
+@property NSString*         uuid;
+@property NSNumber*         year;
+@property NSString*         fingerprint;
+@property NSString*         title;
+@property NSString*         genre;
+@property NSNumber*         selectedSweetSpot;
+@property NSData*           songReleases;
+
+
+
 // cached stuff
 @property AVAudioFile* cachedFile;
 @property int64_t cachedFileLength;
 
-@property NSManagedObjectContext* TEODataMOC;
-@property TEOSongData* TEOData;
+//@property NSManagedObjectContext* TEODataMOC;
+//@property TEOSongData* TEOData;
 
 @property id<SongIDProtocol> songID;
 // State of various activities.
@@ -78,6 +93,7 @@ enum {
 @property CMTime songDuration;
 @property int songTimeScale;
 
+/*
 /// wipwip
 - (NSString*)album;
 - (void)setAlbum:(NSString*)theString;
@@ -103,7 +119,7 @@ enum {
 - (void)setSongReleases:(NSData*)theData;
 
 // wipwip
-
+*/
 #define TSD
 
 /// An id key into the songpool's art dictionary. Values of -1 will be no art and 0 will be the default "no cover" art.
