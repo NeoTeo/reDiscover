@@ -16,6 +16,7 @@
 #import "TGSongInfoViewController.h"
 #import "TGSongTimelineViewController.h"
 #import "TGTimelineTransformer.h"
+#import "TGCoverImage.h"
 
 #import "rediscover-swift.h"
 
@@ -515,32 +516,39 @@
 
 - (void)songPoolDidStartPlayingSong:(id<SongIDProtocol>)songID {
     
-
+    // Doesn't work because the image is never nil.
+//    if ([_songGridController isCoverImageSetForSongWithId:songID]) { return ; }
+    
+    // First we should check if a cover image is set. If not we should fetch one.
     // Don't wait for a result. Set to the "fetching artwork..." whilst waiting.
+    TGCoverImage* fetchingImage = [TGCoverImage imageNamed:@"fetchingArt"];
+    NSLog(@"The id is %@",[fetchingImage coverImageId]);
+/* cdfix
     NSImage* fetchingImage = [NSImage imageNamed:@"fetchingArt"];
-    /* cdfix
-    [_songGridController setCoverImage:fetchingImage forSongWithID:songID];
 */
-    [_songInfoController setSongCoverImage:fetchingImage];
+    [_songGridController setCoverImage:fetchingImage forSongWithID:songID];
 
+    [_songInfoController setSongCoverImage:fetchingImage];
+    
     // Request metadata for the song and pass in the block to be called when done.
     [_currentSongPool requestEmbeddedMetadataForSongID:songID withHandler:^(NSDictionary* theData){
+        
+        //TODO:
+        // We should check if it's already set with this id before resetting it.
+        // Use the Id embedded in the data.
         // Tell the info panel to change to display the new song's data.
         [_songInfoController setSong:theData];
-        
-        //MARK: wipwip
-        return;
-        
+
         // Then async'ly request an album image for the song and pass it a block callback.
         dispatch_async(dispatch_get_global_queue(QOS_CLASS_USER_INTERACTIVE, 0), ^{
             [_currentSongPool requestImageForSongID:songID withHandler:^(NSImage *tmpImage) {
                 
                 // none of the attempts returned an image so just show the no cover cover.
                 if (tmpImage == nil) {
-                    tmpImage = [NSImage imageNamed:@"noCover"];
+                    tmpImage = [TGCoverImage imageNamed:@"noCover"];
                     //NSBeep();
                 }
-                
+    
                 // Set the scroll view controller cover image.
                 [_songGridController setCoverImage:tmpImage forSongWithID:songID];
                 

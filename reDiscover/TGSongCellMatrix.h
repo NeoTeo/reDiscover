@@ -27,7 +27,7 @@
 // Use to access the queue without causing concurrent access problems.
 @property dispatch_queue_t matrixAccessQueue;
 
-- (void)clearView;
+//- (void)clearView;
 - (void)incrementActiveCellCount;
 -(BOOL)validateCellRow:(NSInteger)row andColumn:(NSInteger)col;
 

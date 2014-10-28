@@ -72,6 +72,7 @@
 		ABB770AB1950486600155EE7 /* SongID.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABB770AA1950486600155EE7 /* SongID.swift */; };
 		ABCB68EA18FD57E4009CF277 /* TEOSong.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = ABCB68E818FD57E4009CF277 /* TEOSong.xcdatamodeld */; };
 		ABEC263D1951C6F200A57CE3 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = ABEC263C1951C6F200A57CE3 /* Main.storyboard */; };
+		ABFBD9B419FE916100B9FA3C /* TGCoverImage.m in Sources */ = {isa = PBXBuildFile; fileRef = ABFBD9B319FE916100B9FA3C /* TGCoverImage.m */; };
 		ABFC8EB219C19C630007ECCB /* uploadedSS.plist in Resources */ = {isa = PBXBuildFile; fileRef = ABFC8EB119C19C630007ECCB /* uploadedSS.plist */; };
 		ABFC8EB519C1BCE90007ECCB /* uploadedSS.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = ABFC8EB319C1BCE90007ECCB /* uploadedSS.xcdatamodeld */; };
 /* End PBXBuildFile section */
@@ -181,6 +182,8 @@
 		ABB770AA1950486600155EE7 /* SongID.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SongID.swift; sourceTree = "<group>"; };
 		ABCB68E918FD57E4009CF277 /* TEOSong.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = TEOSong.xcdatamodel; sourceTree = "<group>"; };
 		ABEC263C1951C6F200A57CE3 /* Main.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Main.storyboard; sourceTree = "<group>"; };
+		ABFBD9B219FE916100B9FA3C /* TGCoverImage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TGCoverImage.h; sourceTree = "<group>"; };
+		ABFBD9B319FE916100B9FA3C /* TGCoverImage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TGCoverImage.m; sourceTree = "<group>"; };
 		ABFC8EB119C19C630007ECCB /* uploadedSS.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = uploadedSS.plist; sourceTree = "<group>"; };
 		ABFC8EB419C1BCE90007ECCB /* uploadedSS.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = uploadedSS.xcdatamodel; sourceTree = "<group>"; };
 		B512DB84B1174F868791F7EF /* Pods.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.xcconfig; path = Pods/Pods.xcconfig; sourceTree = "<group>"; };
@@ -257,6 +260,8 @@
 		AB3E974C187BFD8700BECC09 /* Common */ = {
 			isa = PBXGroup;
 			children = (
+				ABFBD9B219FE916100B9FA3C /* TGCoverImage.h */,
+				ABFBD9B319FE916100B9FA3C /* TGCoverImage.m */,
 				AB01DB03194F499900368693 /* TGStack.m */,
 				AB01DB05194F49B800368693 /* TGStack.h */,
 				ABEC263C1951C6F200A57CE3 /* Main.storyboard */,
@@ -540,6 +545,7 @@
 				AB85BC521875AB5200670905 /* TGTimelineBarView.m in Sources */,
 				AB01DB04194F499900368693 /* TGStack.m in Sources */,
 				AB3FF56319C1D3CE00D6C5EF /* UploadedSSData.m in Sources */,
+				ABFBD9B419FE916100B9FA3C /* TGCoverImage.m in Sources */,
 				ABB33FF019C72C3800439A5E /* SweetSpotServerIO.swift in Sources */,
 				AB85BC491875AB5200670905 /* TGSongGridViewController.m in Sources */,
 				ABFC8EB519C1BCE90007ECCB /* uploadedSS.xcdatamodeld in Sources */,

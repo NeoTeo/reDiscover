@@ -17,6 +17,7 @@
 #import "TGMainViewController.h"
 #import "TGSongCellMatrix.h"
 
+
 #import "CAKeyframeAnimation+Parametric.h"
 
 //#include <os/trace.h>
@@ -118,6 +119,7 @@
     
     CGRect thisFrame = [self view].frame;
     
+//    _defaultImage = [NSImage imageNamed:@"songImage"];
     _defaultImage = [NSImage imageNamed:@"songImage"];
     
     // The scroll view will hold the matrix of song cells.
@@ -204,11 +206,9 @@
     TGGridCell * theCell = [_songCellMatrix cellWithTag:cellTag];
     NSAssert(theCell != nil, @"WTF, the cell is nil");
     
-    // TEO This should only be animated if the cover is visible on screen.
+    //TODO: This should only be animated if the cover is visible on screen.
     // If we are setting the cover for the currently playing song do a pop animation,
     // otherwise just fade it in.
-    //MARK: ARS will this isEqualTo: work?
-//    if ([songID isEqualTo:[_songPoolAPI lastRequestedSongID]]) {
     if (songID == [_songPoolAPI lastRequestedSongID]) {
         [self coverPushAndFadeAnimationForCell:theCell withImage:theImage];
     }else {
@@ -216,6 +216,12 @@
     }
 }
 
+- (TGCoverImage*)coverImageForSongWithId:(id<SongIDProtocol>)songId {
+    NSInteger cellTag = [_songCellMatrix indexOfObjectWithSongID:songId];
+    TGGridCell * theCell = [_songCellMatrix cellWithTag:cellTag];
+
+    return theCell.image;
+}
 
 //// Obviously this will animate the change eventually.
 //- (void)animateCoverChange:(NSImage *)theImage forCell:(TGGridCell *)theCell {
@@ -356,51 +362,51 @@ static NSInteger const kUndefinedID =  -1;
 }
 
 
-// growMatrix runs on the main thread.
-// Increments the matrix by one new cell and returns it.
--(TGGridCell*)_growMatrix {
-    static NSInteger songSerialNumber = 0;
-    NSInteger rowCount, colCount, newRow, newCol;
-    
-    // Calculate the current (before we have grown the matrix) row and column.
-    NSUInteger row = floor(songSerialNumber/ _colsPerRow);
-    NSUInteger col = songSerialNumber - (row*_colsPerRow);
-    
-    [_songCellMatrix getNumberOfRows:&rowCount columns:&colCount];
-    
-    // Grow the rows and columns as songs are added.
-    if (row >= rowCount) {
-        newRow = row+1;
-    } else
-        newRow = rowCount;
-
-    // If there is more than one row the number of columns is already set.
-    if (row > 0) {
-        newCol = _colsPerRow;
-    } else {
-        if (col >= colCount) {
-            newCol = col+1;
-        } else
-            newCol = colCount;
-    }
-    
-    // As long as this runs on the main thread it should be ok to call it outside the matrixAccessQueue
-    // TEO perhaps a speedup would be to put the remaining matrix calls onto the matrixAccessQueue and run this off the main thread.
-    [_songCellMatrix renewRows:newRow columns:newCol];
-    
-    // Resize the matrix to account for the newly added cell.
-    [_songCellMatrix sizeToCells];
-    
-//    NSAssert([[_songCellMatrix cells] count] > songSerialNumber, @"Eeek. songID is bigger than the song cell matrix");
-    
-    // Find the existing cell for this serial numberz.
-    TGGridCell *existingCell = [[_songCellMatrix cells] objectAtIndex:songSerialNumber];
-
-    // Increment serial number ready for the next call.
-    songSerialNumber++;
-    
-    return existingCell;
-}
+//// growMatrix runs on the main thread.
+//// Increments the matrix by one new cell and returns it.
+//-(TGGridCell*)_growMatrix {
+//    static NSInteger songSerialNumber = 0;
+//    NSInteger rowCount, colCount, newRow, newCol;
+//    
+//    // Calculate the current (before we have grown the matrix) row and column.
+//    NSUInteger row = floor(songSerialNumber/ _colsPerRow);
+//    NSUInteger col = songSerialNumber - (row*_colsPerRow);
+//    
+//    [_songCellMatrix getNumberOfRows:&rowCount columns:&colCount];
+//    
+//    // Grow the rows and columns as songs are added.
+//    if (row >= rowCount) {
+//        newRow = row+1;
+//    } else
+//        newRow = rowCount;
+//
+//    // If there is more than one row the number of columns is already set.
+//    if (row > 0) {
+//        newCol = _colsPerRow;
+//    } else {
+//        if (col >= colCount) {
+//            newCol = col+1;
+//        } else
+//            newCol = colCount;
+//    }
+//    
+//    // As long as this runs on the main thread it should be ok to call it outside the matrixAccessQueue
+//    // TEO perhaps a speedup would be to put the remaining matrix calls onto the matrixAccessQueue and run this off the main thread.
+//    [_songCellMatrix renewRows:newRow columns:newCol];
+//    
+//    // Resize the matrix to account for the newly added cell.
+//    [_songCellMatrix sizeToCells];
+//    
+////    NSAssert([[_songCellMatrix cells] count] > songSerialNumber, @"Eeek. songID is bigger than the song cell matrix");
+//    
+//    // Find the existing cell for this serial numberz.
+//    TGGridCell *existingCell = [[_songCellMatrix cells] objectAtIndex:songSerialNumber];
+//
+//    // Increment serial number ready for the next call.
+//    songSerialNumber++;
+//    
+//    return existingCell;
+//}
 
 
 // addMatrixCell2 runs on main thread.

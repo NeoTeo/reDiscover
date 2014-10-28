@@ -8,11 +8,15 @@
 
 #import <Cocoa/Cocoa.h>
 
+///// class forward declaration
+//@class TGCoverImage;
+
 @interface TGGridCell : NSActionCell //NSImageCell
 
 //@property NSImage *songImage;
 //@property NSInteger tag;
 @property NSTextField *cellText;
 @property NSColor *tintColour;
+//@property TGCoverImage* coverImage;
 
 @end

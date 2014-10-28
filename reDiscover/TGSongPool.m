@@ -563,7 +563,7 @@ static int const kSongPoolStartCapacity = 250;
     NSInteger artID = theSong.artID;
     
     if (artID >= 0) {
-        //NSLog(@"song id %@ already had image id %ld",songID,(long)artID);
+        NSLog(@"song id %@ already had image id %ld",songID,(long)artID);
         NSImage *songArt = [_artArray objectAtIndex:artID];
         if (imageHandler != nil) {
             imageHandler(songArt);
@@ -901,7 +901,8 @@ return;//wipwip endpoint The following still causes some lag.
 
 - (NSDictionary *)songDataForSongID:(id<SongIDProtocol>)songID {
     TGSong *song = [self songForID:songID];
-    return @{@"Artist": song.artist,
+    return @{@"Id": songID,
+             @"Artist": song.artist,
              @"Title": song.title,
              @"Album": song.album,
              @"Genre": song.genre};
