@@ -216,7 +216,7 @@
     }
 }
 
-- (TGCoverImage*)coverImageForSongWithId:(id<SongIDProtocol>)songId {
+- (NSImage*)coverImageForSongWithId:(id<SongIDProtocol>)songId {
     NSInteger cellTag = [_songCellMatrix indexOfObjectWithSongID:songId];
     TGGridCell * theCell = [_songCellMatrix cellWithTag:cellTag];
 

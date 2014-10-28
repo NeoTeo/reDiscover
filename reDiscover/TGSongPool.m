@@ -1556,17 +1556,17 @@ return;//wipwip endpoint The following still causes some lag.
     }
     
     lastRequestedSong = aSong;
-    NSLog(@"requestSongPlayback just set lastRequestedSong to %@",lastRequestedSong.songID);
+    //NSLog(@"requestSongPlayback just set lastRequestedSong to %@",lastRequestedSong.songID);
     
     if ( makeSS ) {
         [aSong makeSweetSpotAtTime:time];
     }
 
     if ([aSong isReadyForPlayback] == YES) {
-        NSLog(@"Ready");
+        //NSLog(@"Ready");
         [self songReadyForPlayback:aSong atTime:time];
     } else {
-        NSLog(@"Not ready");
+        //NSLog(@"Not ready");
         // First cancel any pending requests in the operation queue and then add this.
         // This won't delete them from the queue but it will tell each in turn it has been cancelled.
         [urlLoadingOpQueue cancelAllOperations];
@@ -1733,7 +1733,7 @@ return;//wipwip endpoint The following still causes some lag.
     
     // Make sure the last request for playback is put on a serial queue so it always is the last song left playing.
     if (song == lastRequestedSong) {
-        NSLog(@"about to play song which is equal to lastRequestedSong %@",lastRequestedSong.songID);
+        //NSLog(@"about to play song which is equal to lastRequestedSong %@",lastRequestedSong.songID);
         //     If there's no start time, check the sweet spot server for one. If one is found set the startTime to it.
         if (startTime == nil) {
             startTime = [self fetchSongSweetSpot:song];

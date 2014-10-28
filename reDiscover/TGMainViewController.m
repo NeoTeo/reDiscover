@@ -63,6 +63,8 @@
     _playlistController = [[TGPlaylistViewController alloc] initWithNibName:@"TGPlaylistView" bundle:nil];
     _songInfoController = [[TGSongInfoViewController alloc] initWithNibName:@"TGSongInfoView" bundle:nil];
 
+    fetchingImage = [NSImage imageNamed:@"fetchingArt"];
+    defaultImage = [NSImage imageNamed:@"songImage"];
 }
 
 
@@ -516,19 +518,15 @@
 
 - (void)songPoolDidStartPlayingSong:(id<SongIDProtocol>)songID {
     
-    // Doesn't work because the image is never nil.
-//    if ([_songGridController isCoverImageSetForSongWithId:songID]) { return ; }
+    NSImage* songImage = [_songGridController coverImageForSongWithId:songID];
     
-    // First we should check if a cover image is set. If not we should fetch one.
-    // Don't wait for a result. Set to the "fetching artwork..." whilst waiting.
-    NSImage* fetchingImage = [NSImage imageNamed:@"fetchingArt"];
-    NSLog(@"The id is %@",[fetchingImage hashId]);
-/* cdfix
-    NSImage* fetchingImage = [NSImage imageNamed:@"fetchingArt"];
-*/
-    [_songGridController setCoverImage:fetchingImage forSongWithID:songID];
-
-    [_songInfoController setSongCoverImage:fetchingImage];
+    
+    // drop out unless the image is the default image.
+    if ([songImage.hashId isEqualToString:defaultImage.hashId] == NO) { return; }
+    
+        [_songGridController setCoverImage:fetchingImage forSongWithID:songID];
+        [_songInfoController setSongCoverImage:fetchingImage];
+//    }
     
     // Request metadata for the song and pass in the block to be called when done.
     [_currentSongPool requestEmbeddedMetadataForSongID:songID withHandler:^(NSDictionary* theData){

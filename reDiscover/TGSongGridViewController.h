@@ -21,7 +21,6 @@
 @class TGSongInfoViewController;
 @class TGSongTimelineViewController;
 @class CAKeyframeAnimation;
-@class TGCoverImage;
 
 
 // Forward declaration of protocol.
@@ -67,8 +66,7 @@
 @property NSUInteger currentCellSize;
 @property NSUInteger numSongs;
 @property NSUInteger colsPerRow;
-//@property NSImage *defaultImage;
-@property TGCoverImage* defaultImage;
+@property NSImage *defaultImage;
 
 // TEO Move this into a dictionary perhaps?
 @property CAKeyframeAnimation *pushBounceAnimation;
@@ -87,7 +85,7 @@
 - (void)addMatrixCell2:(id<SongIDProtocol>)songID;
 - (void)animateMatrixZoom:(NSInteger)zoomQuantum;
 - (void)setCoverImage:(NSImage *)theImage forSongWithID:(id<SongIDProtocol>)songID;
-- (BOOL)isCoverImageSetForSongWithId:(id<SongIDProtocol>)songId;
+- (NSImage*)coverImageForSongWithId:(id<SongIDProtocol>)songId;
 
 // Other classes' delegate methods we implement.
 

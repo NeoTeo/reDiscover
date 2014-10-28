@@ -8,7 +8,7 @@
 
 #import "TGGridCell.h"
 #import <QuartzCore/CoreImage.h>
-#import "TGCoverImage.h"
+
 
 @implementation TGGridCell
 

@@ -36,7 +36,9 @@
     NSString *playlistLabel;
     
     NSNumber *numnum;
-    
+ 
+    NSImage* fetchingImage;
+    NSImage* defaultImage;
 }
 
 // The url from the drop view.
