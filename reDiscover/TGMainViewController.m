@@ -16,7 +16,7 @@
 #import "TGSongInfoViewController.h"
 #import "TGSongTimelineViewController.h"
 #import "TGTimelineTransformer.h"
-#import "TGCoverImage.h"
+#import "NSImage+TGHashId.h"
 
 #import "rediscover-swift.h"
 
@@ -521,8 +521,8 @@
     
     // First we should check if a cover image is set. If not we should fetch one.
     // Don't wait for a result. Set to the "fetching artwork..." whilst waiting.
-    TGCoverImage* fetchingImage = [TGCoverImage imageNamed:@"fetchingArt"];
-    NSLog(@"The id is %@",[fetchingImage coverImageId]);
+    NSImage* fetchingImage = [NSImage imageNamed:@"fetchingArt"];
+    NSLog(@"The id is %@",[fetchingImage hashId]);
 /* cdfix
     NSImage* fetchingImage = [NSImage imageNamed:@"fetchingArt"];
 */
@@ -545,7 +545,7 @@
                 
                 // none of the attempts returned an image so just show the no cover cover.
                 if (tmpImage == nil) {
-                    tmpImage = [TGCoverImage imageNamed:@"noCover"];
+                    tmpImage = [NSImage imageNamed:@"noCover"];
                     //NSBeep();
                 }
     
