@@ -324,7 +324,7 @@ static int const kSongPoolStartCapacity = 250;
 - (void)fetchUUIdForSongId:(id<SongIDProtocol>)songID {
     TGSong* aSong = [self songForID:songID];
     if ([aSong fingerPrintStatus] == kFingerPrintStatusEmpty) {
-        NSLog(@"SongPool fetchUUIdForSongId about to request a fingerprint for song %@",aSong);
+//        NSLog(@"SongPool fetchUUIdForSongId about to request a fingerprint for song %@",aSong);
         [aSong setFingerPrintStatus:kFingerPrintStatusRequested];
         
         [songFingerPrinter requestFingerPrintForSong:aSong.songID withHandler:^(NSString* fingerPrint){
@@ -334,6 +334,7 @@ static int const kSongPoolStartCapacity = 250;
                 return;
             }
             [self fingerprintReady:fingerPrint forSongID:aSong.songID];
+            //FIXME: Why do we not try to fetch a uuid from here?
         }];
     } else {
         NSLog(@"We have a fingerprint but no UUId!");
@@ -612,7 +613,7 @@ static int const kSongPoolStartCapacity = 250;
             // happens when the song is actively selected and played.
 //            [self requestSongIdsFromAlbumWithName:theSong.album withHandler:^(NSArray* songs) {
             [self requestSongIdsFromAlbumWithName:theSong.album withHandler:^(NSArray* songIds) {
-return;//wipwip endpoint The following still causes some lag.
+
                 
                 // Excluding the original song whose art we're looking for see if the others have it.
 //                for (TEOSongData* songDat in songs) {

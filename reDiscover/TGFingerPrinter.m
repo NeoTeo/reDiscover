@@ -85,9 +85,12 @@
             // independently of the fingerprinter.
             // Since this is synchronous the call will block until either it succeeded or failed to fetch an UUId.
 //            NSLog(@"requesting UUId from generated fingerprint.");
-            [self requestUUIDForSongID:songID withDuration:duration andFingerPrint:theFingerprint];
+//            [self requestUUIDForSongID:songID withDuration:duration andFingerPrint:theFingerprint];
             
             NSString *songFingerPrint = [NSString stringWithCString:theFingerprint encoding:NSASCIIStringEncoding];
+            
+            [self requestUUIDForSongID:songID withDuration:duration andFingerPrint:(char*)[songFingerPrint UTF8String]];
+            
             // Deallocate the fingerprint data.
             chromaprint_dealloc(theFingerprint);
              
@@ -102,6 +105,7 @@
 }
 
 - (void)requestUUIDForSongID:(id<SongIDProtocol>)songID withDuration:(int)duration andFingerPrint:(char*)theFingerprint {
+    // make sure we copy the fingerprint as it gets deallocated outside this method.
     dispatch_async(fingerprintingQueue, ^{
         NSURL *acoustIDURL = [[NSURL alloc] initWithString:[NSString stringWithFormat:@"http://api.acoustid.org/v2/lookup?client=8XaBELgH&meta=releases&duration=%d&fingerprint=%s",duration,theFingerprint]];
         NSData *acoustiData = [[NSData alloc] initWithContentsOfURL:acoustIDURL];
