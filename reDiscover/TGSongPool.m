@@ -1606,7 +1606,6 @@ return;//wipwip endpoint The following still causes some lag.
 
 
 - (void)playbackSong:(TGSong *)nextSong atTime:(NSNumber*)startTime {
-    
     // Between checking and stopping, another thread can modify the currentlyPlayingSong thus causing the song to not be stopped.
     if (currentlyPlayingSong != nextSong) {
         [currentlyPlayingSong playStop];
@@ -1614,13 +1613,18 @@ return;//wipwip endpoint The following still causes some lag.
         NSLog(@"currently playing is the same as next song. Early out.");
         return;
     }
+    
+    // Don't play the song if it isn't the last requested song.
     if (nextSong != lastRequestedSong) {
-        NSLog(@"NOoOoooOOOOOOOOoooooooOOOOOO");
+//        NSLog(@"NOoOoooOOOOOOOOoooooooOOOOOO");
         return;
     }
     NSAssert(startTime != nil, @"Start time is nil!");
+    //MARK: xeno. Calling playAtTime causes lagging when scrolling.
+    // Why do we have a playAtTime which sets the start time here and then a bit further down
+    // we also call setRequestedPlayheadPosition which calls the song's setCurrentPlayTime ?
     [nextSong playAtTime:startTime];
-    
+
     if (startTime != nil) {
         currentlyPlayingSong = nextSong;
         
@@ -1629,22 +1633,9 @@ return;//wipwip endpoint The following still causes some lag.
 
         // Song fingerprints are generated and UUID fetched during idle time in the background.
         // However, if the song about to be played hasn't got a UUID or fingerprint, an async request will be initiated here.
+        // This should not be called on the playback queue!
         if (nextSong.uuid == NULL) {
             [self fetchUUIdForSongId:nextSong.songID];
-            /*
-            if ([nextSong fingerPrintStatus] == kFingerPrintStatusEmpty) {
-                [nextSong setFingerPrintStatus:kFingerPrintStatusRequested];
-                
-                NSLog(@"playbacksong calling requestFingerPrintForSong");
-                [songFingerPrinter requestFingerPrintForSong:nextSong.songID withHandler:^(NSString* fingerPrint){
-                    if (fingerPrint == nil) {
-                        NSLog(@"requestFingerprintForSong ERROR: NO FINGERPRINT");
-                        return;
-                    }
-                    [self fingerprintReady:fingerPrint forSongID:nextSong.songID];
-                }];
-            }
-             */
         }
 
         //MARK: consider using an event to signal this instead.

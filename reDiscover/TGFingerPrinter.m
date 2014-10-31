@@ -102,35 +102,36 @@
 }
 
 - (void)requestUUIDForSongID:(id<SongIDProtocol>)songID withDuration:(int)duration andFingerPrint:(char*)theFingerprint {
-    
-    NSURL *acoustIDURL = [[NSURL alloc] initWithString:[NSString stringWithFormat:@"http://api.acoustid.org/v2/lookup?client=8XaBELgH&meta=releases&duration=%d&fingerprint=%s",duration,theFingerprint]];
-    NSData *acoustiData = [[NSData alloc] initWithContentsOfURL:acoustIDURL];
-    
-    if ([acoustiData length] == 0 ) {
-        NSLog(@"ERROR: requestFingerPrintForSong - no acoustic data!");
-        return;
-    }
-    NSDictionary *acoustiJSON = [NSJSONSerialization JSONObjectWithData:acoustiData options:NSJSONReadingMutableContainers error:nil];
-    
-    // First we check that the return status is ok.
-    NSString *status = [acoustiJSON objectForKey:@"status"];
-    if ([status isEqualToString:@"ok"]) {
-        NSArray *results = [acoustiJSON objectForKey:@"results"];
-        // The first element is the one with the highest score so we take that (for now).
-        // Later we can traverse and compare with any tags we already have.
-        if ([results count]) {
-
-            NSDictionary *theElement = [results objectAtIndex:0];
-            [_delegate setUUIDString:[theElement objectForKey:@"id"] forSongID:songID];
-            
-            // Extract the releases for this song.
-            NSArray* releases = [theElement objectForKey:@"releases"];
-            [_delegate setReleases:[NSKeyedArchiver archivedDataWithRootObject:releases] forSongID:songID];
-        } else
-            NSLog(@"AcoustID returned 0 results.");
+    dispatch_async(fingerprintingQueue, ^{
+        NSURL *acoustIDURL = [[NSURL alloc] initWithString:[NSString stringWithFormat:@"http://api.acoustid.org/v2/lookup?client=8XaBELgH&meta=releases&duration=%d&fingerprint=%s",duration,theFingerprint]];
+        NSData *acoustiData = [[NSData alloc] initWithContentsOfURL:acoustIDURL];
         
-    } else
-        NSLog(@"ERROR: AcoustID server returned %@",status);
+        if ([acoustiData length] == 0 ) {
+            NSLog(@"ERROR: requestFingerPrintForSong - no acoustic data!");
+            return;
+        }
+        NSDictionary *acoustiJSON = [NSJSONSerialization JSONObjectWithData:acoustiData options:NSJSONReadingMutableContainers error:nil];
+        
+        // First we check that the return status is ok.
+        NSString *status = [acoustiJSON objectForKey:@"status"];
+        if ([status isEqualToString:@"ok"]) {
+            NSArray *results = [acoustiJSON objectForKey:@"results"];
+            // The first element is the one with the highest score so we take that (for now).
+            // Later we can traverse and compare with any tags we already have.
+            if ([results count]) {
+
+                NSDictionary *theElement = [results objectAtIndex:0];
+                [_delegate setUUIDString:[theElement objectForKey:@"id"] forSongID:songID];
+                
+                // Extract the releases for this song.
+                NSArray* releases = [theElement objectForKey:@"releases"];
+                [_delegate setReleases:[NSKeyedArchiver archivedDataWithRootObject:releases] forSongID:songID];
+            } else
+                NSLog(@"AcoustID returned 0 results.");
+            
+        } else
+            NSLog(@"ERROR: AcoustID server returned %@",status);
+    });
 }
 
 

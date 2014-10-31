@@ -33,6 +33,8 @@
 - (void)searchMetadataForCoverImageWithHandler:(void (^)(NSImage *))imageHandler {
 
     if (songAsset == nil) {
+        /// This initializes the asset with the song's url.
+        ///Since the options are nil the default will be to not require precise timing.
         songAsset = [[AVURLAsset alloc] initWithURL:[NSURL URLWithString:self.urlString] options:nil];
     }
     
@@ -56,35 +58,95 @@
     }];
 }
 
-//MARK: Why is this not done asynchronously with...
-// ...loadValuesAsynchronouslyForKeys:@[@"playable"] completionHandler:
+// Make the context point to its own pointer.
+static const void *ItemStatusContext = &ItemStatusContext;
+
 - (void)loadTrackDataWithCallBackOnCompletion:(BOOL)wantsCallback withStartTime:(NSNumber*)startTime {
 
     NSURL *theURL = [NSURL URLWithString:self.urlString];
     [self setSongStatus:kSongStatusLoading];
     
-    // What if the asset is already available?
     if (songAsset == nil) {
+        /// This initializes the asset with the song's url.
+        ///Since the options are nil the default will be to not require precise timing.
         songAsset = [AVAsset assetWithURL:theURL];
     }
 
-// Enabling this, aside from slowing loading, also makes scrubbing laggy.
+    // Enabling this, aside from slowing loading, also makes scrubbing laggy.
 //        NSDictionary *songLoadingOptions = @{AVURLAssetPreferPreciseDurationAndTimingKey : @YES};
 //        songAsset = [[AVURLAsset alloc] initWithURL:theURL options:songLoadingOptions];
-
-    // Get the song duration.
-    //    This may block which is just how we want it.
+    
     if (CMTimeGetSeconds(self.songDuration) == 0) {
-        [self setSongDuration:[songAsset duration]];
-    }
 
-    if ([songAsset isPlayable]) {
-        [self setSongStatus:kSongStatusReady];
+        // [songAsset duration] may block for a bit which is just how we want it.
+        // WHY?
+        // Because, since this whole method is sitting in an op queue, if it takes too long
+        // and the user moves on to another song that should be played instead it and all the
+        // subsequent queued calls can be cancelled.
+        // If it just returned immediately there would be a large uncancellable backlog of song asset loads.
+        [self setSongDuration:[songAsset duration]];
         
-        if (!wantsCallback) return;
-        //MARK: consider a closure instead.
-        [[self delegate] songReadyForPlayback:self atTime:startTime];
+        
+        NSError* error;
+        AVKeyValueStatus tracksStatus = [songAsset statusOfValueForKey:@"duration" error:&error];
+        switch (tracksStatus) {
+            case AVKeyValueStatusLoaded:
+            {
+                // Prepare the asset for playback by loading its tracks.
+                [songAsset loadValuesAsynchronouslyForKeys:@[@"tracks"] completionHandler:^{
+                    // Now, associate the asset with the player item.
+                    if (songPlayerItem == nil) {
+                        songPlayerItem = [AVPlayerItem playerItemWithAsset:songAsset];
+                        // Observe the status keypath of the songPlayerItem.
+                        [songPlayerItem addObserver:self forKeyPath:@"status" options:NSKeyValueObservingOptionInitial context:&ItemStatusContext];
+                    }
+                    
+                    // This will trigger the player's preparation to play.
+                    if (songPlayer == nil) {
+                        songPlayer = [AVPlayer playerWithPlayerItem:songPlayerItem];
+                    }
+
+                    if (!wantsCallback) return;
+                    /// This creates a block that will effect the delegate callback and adds it to the customBlock property.
+                    //  This block will be called by the observeValueForKeypath: method that is called when the songPlayerItem is ready
+                    // thus ensuring songReadyForPlayback is not called too early.
+                    // The block is necessary to be able to capture the startTime as it is not possible to (safely) pass a value through
+                    // the observeValueForKeypath method.
+                    
+                    // Make a weakly retained self for use inside the block to avoid retain cycle.
+                    __unsafe_unretained typeof(self) weakSelf = self;
+
+                    self.customBlock = ^{
+                        [[weakSelf delegate] songReadyForPlayback:weakSelf atTime:startTime];
+                    };
+
+                }];
+            
+                break;
+            }
+            case AVKeyValueStatusFailed:
+                NSLog(@"There was an error getting track duration.");
+                break;
+            default:
+                NSLog(@"The track is not (yet) loaded!");
+                break;
+        }
+        
+        //}];
     }
+//    // Get the song duration.
+//    //    This may block which is just how we want it.
+//    if (CMTimeGetSeconds(self.songDuration) == 0) {
+//        [self setSongDuration:[songAsset duration]];
+//    }
+////FIXME: What is to keep this from not failing if the asset is not ready? Why not as mentioned above?
+//    if ([songAsset isPlayable]) {
+//        [self setSongStatus:kSongStatusReady];
+//
+//        if (!wantsCallback) return;
+//        //MARK: consider a closure instead.
+//        [[self delegate] songReadyForPlayback:self atTime:startTime];
+//    }
 }
 
 /**
@@ -250,66 +312,110 @@
 - (void)playAtTime:(NSNumber*)startTime {
 
     if ([self songStatus] == kSongStatusReady) {
-        
-        if (songPlayerItem == nil) {
-//            NSDate* preDate = [NSDate date];
-            songPlayerItem = [AVPlayerItem playerItemWithAsset:songAsset];
-//            NSDate* postDate = [NSDate date];
-//            NSLog(@"Creating a new AVPlayerItem took: %f",[postDate timeIntervalSinceDate:preDate]);
-//            songPlayerItem = [AVPlayerItem playerItemWithAsset:songAsset automaticallyLoadedAssetKeys:@[]];
-        }
-        
-        // This is where I would add some KVO on the player item.
-        // It needs to happen before we associate the player item with the player because
-        // it may start changing things straight away.
-//        [songPlayerItem addObserver:self
-//                         forKeyPath:@"timebase"
-//                            options:NSKeyValueObservingOptionNew
-//                            context:presentationSizeObservationContext];
-//        See WWDC14 503 at 33:40 and NSHipster's article http://nshipster.com/key-value-observing/
-        
-        if (songPlayer == nil) {
-//            NSDate* preDate = [NSDate date];
-            
-            //FIXME: repeated EXC_BAD_ACCESS crash here
-            songPlayer = [AVPlayer playerWithPlayerItem:songPlayerItem];
-//            NSDate* postDate = [NSDate date];
-//            NSLog(@"Creating a new AVPlayer took: %f",[postDate timeIntervalSinceDate:preDate]);
-        }
         [songPlayer setVolume:0.2];
         
+        // Start observing the song playback so we can update UI.
+        [self setSongPlaybackObserver];
         
         if (startTime != nil) {
             [songPlayer seekToTime:CMTimeMakeWithSeconds([startTime floatValue], 1)];
             [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(playDidFinish) name:AVPlayerItemDidPlayToEndTimeNotification object:songPlayerItem];
             
-            if (playerObserver == nil) {
-                // Add a periodic observer so we can update the timeline GUI.
-                CMTime eachSecond = CMTimeMake(10, 100);
-                dispatch_queue_t timelineSerialQueue = [_delegate serialQueue];
-                
-                // Make a weakly retained self for use inside the block to avoid retain cycle.
-                __unsafe_unretained typeof(self) weakSelf = self;
-                
-                // Every 1/10 of a second update the delegate's playhead position variable.
-                playerObserver = [songPlayer addPeriodicTimeObserverForInterval:eachSecond queue:timelineSerialQueue usingBlock:^void(CMTime time) {
-                    
-                    CMTime currentPlaybackTime = [weakSelf->songPlayer currentTime];
-                    [[weakSelf delegate] songDidUpdatePlayheadPosition:[NSNumber numberWithDouble:CMTimeGetSeconds(currentPlaybackTime)]];
-                }];
-            }
-
             [songPlayer play];
         }
     }
 }
 
+- (void)setSongPlaybackObserver {
+    if (playerObserver == nil) {
+        // Add a periodic observer so we can update the timeline GUI.
+        CMTime eachSecond = CMTimeMake(10, 100);
+        dispatch_queue_t timelineSerialQueue = [_delegate serialQueue];
+        
+        // Make a weakly retained self for use inside the block to avoid retain cycle.
+        __unsafe_unretained typeof(self) weakSelf = self;
+        
+        // Every 1/10 of a second update the delegate's playhead position variable.
+        playerObserver = [songPlayer addPeriodicTimeObserverForInterval:eachSecond queue:timelineSerialQueue usingBlock:^void(CMTime time) {
+            
+            CMTime currentPlaybackTime = [weakSelf->songPlayer currentTime];
+            [[weakSelf delegate] songDidUpdatePlayheadPosition:[NSNumber numberWithDouble:CMTimeGetSeconds(currentPlaybackTime)]];
+        }];
+    }
+}
+
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object
+                        change:(NSDictionary *)change context:(void *)context {
+    
+    if (context == &ItemStatusContext) {
+        if (object == songPlayerItem && [keyPath isEqualToString:@"status"]) {
+            if (songPlayerItem.status == AVPlayerItemStatusReadyToPlay) {
+                [self setSongStatus:kSongStatusReady];
+                if (self.customBlock != nil) {
+                    self.customBlock();
+                    // reset it.
+                    self.customBlock = nil;
+                }
+            }
+        }
+        
+//        if ((object == songPlayer) && [keyPath isEqualToString:@"status"]) {
+//            if (songPlayer.status == AVPlayerStatusReadyToPlay) {
+//                //[songPlayer play];
+//                NSLog(@"Now the songPlayer is ready apparently.");
+//                
+//            } else if (songPlayer.status == AVPlayerStatusFailed) {
+//                // something went wrong. player.error should contain some information
+//                NSLog(@"Something went wrong with playback");
+//            }
+//        }
+        return;
+    }
+    
+    // The context isn't ours so call super with it so the call isn't lost.
+    [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
+    return;
+}
 
 - (void)playDidFinish {
     if ([[self delegate] respondsToSelector:@selector(songDidFinishPlayback:)]) {
         [[self delegate] songDidFinishPlayback:self];
     }
 }
+
+
+//- (void)setStartTime:(NSNumber*)startTime forPlayer:(AVPlayer*)thePlayer {
+////    [thePlayer prerollAtRate:1.0 completionHandler:^(BOOL finished) {
+//    
+////        if (finished == NO) {
+////            return ;
+////        }
+//        [songPlayer setVolume:0.2];
+//        
+//        if (startTime != nil) {
+//            [songPlayer seekToTime:CMTimeMakeWithSeconds([startTime floatValue], 1)];
+//            [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(playDidFinish) name:AVPlayerItemDidPlayToEndTimeNotification object:songPlayerItem];
+//            
+//            if (playerObserver == nil) {
+//                // Add a periodic observer so we can update the timeline GUI.
+//                CMTime eachSecond = CMTimeMake(10, 100);
+//                dispatch_queue_t timelineSerialQueue = [_delegate serialQueue];
+//                
+//                // Make a weakly retained self for use inside the block to avoid retain cycle.
+//                __unsafe_unretained typeof(self) weakSelf = self;
+//                
+//                // Every 1/10 of a second update the delegate's playhead position variable.
+//                playerObserver = [songPlayer addPeriodicTimeObserverForInterval:eachSecond queue:timelineSerialQueue usingBlock:^void(CMTime time) {
+//                    
+//                    CMTime currentPlaybackTime = [weakSelf->songPlayer currentTime];
+//                    [[weakSelf delegate] songDidUpdatePlayheadPosition:[NSNumber numberWithDouble:CMTimeGetSeconds(currentPlaybackTime)]];
+//                }];
+//            }
+//        }
+//        
+////    }];
+//}
+
 
 - (void)playStop {
 

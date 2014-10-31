@@ -517,16 +517,18 @@
 }
 
 - (void)songPoolDidStartPlayingSong:(id<SongIDProtocol>)songID {
-    
+    //MARK: xeno
+    //return;
     NSImage* songImage = [_songGridController coverImageForSongWithId:songID];
-    
+    [_songInfoController setSongCoverImage:songImage];
     
     // drop out unless the image is the default image.
-    if ([songImage.hashId isEqualToString:defaultImage.hashId] == NO) { return; }
+    if ([songImage.hashId isEqualToString:defaultImage.hashId] == YES)
+    {
     
         [_songGridController setCoverImage:fetchingImage forSongWithID:songID];
         [_songInfoController setSongCoverImage:fetchingImage];
-//    }
+    }
     
     // Request metadata for the song and pass in the block to be called when done.
     [_currentSongPool requestEmbeddedMetadataForSongID:songID withHandler:^(NSDictionary* theData){

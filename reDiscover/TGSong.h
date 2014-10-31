@@ -75,8 +75,6 @@ enum {
 @property NSNumber*         selectedSweetSpot;
 @property NSData*           songReleases;
 
-
-
 // cached stuff
 @property AVAudioFile* cachedFile;
 @property int64_t cachedFileLength;
@@ -93,34 +91,19 @@ enum {
 @property CMTime songDuration;
 @property int songTimeScale;
 
-/*
-/// wipwip
-- (NSString*)album;
-- (void)setAlbum:(NSString*)theString;
-- (NSString*)artist;
-- (void)setArtist:(NSString*)theString;
-- (NSArray*)sweetSpots;
-- (void)setSweetSpots:(NSArray*)theArray;
-- (NSString*)URLString;
-- (void)setURLString:(NSString*)theString;
-- (NSString*)UUID;
-- (void)setUUID:(NSString*)theString;
-- (NSNumber*)year;
-- (void)setYear:(NSNumber*)theNumber;
-- (NSString*)fingerprint;
-- (void)setFingerprint:(NSString*)theString;
-- (NSString*)title;
-- (void)setTitle:(NSString*)theString;
-- (NSString*)genre;
-- (void)setGenre:(NSString*)theString;
-- (NSNumber*)selectedSweetSpot;
-- (void)setSelectedSweetSpot:(NSNumber*)theNumber;
-- (NSData*)songReleases;
-- (void)setSongReleases:(NSData*)theData;
-
-// wipwip
-*/
 #define TSD
+
+// Typedef a block that takes an NSNumber* and returns void to MyCustomBlock
+typedef void(^MyCustomBlock)(void);
+// make a property for this class that holds a custom block.
+// This is used by the loadTrackDataWithCallBackOnCompletion to set a callback to be
+// called when the KVO observed SongPlayerItem status changes to ready. 
+@property (nonatomic, copy) MyCustomBlock customBlock;
+
+//// A place to store the song's requested start time between being called and
+//// actually being ready to play back. Since KVO doesn't provide custom data to go
+//// through its calls I'm having to store it "on the side". Not happy about this.
+//@property NSNumber* startTime;
 
 /// An id key into the songpool's art dictionary. Values of -1 will be no art and 0 will be the default "no cover" art.
 @property NSInteger artID;
