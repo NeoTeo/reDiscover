@@ -30,7 +30,8 @@ enum {
     kSongStatusLoading         = 0,
     kSongStatusReady           = 1,
     kSongStatusUnloading       = 2,
-    kSongStatusFailed          = 3
+    kSongStatusFailed          = 3,
+    kSongStatusUninited        = 4
 };
 
 // States of the loadStatus property:
@@ -93,6 +94,8 @@ enum {
 
 #define TSD
 
+@property dispatch_queue_t serialTestQueue;
+
 // Typedef a block that takes an NSNumber* and returns void to MyCustomBlock
 typedef void(^MyCustomBlock)(void);
 // make a property for this class that holds a custom block.
@@ -105,8 +108,11 @@ typedef void(^MyCustomBlock)(void);
 //// through its calls I'm having to store it "on the side". Not happy about this.
 //@property NSNumber* startTime;
 
-/// An id key into the songpool's art dictionary. Values of -1 will be no art and 0 will be the default "no cover" art.
-@property NSInteger artID;
+/// An id key into the songpool's art dictionary. A value of nil signals no art.
+@property NSString* artID;
+
+///// An id key into the songpool's art dictionary. Values of -1 will be no art and 0 will be the default "no cover" art.
+//@property NSInteger artID;
 
 /// A counter to provide a variable interval between sweet-spot checks.
 @property NSUInteger SSCheckCountdown;
@@ -119,7 +125,12 @@ typedef void(^MyCustomBlock)(void);
 - (void)makeSweetSpotAtTime:(NSNumber*)startTime;
 - (void)setSweetSpot:(NSNumber*)theSS;
 - (id)init;
-- (void)loadTrackDataWithCallBackOnCompletion:(BOOL)wantsCallback withStartTime:(NSNumber*)startTime;
+
+- (void)prepareForPlaybackWithCompletionBlock:(void (^)(void))completionBlock;
+//- (void)loadTrackDataWithCallBackOnCompletion:(BOOL)wantsCallback withStartTime:(NSNumber*)startTime;
+//- (void)loadTrackDataAtStartTime:(NSNumber*)startTime withCompletionBlock:(void (^)(void))completionBlock;
+//- (void)performBlockWhenReadyForPlayback:(void (^)(void))completionBlock;
+
 - (void)playAtTime:(NSNumber*)startTime;
 - (void)playStop;
 - (double)getDuration;

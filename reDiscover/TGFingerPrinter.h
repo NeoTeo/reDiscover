@@ -15,6 +15,7 @@
 @class TGSong;
 @protocol TGFingerPrinterDelegate;
 @protocol SongIDProtocol;
+@protocol SongPoolAccessProtocol;
 
 @interface TGFingerPrinter : NSObject
 {
@@ -31,6 +32,7 @@
 
 
 @property id<TGFingerPrinterDelegate> delegate;
+@property id<SongPoolAccessProtocol>songPoolAPI;
 
 @end
 

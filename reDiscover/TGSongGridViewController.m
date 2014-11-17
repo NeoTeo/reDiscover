@@ -1126,7 +1126,8 @@ static NSInteger const kUndefinedID =  -1;
     // Early out if the cell is not pointing at an actual song.
     if (songID == nil) return;
     
-    [_delegate userSelectedSongID:songID];
+// CDFIX moved below.
+//    [_delegate userSelectedSongID:songID];
     
 
     // Collect the context for this selection and pass it to the mainviewcontroller which will pass
@@ -1136,6 +1137,9 @@ static NSInteger const kUndefinedID =  -1;
     NSValue* gridDims = [NSValue valueWithPoint:NSMakePoint([_songCellMatrix numberOfColumns], [_songCellMatrix numberOfRows])];
     
     [_songPoolAPI cacheWithContext:@{@"pos" : selectionPos, @"spd" : speedVector, @"gridDims" : gridDims}];
+
+    //CDFIX moved below caching so we cache first.
+    [_delegate userSelectedSongID:songID];
     
     // If a popover is shown, hide it.
     if ([[_songTimelineController songTimelinePopover] isShown]) {

@@ -16,13 +16,14 @@
 
 #import "rediscover-swift.h"
 
+#import "TGSongPool.h"
 
 // This is using the chromaprint from this workspace.
 //#import "/Users/teo/Dropbox/usr/local/include/chromaprint.h"
 #import <CommonCrypto/CommonDigest.h>
 
-#import "TGSong.h"
-#import "TEOSongData.h"
+//#import "TGSong.h"
+//#import "TEOSongData.h"
 
 @implementation TGFingerPrinter
 
@@ -89,7 +90,9 @@
             
             NSString *songFingerPrint = [NSString stringWithCString:theFingerprint encoding:NSASCIIStringEncoding];
             
-            [self requestUUIDForSongID:songID withDuration:duration andFingerPrint:(char*)[songFingerPrint UTF8String]];
+            // Presumably the duration returned from fingerprinting is the most accurate so store it in the song.
+//            [_songPoolAPI setSongDuration:[NSNumber numberWithInt:duration] forSongId:songID];
+//            [self requestUUIDForSongID:songID withDuration:duration andFingerPrint:(char*)[songFingerPrint UTF8String]];
             
             // Deallocate the fingerprint data.
             chromaprint_dealloc(theFingerprint);
@@ -106,7 +109,9 @@
 
 - (void)requestUUIDForSongID:(id<SongIDProtocol>)songID withDuration:(int)duration andFingerPrint:(char*)theFingerprint {
     // make sure we copy the fingerprint as it gets deallocated outside this method.
-    dispatch_async(fingerprintingQueue, ^{
+    // Don't run this async, since the caller is already running async and shouldn't return before this has had a go.
+    // Problem is that SongPool is also calling this with fetchUUIDForSongId:
+//    dispatch_async(fingerprintingQueue, ^{
         NSURL *acoustIDURL = [[NSURL alloc] initWithString:[NSString stringWithFormat:@"http://api.acoustid.org/v2/lookup?client=8XaBELgH&meta=releases&duration=%d&fingerprint=%s",duration,theFingerprint]];
         NSData *acoustiData = [[NSData alloc] initWithContentsOfURL:acoustIDURL];
         
@@ -135,7 +140,7 @@
             
         } else
             NSLog(@"ERROR: AcoustID server returned %@",status);
-    });
+//    });
 }
 
 

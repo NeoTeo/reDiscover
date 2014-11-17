@@ -64,6 +64,8 @@
 
 - (NSDictionary *)songDataForSongID:(id<SongIDProtocol>)songID;
 - (NSNumber *)songDurationForSongID:(id<SongIDProtocol>)songID;
+- (void)setSongDuration:(NSNumber*)duration forSongId:(id<SongIDProtocol>)songId;
+
 - (id<SongIDProtocol>)lastRequestedSongID;
 - (id<SongIDProtocol>)currentlyPlayingSongID;
 
@@ -78,6 +80,9 @@
 - (void)cacheWithContext:(NSDictionary*)cacheContext;
 
 - (NSManagedObjectContext*)TEOSongDataMOC;
+
+// Debug methods
+- (void)DebugLogSongWithId:(id<SongIDProtocol>)songId;
 @end
 
 
@@ -159,8 +164,10 @@
 @property id<TGMainViewControllerDelegate> delegate;
 @property id<SongGridAccessProtocol> songGridAccessAPI;
 
-// Holds the art associated with the songs. Songs will hold indices into the art array.
-@property NSMutableArray *artArray;
+//// Holds the art associated with the songs. Songs will hold indices into the art array.
+//@property NSMutableArray *artArray;
+//// Holds the art associated with the songs. Songs will hold indices into the art dictionary.
+@property NSMutableDictionary* coverArtById;
 
 // Holds the playhead position of the currently playing song.
 @property NSNumber *currentSongDuration;

@@ -19,6 +19,7 @@
 #import "TEOSongData.h"
 
 #import "UploadedSSData.h"
+#import "NSImage+TGHashId.h"
 
 #import "rediscover-swift.h"
 
@@ -117,9 +118,13 @@ static int const kSongPoolStartCapacity = 250;
         
         
         // Set up session cache of image covers.
-        _artArray = [[NSMutableArray alloc] initWithCapacity:100];
-        [_artArray addObject:[NSImage imageNamed:@"noCover"]];
-        
+//        _artArray = [[NSMutableArray alloc] initWithCapacity:100];
+//        [_artArray addObject:[NSImage imageNamed:@"noCover"]];
+        _coverArtById = [[NSMutableDictionary alloc] initWithCapacity:100];
+        NSImage* noCoverImage = [NSImage imageNamed:@"noCover"];
+        [noCoverImage hashIdWithHandler:^(NSString* theHashId){
+            [_coverArtById setObject:noCoverImage forKey:theHashId];
+        }];
         // Create and hook up the song fingerprinter.
         songFingerPrinter = [[TGFingerPrinter alloc] init];
         [songFingerPrinter setDelegate:self];
@@ -170,6 +175,11 @@ static int const kSongPoolStartCapacity = 250;
         // Starting off with an empty songID cache.
         songIDCache = [[NSMutableSet alloc] init];
         cacheClearingQueue = dispatch_queue_create("cache clearing q", NULL);
+        
+        // Register to be notified of song uuid being fetched
+//        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleFetchedUUId:) name:@"TGUUIdWasFetched" object:nil];
+//        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(songCoverWasFetched:) name:@"webSongCoverFetcherDidFetch" object:nil];
+//        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(songIsReadyForPlayback:) name:@"songStatusNowReady" object:nil];
     }
     
     return self;
@@ -301,7 +311,7 @@ static int const kSongPoolStartCapacity = 250;
     NSInteger interval = 0;
     
     if (aSong.uuid == NULL) {
-        [self fetchUUIdForSongId:aSong.songID];
+        [self fetchUUIdForSongId:aSong.songID withHandler:nil];
         interval = 3;
     } else {
         
@@ -321,7 +331,22 @@ static int const kSongPoolStartCapacity = 250;
                                                                  repeats:YES];
 }
 
-- (void)fetchUUIdForSongId:(id<SongIDProtocol>)songID {
+//- (void)handleFetchedUUId:(NSNotification*)notification {
+//    TGSong* song = (TGSong*)notification.object;
+//    NSLog(@"The song %@ now has UUId %@",song,song.uuid);
+//    //    //wipEv This should be observed by the code that exchanges the fingerprint for a uuid (which happens to be this class as well)
+//    ////    [[NSNotificationCenter defaultCenter] postNotificationName:@"TGNewSongFingerprinted" object:song];
+//    
+//    // Now that we know we have a UUId, initiate the fetching of the cover art.
+//    [self requestImageForSongID:song.songID withHandler:^(NSImage* theImage) {
+//        NSLog(@"We have a cover image via the handleFetchedUUId");
+//        // Here we should check if the song wants to have its cover displayed. For now we just do it.
+//        
+//    }];
+//}
+
+//- (void)fetchUUIdForSongId:(id<SongIDProtocol>)songID {
+- (void)fetchUUIdForSongId:(id<SongIDProtocol>)songID withHandler:(void (^)(NSString*))uuidHandler {
     TGSong* aSong = [self songForID:songID];
     if ([aSong fingerPrintStatus] == kFingerPrintStatusEmpty) {
 //        NSLog(@"SongPool fetchUUIdForSongId about to request a fingerprint for song %@",aSong);
@@ -333,14 +358,29 @@ static int const kSongPoolStartCapacity = 250;
                 [aSong setFingerPrintStatus:kFingerPrintStatusFailed];
                 return;
             }
-            [self fingerprintReady:fingerPrint forSongID:aSong.songID];
-            //FIXME: Why do we not try to fetch a uuid from here?
+
+            // Now that we know we have a fingerprint we request a UUId from it.
+            [songFingerPrinter requestUUIDForSongID:songID withDuration:CMTimeGetSeconds(aSong.songDuration) andFingerPrint:(char*)[fingerPrint UTF8String]];
+
+            // This saves the fingerprint and sets the fingerprinting status to done.
+            //[self fingerprintReady:fingerPrint forSongID:aSong.songID];
+            if (aSong.uuid == nil) {
+                NSLog(@"No UUID found, keeping fingerprint.");
+                aSong.fingerprint = fingerPrint;
+            }
+            
+            [aSong setFingerPrintStatus:kFingerPrintStatusDone];
+            
+            // Signal the successful generation of a fingerprint and the retrieval of a UUId
+//            [[NSNotificationCenter defaultCenter] postNotificationName:@"TGUUIdWasFetched" object:aSong];
+            uuidHandler(aSong.uuid);
         }];
     } else {
-        NSLog(@"We have a fingerprint but no UUId!");
-        [songFingerPrinter requestUUIDForSongID:aSong.songID
-                                   withDuration:CMTimeGetSeconds(aSong.songDuration)
-                                 andFingerPrint:(char *)[aSong.fingerprint UTF8String]];
+        NSLog(@"Fingerprint and uuid requests have already been sent.");
+        // Instead of this, set up an event listener that fires when the uuid
+//        [songFingerPrinter requestUUIDForSongID:aSong.songID
+//                                   withDuration:CMTimeGetSeconds(aSong.songDuration)
+//                                 andFingerPrint:(char *)[aSong.fingerprint UTF8String]];
         
     }
     
@@ -561,11 +601,11 @@ static int const kSongPoolStartCapacity = 250;
 
     // First we should check if the song has an image stashed in the songpool local/temporary store.
     TGSong * theSong = [self songForID:songID];
-    NSInteger artID = theSong.artID;
+    NSString* artID = theSong.artID;
     
-    if (artID >= 0) {
-        NSLog(@"song id %@ already had image id %ld",songID,(long)artID);
-        NSImage *songArt = [_artArray objectAtIndex:artID];
+    if (artID != nil) {
+        NSLog(@"song id %@ already had image id %@",songID,artID);
+        NSImage *songArt = [_coverArtById objectForKey:artID];
         if (imageHandler != nil) {
             imageHandler(songArt);
         }
@@ -574,9 +614,6 @@ static int const kSongPoolStartCapacity = 250;
     }
     
     NSAssert(theSong != nil,@"WTF, song is nil");
-    
-    
-    
     // If nothing was found, try asking the song directly.
     // This is done by chaining asynchronous requests for data from either our Core Data store, from the file system and
     // finally from the network.
@@ -584,16 +621,18 @@ static int const kSongPoolStartCapacity = 250;
     [theSong searchMetadataForCoverImageWithHandler:^(NSImage *tmpImage) {
     
         if (tmpImage != nil) {
-            // Store the image in the local store so we won't have to re-fetch it from the file.
-            [_artArray addObject:tmpImage];
-            /*
-             TEO For now we don't have a good way of detecting whether an image is already in the
-            // artArray so this is just filling it up with dupes. Commenting it out until a strategy is thought of.
-            // Add the art index to the song.
-            theSong.artID = [_artArray count]-1;
-            */
+
+            // Store the image in the local cache if it isn't already there so we won't have to re-fetch it from the file.
+            if ([_coverArtById objectForKey:tmpImage.hashId] == nil) {
+                [tmpImage hashIdWithHandler:^(NSString* theHashId) {
+                    [_coverArtById setObject:tmpImage forKey:theHashId];
+                    NSLog(@"Caching cover art found in metadata");
+                    theSong.artID = theHashId;
+                }];
+                
+            }
             
-            // wipwip Since the following call can happen without lagging it cannot be the imageHandler that is causing it.
+            
             // Call the image handler with the image we recived from the song.
             if (imageHandler != nil) {
                 imageHandler(tmpImage);
@@ -611,30 +650,26 @@ static int const kSongPoolStartCapacity = 250;
             // This will produce the wrong result for the (rare) albums where each song has a separate image.
             // Additionally this only produces album art once other songs' album art has been resolved which only
             // happens when the song is actively selected and played.
-//            [self requestSongIdsFromAlbumWithName:theSong.album withHandler:^(NSArray* songs) {
             [self requestSongIdsFromAlbumWithName:theSong.album withHandler:^(NSArray* songIds) {
 
-                
                 // Excluding the original song whose art we're looking for see if the others have it.
-//                for (TEOSongData* songDat in songs) {
                 for (id<SongIDProtocol> songId in songIds) {
-                    // Find the song from the url string.
-//                    TGSong* aSong = [songPoolDictionary objectForKey:[SongID initWithString:songDat.urlString]];
                     TGSong* aSong = [self songForID:songId];
                     
                     if (aSong && ![aSong isEqualTo:theSong]) {
                         
                         // Here we can check the song's artID to see if it already has album art.
-                        if ((aSong.artID != -1) && [_artArray objectAtIndex:aSong.artID] ) {
-                            /*
-                             TEO For now we don't have a good way of detecting whether an image is already in the
-                             // artArray so this is just filling it up with dupes. Commenting it out until a strategy is thought of.
-                            // Add the art index to the song.
+                        if ((aSong.artID != nil) && [_coverArtById objectForKey:aSong.artID] ) {
+                            
+                            // Store the art id in the song so we know this song is associated with a cover from here on.
                             theSong.artID = aSong.artID;
-                             */
+                            NSLog(@"Found cover art in dictionary, setting art id.");
                             if (imageHandler != nil) {
-                                imageHandler([_artArray objectAtIndex:aSong.artID]);
+                                imageHandler([_coverArtById objectForKey:aSong.artID]);
                             }
+                            
+                            NSAssert(imageHandler != nil, @"No imageHandler. Wtf?");
+                            // What happens (and what should happen) if there is no imageHandler?
                             
                             // We've succeeded, so drop out.
                             return;
@@ -652,16 +687,15 @@ static int const kSongPoolStartCapacity = 250;
                 
                 if (tmpImage != nil) {
                     
-                    // Store the image in the local store so we won't have to re-fetch it from the file.
-                    [_artArray addObject:tmpImage];
+                    // Store the image in the local cache if it isn't already there so we won't have to re-fetch it from the file.
+                    if ([_coverArtById objectForKey:tmpImage.hashId] == nil) {
+                        [tmpImage hashIdWithHandler:^(NSString* theHashId) {
+                            [_coverArtById setObject:tmpImage forKey:theHashId];
+                            NSLog(@"Caching cover art found in common directory");
+                            theSong.artID = theHashId;
+                        }];
+                    }
                     
-                    //FIXME: Sort out cover art caching.
-                    /*
-                     TEO For now we don't have a good way of detecting whether an image is already in the
-                     // artArray so this is just filling it up with dupes. Commenting it out until a strategy is thought of.
-                    // Add the art index to the song.
-                    theSong.artID = [_artArray count]-1;
-                    */
                     if (imageHandler != nil) {
                         imageHandler(tmpImage);
                     }
@@ -676,15 +710,14 @@ static int const kSongPoolStartCapacity = 250;
                 [self requestCoverArtFromWebForSong:songID withHandler:^(NSImage* theImage) {
                     if (theImage != nil) {
                         
-                        // Store the image in the local store so we won't have to re-fetch it from the file.
-                        [_artArray addObject:theImage];
-                        
-                        /* 
-                            TEO this is the only place it still makes sense to keep the art even if it is a dupe (for now).
-                            The artArray should be stored between runs so as to avoid net access all the time
-                         */
-                        // Add the art index to the song.
-                        theSong.artID = [_artArray count]-1;
+                        // Store the image in the local cache if it isn't already there so we won't have to re-fetch it from the file.
+                        if ([_coverArtById objectForKey:theImage.hashId] == nil) {
+                            [theImage hashIdWithHandler:^(NSString* theHashId) {
+                                [_coverArtById setObject:theImage forKey:theHashId];
+                                NSLog(@"Caching cover art found on the internets.");
+                                theSong.artID = theHashId;
+                            }];
+                        }
                         
                         if (imageHandler != nil) {
                             imageHandler(theImage);
@@ -711,53 +744,50 @@ static int const kSongPoolStartCapacity = 250;
 
 /**
  Request the cover art from the web for the given song.
- If the song has does not yet have a UUID then request one first and then send cover art request,
+ If the song does not yet have a UUID then request one first and then send cover art request,
  otherwise just send request immediately. 
  The given hander is passed down to the cover art fetcher and is called by it on termination.
  */
 -(void)requestCoverArtFromWebForSong:(id<SongIDProtocol>)songID withHandler:(void (^)(NSImage*))imageHandler {
-    TGSong * theSong = [self songForID:songID];
+    //TGSong * theSong = [self songForID:songID];
+    NSString* theUUId = [self UUIDStringForSongID:songID];
     
     // If there's no uuid, request one and pass it the art fetcher as a handler.
-    if (theSong.uuid != NULL) {
+    if (theUUId != NULL) {
         [_coverArtWebFetcher requestAlbumArtFromWebForSong:songID imageHandler:imageHandler];
     } else {
+        //MARK:CDFIX [self fetchUUIdForSongId:songID];
+        // we should be listening for cover art being fetched and set up the appropriate song.
+//        [_coverArtWebFetcher requestAlbumArtFromWebForSong:songID imageHandler:imageHandler];
+        
+//MARK: CDFIX        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(songCoverWasFetched:) name:@"webSongCoverFetcherDidFetch" object:nil];
+
         // At this point it could be the case that the song already has a fingerprint but no UUID
         // either because it is waiting for the server to return it or because the server could not
         // map the fingerprint to a uuid.
-        if (([theSong fingerPrintStatus] == kFingerPrintStatusDone) || ([theSong fingerPrintStatus] == kFingerPrintStatusRequested)){
-            NSLog(@"We have a fingerprint but no UUID (yet). The status is %lu",(unsigned long)[theSong fingerPrintStatus]);
+//        if (([theSong fingerPrintStatus] == kFingerPrintStatusDone) || ([theSong fingerPrintStatus] == kFingerPrintStatusRequested)){
+//            NSLog(@"We have a fingerprint but no UUID (yet). The status is %lu",(unsigned long)[theSong fingerPrintStatus]);
             imageHandler(nil);
-        } else {
-            [self fetchUUIdForSongId:songID];
-            /*
-            [theSong setFingerPrintStatus:kFingerPrintStatusRequested];
-
-            NSLog(@"requestCoverArtForSong calling requestFingerPrintForSong");
-            [songFingerPrinter requestFingerPrintForSong:songID withHandler:^(NSString* fingerPrint){
-                if (fingerPrint == nil) {
-                    NSLog(@"requestCoverArtForSong ERROR: NO FINGERPRINT");
-                    [theSong setFingerPrintStatus:kFingerPrintStatusFailed];
-                    return;
-                }
-                
-                [self fingerprintReady:fingerPrint forSongID:songID];
-                
-                // Only request the album art from web server if we have a uuid to send them.
-                if ([self UUIDStringForSongID:songID] != nil) {
-                    [_coverArtWebFetcher requestAlbumArtFromWebForSong:songID imageHandler:imageHandler];
-                }
-            }];
-             */
-            //wipwip moved out of the commented bit above.
-            // Only request the album art from web server if we have a uuid to send them.
-            if ([self UUIDStringForSongID:songID] != nil) {
-                [_coverArtWebFetcher requestAlbumArtFromWebForSong:songID imageHandler:imageHandler];
-            }
-
-        }
+//        } else {
+//
+//        }
     }
 }
+
+
+//MARK: CDFIX - observer methods
+- (void)songCoverWasFetched:(NSNotification*)notification {
+    TGSong* song = (TGSong*)notification.object;
+    NSLog(@"songCoverWasFetched with %@",song);
+}
+
+//- (void)songIsReadyForPlayback:(NSNotification*)notification {
+//    TGSong* song = (TGSong*)notification.object;
+//    NSLog(@"song %@ is now ready for playback!",song.songID);
+////    // use payload to get at extra info
+////    NSDictionary* payload = [notification userInfo];
+////    [self songReadyForPlayback:song atTime:[payload objectForKey:@"time"]];
+//}
 
 /**
  Search for image files in the directory containing the given URL that match a particular pattern.
@@ -888,6 +918,12 @@ static int const kSongPoolStartCapacity = 250;
     return [NSNumber numberWithDouble:secs];
 }
 
+- (void)setSongDuration:(NSNumber *)duration forSongId:(id<SongIDProtocol>)songId {
+    TGSong* aSong = [self songForID:songId];
+    if (aSong) {
+        aSong.songDuration = CMTimeMake([duration intValue], 1);
+    }
+}
 
 - (NSURL *)songURLForSongID:(id<SongIDProtocol>)songID {
     TGSong *aSong = [self songForID:songID];
@@ -1376,9 +1412,6 @@ static int const kSongPoolStartCapacity = 250;
 - (void)cacheWithContext:(NSDictionary*)cacheContext {
     // First we need to decide on a caching strategy.
     // For now we will simply do a no-brains area caching of two songs in every direction from the current cursor position.
-    
-    return; // wip return so we don't do any caching.
-    
     NSDate* preBuildDate = [NSDate date];
     NSDate* preDate = [NSDate date];
     
@@ -1406,59 +1439,59 @@ static int const kSongPoolStartCapacity = 250;
 
     [weakCacheOp addExecutionBlock:^{
         
-    // Make sure we have an inited cache.
-    NSMutableSet* wantedCache = [[NSMutableSet alloc] initWithCapacity:25];
-    
-    NSInteger radius = 2;
+        // Make sure we have an inited cache.
+        NSMutableSet* wantedCache = [[NSMutableSet alloc] initWithCapacity:25];
         
-    for (NSInteger matrixRows=selectionPos.y-radius; matrixRows<=selectionPos.y+radius; matrixRows++) {
-        for (NSInteger matrixCols=selectionPos.x-radius; matrixCols<=selectionPos.x+radius; matrixCols++) {
-            if ((matrixRows >= 0) && (matrixRows <gridDims.y)) {
-                if((matrixCols >=0) && (matrixCols < gridDims.x)) {
-                    
-                    // skip if this is the selected cell (which is already cached or requested).
-                    //wipwip
-                    if ((matrixRows == selectionPos.y) && (matrixCols == selectionPos.x))
-                        continue;
-                    // Check for operation cancellation
-                    if( weakCacheOp.isCancelled ) {return;}
-                    
-                    id<SongIDProtocol> songID = [_songGridAccessAPI songIDFromGridColumn:matrixCols andRow:matrixRows];
-                    if (songID != nil) {
-                        [wantedCache addObject:songID];
+        NSInteger radius = 0;
+            
+        for (NSInteger matrixRows=selectionPos.y-radius; matrixRows<=selectionPos.y+radius; matrixRows++) {
+            for (NSInteger matrixCols=selectionPos.x-radius; matrixCols<=selectionPos.x+radius; matrixCols++) {
+                if ((matrixRows >= 0) && (matrixRows <gridDims.y)) {
+                    if((matrixCols >=0) && (matrixCols < gridDims.x)) {
+                        
+//                        // skip if this is the selected cell (which is already cached or requested).
+//                        //wipwip
+//                        if ((matrixRows == selectionPos.y) && (matrixCols == selectionPos.x))
+//                            continue;
+                        // Check for operation cancellation
+                        if( weakCacheOp.isCancelled ) {return;}
+                        
+                        id<SongIDProtocol> songID = [_songGridAccessAPI songIDFromGridColumn:matrixCols andRow:matrixRows];
+                        if (songID != nil) {
+                            [wantedCache addObject:songID];
+                        }
                     }
                 }
             }
         }
-    }
+            
+        // The stale cache is the existing cache - wanted cache
+        NSMutableSet* staleCache = [songIDCache mutableCopy];
+        [staleCache minusSet:wantedCache];
         
-    // The stale cache is the existing cache - wanted cache
-    NSMutableSet* staleCache = [songIDCache mutableCopy];
-    [staleCache minusSet:wantedCache];
-    
-    // Check for operation cancellation
-    if( weakCacheOp.isCancelled ) {return;}
-        
-    // Beyond this point we can no longer cancel because we now start affecting the external state.
-    [self clearSongCache:[staleCache allObjects]];
-        
-    // DEBUG
-    [_delegate setDebugCachedFlagsForSongIDArray:[staleCache allObjects] toValue:NO];
+        // Check for operation cancellation
+        if( weakCacheOp.isCancelled ) {return;}
+            
+        // Beyond this point we can no longer cancel because we now start affecting the external state.
+        [self clearSongCache:[staleCache allObjects]];
+            
+        // DEBUG
+        [_delegate setDebugCachedFlagsForSongIDArray:[staleCache allObjects] toValue:NO];
 
-    // Remove the what's already cached from the wanted cache and load it.
-    [wantedCache minusSet:songIDCache];
+        // Remove the what's already cached from the wanted cache and load it.
+        [wantedCache minusSet:songIDCache];
+            
+        NSDate* postBuildDate = [NSDate date];
+        NSLog(@"Building the cache took: %f",[postBuildDate timeIntervalSinceDate:preBuildDate]);
+            
+        [self loadSongCache:[wantedCache allObjects]];
+            
+        // DEBUG
+        [_delegate setDebugCachedFlagsForSongIDArray:[wantedCache allObjects] toValue:YES];
         
-    NSDate* postBuildDate = [NSDate date];
-    NSLog(@"Building the cache took: %f",[postBuildDate timeIntervalSinceDate:preBuildDate]);
-        
-    [self loadSongCache:[wantedCache allObjects]];
-        
-    // DEBUG
-    [_delegate setDebugCachedFlagsForSongIDArray:[wantedCache allObjects] toValue:YES];
-    
-    // Remove from the existing cache what is not in the wanted cache.
-    [songIDCache minusSet:staleCache];
-    [songIDCache unionSet:wantedCache];
+        // Remove from the existing cache what is not in the wanted cache.
+        [songIDCache minusSet:staleCache];
+        [songIDCache unionSet:wantedCache];
     
     }];
     
@@ -1489,9 +1522,9 @@ static int const kSongPoolStartCapacity = 250;
     // What's on the queue is not removed until its turn.
 //    [urlCachingOpQueue cancelAllOperations];
     
-    NSLog(@"Wait!");
-    [NSThread sleepForTimeInterval:10.0f];
-    NSLog(@"Carry on.");
+//    NSLog(@"Wait!");
+//    [NSThread sleepForTimeInterval:10.0f];
+//    NSLog(@"Carry on.");
     // Then we add the tracks to cache queue.
 //    [urlCachingOpQueue addOperationWithBlock:^{
         // TEO - calling this async'ly crashes in core data.
@@ -1505,7 +1538,27 @@ static int const kSongPoolStartCapacity = 250;
             }
             
             // tell the song to load its data asyncronously without requesting a callback on completion.
-            [aSong loadTrackDataWithCallBackOnCompletion:NO withStartTime:nil];
+//            [aSong loadTrackDataWithCallBackOnCompletion:NO withStartTime:nil];
+            [aSong prepareForPlaybackWithCompletionBlock:^{
+                NSLog(@"prepareForPlaybackWithCompletionBlock from loadSongCache.");
+            }];
+            
+            //MARK: CDFIX
+            // At this point we should initiate the fingerprint/UUId generation and possibly even the fetching of cover art.
+            [self fetchUUIdForSongId:songID withHandler:^(NSString* theUUId) {
+                
+                NSLog(@"UUId fetch for songId %@ succeeded. Handler call.",songID);
+                
+                // Now that we know we have a UUId, initiate the fetching of the cover art.
+                [self requestImageForSongID:songID withHandler:^(NSImage* theImage) {
+                    NSLog(@"We have a cover image via the block image handler");
+                    
+                    // Here we should signal that the song now has cover art. Or update the song in question if its current image == fetching image
+                    [[NSNotificationCenter defaultCenter] postNotificationName:@"songCoverUpdated" object:songID];
+                }];
+
+            }];
+            
             
             //MARK: These two requests really ought to be initiated by the above loadTrackData... call.
             // We should try and get the metadata so it's ready,
@@ -1564,10 +1617,10 @@ static int const kSongPoolStartCapacity = 250;
     }
 
     if ([aSong isReadyForPlayback] == YES) {
-        //NSLog(@"Ready");
+        //NSLog(@"Ready");^
         [self songReadyForPlayback:aSong atTime:time];
     } else {
-        //NSLog(@"Not ready");
+        NSLog(@"Not ready");
         // First cancel any pending requests in the operation queue and then add this.
         // This won't delete them from the queue but it will tell each in turn it has been cancelled.
         [urlLoadingOpQueue cancelAllOperations];
@@ -1582,12 +1635,17 @@ static int const kSongPoolStartCapacity = 250;
             if( weakCacheOp.isCancelled ) {return;}
             
             // Asynch'ly start loading the track data for aSong. songReadyForPlayback will be called back when the song is good to go.
-            [aSong loadTrackDataWithCallBackOnCompletion:YES withStartTime:time];
+//            [aSong loadTrackDataWithCallBackOnCompletion:YES withStartTime:time];
+//            [aSong loadTrackDataAtStartTime:time withCompletionBlock:^{
+            [aSong prepareForPlaybackWithCompletionBlock:^{
+                NSLog(@"prepareForPlaybackWithCompletionBlock completion block from requestSongPlayback.");
+                [self songReadyForPlayback:aSong atTime:time];
+            }];
         }];
         
         // For debug checking
         cacheOp.completionBlock = ^{
-            NSLog(@"The loadTrackDataWithCallBackOnCompletion block was %@.",weakCacheOp.isCancelled ? @"cancelled" : @"completed");
+            NSLog(@"The call to prepareForPlaybackAtStartTime:withCompletionBlock was %@.",weakCacheOp.isCancelled ? @"cancelled" : @"completed");
         };
         
         [urlLoadingOpQueue addOperation:cacheOp];
@@ -1635,9 +1693,10 @@ static int const kSongPoolStartCapacity = 250;
         // Song fingerprints are generated and UUID fetched during idle time in the background.
         // However, if the song about to be played hasn't got a UUID or fingerprint, an async request will be initiated here.
         // This should not be called on the playback queue!
-        if (nextSong.uuid == NULL) {
-            [self fetchUUIdForSongId:nextSong.songID];
-        }
+// This is being called (indirectly) by songPoolDidStartPlayingSong in the subsequent call
+//        if (nextSong.uuid == NULL) {
+//            [self fetchUUIdForSongId:nextSong.songID];// withHandler:nil];
+//        }
 
         //MARK: consider using an event to signal this instead.
         // Inform the delegate that we've started playing the song.
@@ -1728,6 +1787,7 @@ static int const kSongPoolStartCapacity = 250;
         //NSLog(@"about to play song which is equal to lastRequestedSong %@",lastRequestedSong.songID);
         //     If there's no start time, check the sweet spot server for one. If one is found set the startTime to it.
         if (startTime == nil) {
+            // At this point we really ought to make sure we have a song uuid generated from the fingerprint.
             startTime = [self fetchSongSweetSpot:song];
             if (startTime == nil) {
                 startTime = [NSNumber numberWithDouble:0.0];
@@ -1754,5 +1814,45 @@ static int const kSongPoolStartCapacity = 250;
     }
 }
 
+
+//MARK: Debug methods
+
+- (void)DebugLogSongWithId:(id<SongIDProtocol>)songId {
+    TGSong* theSong = [self songForID:songId];
+    NSLog(@"Debug log for song with id: %@",songId);
+    NSLog(@"vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv");
+    NSLog(@"List sweetspots for song with Id: %@",songId);
+    
+    NSLog(@"The song status is: %@",[self statusValToString:theSong.songStatus]);
+    
+    NSLog(@"The UUID is %@",[self UUIDStringForSongID:songId]);
+    NSLog(@"The song has a fingerprint: %@",[self fingerprintExistsForSongID:songId]?@"Yes":@"No");
+    NSLog(@"The sweetspots are %@",[self sweetSpotsForSongID:songId]);
+    NSLog(@"^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^");
+}
+
+- (NSString*)statusValToString:(NSUInteger)statusVal {
+    switch (statusVal) {
+        case 0:
+            return @"Loading";
+            break;
+        case 1:
+            return @"Ready";
+            break;
+        case 2:
+            return @"Unloading";
+            break;
+        case 3:
+            return @"Failed";
+            break;
+        case 4:
+            return @"Uninited";
+            break;
+
+        default:
+            return @"Unknown status";
+            break;
+    }
+}
 
 @end

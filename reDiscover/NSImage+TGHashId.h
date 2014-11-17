@@ -13,4 +13,6 @@
 
 @property (nonatomic, strong) NSString* hashId;
 
+- (void)hashIdWithHandler:(void (^)(NSString *))hashHandler;
+
 @end

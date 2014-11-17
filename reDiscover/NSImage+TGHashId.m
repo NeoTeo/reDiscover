@@ -26,30 +26,55 @@
         
         // When swizzling a class method, use the following:
         Class class = object_getClass((id)self);
+
+        [self swizzleSelector:@selector(imageNamed:) withSelector:@selector(tgImageNamed:) forClass:class];
         
-        SEL originalSelector = @selector(imageNamed:);
-        SEL swizzledSelector = @selector(tgImageNamed:);
+        class = [self class];
+        [self swizzleSelector:@selector(initWithData:) withSelector:@selector(tgInitWithData:) forClass:class];
+        [self swizzleSelector:@selector(initWithContentsOfURL:) withSelector:@selector(tgInitWithContentsOfURL:) forClass:class];
         
-        Method originalMethod = class_getInstanceMethod(class, originalSelector);
-        Method swizzledMethod = class_getInstanceMethod(class, swizzledSelector);
-        
-        BOOL didAddMethod =
-        class_addMethod(class,
-                        originalSelector,
-                        method_getImplementation(swizzledMethod),
-                        method_getTypeEncoding(swizzledMethod));
-        
-        if (didAddMethod) {
-            class_replaceMethod(class,
-                                swizzledSelector,
-                                method_getImplementation(originalMethod),
-                                method_getTypeEncoding(originalMethod));
-        } else {
-            method_exchangeImplementations(originalMethod, swizzledMethod);
-        }
+//        SEL originalSelector = @selector(imageNamed:);
+//        SEL swizzledSelector = @selector(tgImageNamed:);
+//        
+//        Method originalMethod = class_getInstanceMethod(class, originalSelector);
+//        Method swizzledMethod = class_getInstanceMethod(class, swizzledSelector);
+//        
+//        BOOL didAddMethod =
+//        class_addMethod(class,
+//                        originalSelector,
+//                        method_getImplementation(swizzledMethod),
+//                        method_getTypeEncoding(swizzledMethod));
+//        
+//        if (didAddMethod) {
+//            class_replaceMethod(class,
+//                                swizzledSelector,
+//                                method_getImplementation(originalMethod),
+//                                method_getTypeEncoding(originalMethod));
+//        } else {
+//            method_exchangeImplementations(originalMethod, swizzledMethod);
+//        }
     });
 }
 
++(void)swizzleSelector:(SEL)originalSel withSelector:(SEL)swizzledSel forClass:(Class)theClass {
+    Method originalMethod = class_getInstanceMethod(theClass, originalSel);
+    Method swizzledMethod = class_getInstanceMethod(theClass, swizzledSel);
+    
+    BOOL didAddMethod =
+    class_addMethod(theClass,
+                    originalSel,
+                    method_getImplementation(swizzledMethod),
+                    method_getTypeEncoding(swizzledMethod));
+    
+    if (didAddMethod) {
+        class_replaceMethod(theClass,
+                            swizzledSel,
+                            method_getImplementation(originalMethod),
+                            method_getTypeEncoding(originalMethod));
+    } else {
+        method_exchangeImplementations(originalMethod, swizzledMethod);
+    }
+}
 
 +(instancetype)tgImageNamed:(NSString*)name {
 
@@ -61,13 +86,47 @@
         
         [theImage generateHashForImage:theImage withHandler:^(NSString *theHash) {
             [theImage setHashId:theHash];
-            NSLog(@"Hashhandler: %@",theHash);
+            NSLog(@"tgImageNamed Hashhandler: %@",theHash);
         }];
     });
     return theImage;
 }
 
+- (instancetype)tgInitWithData:(NSData *)data {
+    NSImage* theImage = [self tgInitWithData:data];
+    if (theImage == nil) { return nil; }
+    
+    // do stuff here to hash the image and store it.
+    dispatch_async(dispatch_get_global_queue(QOS_CLASS_BACKGROUND, 0), ^{
+        
+        [theImage generateHashForImage:theImage withHandler:^(NSString *theHash) {
+            [theImage setHashId:theHash];
+            NSLog(@"tgInitWithData Hashhandler: %@",theHash);
+        }];
+    });
+    
+    return theImage;
+}
+
+- (instancetype)tgInitWithContentsOfURL:(NSURL *)url {
+    NSImage* theImage = [self tgInitWithContentsOfURL:url];
+    if (theImage == nil) { return nil; }
+    
+    // do stuff here to hash the image and store it.
+    dispatch_async(dispatch_get_global_queue(QOS_CLASS_BACKGROUND, 0), ^{
+        
+        [theImage generateHashForImage:theImage withHandler:^(NSString *theHash) {
+            [theImage setHashId:theHash];
+            NSLog(@"tgInitWithContentsOfURL Hashhandler: %@",theHash);
+        }];
+    });
+    
+    return theImage;
+}
+
+
 - (void)generateHashForImage:(NSImage*)theImage withHandler:(void (^)(NSString *))hashHandler {
+
     unsigned char result[CC_MD5_DIGEST_LENGTH];
     NSData *imageData = [theImage TIFFRepresentation];
     CC_MD5([imageData bytes], (unsigned int)[imageData length], result);
@@ -93,6 +152,15 @@
 
 - (NSString*)hashId {
     return objc_getAssociatedObject(self, @selector(hashId));
+}
+
+- (void)hashIdWithHandler:(void (^)(NSString *))hashHandler {
+    if ([self hashId] == nil) {
+        [self generateHashForImage:self withHandler:hashHandler];
+    } else {
+        hashHandler([self hashId]);
+    }
+    
 }
 
 @end

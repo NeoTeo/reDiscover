@@ -32,6 +32,7 @@ class CoverArtArchiveWebFetcher : NSObject {
         var releases        = NSKeyedUnarchiver.unarchiveObjectWithData(data!) as? [NSDictionary]
         if releases == nil {
             println("releases could not be unarchived?! from this data: \(data)")
+            imageHandler(nil)
             return
         }
 

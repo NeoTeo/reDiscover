@@ -9,6 +9,7 @@
 #import "TGSong.h"
 #import "TGSongPool.h"
 #import "TEOSongData.h"
+#import "NSImage+TGHashId.h"
 
 #import <AVFoundation/AVFoundation.h>
 
@@ -22,8 +23,10 @@
         _songTimeScale = 100; // Centiseconds.
         _fingerPrintStatus = kFingerPrintStatusEmpty;
         _SSCheckCountdown = 0;
-        _artID = -1;
+        _artID = nil;
         _songDuration = CMTimeMakeWithSeconds(0, 1);
+        _songStatus = kSongStatusUninited;
+        _serialTestQueue = dispatch_queue_create("serial test queue", NULL);
     }
     return self;
 }
@@ -58,8 +61,96 @@
     }];
 }
 
+//- (void)performBlockWhenReadyForPlayback:(void (^)(void))completionBlock {
+//    if ([self songStatus] == kSongStatusReady) {
+//        completionBlock();
+//    } else {
+//        //if ([self songStatus] == kSongStatusLoading) {
+//            self.customBlock = (MyCustomBlock)completionBlock;
+////        } else {
+////            NSLog(@"ERROR: Song status is %ld. Returning without setting completion block.",[self songStatus]);
+////        }
+//    }
+//}
+
 // Make the context point to its own pointer.
 static const void *ItemStatusContext = &ItemStatusContext;
+
+- (void)prepareForPlaybackWithCompletionBlock:(void (^)(void))completionBlock {
+    //dispatch_async(_serialTestQueue, ^{
+        // Set the completion block to be called when the songPlayerItem's status changes to ready.
+        self.customBlock = (MyCustomBlock)completionBlock;
+
+    // If the song is ready to play, just call the completion block and return.
+    if ([self songStatus] == kSongStatusReady) {
+        NSLog(@"prepareForPlayback song was already prepared. Calling completion block.");
+        completionBlock();
+        return;
+    }
+    
+    // If the song is currently loading (waiting for the status to change to ready) then set the completionBlock to call.
+    // Note this will overwrite any existing completion block.
+    if ([self songStatus] == kSongStatusLoading) {
+        NSLog(@"prepareForPlayback song is already loading. Replacing completion block.");
+        self.customBlock = (MyCustomBlock)completionBlock;
+        return;
+    }
+    
+    NSURL *theURL = [NSURL URLWithString:self.urlString];
+    [self setSongStatus:kSongStatusLoading];
+    
+    if (songAsset == nil) {
+        /// This initializes the asset with the song's url.
+        ///Since the options are nil the default will be to not require precise timing.
+        songAsset = [AVAsset assetWithURL:theURL];
+    }
+    if (CMTimeGetSeconds(self.songDuration) == 0) {
+        
+        // [songAsset duration] may block for a bit which is just how we want it.
+        // WHY?
+        // Because, since this whole method is sitting in an op queue, if it takes too long
+        // and the user moves on to another song that should be played instead it and all the
+        // subsequent queued calls can be cancelled.
+        // If it just returned immediately there would be a large uncancellable backlog of song asset loads.
+        [self setSongDuration:[songAsset duration]];
+        
+        
+        NSError* error;
+        AVKeyValueStatus tracksStatus = [songAsset statusOfValueForKey:@"duration" error:&error];
+        switch (tracksStatus) {
+            case AVKeyValueStatusLoaded:
+            {
+                // Prepare the asset for playback by loading its tracks.
+                [songAsset loadValuesAsynchronouslyForKeys:@[@"tracks"] completionHandler:^{
+                    // Now, associate the asset with the player item.
+                    if (songPlayerItem == nil) {
+                        songPlayerItem = [AVPlayerItem playerItemWithAsset:songAsset];
+                        // Observe the status keypath of the songPlayerItem.
+                        [songPlayerItem addObserver:self forKeyPath:@"status" options:NSKeyValueObservingOptionInitial context:&ItemStatusContext];
+                    }
+                    
+                    // This will trigger the player's preparation to play.
+                    if (songPlayer == nil) {
+                        songPlayer = [AVPlayer playerWithPlayerItem:songPlayerItem];
+                    }
+                    
+//                    // Set the completion block to be called when the songPlayerItem's status changes to ready.
+//                    self.customBlock = (MyCustomBlock)completionBlock;
+                    
+                }];
+                
+                break;
+            }
+            case AVKeyValueStatusFailed:
+                NSLog(@"There was an error getting track duration.");
+                break;
+            default:
+                NSLog(@"The track is not (yet) loaded!");
+                break;
+        }
+    }
+    //});
+}
 
 - (void)loadTrackDataWithCallBackOnCompletion:(BOOL)wantsCallback withStartTime:(NSNumber*)startTime {
 
@@ -350,7 +441,11 @@ static const void *ItemStatusContext = &ItemStatusContext;
     if (context == &ItemStatusContext) {
         if (object == songPlayerItem && [keyPath isEqualToString:@"status"]) {
             if (songPlayerItem.status == AVPlayerItemStatusReadyToPlay) {
+                
                 [self setSongStatus:kSongStatusReady];
+                
+//                [[NSNotificationCenter defaultCenter] postNotificationName:@"songStatusNowReady" object:self];
+                
                 if (self.customBlock != nil) {
                     self.customBlock();
                     // reset it.

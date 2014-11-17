@@ -65,6 +65,8 @@
 
     fetchingImage = [NSImage imageNamed:@"fetchingArt"];
     defaultImage = [NSImage imageNamed:@"songImage"];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(songCoverWasUpdated:) name:@"songCoverUpdated" object:nil];
 }
 
 
@@ -269,12 +271,7 @@
         [self songUISweetSpotButtonWasPressed];
         
     } else if ([chars isEqualToString:@"l"]){
-        
-        NSLog(@"List sweetspots for song with Id: %@",lastRequestedSongID);
-
-        NSLog(@"The UUID is %@",[_currentSongPool UUIDStringForSongID:lastRequestedSongID]);
-        NSLog(@"The song has a fingerprint: %@",[_currentSongPool fingerprintExistsForSongID:lastRequestedSongID]?@"Yes":@"No");
-        NSLog(@"The sweetspots are %@",[_currentSongPool sweetSpotsForSongID:lastRequestedSongID]);
+        [_currentSongPool DebugLogSongWithId:lastRequestedSongID];
         
     } else if ([chars isEqualToString:@"p"]){
         
@@ -522,7 +519,7 @@
     NSImage* songImage = [_songGridController coverImageForSongWithId:songID];
     [_songInfoController setSongCoverImage:songImage];
     
-    // drop out unless the image is the default image.
+    // If the image is the default image, change it to the fetching image to signal we're working on it.
     if ([songImage.hashId isEqualToString:defaultImage.hashId] == YES)
     {
     
@@ -539,35 +536,49 @@
         // Tell the info panel to change to display the new song's data.
         [_songInfoController setSong:theData];
 
+        //MARK: CDFIX - move all this into a method that observes when a cover is loaded.
+        // Still needs a way of figuring whether the song that is ready was cached or requested playback...
+
         // Then async'ly request an album image for the song and pass it a block callback.
-        dispatch_async(dispatch_get_global_queue(QOS_CLASS_USER_INTERACTIVE, 0), ^{
-            [_currentSongPool requestImageForSongID:songID withHandler:^(NSImage *tmpImage) {
-                
-                // none of the attempts returned an image so just show the no cover cover.
-                if (tmpImage == nil) {
-                    tmpImage = [NSImage imageNamed:@"noCover"];
-                    //NSBeep();
-                }
-    
-                // Set the scroll view controller cover image.
-                [_songGridController setCoverImage:tmpImage forSongWithID:songID];
-                
-                // Only update the info window for the currently playing song.
-                //MARK: ARS
-                if (songID == [_currentSongPool currentlyPlayingSongID]) {
-                    [_songInfoController setSongCoverImage:tmpImage];
-                }
-                
-                
-            }];
-        });
-        
+        // Commented out because this is already being called when the caching gets an album.
+//        [self refreshCoverForSongId:songID];
     }];
     
     // Let the timelinecontroller know that we've changed song.
     // (would a song change be better signalled as a global notification?)
     //MARK: wipEv change this to a notification
     [_songGridController.songTimelineController setCurrentSongID:songID];
+}
+
+- (void)refreshCoverForSongId:(id<SongIDProtocol>)songId {
+    NSImage* songImage = [_songGridController coverImageForSongWithId:songId];
+    
+    // Only update song whose image has been set to fetching.
+    if ([songImage.hashId isEqualToString:fetchingImage.hashId] == YES) {
+        dispatch_async(dispatch_get_global_queue(QOS_CLASS_USER_INTERACTIVE, 0), ^{
+            [_currentSongPool requestImageForSongID:songId withHandler:^(NSImage *tmpImage) {
+                // none of the attempts returned an image so just show the no cover cover.
+                if (tmpImage == nil) {
+                    tmpImage = [NSImage imageNamed:@"noCover"];
+                }
+                
+                // Set the scroll view controller cover image.
+                [_songGridController setCoverImage:tmpImage forSongWithID:songId];
+                
+                // Only update the info window for the currently playing song.
+                if (songId == [_currentSongPool currentlyPlayingSongID]) {
+                    [_songInfoController setSongCoverImage:tmpImage];
+                }
+            }];
+        });
+    }
+}
+
+//FIXME: I think I want this as a block passed to the song cover fetching method and called from the caching method.
+// Observer method called when a song's cover image fetching method is done.
+- (void)songCoverWasUpdated:(NSNotification*)notification {
+    id<SongIDProtocol> songId = notification.object;
+    [self refreshCoverForSongId:songId];
 }
 
 // cdfix
