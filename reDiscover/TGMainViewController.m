@@ -37,6 +37,30 @@
 // Main coordinating controller.
 @implementation TGMainViewController
 
+-(void)viewDidLoad {
+    // vv From awakeFromNib
+    // The idle timer produces system wide notifications of entering and exiting idle time.
+    _idleTimer = [[TGIdleTimer alloc] init];
+    
+    infoLabel = @"infoView";
+    playlistLabel = @"playlistView";
+    
+    // register the timeline transformer.
+    id transformer = [[TGTimelineTransformer alloc] init];
+    [NSValueTransformer setValueTransformer:transformer forName:@"TimelineTransformer"];
+    
+    _songGridController = [[TGSongGridViewController alloc] initWithNibName:@"TGSongGridView" bundle:nil];
+    _playlistController = [[TGPlaylistViewController alloc] initWithNibName:@"TGPlaylistView" bundle:nil];
+    _songInfoController = [[TGSongInfoViewController alloc] initWithNibName:@"TGSongInfoView" bundle:nil];
+    
+    fetchingImage = [NSImage imageNamed:@"fetchingArt"];
+    defaultImage = [NSImage imageNamed:@"songImage"];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(songCoverWasUpdated:) name:@"songCoverUpdated" object:nil];
+    
+    // ^^ From awakeFromNib
+}
+
 -(void)viewWillAppear {
 
     [self.view.window makeFirstResponder:self];
@@ -45,30 +69,8 @@
 
     [self setSongPool:[[TGSongPool alloc] init]];
     [_currentSongPool loadFromURL:_theURL];
+    
 }
-
--(void)awakeFromNib{
-    
-    // The idle timer produces system wide notifications of entering and exiting idle time.
-    _idleTimer = [[TGIdleTimer alloc] init];
-    
-    infoLabel = @"infoView";
-    playlistLabel = @"playlistView";
-    
-   // register the timeline transformer.
-    id transformer = [[TGTimelineTransformer alloc] init];
-    [NSValueTransformer setValueTransformer:transformer forName:@"TimelineTransformer"];
-
-    _songGridController = [[TGSongGridViewController alloc] initWithNibName:@"TGSongGridView" bundle:nil];
-    _playlistController = [[TGPlaylistViewController alloc] initWithNibName:@"TGPlaylistView" bundle:nil];
-    _songInfoController = [[TGSongInfoViewController alloc] initWithNibName:@"TGSongInfoView" bundle:nil];
-
-    fetchingImage = [NSImage imageNamed:@"fetchingArt"];
-    defaultImage = [NSImage imageNamed:@"songImage"];
-    
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(songCoverWasUpdated:) name:@"songCoverUpdated" object:nil];
-}
-
 
 - (id)initWithFrame:(NSRect)theFrame {
     self = [super init];
@@ -577,6 +579,7 @@
 //FIXME: I think I want this as a block passed to the song cover fetching method and called from the caching method.
 // Observer method called when a song's cover image fetching method is done.
 - (void)songCoverWasUpdated:(NSNotification*)notification {
+    NSLog(@"SONG COVER UPDATED NOTIFICATION. Going to call refreshCoverForSongId.");
     id<SongIDProtocol> songId = notification.object;
     [self refreshCoverForSongId:songId];
 }

@@ -184,6 +184,7 @@
 
 @property NSFileManager*    sharedFileManager;
 
+@property NSString* noCoverArtHashId;
 
 // Methods
 - (id<SongIDProtocol>)initWithURL:(NSURL*) theURL;

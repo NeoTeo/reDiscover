@@ -123,6 +123,11 @@ static int const kSongPoolStartCapacity = 250;
         _coverArtById = [[NSMutableDictionary alloc] initWithCapacity:100];
         NSImage* noCoverImage = [NSImage imageNamed:@"noCover"];
         [noCoverImage hashIdWithHandler:^(NSString* theHashId){
+            
+            // store the no cover id for later.
+            _noCoverArtHashId = theHashId;
+            
+            // And add the image to the runtime image cache.
             [_coverArtById setObject:noCoverImage forKey:theHashId];
         }];
         // Create and hook up the song fingerprinter.
@@ -727,10 +732,13 @@ static int const kSongPoolStartCapacity = 250;
                         // We've succeeded, so drop out.
                         return;
                     } else {
-                        NSLog(@"got bupkiss from the webs");
+                        NSLog(@"got bupkiss from the webs. Returning default No Cover image.");
+                        
+                        theSong.artID = _noCoverArtHashId;
                         // Finally, if no image was found by any of the methods, we call the given image handler with nil;
                         if (imageHandler != nil) {
-                            imageHandler(nil);
+                            imageHandler([_coverArtById objectForKey:_noCoverArtHashId]);
+//                            imageHandler(nil);
                         }
                     }
                 }];
