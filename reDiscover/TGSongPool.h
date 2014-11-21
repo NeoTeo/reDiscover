@@ -185,6 +185,8 @@
 @property NSFileManager*    sharedFileManager;
 
 @property NSString* noCoverArtHashId;
+@property NSString* defaultCoverArtHashId;
+@property NSString* fetchingCoverArtHashId;
 
 // Methods
 - (id<SongIDProtocol>)initWithURL:(NSURL*) theURL;
@@ -212,6 +214,7 @@
 - (void)setReleases:(NSData*)releases forSongID:(id<SongIDProtocol>)songID;
 
 - (NSString*)albumForSongID:(id<SongIDProtocol>)songID;
+- (NSString*)artIdForSongId:(id<SongIDProtocol>)songId;
 
 // TEO should this not be private?
 //- (NSString *)findUUIDOfSongWithURL:(NSURL *)songURL;

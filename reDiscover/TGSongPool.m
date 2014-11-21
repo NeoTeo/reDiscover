@@ -65,6 +65,11 @@
     return copy;
 }
 
+- (NSString*) description
+{
+    return [NSString stringWithFormat:@"idValue: <%ld> ", _idValue];
+}
+
 @end
 
 
@@ -117,19 +122,8 @@ static int const kSongPoolStartCapacity = 250;
         timelineUpdateQueue = dispatch_queue_create("timeline GUI updater queue", NULL);
         
         
-        // Set up session cache of image covers.
-//        _artArray = [[NSMutableArray alloc] initWithCapacity:100];
-//        [_artArray addObject:[NSImage imageNamed:@"noCover"]];
-        _coverArtById = [[NSMutableDictionary alloc] initWithCapacity:100];
-        NSImage* noCoverImage = [NSImage imageNamed:@"noCover"];
-        [noCoverImage hashIdWithHandler:^(NSString* theHashId){
-            
-            // store the no cover id for later.
-            _noCoverArtHashId = theHashId;
-            
-            // And add the image to the runtime image cache.
-            [_coverArtById setObject:noCoverImage forKey:theHashId];
-        }];
+        [self initBasicCovers];
+        
         // Create and hook up the song fingerprinter.
         songFingerPrinter = [[TGFingerPrinter alloc] init];
         [songFingerPrinter setDelegate:self];
@@ -189,6 +183,46 @@ static int const kSongPoolStartCapacity = 250;
     
     return self;
 }
+
+
+- (void)initBasicCovers {
+    // Set up session cache of image covers.
+    //        _artArray = [[NSMutableArray alloc] initWithCapacity:100];
+    //        [_artArray addObject:[NSImage imageNamed:@"noCover"]];
+    _coverArtById = [[NSMutableDictionary alloc] initWithCapacity:100];
+    NSImage* noCoverImage = [NSImage imageNamed:@"noCover"];
+    [noCoverImage hashIdWithHandler:^(NSString* theHashId){
+        
+        // store the no cover id for later.
+        _noCoverArtHashId = theHashId;
+        NSLog(@"The No Cover image has id %@",theHashId);
+        
+        // And add the image to the runtime image cache.
+        [_coverArtById setObject:noCoverImage forKey:theHashId];
+    }];
+    NSImage* defaultCoverImage = [NSImage imageNamed:@"songImage"];
+    [defaultCoverImage hashIdWithHandler:^(NSString* theHashId){
+        
+        // store the no cover id for later.
+        _defaultCoverArtHashId = theHashId;
+        NSLog(@"The Default Cover image has id %@",theHashId);
+        
+        // And add the image to the runtime image cache.
+        [_coverArtById setObject:defaultCoverImage forKey:theHashId];
+    }];
+    NSImage* fetchingCoverImage = [NSImage imageNamed:@"fetchingArt"];
+    [fetchingCoverImage hashIdWithHandler:^(NSString* theHashId){
+        
+        // store the no cover id for later.
+        _fetchingCoverArtHashId = theHashId;
+        NSLog(@"The Fetching Cover image has id %@",theHashId);
+        
+        // And add the image to the runtime image cache.
+        [_coverArtById setObject:fetchingCoverImage forKey:theHashId];
+    }];
+
+}
+
 
 /**
  TEOSongData set up the Core Data context and store.
@@ -472,6 +506,10 @@ static int const kSongPoolStartCapacity = 250;
                         // Set the song's song pool API in a move away from using delegates for everything... wip
                         [newSong setSongPoolAPI:self];
                         
+                        //CDFIX
+                        // Set the song cover image id to the default (empty).
+                        newSong.artID = nil;//_defaultCoverArtHashId;
+                        
                         // The song id is assigned.
                         [newSong setSongID:[SongID initWithString:[url absoluteString]]];
                         NSAssert(serialDataLoad != nil, @"WTF serialDataLoad is nil!");
@@ -597,6 +635,10 @@ static int const kSongPoolStartCapacity = 250;
         aSong.songReleases      = songData.songReleases;
         
     }
+}
+
+- (NSString*)artIdForSongId:(id<SongIDProtocol>)songId {
+    return [[self songForID:songId] artID];
 }
 
 /**
@@ -732,12 +774,19 @@ static int const kSongPoolStartCapacity = 250;
                         // We've succeeded, so drop out.
                         return;
                     } else {
-                        NSLog(@"got bupkiss from the webs. Returning default No Cover image.");
+                        NSLog(@"got bupkiss from the webs. Returning default No Cover image for song with id %@.",songID);
                         
-                        theSong.artID = _noCoverArtHashId;
+                        // Only set the artID to the noCover if we're sure that we didn't find any cover due to the fact that the song didn't yet have an uuid.
+                        // We still call the handler with the No Cover image so that the caller has something temporary to set it to.
+                        // As an alternative we could just call the handler with nil and let the handler decide...
+                        // What happens when the song just doesn't get an uuid 'cause it can't be found?
+                        if (theSong.uuid != nil) {
+                            theSong.artID = _noCoverArtHashId;
+                        }
+                        
                         // Finally, if no image was found by any of the methods, we call the given image handler with nil;
                         if (imageHandler != nil) {
-                            imageHandler([_coverArtById objectForKey:_noCoverArtHashId]);
+                            imageHandler([_coverArtById objectForKey:theSong.artID]);
 //                            imageHandler(nil);
                         }
                     }
@@ -1420,7 +1469,7 @@ static int const kSongPoolStartCapacity = 250;
 - (void)cacheWithContext:(NSDictionary*)cacheContext {
     // First we need to decide on a caching strategy.
     // For now we will simply do a no-brains area caching of two songs in every direction from the current cursor position.
-    NSDate* preBuildDate = [NSDate date];
+//    NSDate* preBuildDate = [NSDate date];
     NSDate* preDate = [NSDate date];
     
     // Extract data from context
@@ -1438,19 +1487,20 @@ static int const kSongPoolStartCapacity = 250;
 //    }
     
     // We've got a new request so cancel all previous queued up requests.
+//    NSLog(@"About to cancel all existing caching ops");
     [urlCachingOpQueue cancelAllOperations];
     
     NSBlockOperation* cacheOp = [[NSBlockOperation alloc] init];
     
     // Weakify the block reference to avoid retain cycles.
     __weak NSBlockOperation* weakCacheOp = cacheOp;
-
+    
     [weakCacheOp addExecutionBlock:^{
-        
+//        NSLog(@"Starting caching operation block %@",weakCacheOp);
         // Make sure we have an inited cache.
         NSMutableSet* wantedCache = [[NSMutableSet alloc] initWithCapacity:25];
         
-        NSInteger radius = 0;
+        NSInteger radius = 2;
             
         for (NSInteger matrixRows=selectionPos.y-radius; matrixRows<=selectionPos.y+radius; matrixRows++) {
             for (NSInteger matrixCols=selectionPos.x-radius; matrixCols<=selectionPos.x+radius; matrixCols++) {
@@ -1473,14 +1523,15 @@ static int const kSongPoolStartCapacity = 250;
             }
         }
             
-        // The stale cache is the existing cache - wanted cache
+        // The stale cache is the existing cache minus the wanted cache
         NSMutableSet* staleCache = [songIDCache mutableCopy];
         [staleCache minusSet:wantedCache];
         
         // Check for operation cancellation
         if( weakCacheOp.isCancelled ) {return;}
             
-        // Beyond this point we can no longer cancel because we now start affecting the external state.
+        // Beyond this point we can no longer cancel because we now start affecting the external state such as
+        // the UI and the actual songIDCache.
         [self clearSongCache:[staleCache allObjects]];
             
         // DEBUG
@@ -1489,18 +1540,19 @@ static int const kSongPoolStartCapacity = 250;
         // Remove the what's already cached from the wanted cache and load it.
         [wantedCache minusSet:songIDCache];
             
-        NSDate* postBuildDate = [NSDate date];
-        NSLog(@"Building the cache took: %f",[postBuildDate timeIntervalSinceDate:preBuildDate]);
-            
+//        NSDate* postBuildDate = [NSDate date];
+//        NSLog(@"Building the cache took: %f",[postBuildDate timeIntervalSinceDate:preBuildDate]);
+//        NSLog(@"Pre loadSongCache block %@ should be %@",weakCacheOp, weakCacheOp.isCancelled ? @"stopped" : @"OK");
         [self loadSongCache:[wantedCache allObjects]];
-            
+//        NSLog(@"Post loadSongCache block %@ should be %@",weakCacheOp, weakCacheOp.isCancelled ? @"stopped" : @"OK");
+
         // DEBUG
         [_delegate setDebugCachedFlagsForSongIDArray:[wantedCache allObjects] toValue:YES];
         
         // Remove from the existing cache what is not in the wanted cache.
         [songIDCache minusSet:staleCache];
         [songIDCache unionSet:wantedCache];
-    
+//        NSLog(@"Reached end of caching block %@",weakCacheOp);
     }];
     
     cacheOp.completionBlock = ^{
@@ -1547,9 +1599,10 @@ static int const kSongPoolStartCapacity = 250;
             
             // tell the song to load its data asyncronously without requesting a callback on completion.
 //            [aSong loadTrackDataWithCallBackOnCompletion:NO withStartTime:nil];
-            [aSong prepareForPlaybackWithCompletionBlock:^{
-                NSLog(@"prepareForPlaybackWithCompletionBlock from loadSongCache.");
-            }];
+//            [aSong prepareForPlaybackWithCompletionBlock:^{
+//                NSLog(@"prepareForPlaybackWithCompletionBlock from loadSongCache.");
+//            }];
+            [aSong prepareForPlayback];
             
             //MARK: CDFIX
             // At this point we should initiate the fingerprint/UUId generation and possibly even the fetching of cover art.
@@ -1645,15 +1698,16 @@ static int const kSongPoolStartCapacity = 250;
             // Asynch'ly start loading the track data for aSong. songReadyForPlayback will be called back when the song is good to go.
 //            [aSong loadTrackDataWithCallBackOnCompletion:YES withStartTime:time];
 //            [aSong loadTrackDataAtStartTime:time withCompletionBlock:^{
-            [aSong prepareForPlaybackWithCompletionBlock:^{
-                NSLog(@"prepareForPlaybackWithCompletionBlock completion block from requestSongPlayback.");
+//            [aSong prepareForPlaybackWithCompletionBlock:^{
+            [aSong performWhenReadyForPlayback:^{
+                NSLog(@"performWhenReadyForPlayback completion block from requestSongPlayback.");
                 [self songReadyForPlayback:aSong atTime:time];
             }];
         }];
         
         // For debug checking
         cacheOp.completionBlock = ^{
-            NSLog(@"The call to prepareForPlaybackAtStartTime:withCompletionBlock was %@.",weakCacheOp.isCancelled ? @"cancelled" : @"completed");
+            NSLog(@"The call to performWhenReadyForPlayback was %@.",weakCacheOp.isCancelled ? @"cancelled" : @"completed");
         };
         
         [urlLoadingOpQueue addOperation:cacheOp];
@@ -1832,10 +1886,11 @@ static int const kSongPoolStartCapacity = 250;
     NSLog(@"List sweetspots for song with Id: %@",songId);
     
     NSLog(@"The song status is: %@",[self statusValToString:theSong.songStatus]);
-    
+    NSLog(@"The artId: %@",theSong.artID);
     NSLog(@"The UUID is %@",[self UUIDStringForSongID:songId]);
     NSLog(@"The song has a fingerprint: %@",[self fingerprintExistsForSongID:songId]?@"Yes":@"No");
     NSLog(@"The sweetspots are %@",[self sweetSpotsForSongID:songId]);
+    
     NSLog(@"^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^");
 }
 

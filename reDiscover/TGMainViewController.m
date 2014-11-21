@@ -81,6 +81,10 @@
     return self;
 }
 
+- (void)dealloc {
+    NSLog(@"TGMainViewController dealloc called.");
+}
+
 - (void)layOutMainView {
     
     NSView *mainView = [self view];
@@ -516,18 +520,57 @@
 }
 
 - (void)songPoolDidStartPlayingSong:(id<SongIDProtocol>)songID {
-    //MARK: xeno
-    //return;
-    NSImage* songImage = [_songGridController coverImageForSongWithId:songID];
-    [_songInfoController setSongCoverImage:songImage];
+    NSLog(@"songPoolDidStartPlayingSong with id:%@",songID);
     
-    // If the image is the default image, change it to the fetching image to signal we're working on it.
-    if ([songImage.hashId isEqualToString:defaultImage.hashId] == YES)
-    {
-    
+    NSString* artId = [_currentSongPool artIdForSongId:songID];
+
+//    if ((artId != [_currentSongPool defaultCoverArtHashId]) &&
+//        (artId != [_currentSongPool fetchingCoverArtHashId]))
+    if (artId != nil) {
+        [self refreshCoverForSongId:songID];
+    } else {
         [_songGridController setCoverImage:fetchingImage forSongWithID:songID];
         [_songInfoController setSongCoverImage:fetchingImage];
     }
+    
+    // Request metadata for the song and pass in the block to be called when done.
+    [_currentSongPool requestEmbeddedMetadataForSongID:songID withHandler:^(NSDictionary* theData){
+        
+        //TODO:
+        // We should check if it's already set with this id before resetting it.
+        // Use the Id embedded in the data.
+        // Tell the info panel to change to display the new song's data.
+        [_songInfoController setSong:theData];
+    }];
+    
+    // Let the timelinecontroller know that we've changed song.
+    // (would a song change be better signalled as a global notification?)
+    //MARK: wipEv change this to a notification
+    [_songGridController.songTimelineController setCurrentSongID:songID];
+}
+
+/* CDFIX
+- (void)songPoolDidStartPlayingSong:(id<SongIDProtocol>)songID {
+
+    NSLog(@"songPoolDidStartPlayingSong with id:%@",songID);
+    //MARK: This gets the song image from the cell, rather than from the songpool's cache.
+    // That's as it should be because there's a difference between them:
+    // A song's artId is a reference to *what* the cover of the song is, whereas the cell's image
+    // is what it is currently being displayed as.
+    NSImage* songImage = [_songGridController coverImageForSongWithId:songID];
+    //[_songInfoController setSongCoverImage:songImage];
+    
+    // If the image is the default image, change it to the fetching image to signal we're working on it.
+    // At this point the song image may still be in the image caching queue and not even be set to fetching,
+    // but it will eventually get set by the caching.
+    if ([songImage.hashId isEqualToString:defaultImage.hashId] == YES)
+    {
+        songImage = fetchingImage;
+        [_songGridController setCoverImage:songImage forSongWithID:songID];
+        //[_songInfoController setSongCoverImage:fetchingImage];
+    }
+    [_songInfoController setSongCoverImage:songImage];
+
     
     // Request metadata for the song and pass in the block to be called when done.
     [_currentSongPool requestEmbeddedMetadataForSongID:songID withHandler:^(NSDictionary* theData){
@@ -551,12 +594,12 @@
     //MARK: wipEv change this to a notification
     [_songGridController.songTimelineController setCurrentSongID:songID];
 }
-
+CDFIX */
 - (void)refreshCoverForSongId:(id<SongIDProtocol>)songId {
-    NSImage* songImage = [_songGridController coverImageForSongWithId:songId];
+//    NSImage* songImage = [_songGridController coverImageForSongWithId:songId];
     
     // Only update song whose image has been set to fetching.
-    if ([songImage.hashId isEqualToString:fetchingImage.hashId] == YES) {
+    //if ([songImage.hashId isEqualToString:fetchingImage.hashId] == YES) {
         dispatch_async(dispatch_get_global_queue(QOS_CLASS_USER_INTERACTIVE, 0), ^{
             [_currentSongPool requestImageForSongID:songId withHandler:^(NSImage *tmpImage) {
                 // none of the attempts returned an image so just show the no cover cover.
@@ -573,15 +616,23 @@
                 }
             }];
         });
-    }
+//    }else
+//    {
+//        NSLog(@"Refreshing cover of song (%@) that isn't fetching. Probably just a cached song.",songId);
+//    }
 }
 
-//FIXME: I think I want this as a block passed to the song cover fetching method and called from the caching method.
-// Observer method called when a song's cover image fetching method is done.
+// Observer method called when the song pool caching method has set a cover image for the song.
 - (void)songCoverWasUpdated:(NSNotification*)notification {
-    NSLog(@"SONG COVER UPDATED NOTIFICATION. Going to call refreshCoverForSongId.");
+    NSLog(@"SONG COVER UPDATED NOTIFICATION.");
     id<SongIDProtocol> songId = notification.object;
-    [self refreshCoverForSongId:songId];
+    NSImage* songImage = [_songGridController coverImageForSongWithId:songId];
+    
+    if ([songImage.hashId isEqualToString:fetchingImage.hashId] == YES) {
+         NSLog(@"Going to call refreshCoverForSongId.");
+        [self refreshCoverForSongId:songId];
+    } else
+        NSLog(@"Didn't call refreshCoverForSongId because the cell image is not the Fetching image.");
 }
 
 // cdfix

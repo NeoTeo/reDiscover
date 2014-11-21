@@ -53,7 +53,7 @@ class SongID : NSObject, SongIDProtocol {
 
 // And neither are structs
 //@objc
-//struct arse {
+//struct ^re {
 //    
 //}
 */

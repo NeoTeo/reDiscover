@@ -126,7 +126,9 @@ typedef void(^MyCustomBlock)(void);
 - (void)setSweetSpot:(NSNumber*)theSS;
 - (id)init;
 
-- (void)prepareForPlaybackWithCompletionBlock:(void (^)(void))completionBlock;
+//- (void)prepareForPlaybackWithCompletionBlock:(void (^)(void))completionBlock;
+- (void)prepareForPlayback;
+- (void)performWhenReadyForPlayback:(void (^)(void))completionBlock;
 //- (void)loadTrackDataWithCallBackOnCompletion:(BOOL)wantsCallback withStartTime:(NSNumber*)startTime;
 //- (void)loadTrackDataAtStartTime:(NSNumber*)startTime withCompletionBlock:(void (^)(void))completionBlock;
 //- (void)performBlockWhenReadyForPlayback:(void (^)(void))completionBlock;
