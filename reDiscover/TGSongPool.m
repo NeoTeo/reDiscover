@@ -349,18 +349,7 @@ static int const kSongPoolStartCapacity = 250;
     // Unless a fingerprint is actually requested we set the interval until the next timer to as little as possible.
     NSInteger interval = 0;
     
-    if (aSong.uuid == NULL) {
-        [self fetchUUIdForSongId:aSong.songID withHandler:nil];
-        interval = 3;
-    } else {
-        
-        // Fetch any sweet spots for this song if it doesn't have a start time or it has been a long time since the last sweet spot server update.
-        //FIXME:
-//        if ([[aSong startTime] doubleValue] == -1) {
-//            [self fetchSongSweetSpot:aSong];
-//        }
-
-    }
+    [self fetchUUIdAndCoverArtForSongId:aSong.songID];
     
     // Start a new timer with the next song.
     idleTimeFingerprinterTimer = [NSTimer scheduledTimerWithTimeInterval:interval
@@ -1499,18 +1488,20 @@ static int const kSongPoolStartCapacity = 250;
 //        NSLog(@"Starting caching operation block %@",weakCacheOp);
         // Make sure we have an inited cache.
         NSMutableSet* wantedCache = [[NSMutableSet alloc] initWithCapacity:25];
+//        NSMutableArray* wantedCache = [[NSMutableArray alloc] initWithCapacity:25];
+        NSInteger radius = 16;
+
+
         
-        NSInteger radius = 2;
-            
         for (NSInteger matrixRows=selectionPos.y-radius; matrixRows<=selectionPos.y+radius; matrixRows++) {
             for (NSInteger matrixCols=selectionPos.x-radius; matrixCols<=selectionPos.x+radius; matrixCols++) {
                 if ((matrixRows >= 0) && (matrixRows <gridDims.y)) {
                     if((matrixCols >=0) && (matrixCols < gridDims.x)) {
                         
-//                        // skip if this is the selected cell (which is already cached or requested).
-//                        //wipwip
-//                        if ((matrixRows == selectionPos.y) && (matrixCols == selectionPos.x))
-//                            continue;
+                        // skip if this is the selected cell (which gets added below).
+                        if ((matrixRows == selectionPos.y) && (matrixCols == selectionPos.x))
+                            continue;
+                        
                         // Check for operation cancellation
                         if( weakCacheOp.isCancelled ) {return;}
                         
@@ -1529,7 +1520,8 @@ static int const kSongPoolStartCapacity = 250;
         
         // Check for operation cancellation
         if( weakCacheOp.isCancelled ) {return;}
-            
+
+
         // Beyond this point we can no longer cancel because we now start affecting the external state such as
         // the UI and the actual songIDCache.
         [self clearSongCache:[staleCache allObjects]];
@@ -1539,15 +1531,36 @@ static int const kSongPoolStartCapacity = 250;
 
         // Remove the what's already cached from the wanted cache and load it.
         [wantedCache minusSet:songIDCache];
-            
-//        NSDate* postBuildDate = [NSDate date];
-//        NSLog(@"Building the cache took: %f",[postBuildDate timeIntervalSinceDate:preBuildDate]);
-//        NSLog(@"Pre loadSongCache block %@ should be %@",weakCacheOp, weakCacheOp.isCancelled ? @"stopped" : @"OK");
-        [self loadSongCache:[wantedCache allObjects]];
-//        NSLog(@"Post loadSongCache block %@ should be %@",weakCacheOp, weakCacheOp.isCancelled ? @"stopped" : @"OK");
 
+        // Is this much slower than any alternative?
+        NSMutableArray* songCacheArray = [[wantedCache allObjects] mutableCopy];
+        
+        // To always give the selected song the highest priority we add it to the front of the array.
+        id<SongIDProtocol> songID = [_songGridAccessAPI songIDFromGridColumn:selectionPos.x andRow:selectionPos.y];
+        if (songID != nil) {
+            [songCacheArray insertObject:songID atIndex:0];
+        }
+
+        //[self loadSongCache:songCacheArray];
+        //CDFIX ripped from loadSongCache
+        for (id<SongIDProtocol> songID in songCacheArray) {
+            
+            TGSong *aSong = [self songForID:songID];
+            if (aSong == NULL) {
+                NSLog(@"Nope, the requested ID %@ is not in the song pool.",songID);
+                return;
+            }
+            
+            [aSong prepareForPlayback];
+            [self fetchUUIdAndCoverArtForSongId:songID];
+            
+            // Check for operation cancellation
+            if( weakCacheOp.isCancelled ) {return;}
+
+        }
+        
         // DEBUG
-        [_delegate setDebugCachedFlagsForSongIDArray:[wantedCache allObjects] toValue:YES];
+        [_delegate setDebugCachedFlagsForSongIDArray:songCacheArray toValue:YES];
         
         // Remove from the existing cache what is not in the wanted cache.
         [songIDCache minusSet:staleCache];
@@ -1606,20 +1619,7 @@ static int const kSongPoolStartCapacity = 250;
             
             //MARK: CDFIX
             // At this point we should initiate the fingerprint/UUId generation and possibly even the fetching of cover art.
-            [self fetchUUIdForSongId:songID withHandler:^(NSString* theUUId) {
-                
-                NSLog(@"UUId fetch for songId %@ succeeded. Handler call.",songID);
-                
-                // Now that we know we have a UUId, initiate the fetching of the cover art.
-                [self requestImageForSongID:songID withHandler:^(NSImage* theImage) {
-                    NSLog(@"We have a cover image via the block image handler");
-                    
-                    // Here we should signal that the song now has cover art. Or update the song in question if its current image == fetching image
-                    [[NSNotificationCenter defaultCenter] postNotificationName:@"songCoverUpdated" object:songID];
-                }];
-
-            }];
-            
+            [self fetchUUIdAndCoverArtForSongId:songID];
             
             //MARK: These two requests really ought to be initiated by the above loadTrackData... call.
             // We should try and get the metadata so it's ready,
@@ -1640,6 +1640,20 @@ static int const kSongPoolStartCapacity = 250;
 //    }];
 }
 
+- (void)fetchUUIdAndCoverArtForSongId:(id<SongIDProtocol>)songId {
+    [self fetchUUIdForSongId:songId withHandler:^(NSString* theUUId) {
+        
+        NSLog(@"UUId fetch for songId %@ succeeded. Handler call.",songId);
+        
+        // Now that we know we have a UUId, initiate the fetching of the cover art.
+        [self requestImageForSongID:songId withHandler:^(NSImage* theImage) {
+            NSLog(@"We have a cover image via the block image handler");
+            
+            // Here we should signal that the song now has cover art. Or update the song in question if its current image == fetching image
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"songCoverUpdated" object:songId];
+        }];
+    }];
+}
 
 /**
  Initiate a request to play back the given song at its selected sweet spot.
