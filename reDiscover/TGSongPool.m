@@ -1459,7 +1459,7 @@ static int const kSongPoolStartCapacity = 250;
     // First we need to decide on a caching strategy.
     // For now we will simply do a no-brains area caching of two songs in every direction from the current cursor position.
 //    NSDate* preBuildDate = [NSDate date];
-    NSDate* preDate = [NSDate date];
+    //NSDate* preDate = [NSDate date];
     
     // Extract data from context
 //    NSPoint speedVector     = [[cacheContext objectForKey:@"spd"] pointValue];
@@ -1483,27 +1483,33 @@ static int const kSongPoolStartCapacity = 250;
     
     // Weakify the block reference to avoid retain cycles.
     __weak NSBlockOperation* weakCacheOp = cacheOp;
-    
+
     [weakCacheOp addExecutionBlock:^{
-//        NSLog(@"Starting caching operation block %@",weakCacheOp);
+    
+        // Because we need to pass the weakCacheOp to other methods we create a strong reference to it.
+        // This keeps it alive for the duration of the scope of the block regardless of whether it is dealloc'd elsewhere.
+        NSBlockOperation* localCacheOp = weakCacheOp;
+        NSAssert(localCacheOp, @"Error! A weak reference was nil when needed.");
+        
+        // Check for operation cancellation first thing.
+        if( localCacheOp.isCancelled ) {return;}
+
+//        NSLog(@"Starting caching operation block %@",localCacheOp);
         // Make sure we have an inited cache.
         NSMutableSet* wantedCache = [[NSMutableSet alloc] initWithCapacity:25];
-//        NSMutableArray* wantedCache = [[NSMutableArray alloc] initWithCapacity:25];
-        NSInteger radius = 16;
-
-
+        NSInteger radius = 1;
         
         for (NSInteger matrixRows=selectionPos.y-radius; matrixRows<=selectionPos.y+radius; matrixRows++) {
             for (NSInteger matrixCols=selectionPos.x-radius; matrixCols<=selectionPos.x+radius; matrixCols++) {
                 if ((matrixRows >= 0) && (matrixRows <gridDims.y)) {
                     if((matrixCols >=0) && (matrixCols < gridDims.x)) {
                         
+                        // Check for operation cancellation
+                        if( localCacheOp.isCancelled ) {return;}
+  
                         // skip if this is the selected cell (which gets added below).
                         if ((matrixRows == selectionPos.y) && (matrixCols == selectionPos.x))
                             continue;
-                        
-                        // Check for operation cancellation
-                        if( weakCacheOp.isCancelled ) {return;}
                         
                         id<SongIDProtocol> songID = [_songGridAccessAPI songIDFromGridColumn:matrixCols andRow:matrixRows];
                         if (songID != nil) {
@@ -1513,18 +1519,17 @@ static int const kSongPoolStartCapacity = 250;
                 }
             }
         }
-            
-        // The stale cache is the existing cache minus the wanted cache
+        
+        // The existing cache minus the wanted cache is the stale cache (what should be de-cached).
         NSMutableSet* staleCache = [songIDCache mutableCopy];
         [staleCache minusSet:wantedCache];
         
         // Check for operation cancellation
-        if( weakCacheOp.isCancelled ) {return;}
-
+        if( localCacheOp.isCancelled ) {return;}
 
         // Beyond this point we can no longer cancel because we now start affecting the external state such as
         // the UI and the actual songIDCache.
-        [self clearSongCache:[staleCache allObjects]];
+        [self clearSongCache:[staleCache allObjects] withBOp:localCacheOp];
             
         // DEBUG
         [_delegate setDebugCachedFlagsForSongIDArray:[staleCache allObjects] toValue:NO];
@@ -1533,52 +1538,49 @@ static int const kSongPoolStartCapacity = 250;
         [wantedCache minusSet:songIDCache];
 
         // Is this much slower than any alternative?
-        NSMutableArray* songCacheArray = [[wantedCache allObjects] mutableCopy];
+        NSMutableArray* songsToCacheArray = [[wantedCache allObjects] mutableCopy];
         
         // To always give the selected song the highest priority we add it to the front of the array.
         id<SongIDProtocol> songID = [_songGridAccessAPI songIDFromGridColumn:selectionPos.x andRow:selectionPos.y];
         if (songID != nil) {
-            [songCacheArray insertObject:songID atIndex:0];
-        }
-
-        //[self loadSongCache:songCacheArray];
-        //CDFIX ripped from loadSongCache
-        for (id<SongIDProtocol> songID in songCacheArray) {
-            
-            TGSong *aSong = [self songForID:songID];
-            if (aSong == NULL) {
-                NSLog(@"Nope, the requested ID %@ is not in the song pool.",songID);
-                return;
-            }
-            
-            [aSong prepareForPlayback];
-            [self fetchUUIdAndCoverArtForSongId:songID];
-            
-            // Check for operation cancellation
-            if( weakCacheOp.isCancelled ) {return;}
-
+            [songsToCacheArray insertObject:songID atIndex:0];
         }
         
+        [self loadSongCache:songsToCacheArray withBOp:localCacheOp];
         // DEBUG
-        [_delegate setDebugCachedFlagsForSongIDArray:songCacheArray toValue:YES];
+
+        // The songsToCacheArray will, after the call to loadSongCache, contain only the songs that were successfully cached.
+        [_delegate setDebugCachedFlagsForSongIDArray:songsToCacheArray toValue:YES];
         
         // Remove from the existing cache what is not in the wanted cache.
         [songIDCache minusSet:staleCache];
-        [songIDCache unionSet:wantedCache];
-//        NSLog(@"Reached end of caching block %@",weakCacheOp);
+        
+        // Because the loadSongCache may have been interrupted before it finished caching all the wanted songs we need to
+        // use the songsToCacheArray instead as that has been pruned to contain only cached songs.
+        NSSet* newWantedCache = [NSSet setWithArray:songsToCacheArray];
+        [songIDCache unionSet:newWantedCache];
+//        [songIDCache unionSet:wantedCache];
+//        NSLog(@"Reached end of caching block %@",localCacheOp);
     }];
-    
+
+
     cacheOp.completionBlock = ^{
         NSLog(@"The caching block %@.",weakCacheOp.isCancelled ? @"cancelled" : @"completed");
     };
 
     [urlCachingOpQueue addOperation:cacheOp];
-    
-    NSDate* postDate = [NSDate date];
-    NSLog(@"caching took: %f",[postDate timeIntervalSinceDate:preDate]);
+
+    //NSDate* postDate = [NSDate date];
+    //NSLog(@"caching took: %f",[postDate timeIntervalSinceDate:preDate]);
 }
 
-- (void)clearSongCache:(NSArray*)staleSongArray {
+/**
+ For each of the songIds in the given array call the corresponding song's clearCache method.
+ This currently does nothing but clear a property in the song that holds an AVAudioFile.
+ The property is not currently used though.
+ */
+- (void)clearSongCache:(NSArray*)staleSongArray withBOp:(NSBlockOperation*)bOp {
+//    NSLog(@"Retain count for bOp is %ld", CFGetRetainCount((__bridge CFTypeRef)bOp));
     dispatch_async(cacheClearingQueue, ^{
         for (id<SongIDProtocol> songID in staleSongArray) {
             TGSong *aSong = [self songForID:songID];
@@ -1590,7 +1592,7 @@ static int const kSongPoolStartCapacity = 250;
 /**
  Blind caching method that simply initiates loading of all the songs in the array it is given.
  */
-- (void)loadSongCache:(NSArray*)desiredSongArray {
+- (void)loadSongCache:(NSMutableArray*)desiredSongArray withBOp:(NSBlockOperation*)bOp  {
     // First we make sure to clear any pending requests.
     // What's on the queue is not removed until its turn.
 //    [urlCachingOpQueue cancelAllOperations];
@@ -1601,6 +1603,7 @@ static int const kSongPoolStartCapacity = 250;
     // Then we add the tracks to cache queue.
 //    [urlCachingOpQueue addOperationWithBlock:^{
         // TEO - calling this async'ly crashes in core data.
+    int nextIdx = 1;
         // The loadTrackData won't reload a loaded track but we can probably still save some loops.
         for (id<SongIDProtocol> songID in desiredSongArray) {
             
@@ -1621,6 +1624,14 @@ static int const kSongPoolStartCapacity = 250;
             // At this point we should initiate the fingerprint/UUId generation and possibly even the fetching of cover art.
             [self fetchUUIdAndCoverArtForSongId:songID];
             
+            // Check for operation cancellation
+            if( bOp.isCancelled ) {
+                NSLog(@"==================================================================================================================================================== loadSongCache cancelled");
+                // Remove the entries that we didn't manage to cache before having to drop out.
+                NSIndexSet *indexSet = [NSIndexSet indexSetWithIndexesInRange:NSMakeRange(nextIdx, [desiredSongArray count]-nextIdx)];
+                [desiredSongArray removeObjectsAtIndexes:indexSet];
+                return;}
+
             //MARK: These two requests really ought to be initiated by the above loadTrackData... call.
             // We should try and get the metadata so it's ready,
             // but not so that songPoolDidLoadDataForSongID gets called for each song.
@@ -1632,6 +1643,7 @@ static int const kSongPoolStartCapacity = 250;
             // We should also initiate the caching of the album art.
             [self requestImageForSongID:songID withHandler:nil];
 */
+            nextIdx++;
         }
     
         // Tell the song player to refresh the frameCount of the currently playing song now that
