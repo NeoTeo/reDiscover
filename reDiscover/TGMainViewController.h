@@ -23,7 +23,7 @@
 @protocol SongIDProtocol;
 
 @protocol TGMainViewControllerDelegate <TGSongPoolDelegate>
-- (void)userSelectedSongID:(id<SongIDProtocol>)songID;
+- (void)userSelectedSongID:(id<SongIDProtocol>)songID withContext:(NSDictionary*)theContext;
 - (void)setDebugCachedFlagsForSongIDArray:(NSArray*)songIDs toValue:(BOOL)value;
 @end
 

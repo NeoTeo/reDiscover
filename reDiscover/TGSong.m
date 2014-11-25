@@ -626,6 +626,28 @@ CDFIX */
 
 - (void)clearCache {
     _cachedFile = nil;
+    //CDFIX
+    //FIXME: This doesn't work properly but I haven't figured why yet
+    return;
+    if ([self songStatus] == kSongStatusReady) {
+        
+        // Unregister observers
+        if (songPlayer) {
+            [songPlayer removeTimeObserver:playerObserver];
+        }
+
+        if (songPlayerItem) {
+            [songPlayerItem removeObserver:self forKeyPath:@"status" context:&ItemStatusContext];
+        }
+        
+        songPlayer = nil;
+        songAsset = nil;
+        songPlayerItem = nil;
+        
+        NSLog(@"Song with Id: %@ has been cleared.",[self songID]);
+        [self setSongStatus:kSongStatusUninited];
+    }
+
 }
 
 /**

@@ -718,7 +718,19 @@ CDFIX */
     }
 }
 
-- (void)userSelectedSongID:(id<SongIDProtocol>)songID {
+- (void)userSelectedSongID:(id<SongIDProtocol>)songID withContext:(NSDictionary *)theContext {
+    
+    if (theContext != nil) {
+        NSPoint speedVector = [[theContext objectForKey:@"spd"] pointValue];
+        if (fabs(speedVector.y) > 2) {
+            NSLog(@">>>>>>>>>>>>>>>>>>>>>");
+            NSLog(@"Speed cutoff enabled.");//wipwip
+            NSLog(@"<<<<<<<<<<<<<<<<<<<<<");
+            return;
+        }
+    }
+
+    [_currentSongPool cacheWithContext:theContext];
     [_currentSongPool requestSongPlayback:songID];
     
     // reset the idle timer

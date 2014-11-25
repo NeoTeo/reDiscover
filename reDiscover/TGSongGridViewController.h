@@ -40,6 +40,7 @@
 
 @protocol SongGridAccessProtocol
 - (id)songIDFromGridColumn:(NSInteger)theCol andRow:(NSInteger)theRow;
+- (id<SongIDProtocol>)currentlyPlayingSongId;
 @end
 
 //@interface TGSongGridViewController : NSViewController <TGSongGridViewControllerDelegate, TGSongGridScrollViewDelegate,TGSongTimelineViewControllerDelegate>

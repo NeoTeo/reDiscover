@@ -11,6 +11,9 @@
 #import "TGSongCellMatrix.h"
 #import "TGGridCell.h"
 
+// Need this for SongIdProtocol defs
+#import "TGSongPool.h"
+
 @implementation TGSongGridScrollView
 
 - (id)initWithFrame:(NSRect)frame
@@ -42,12 +45,19 @@
     return self;
 }
 
-
 // Called when the scrollview ([self documentView]) is scrolled.
 - (void)boundsChanged:(NSEvent *)theEvent {
     
+
+    static NSPoint previousPoint;
+//    static NSPoint previousSpeed;
     NSPoint mPos = [[self window] mouseLocationOutsideOfEventStream];
+    NSPoint nowPoint = [[self documentView] convertPoint:mPos fromView:nil];
+    NSPoint currentSpeed = NSMakePoint(nowPoint.x-previousPoint.x, nowPoint.y-previousPoint.y);
     
+    previousPoint = nowPoint;
+//    previousSpeed = currentSpeed;
+
 /*
     // TEO: commmented this out as it's not currently being used and anyway setUIPosition
     // is already being called from within songGridScrollViewDidChangeToRow.
@@ -69,14 +79,24 @@
     }
 */
     // Notify the delegate iff the movement causes the cursor to move over a different cell.
-    [self updateFocus:mPos];
-
+//    [self updateFocus:mPos];
+    [self updateFocus:mPos withSpeed:currentSpeed];
 }
 
 
 - (void)mouseMoved:(NSEvent *)theEvent {
     [super mouseMoved:theEvent];
-    [self updateFocus:[theEvent locationInWindow]];
+    
+    /*
+    static NSPoint previousPoint;
+    NSPoint nowPoint = [[self documentView] convertPoint:[theEvent locationInWindow] fromView:nil];
+    NSPoint currentSpeed = NSMakePoint(nowPoint.x-previousPoint.x, nowPoint.y-previousPoint.y);
+    
+    previousPoint = nowPoint;
+     */
+
+    // No speed for the cursor at the mo.
+    [self updateFocus:[theEvent locationInWindow] withSpeed:NSMakePoint(0, 0)];
 }
 
 
@@ -124,18 +144,10 @@
 }
 
 // Update focus notifies the delegate when we change the focus (via the pointer) to a different song.
-- (void)updateFocus:(NSPoint)locationInWindow {
-    
-    
-    // If the scrolling vector is > x then drop out without informing the delegate of the change.
-    static NSPoint previousPoint;
-    static NSPoint previousSpeed;
-    
+//- (void)updateFocus:(NSPoint)locationInWindow {
+- (void)updateFocus:(NSPoint)locationInWindow withSpeed:(NSPoint)currentSpeed {
+
     NSPoint nowPoint = [[self documentView] convertPoint:locationInWindow fromView:nil];
-    NSPoint currentSpeed = NSMakePoint(nowPoint.x-previousPoint.x, nowPoint.y-previousPoint.y);
-    
-    previousPoint = nowPoint;
-    previousSpeed = currentSpeed;
     
     TGSongCellMatrix *theMatrix = [self documentView];
     NSInteger mouseRow, mouseCol;
@@ -143,17 +155,19 @@
     [theMatrix getRow:&mouseRow column:&mouseCol forPoint:nowPoint];
     
     if ((mouseCol >= 0) && (mouseRow >= 0)) {
-        if ((mouseCol != _currentMouseCol) || (mouseRow != _currentMouseRow)) {
+        // If the song at this position is not selected, select it.
+        id<SongIDProtocol> songID = [_delegate songIDFromGridColumn:mouseCol andRow:mouseRow];
 
+        if ([[_delegate currentlyPlayingSongId] isEqual:songID] == NO) {
             // Find the cell that corresponds to the new coordinates and ask it for its id.
             if (_delegate && [_delegate respondsToSelector:@selector(songGridScrollViewDidChangeToRow:andColumn:withSpeedVector:)]) {
                 [_delegate songGridScrollViewDidChangeToRow:mouseRow andColumn:mouseCol withSpeedVector:currentSpeed];
             }
         }
+        _currentMouseCol = mouseCol;
+        _currentMouseRow = mouseRow;
+
     }
-    
-    _currentMouseCol = mouseCol;
-    _currentMouseRow = mouseRow;
 }
 
 

@@ -49,6 +49,8 @@
 
 - (id<SongIDProtocol>)songIDForSongWithTag:(NSInteger)songTag {
     __block id<SongIDProtocol> songID;
+    // Dispatch on a separate queue and wait.
+    // This is done to serialize access to the shared resource to avoid concurrency conflicts.
     dispatch_sync(_matrixAccessQueue,^{
         songID = [cellTagToSongID objectAtIndex:songTag];
     });

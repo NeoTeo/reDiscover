@@ -1593,63 +1593,34 @@ static int const kSongPoolStartCapacity = 250;
  Blind caching method that simply initiates loading of all the songs in the array it is given.
  */
 - (void)loadSongCache:(NSMutableArray*)desiredSongArray withBOp:(NSBlockOperation*)bOp  {
-    // First we make sure to clear any pending requests.
-    // What's on the queue is not removed until its turn.
-//    [urlCachingOpQueue cancelAllOperations];
-    
 //    NSLog(@"Wait!");
 //    [NSThread sleepForTimeInterval:10.0f];
 //    NSLog(@"Carry on.");
-    // Then we add the tracks to cache queue.
-//    [urlCachingOpQueue addOperationWithBlock:^{
-        // TEO - calling this async'ly crashes in core data.
     int nextIdx = 1;
-        // The loadTrackData won't reload a loaded track but we can probably still save some loops.
-        for (id<SongIDProtocol> songID in desiredSongArray) {
-            
-            TGSong *aSong = [self songForID:songID];
-            if (aSong == NULL) {
-                NSLog(@"Nope, the requested ID %@ is not in the song pool.",songID);
-                return;
-            }
-            
-            // tell the song to load its data asyncronously without requesting a callback on completion.
-//            [aSong loadTrackDataWithCallBackOnCompletion:NO withStartTime:nil];
-//            [aSong prepareForPlaybackWithCompletionBlock:^{
-//                NSLog(@"prepareForPlaybackWithCompletionBlock from loadSongCache.");
-//            }];
-            [aSong prepareForPlayback];
-            
-            //MARK: CDFIX
-            // At this point we should initiate the fingerprint/UUId generation and possibly even the fetching of cover art.
-            [self fetchUUIdAndCoverArtForSongId:songID];
-            
-            // Check for operation cancellation
-            if( bOp.isCancelled ) {
-                NSLog(@"==================================================================================================================================================== loadSongCache cancelled");
-                // Remove the entries that we didn't manage to cache before having to drop out.
-                NSIndexSet *indexSet = [NSIndexSet indexSetWithIndexesInRange:NSMakeRange(nextIdx, [desiredSongArray count]-nextIdx)];
-                [desiredSongArray removeObjectsAtIndexes:indexSet];
-                return;}
-
-            //MARK: These two requests really ought to be initiated by the above loadTrackData... call.
-            // We should try and get the metadata so it's ready,
-            // but not so that songPoolDidLoadDataForSongID gets called for each song.
-/* wipwip These are already being called via the above call to loadTrackData...
-            [self requestEmbeddedMetadataForSongID:songID withHandler:^(NSDictionary* theData){
-                //            NSLog(@"preloadSongArray got data! %@",theData);
-            }];
-
-            // We should also initiate the caching of the album art.
-            [self requestImageForSongID:songID withHandler:nil];
-*/
-            nextIdx++;
-        }
     
-        // Tell the song player to refresh the frameCount of the currently playing song now that
-        // the songs have finished caching and we know the lengths.
-//        [theSongPlayer refreshPlayingFrameCount];
-//    }];
+    for (id<SongIDProtocol> songID in desiredSongArray) {
+        
+        TGSong *aSong = [self songForID:songID];
+        if (aSong == NULL) {
+            NSLog(@"Nope, the requested ID %@ is not in the song pool.",songID);
+            return;
+        }
+        
+        [aSong prepareForPlayback];
+        
+        // Initiate the fingerprint/UUId generation and fetching of cover art.
+        [self fetchUUIdAndCoverArtForSongId:songID];
+        
+        // Check for operation cancellation.
+        if( bOp.isCancelled ) {
+            NSLog(@"==================================================================================================================================================== loadSongCache cancelled");
+            // Remove the entries that we didn't manage to cache before having to drop out.
+            NSIndexSet *indexSet = [NSIndexSet indexSetWithIndexesInRange:NSMakeRange(nextIdx, [desiredSongArray count]-nextIdx)];
+            [desiredSongArray removeObjectsAtIndexes:indexSet];
+            return;}
+
+        nextIdx++;
+    }
 }
 
 - (void)fetchUUIdAndCoverArtForSongId:(id<SongIDProtocol>)songId {

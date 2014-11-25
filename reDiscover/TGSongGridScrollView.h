@@ -12,6 +12,7 @@
 @class TGGridCell;
 
 @protocol TGSongGridScrollViewDelegate;
+@protocol SongIDProtocol;
 
 @interface TGSongGridScrollView : NSScrollView
 
@@ -30,4 +31,7 @@
 //- (void)songGridScrollViewDidRightClickSongID:(NSUInteger)songID;
 //- (void)songGridScrollViewDidLeftClickSongID:(NSUInteger)songID;
 - (void)buttonDownInCellFrame:(NSRect)cellFrame;
+// These two are also part of the SongGridAccessProtocol...
+- (id<SongIDProtocol>)songIDFromGridColumn:(NSInteger)theCol andRow:(NSInteger)theRow;
+- (id<SongIDProtocol>)currentlyPlayingSongId;
 @end
