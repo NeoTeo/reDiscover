@@ -262,7 +262,7 @@
 //        TGSong *theSong = [_currentSongPool songForID:[_currentSongPool lastRequestedSongID]];
 //        [_currentSongPool sweetSpotFromServerForSong:theSong];
         NSLog(@"got it");
-    } else if ([chars isEqualToString:@"g"]) {
+    } else if ([chars isEqualToString:@"a"]) {
         NSLog(@"song added to playlist.");
         [self songUIPlusButtonWasPressed];
 //        [self togglePlaylistPanel];
@@ -277,7 +277,7 @@
         [self songUISweetSpotButtonWasPressed];
         
     } else if ([chars isEqualToString:@"l"]){
-        [_currentSongPool DebugLogSongWithId:lastRequestedSongID];
+        [_currentSongPool debugLogSongWithId:lastRequestedSongID];
         
     } else if ([chars isEqualToString:@"p"]){
         
@@ -289,6 +289,10 @@
         
 //        [_songGridController runTest];
 //        [_currentSongPool findUUIDOfSongWithURL:[_currentSongPool URLForSongID:lastRequestedSongID]];
+    } else if ([chars isEqualToString:@"c"]){
+        NSLog(@"Log caches:");
+        
+        [_currentSongPool debugLogCaches];
     } else {
         
         NSCharacterSet *alphaNums = [NSCharacterSet decimalDigitCharacterSet];
@@ -611,7 +615,8 @@ CDFIX */
                 [_songGridController setCoverImage:tmpImage forSongWithID:songId];
                 
                 // Only update the info window for the currently playing song.
-                if (songId == [_currentSongPool currentlyPlayingSongID]) {
+                //if (songId == [_currentSongPool currentlyPlayingSongID]) {
+                if (songId == [_currentSongPool lastRequestedSongID]) {
                     [_songInfoController setSongCoverImage:tmpImage];
                 }
             }];
@@ -624,8 +629,8 @@ CDFIX */
 
 // Observer method called when the song pool caching method has set a cover image for the song.
 - (void)songCoverWasUpdated:(NSNotification*)notification {
-    NSLog(@"SONG COVER UPDATED NOTIFICATION.");
     id<SongIDProtocol> songId = notification.object;
+    NSLog(@"SONG COVER UPDATED NOTIFICATION FOR %@",songId);
     NSImage* songImage = [_songGridController coverImageForSongWithId:songId];
     
     if ([songImage.hashId isEqualToString:fetchingImage.hashId] == YES) {

@@ -17,6 +17,8 @@
 //@property NSInteger tag;
 @property NSTextField *cellText;
 @property NSColor *tintColour;
+// Used to signal that we don't want to draw the image. Set to true when animating a layer above the image.
+@property BOOL hideImage;
 //@property TGCoverImage* coverImage;
 
 @end

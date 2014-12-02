@@ -158,7 +158,7 @@
         // If the song at this position is not selected, select it.
         id<SongIDProtocol> songID = [_delegate songIDFromGridColumn:mouseCol andRow:mouseRow];
 
-        if ([[_delegate currentlyPlayingSongId] isEqual:songID] == NO) {
+        if ([[_delegate lastRequestedSong] isEqual:songID] == NO) {
             // Find the cell that corresponds to the new coordinates and ask it for its id.
             if (_delegate && [_delegate respondsToSelector:@selector(songGridScrollViewDidChangeToRow:andColumn:withSpeedVector:)]) {
                 [_delegate songGridScrollViewDidChangeToRow:mouseRow andColumn:mouseCol withSpeedVector:currentSpeed];

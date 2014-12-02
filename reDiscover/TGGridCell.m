@@ -18,6 +18,7 @@
         // This is where we should request a song reference from the songsmodel via this cell's controller.
         [self setTag:-1];
         
+        [self setHideImage:NO];
 //        [self setSongImage:nil];
 //        [self setImage:[NSImage imageNamed:@"songImage"]];
     }
@@ -43,12 +44,16 @@
 // The cell frame is dimension of the cell that we're drawing.
 - (void)drawWithFrame:(NSRect)cellFrame inView:(NSView *)controlView {
 
+    // Early out.
+    if (_hideImage == YES) { return; }
+    
     NSImage *theImage = [self image];
+    //NSAssert(theImage, @"ERROR! TGGridCell drawWithFrame nil image");
 
     if (theImage) {
 //        [theImage drawInRect:cellFrame fromRect:NSZeroRect operation:NSCompositeCopy fraction:1 respectFlipped:YES hints:nil];
         // 10.9 Mavericks version of the above. Might want to check for OS version for backward compatibility.
-        [[self image] drawInRect:cellFrame];
+        [theImage drawInRect:cellFrame];
         if (_tintColour != NULL) {
             [_tintColour set];
             

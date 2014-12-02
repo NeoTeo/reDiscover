@@ -34,4 +34,5 @@
 // These two are also part of the SongGridAccessProtocol...
 - (id<SongIDProtocol>)songIDFromGridColumn:(NSInteger)theCol andRow:(NSInteger)theRow;
 - (id<SongIDProtocol>)currentlyPlayingSongId;
+- (id<SongIDProtocol>)lastRequestedSong;
 @end

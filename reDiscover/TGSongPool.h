@@ -82,7 +82,8 @@
 - (NSManagedObjectContext*)TEOSongDataMOC;
 
 // Debug methods
-- (void)DebugLogSongWithId:(id<SongIDProtocol>)songId;
+- (void)debugLogSongWithId:(id<SongIDProtocol>)songId;
+- (void)debugLogCaches;
 @end
 
 

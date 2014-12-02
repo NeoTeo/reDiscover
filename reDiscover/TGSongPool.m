@@ -765,13 +765,12 @@ static int const kSongPoolStartCapacity = 250;
                     } else {
                         NSLog(@"got bupkiss from the webs. Returning default No Cover image for song with id %@.",songID);
                         
-                        // Only set the artID to the noCover if we're sure that we didn't find any cover due to the fact that the song didn't yet have an uuid.
-                        // We still call the handler with the No Cover image so that the caller has something temporary to set it to.
-                        // As an alternative we could just call the handler with nil and let the handler decide...
-                        // What happens when the song just doesn't get an uuid 'cause it can't be found?
-                        if (theSong.uuid != nil) {
+                        // At this point if a song has a fingerprint we know it is because it couldn't get a uuid.
+                        // In that case we assign it a no cover, since it cannot request a cover without a uuid.
+                        // But what about a song with an uuid and no fingerprint that has failed to find a cover? For now also no cover.
+//                        if (theSong.fingerprint != nil) {
                             theSong.artID = _noCoverArtHashId;
-                        }
+//                        }
                         
                         // Finally, if no image was found by any of the methods, we call the given image handler with nil;
                         if (imageHandler != nil) {
@@ -1465,18 +1464,8 @@ static int const kSongPoolStartCapacity = 250;
 //    NSPoint speedVector     = [[cacheContext objectForKey:@"spd"] pointValue];
     NSPoint selectionPos    = [[cacheContext objectForKey:@"pos"] pointValue];
     NSPoint gridDims        = [[cacheContext objectForKey:@"gridDims"] pointValue];
-
-    // Early out for speed scrolling. No point in caching if we're flying by.
-    // At some point use this for smarter caching.
-//    if (speedVector.y > 2) {
-//        NSLog(@">>>>>>>>>>>>>>>>>>>>>");
-//        NSLog(@"Speed cutoff enabled.");//wipwip
-//        NSLog(@"<<<<<<<<<<<<<<<<<<<<<");
-//        return;
-//    }
     
     // We've got a new request so cancel all previous queued up requests.
-//    NSLog(@"About to cancel all existing caching ops");
     [urlCachingOpQueue cancelAllOperations];
     
     NSBlockOperation* cacheOp = [[NSBlockOperation alloc] init];
@@ -1486,6 +1475,7 @@ static int const kSongPoolStartCapacity = 250;
 
     [weakCacheOp addExecutionBlock:^{
     
+        id<SongIDProtocol> selectedSongId = nil;
         // Because we need to pass the weakCacheOp to other methods we create a strong reference to it.
         // This keeps it alive for the duration of the scope of the block regardless of whether it is dealloc'd elsewhere.
         NSBlockOperation* localCacheOp = weakCacheOp;
@@ -1494,10 +1484,9 @@ static int const kSongPoolStartCapacity = 250;
         // Check for operation cancellation first thing.
         if( localCacheOp.isCancelled ) {return;}
 
-//        NSLog(@"Starting caching operation block %@",localCacheOp);
         // Make sure we have an inited cache.
         NSMutableSet* wantedCache = [[NSMutableSet alloc] initWithCapacity:25];
-        NSInteger radius = 1;
+        NSInteger radius = 0;
         
         for (NSInteger matrixRows=selectionPos.y-radius; matrixRows<=selectionPos.y+radius; matrixRows++) {
             for (NSInteger matrixCols=selectionPos.x-radius; matrixCols<=selectionPos.x+radius; matrixCols++) {
@@ -1507,11 +1496,14 @@ static int const kSongPoolStartCapacity = 250;
                         // Check for operation cancellation
                         if( localCacheOp.isCancelled ) {return;}
   
-                        // skip if this is the selected cell (which gets added below).
-                        if ((matrixRows == selectionPos.y) && (matrixCols == selectionPos.x))
-                            continue;
-                        
                         id<SongIDProtocol> songID = [_songGridAccessAPI songIDFromGridColumn:matrixCols andRow:matrixRows];
+                        
+                        // skip if this is the selected cell (which gets added below).
+                        // Store the currently selected cell's songId for use later.
+                        if ((matrixRows == selectionPos.y) && (matrixCols == selectionPos.x))
+                            selectedSongId = songID;
+//                            continue;
+                        
                         if (songID != nil) {
                             [wantedCache addObject:songID];
                         }
@@ -1527,8 +1519,7 @@ static int const kSongPoolStartCapacity = 250;
         // Check for operation cancellation
         if( localCacheOp.isCancelled ) {return;}
 
-        // Beyond this point we can no longer cancel because we now start affecting the external state such as
-        // the UI and the actual songIDCache.
+        // Ensure all stale objects are cleared.
         [self clearSongCache:[staleCache allObjects] withBOp:localCacheOp];
             
         // DEBUG
@@ -1537,19 +1528,23 @@ static int const kSongPoolStartCapacity = 250;
         // Remove the what's already cached from the wanted cache and load it.
         [wantedCache minusSet:songIDCache];
 
+        // To always give the selected song the highest priority we add it to the front of the array.
+        // Remove the song from the set because we want to insert it at the front of the songsToCacheArray.
+        [wantedCache removeObject:selectedSongId];
+        
         // Is this much slower than any alternative?
         NSMutableArray* songsToCacheArray = [[wantedCache allObjects] mutableCopy];
         
-        // To always give the selected song the highest priority we add it to the front of the array.
-        id<SongIDProtocol> songID = [_songGridAccessAPI songIDFromGridColumn:selectionPos.x andRow:selectionPos.y];
-        if (songID != nil) {
-            [songsToCacheArray insertObject:songID atIndex:0];
+        // Put the selected song at the front so it gets cached first.
+        if (selectedSongId != nil) {
+            [songsToCacheArray insertObject:selectedSongId atIndex:0];
         }
         
         [self loadSongCache:songsToCacheArray withBOp:localCacheOp];
-        // DEBUG
-
         // The songsToCacheArray will, after the call to loadSongCache, contain only the songs that were successfully cached.
+        // No cancelling beyond this point.
+        
+        // DEBUG:
         [_delegate setDebugCachedFlagsForSongIDArray:songsToCacheArray toValue:YES];
         
         // Remove from the existing cache what is not in the wanted cache.
@@ -1559,8 +1554,6 @@ static int const kSongPoolStartCapacity = 250;
         // use the songsToCacheArray instead as that has been pruned to contain only cached songs.
         NSSet* newWantedCache = [NSSet setWithArray:songsToCacheArray];
         [songIDCache unionSet:newWantedCache];
-//        [songIDCache unionSet:wantedCache];
-//        NSLog(@"Reached end of caching block %@",localCacheOp);
     }];
 
 
@@ -1581,6 +1574,7 @@ static int const kSongPoolStartCapacity = 250;
  */
 - (void)clearSongCache:(NSArray*)staleSongArray withBOp:(NSBlockOperation*)bOp {
 //    NSLog(@"Retain count for bOp is %ld", CFGetRetainCount((__bridge CFTypeRef)bOp));
+    return;
     dispatch_async(cacheClearingQueue, ^{
         for (id<SongIDProtocol> songID in staleSongArray) {
             TGSong *aSong = [self songForID:songID];
@@ -1772,19 +1766,19 @@ static int const kSongPoolStartCapacity = 250;
  Called by the fingerprinter when a fingerprint is ready.
  Would perhaps be better as an event ?
  */
-- (void)fingerprintReady:(NSString *)fingerPrint forSongID:(id<SongIDProtocol>)songID {
-    
-    TGSong* song = [self songForID:songID];
-    
-    // At this point we should check if the fingerprint resulted in a songUUID.
-    // If it did not we keep the finger print so we don't have to re-generate it, otherwise we can delete the it.
-    if (song.uuid == nil) {
-        NSLog(@"No UUID found, keeping fingerprint.");
-        song.fingerprint = fingerPrint;
-    }
-    
-    [song setFingerPrintStatus:kFingerPrintStatusDone];
-}
+//- (void)fingerprintReady:(NSString *)fingerPrint forSongID:(id<SongIDProtocol>)songID {
+//    
+//    TGSong* song = [self songForID:songID];
+//    
+//    // At this point we should check if the fingerprint resulted in a songUUID.
+//    // If it did not we keep the finger print so we don't have to re-generate it, otherwise we can delete the it.
+//    if (song.uuid == nil) {
+//        NSLog(@"No UUID found, keeping fingerprint.");
+//        song.fingerprint = fingerPrint;
+//    }
+//    
+//    [song setFingerPrintStatus:kFingerPrintStatusDone];
+//}
 
 #pragma mark -
 #pragma mark Delegate Methods
@@ -1876,7 +1870,7 @@ static int const kSongPoolStartCapacity = 250;
 
 //MARK: Debug methods
 
-- (void)DebugLogSongWithId:(id<SongIDProtocol>)songId {
+- (void)debugLogSongWithId:(id<SongIDProtocol>)songId {
     TGSong* theSong = [self songForID:songId];
     NSLog(@"Debug log for song with id: %@",songId);
     NSLog(@"vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv");
@@ -1889,6 +1883,21 @@ static int const kSongPoolStartCapacity = 250;
     NSLog(@"The sweetspots are %@",[self sweetSpotsForSongID:songId]);
     
     NSLog(@"^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^");
+}
+
+- (void)debugLogCaches {
+
+    NSLog(@"The current cache is:");
+    NSLog(@"+---------------------+");
+    NSLog(@"%@",songIDCache);
+    NSLog(@"+---------------------+");
+    
+    for (id<SongIDProtocol>aSongId in songPoolDictionary) {
+        TGSong* aSong = [self songForID:aSongId];
+        if ([aSong isReadyForPlayback] && ([songIDCache containsObject:aSongId] == NO)) {
+            NSLog(@"Song %@ is ready for playback but is not in the cache!",aSongId);
+        }
+    }
 }
 
 - (NSString*)statusValToString:(NSUInteger)statusVal {
