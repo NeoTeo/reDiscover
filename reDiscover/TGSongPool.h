@@ -78,6 +78,7 @@
 - (void)setActiveSweetSpotIndex:(int)ssIndex forSongID:(id<SongIDProtocol>)songID;
 
 - (void)cacheWithContext:(NSDictionary*)cacheContext;
+- (void)newCacheFromCache:(NSMutableSet*)oldCache withContext:(NSDictionary*)cacheContext andHandler:(void (^)(NSMutableSet*))newCacheHandler;
 
 - (NSManagedObjectContext*)TEOSongDataMOC;
 
@@ -93,6 +94,7 @@
 //@optional
 - (void)songPoolDidLoadSongURLWithID:(id<SongIDProtocol>)songID;
 - (void)songPoolDidLoadAllURLs:(NSUInteger)numberOfURLs;
+- (void)songPoolDidStartFetchingSong:(id<SongIDProtocol>)songID;
 - (void)songPoolDidStartPlayingSong:(id<SongIDProtocol>)songID;
 - (void)songPoolDidFinishPlayingSong:(id<SongIDProtocol>)songID;
 - (void)songPoolDidLoadDataForSongID:(id<SongIDProtocol>)songID;

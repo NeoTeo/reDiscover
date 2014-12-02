@@ -523,16 +523,26 @@
     }
 }
 
+//MARK: COVR
+- (void)songPoolDidStartFetchingSong:(id<SongIDProtocol>)songID {
+
+    NSString* artId = [_currentSongPool artIdForSongId:songID];
+  
+    if (artId == nil) {
+        [_songGridController setCoverImage:fetchingImage forSongWithID:songID];
+        [_songInfoController setSongCoverImage:fetchingImage];
+    }
+}
+
 - (void)songPoolDidStartPlayingSong:(id<SongIDProtocol>)songID {
     NSLog(@"songPoolDidStartPlayingSong with id:%@",songID);
     
     NSString* artId = [_currentSongPool artIdForSongId:songID];
 
-//    if ((artId != [_currentSongPool defaultCoverArtHashId]) &&
-//        (artId != [_currentSongPool fetchingCoverArtHashId]))
     if (artId != nil) {
         [self refreshCoverForSongId:songID];
     } else {
+        //MARK: COVR these should be commented out once the cover stuff is working properly
         [_songGridController setCoverImage:fetchingImage forSongWithID:songID];
         [_songInfoController setSongCoverImage:fetchingImage];
     }
