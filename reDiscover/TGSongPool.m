@@ -317,7 +317,8 @@ static int const kSongPoolStartCapacity = 250;
 //}
 - (void)idleTimeBegins {
     NSLog(@"song pool idle start");
-    
+    //FIXME: This causes a crash (possibly) 'NSGenericException' (reason '*** Collection <__NSDictionaryM: 0x6000000433c0> was mutated while being enumerated.') was raised during dragging session.
+    return;
     [idleTimeFingerprinterTimer invalidate];
     
     NSEnumerator* theSongEnumerator = [songPoolDictionary objectEnumerator];
@@ -1454,7 +1455,7 @@ static int const kSongPoolStartCapacity = 250;
  This method is called with a cache context that defines the position and speed of the selection and
  is used to determine the optimal caching strategy.
  */
-/*
+
 //MARK: CACH this is the new version
 - (void)cacheWithContext:(NSDictionary*)cacheContext {
     [self newCacheFromCache:songIDCache withContext:cacheContext andHandler:^(NSMutableSet* theNewCache) {
@@ -1548,7 +1549,7 @@ static int const kSongPoolStartCapacity = 250;
 
         // Remove the what's already cached from the wanted cache.
 //        [wantedCache minusSet:songIDCache];
-        [newMasterCache minusSet:songIDCache];
+        [wantedCache minusSet:newMasterCache];
         
         // To always give the selected song the highest priority we add it to the front of the array.
         // Remove the song from the set because we want to insert it at the front of the songsToCacheArray.
@@ -1591,8 +1592,8 @@ static int const kSongPoolStartCapacity = 250;
     //NSDate* postDate = [NSDate date];
     //NSLog(@"caching took: %f",[postDate timeIntervalSinceDate:preDate]);
 }
-*/
 
+/*
 //MARK: CACH this is the old version
 - (void)cacheWithContext:(NSDictionary *)cacheContext {
     
@@ -1711,7 +1712,7 @@ static int const kSongPoolStartCapacity = 250;
     //NSDate* postDate = [NSDate date];
     //NSLog(@"caching took: %f",[postDate timeIntervalSinceDate:preDate]);
 }
-
+*/
 
 
 /**

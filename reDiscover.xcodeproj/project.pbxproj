@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		548F3DC769524F62AE69C0C1 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FF4446098666436AB643944F /* libPods.a */; };
 		AB01DB04194F499900368693 /* TGStack.m in Sources */ = {isa = PBXBuildFile; fileRef = AB01DB03194F499900368693 /* TGStack.m */; };
+		AB1756261A2E1788003FC9A3 /* reDiscover_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB1756251A2E1788003FC9A3 /* reDiscover_Tests.swift */; };
 		AB17DEF91959937400BFD25B /* CoverViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB17DEF81959937400BFD25B /* CoverViewController.swift */; };
 		AB17DF321959B2A200BFD25B /* PlaylistViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB17DF311959B2A200BFD25B /* PlaylistViewController.swift */; };
 		AB17DF341959B2B800BFD25B /* InfoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB17DF331959B2B800BFD25B /* InfoViewController.swift */; };
@@ -77,10 +78,23 @@
 		ABFC8EB519C1BCE90007ECCB /* uploadedSS.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = ABFC8EB319C1BCE90007ECCB /* uploadedSS.xcdatamodeld */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXContainerItemProxy section */
+		AB1756271A2E1788003FC9A3 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = AB85BBCB1875AACF00670905 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = AB85BBD21875AACF00670905;
+			remoteInfo = reDiscover;
+		};
+/* End PBXContainerItemProxy section */
+
 /* Begin PBXFileReference section */
 		AB01DB03194F499900368693 /* TGStack.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TGStack.m; path = ../TGStack.m; sourceTree = "<group>"; };
 		AB01DB05194F49B800368693 /* TGStack.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = TGStack.h; path = ../TGStack.h; sourceTree = "<group>"; };
 		AB0D052D1889E06400F08566 /* libiconv.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libiconv.dylib; path = usr/lib/libiconv.dylib; sourceTree = SDKROOT; };
+		AB1756211A2E1788003FC9A3 /* reDiscover Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "reDiscover Tests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		AB1756241A2E1788003FC9A3 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		AB1756251A2E1788003FC9A3 /* reDiscover_Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = reDiscover_Tests.swift; sourceTree = "<group>"; };
 		AB17DEF81959937400BFD25B /* CoverViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CoverViewController.swift; sourceTree = "<group>"; };
 		AB17DF311959B2A200BFD25B /* PlaylistViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlaylistViewController.swift; sourceTree = "<group>"; };
 		AB17DF331959B2B800BFD25B /* InfoViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InfoViewController.swift; sourceTree = "<group>"; };
@@ -191,6 +205,13 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		AB17561E1A2E1788003FC9A3 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		AB85BBD01875AACF00670905 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -212,6 +233,23 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		AB1756221A2E1788003FC9A3 /* reDiscover Tests */ = {
+			isa = PBXGroup;
+			children = (
+				AB1756251A2E1788003FC9A3 /* reDiscover_Tests.swift */,
+				AB1756231A2E1788003FC9A3 /* Supporting Files */,
+			);
+			path = "reDiscover Tests";
+			sourceTree = "<group>";
+		};
+		AB1756231A2E1788003FC9A3 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				AB1756241A2E1788003FC9A3 /* Info.plist */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
 		AB3E974A187BFC7E00BECC09 /* App start view */ = {
 			isa = PBXGroup;
 			children = (
@@ -336,6 +374,7 @@
 			children = (
 				AB85BBDC1875AACF00670905 /* reDiscover */,
 				AB85BBFA1875AACF00670905 /* reDiscoverTests */,
+				AB1756221A2E1788003FC9A3 /* reDiscover Tests */,
 				AB85BBD51875AACF00670905 /* Frameworks */,
 				AB85BBD41875AACF00670905 /* Products */,
 				B512DB84B1174F868791F7EF /* Pods.xcconfig */,
@@ -346,6 +385,7 @@
 			isa = PBXGroup;
 			children = (
 				AB85BBD31875AACF00670905 /* reDiscover.app */,
+				AB1756211A2E1788003FC9A3 /* reDiscover Tests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -435,6 +475,24 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		AB1756201A2E1788003FC9A3 /* reDiscover Tests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = AB17562B1A2E1788003FC9A3 /* Build configuration list for PBXNativeTarget "reDiscover Tests" */;
+			buildPhases = (
+				AB17561D1A2E1788003FC9A3 /* Sources */,
+				AB17561E1A2E1788003FC9A3 /* Frameworks */,
+				AB17561F1A2E1788003FC9A3 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				AB1756281A2E1788003FC9A3 /* PBXTargetDependency */,
+			);
+			name = "reDiscover Tests";
+			productName = "reDiscover Tests";
+			productReference = AB1756211A2E1788003FC9A3 /* reDiscover Tests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 		AB85BBD21875AACF00670905 /* reDiscover */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = AB85BC041875AACF00670905 /* Build configuration list for PBXNativeTarget "reDiscover" */;
@@ -463,6 +521,12 @@
 				CLASSPREFIX = TG;
 				LastUpgradeCheck = 0500;
 				ORGANIZATIONNAME = "Teo Sartori";
+				TargetAttributes = {
+					AB1756201A2E1788003FC9A3 = {
+						CreatedOnToolsVersion = 6.1;
+						TestTargetID = AB85BBD21875AACF00670905;
+					};
+				};
 			};
 			buildConfigurationList = AB85BBCE1875AACF00670905 /* Build configuration list for PBXProject "reDiscover" */;
 			compatibilityVersion = "Xcode 3.2";
@@ -478,11 +542,19 @@
 			projectRoot = "";
 			targets = (
 				AB85BBD21875AACF00670905 /* reDiscover */,
+				AB1756201A2E1788003FC9A3 /* reDiscover Tests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		AB17561F1A2E1788003FC9A3 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		AB85BBD11875AACF00670905 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -538,6 +610,14 @@
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		AB17561D1A2E1788003FC9A3 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				AB1756261A2E1788003FC9A3 /* reDiscover_Tests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		AB85BBCF1875AACF00670905 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -592,6 +672,14 @@
 		};
 /* End PBXSourcesBuildPhase section */
 
+/* Begin PBXTargetDependency section */
+		AB1756281A2E1788003FC9A3 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = AB85BBD21875AACF00670905 /* reDiscover */;
+			targetProxy = AB1756271A2E1788003FC9A3 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
 /* Begin PBXVariantGroup section */
 		AB85BBDF1875AACF00670905 /* InfoPlist.strings */ = {
 			isa = PBXVariantGroup;
@@ -628,6 +716,55 @@
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
+		AB1756291A2E1788003FC9A3 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				COMBINE_HIDPI_IMAGES = YES;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(DEVELOPER_FRAMEWORKS_DIR)",
+					"$(inherited)",
+				);
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				INFOPLIST_FILE = "reDiscover Tests/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
+				MTL_ENABLE_DEBUG_INFO = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/reDiscover.app/Contents/MacOS/reDiscover";
+			};
+			name = Debug;
+		};
+		AB17562A1A2E1788003FC9A3 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				COMBINE_HIDPI_IMAGES = YES;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(DEVELOPER_FRAMEWORKS_DIR)",
+					"$(inherited)",
+				);
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				INFOPLIST_FILE = "reDiscover Tests/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
+				MTL_ENABLE_DEBUG_INFO = NO;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/reDiscover.app/Contents/MacOS/reDiscover";
+			};
+			name = Release;
+		};
 		AB85BC021875AACF00670905 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -751,6 +888,14 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		AB17562B1A2E1788003FC9A3 /* Build configuration list for PBXNativeTarget "reDiscover Tests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				AB1756291A2E1788003FC9A3 /* Debug */,
+				AB17562A1A2E1788003FC9A3 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
 		AB85BBCE1875AACF00670905 /* Build configuration list for PBXProject "reDiscover" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
