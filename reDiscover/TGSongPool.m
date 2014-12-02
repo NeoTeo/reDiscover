@@ -317,7 +317,7 @@ static int const kSongPoolStartCapacity = 250;
 //}
 - (void)idleTimeBegins {
     NSLog(@"song pool idle start");
-    //FIXME: This causes a crash (possibly) 'NSGenericException' (reason '*** Collection <__NSDictionaryM: 0x6000000433c0> was mutated while being enumerated.') was raised during dragging session.
+    //FIXME: This causes a crash (possibly) 'NSGenericException' (reason '*** Collection <__NSDictionaryM: 0x6000000433c0> was mutated while being enumerated.') was raised during dragging session. This could also be an unrelated bug to do with me logging the cache out whilst modifying it...
     return;
     [idleTimeFingerprinterTimer invalidate];
     
@@ -1456,12 +1456,12 @@ static int const kSongPoolStartCapacity = 250;
  is used to determine the optimal caching strategy.
  */
 
-//MARK: CACH this is the new version
+
 - (void)cacheWithContext:(NSDictionary*)cacheContext {
     [self newCacheFromCache:songIDCache withContext:cacheContext andHandler:^(NSMutableSet* theNewCache) {
         if (theNewCache != nil) {
             songIDCache = [theNewCache copy];
-            NSLog(@"The master cache is now %@",songIDCache);
+//            NSLog(@"The master cache is now %@",songIDCache);
         } else {
             NSLog(@"The new cache was nil. Keeping the old one.");
         }
@@ -1474,9 +1474,6 @@ static int const kSongPoolStartCapacity = 250;
     NSMutableSet* newMasterCache = [oldCache mutableCopy];
     // First we need to decide on a caching strategy.
     // For now we will simply do a no-brains area caching of two songs in every direction from the current cursor position.
-//    NSDate* preBuildDate = [NSDate date];
-    //NSDate* preDate = [NSDate date];
-    
     // Extract data from context
 //    NSPoint speedVector     = [[cacheContext objectForKey:@"spd"] pointValue];
     NSPoint selectionPos    = [[cacheContext objectForKey:@"pos"] pointValue];
@@ -1530,7 +1527,6 @@ static int const kSongPoolStartCapacity = 250;
         }
         
         // The existing cache minus the wanted cache is the stale cache (what should be de-cached).
-//        NSMutableSet* staleCache = [songIDCache mutableCopy];
         NSMutableSet* staleCache = [newMasterCache mutableCopy];
         [staleCache minusSet:wantedCache];
         
@@ -1544,11 +1540,9 @@ static int const kSongPoolStartCapacity = 250;
         [_delegate setDebugCachedFlagsForSongIDArray:[staleCache allObjects] toValue:NO];
         
         // Remove from the existing cache what is not in the wanted cache.
-//        [songIDCache minusSet:staleCache];
         [newMasterCache minusSet:staleCache];
 
         // Remove the what's already cached from the wanted cache.
-//        [wantedCache minusSet:songIDCache];
         [wantedCache minusSet:newMasterCache];
         
         // To always give the selected song the highest priority we add it to the front of the array.
@@ -1570,13 +1564,9 @@ static int const kSongPoolStartCapacity = 250;
         // DEBUG:
         [_delegate setDebugCachedFlagsForSongIDArray:songsToCacheArray toValue:YES];
         
-//        // Remove from the existing cache what is not in the wanted cache.
-//        [songIDCache minusSet:staleCache];
-        
         // Because the loadSongCache may have been interrupted before it finished caching all the wanted songs we need to
         // use the songsToCacheArray instead as that has been pruned to contain only cached songs.
         NSSet* newWantedCache = [NSSet setWithArray:songsToCacheArray];
-//        [songIDCache unionSet:newWantedCache];
         [newMasterCache unionSet:newWantedCache];
         
         newCacheHandler(newMasterCache);
@@ -1592,127 +1582,6 @@ static int const kSongPoolStartCapacity = 250;
     //NSDate* postDate = [NSDate date];
     //NSLog(@"caching took: %f",[postDate timeIntervalSinceDate:preDate]);
 }
-
-/*
-//MARK: CACH this is the old version
-- (void)cacheWithContext:(NSDictionary *)cacheContext {
-    
-    // First we need to decide on a caching strategy.
-    // For now we will simply do a no-brains area caching of two songs in every direction from the current cursor position.
-    //    NSDate* preBuildDate = [NSDate date];
-    //NSDate* preDate = [NSDate date];
-    
-    // Extract data from context
-    //    NSPoint speedVector     = [[cacheContext objectForKey:@"spd"] pointValue];
-    NSPoint selectionPos    = [[cacheContext objectForKey:@"pos"] pointValue];
-    NSPoint gridDims        = [[cacheContext objectForKey:@"gridDims"] pointValue];
-    
-    // We've got a new request so cancel all previous queued up requests.
-    [urlCachingOpQueue cancelAllOperations];
-    
-    NSBlockOperation* cacheOp = [[NSBlockOperation alloc] init];
-    
-    // Weakify the block reference to avoid retain cycles.
-    __weak NSBlockOperation* weakCacheOp = cacheOp;
-    
-    [weakCacheOp addExecutionBlock:^{
-        
-        id<SongIDProtocol> selectedSongId = nil;
-        // Because we need to pass the weakCacheOp to other methods we create a strong reference to it.
-        // This keeps it alive for the duration of the scope of the block regardless of whether it is dealloc'd elsewhere.
-        NSBlockOperation* localCacheOp = weakCacheOp;
-        NSAssert(localCacheOp, @"Error! A weak reference was nil when needed.");
-        
-        // Check for operation cancellation first thing.
-        if( localCacheOp.isCancelled ) {return;}
-        
-        // Make sure we have an inited cache.
-        NSMutableSet* wantedCache = [[NSMutableSet alloc] initWithCapacity:25];
-        NSInteger radius = 2;
-        
-        for (NSInteger matrixRows=selectionPos.y-radius; matrixRows<=selectionPos.y+radius; matrixRows++) {
-            for (NSInteger matrixCols=selectionPos.x-radius; matrixCols<=selectionPos.x+radius; matrixCols++) {
-                if ((matrixRows >= 0) && (matrixRows <gridDims.y)) {
-                    if((matrixCols >=0) && (matrixCols < gridDims.x)) {
-                        
-                        // Check for operation cancellation
-                        if( localCacheOp.isCancelled ) {return;}
-                        
-                        id<SongIDProtocol> songID = [_songGridAccessAPI songIDFromGridColumn:matrixCols andRow:matrixRows];
-                        
-                        // skip if this is the selected cell (which gets added below).
-                        // Store the currently selected cell's songId for use later.
-                        if ((matrixRows == selectionPos.y) && (matrixCols == selectionPos.x))
-                            selectedSongId = songID;
-                        //                            continue;
-                        
-                        if (songID != nil) {
-                            [wantedCache addObject:songID];
-                        }
-                    }
-                }
-            }
-        }
-        
-        // The existing cache minus the wanted cache is the stale cache (what should be de-cached).
-        NSMutableSet* staleCache = [songIDCache mutableCopy];
-        [staleCache minusSet:wantedCache];
-        
-        // Check for operation cancellation
-        if( localCacheOp.isCancelled ) {return;}
-        
-        // Ensure all stale objects are cleared.
-        [self clearSongCache:[staleCache allObjects] withBOp:localCacheOp];
-        
-        // DEBUG
-        [_delegate setDebugCachedFlagsForSongIDArray:[staleCache allObjects] toValue:NO];
-        
-        // Remove from the existing cache what is not in the wanted cache.
-        [songIDCache minusSet:staleCache];
-        
-        // Remove the what's already cached from the wanted cache.
-        [wantedCache minusSet:songIDCache];
-        
-        // To always give the selected song the highest priority we add it to the front of the array.
-        // Remove the song from the set because we want to insert it at the front of the songsToCacheArray.
-        [wantedCache removeObject:selectedSongId];
-        
-        // Is this much slower than any alternative?
-        NSMutableArray* songsToCacheArray = [[wantedCache allObjects] mutableCopy];
-        
-        // Put the selected song at the front so it gets cached first.
-        if (selectedSongId != nil) {
-            [songsToCacheArray insertObject:selectedSongId atIndex:0];
-        }
-        
-        [self loadSongCache:songsToCacheArray withBOp:localCacheOp];
-        // The songsToCacheArray will, after the call to loadSongCache, contain only the songs that were successfully cached.
-        // No cancelling beyond this point.
-        
-        // DEBUG:
-        [_delegate setDebugCachedFlagsForSongIDArray:songsToCacheArray toValue:YES];
-        
-        //        // Remove from the existing cache what is not in the wanted cache.
-        //        [songIDCache minusSet:staleCache];
-        
-        // Because the loadSongCache may have been interrupted before it finished caching all the wanted songs we need to
-        // use the songsToCacheArray instead as that has been pruned to contain only cached songs.
-        NSSet* newWantedCache = [NSSet setWithArray:songsToCacheArray];
-        [songIDCache unionSet:newWantedCache];
-        
-    }];
-    
-    
-    cacheOp.completionBlock = ^{
-        NSLog(@"The caching block %@.",weakCacheOp.isCancelled ? @"cancelled" : @"completed");
-    };
-    
-    [urlCachingOpQueue addOperation:cacheOp];
-    
-    //NSDate* postDate = [NSDate date];
-    //NSLog(@"caching took: %f",[postDate timeIntervalSinceDate:preDate]);
-}
-*/
 
 
 /**
@@ -2043,6 +1912,7 @@ static int const kSongPoolStartCapacity = 250;
     NSLog(@"%@",songIDCache);
     NSLog(@"+---------------------+");
     
+    //FIXME: This may cause an exception because if enumerates the songPoolDictionary whilst it is being changed...
     for (id<SongIDProtocol>aSongId in songPoolDictionary) {
         TGSong* aSong = [self songForID:aSongId];
         if ([aSong isReadyForPlayback] && ([songIDCache containsObject:aSongId] == NO)) {
