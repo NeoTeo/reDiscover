@@ -1458,10 +1458,36 @@ static int const kSongPoolStartCapacity = 250;
 
 
 - (void)cacheWithContext:(NSDictionary*)cacheContext {
+  ///*
+    //CACH2 Add to a separate stack that ensures caching of the selected song is never cancelled and always first.
+    id<SongIDProtocol> selectedSongId = [cacheContext objectForKey:@"selectedSongId"];
+    
+    // Push the selected song on the end of the stack.
+    //[fetchingSongIds addObject:selectedSongId];
+    
+    dispatch_async(dispatch_get_global_queue(QOS_CLASS_USER_INTERACTIVE,0), ^{
+        TGSong *aSong = [self songForID:selectedSongId];
+        if (aSong == NULL) {
+            NSLog(@"ERROR:Caching selected song, the requested ID %@ is not in the song pool.",selectedSongId);
+            return;
+        }
+      
+        [_delegate songPoolDidStartFetchingSong:selectedSongId];
+        [aSong prepareForPlayback];
+        
+        // Initiate the fingerprint/UUId generation and fetching of cover art.
+        [self fetchUUIdAndCoverArtForSongId:selectedSongId];
+        
+        
+    });
+    //*/
+    
+    
     [self newCacheFromCache:songIDCache withContext:cacheContext andHandler:^(NSMutableSet* theNewCache) {
         if (theNewCache != nil) {
-            songIDCache = [theNewCache copy];
-//            NSLog(@"The master cache is now %@",songIDCache);
+
+            songIDCache = theNewCache; // No need to copy it again. [theNewCache copy];
+            
         } else {
             NSLog(@"The new cache was nil. Keeping the old one.");
         }
@@ -1544,18 +1570,23 @@ static int const kSongPoolStartCapacity = 250;
 
         // Remove the what's already cached from the wanted cache.
         [wantedCache minusSet:newMasterCache];
+
+        //CACH2 Adding the selectedSongId to the front of the songsToCacheArray is no longer necessary because
+        // we already make sure that the selected song is cached before calling newCacheFromCache.
+        // It still needs to be in the array though so we know what's cached and what's not.
+
+            // To always give the selected song the highest priority we add it to the front of the array.
+            // Remove the song from the set because we want to insert it at the front of the songsToCacheArray.
+//            [wantedCache removeObject:selectedSongId];
         
-        // To always give the selected song the highest priority we add it to the front of the array.
-        // Remove the song from the set because we want to insert it at the front of the songsToCacheArray.
-        [wantedCache removeObject:selectedSongId];
-        
-        // Is this much slower than any alternative?
-        NSMutableArray* songsToCacheArray = [[wantedCache allObjects] mutableCopy];
-        
-        // Put the selected song at the front so it gets cached first.
-        if (selectedSongId != nil) {
-            [songsToCacheArray insertObject:selectedSongId atIndex:0];
-        }
+            // Is this much slower than any alternative?
+            NSMutableArray* songsToCacheArray = [[wantedCache allObjects] mutableCopy];
+            
+            // Put the selected song at the front so it gets cached first.
+//            if (selectedSongId != nil) {
+//                [songsToCacheArray insertObject:selectedSongId atIndex:0];
+//            }
+
         
         [self loadSongCache:songsToCacheArray withBOp:localCacheOp];
         // The songsToCacheArray will, after the call to loadSongCache, contain only the songs that were successfully cached.
@@ -1623,12 +1654,13 @@ static int const kSongPoolStartCapacity = 250;
         [self fetchUUIdAndCoverArtForSongId:songID];
         
         // Check for operation cancellation.
-        if( bOp.isCancelled ) {
+        if( (bOp != nil) &&  bOp.isCancelled ) {
             NSLog(@"==================================================================================================================================================== loadSongCache cancelled");
             // Remove the entries that we didn't manage to cache before having to drop out.
             NSIndexSet *indexSet = [NSIndexSet indexSetWithIndexesInRange:NSMakeRange(nextIdx, [desiredSongArray count]-nextIdx)];
             [desiredSongArray removeObjectsAtIndexes:indexSet];
-            return;}
+            return;
+        }
 
         nextIdx++;
     }

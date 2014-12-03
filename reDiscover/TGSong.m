@@ -81,6 +81,11 @@ static const void *ItemStatusContext = &ItemStatusContext;
     if ([self songStatus] == kSongStatusReady) {
         return ;
     }
+    //CACH2
+    if ([self songStatus] == kSongStatusLoading) {
+        NSLog(@"Song %@ was already loading. Returning.",self.songID);
+        return;
+    }
     
     NSURL *theURL = [NSURL URLWithString:self.urlString];
     [self setSongStatus:kSongStatusLoading];

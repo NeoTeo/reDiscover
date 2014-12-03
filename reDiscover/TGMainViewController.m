@@ -745,7 +745,10 @@ CDFIX */
         }
     }
 
-    [_currentSongPool cacheWithContext:theContext];
+    NSMutableDictionary* theContextCopy = [theContext mutableCopy];
+    [theContextCopy setObject:songID forKey:@"selectedSongId"];
+    
+    [_currentSongPool cacheWithContext:theContextCopy];
     [_currentSongPool requestSongPlayback:songID];
     
     // reset the idle timer

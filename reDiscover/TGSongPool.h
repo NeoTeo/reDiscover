@@ -127,7 +127,15 @@
      */
     NSOperationQueue* urlCachingOpQueue;
     
+    /** The set that keeps track of the currently cached songs by id */
     NSMutableSet *songIDCache;
+    
+    /** CACH2 not currently necessary.
+     A stack of song Ids that have been explicitly selected by the user and are currently fetching.
+     This is separate from the songIDCache in that this is not interruptible and is dealt with in a 
+     FILO order to ensure responsiveness.
+     */
+    //NSMutableArray* fetchingSongIds;
     
     // This serial queue ensures all the cache clearing blocks are performed in the background.
     dispatch_queue_t cacheClearingQueue;
