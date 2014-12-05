@@ -1486,7 +1486,12 @@ static int const kSongPoolStartCapacity = 250;
     [self newCacheFromCache:songIDCache withContext:cacheContext andHandler:^(NSMutableSet* theNewCache) {
         if (theNewCache != nil) {
 
+            // Hmm...there is actually no guarantee that the songIDCache gets written before the next call to newCacheFromCache gets called.
+            // If that does not happen then a subsequent call will use the oldIDCache and theNewCache from the first call will be lost when the
+            // second call returns here and overwrites songIDCache. I suppose I could add theNewCache to a serial FIFO queue that applies it in order
+            // but it doesn't solve the problem that new calls use the old cache. Might as well just merge then.
             songIDCache = theNewCache; // No need to copy it again. [theNewCache copy];
+//            [songIDCache unionSet:theNewCache];
             
         } else {
             NSLog(@"The new cache was nil. Keeping the old one.");
@@ -1515,7 +1520,7 @@ static int const kSongPoolStartCapacity = 250;
 
     [weakCacheOp addExecutionBlock:^{
     
-        id<SongIDProtocol> selectedSongId = nil;
+//CACH2        id<SongIDProtocol> selectedSongId = nil;
         // Because we need to pass the weakCacheOp to other methods we create a strong reference to it.
         // This keeps it alive for the duration of the scope of the block regardless of whether it is dealloc'd elsewhere.
         NSBlockOperation* localCacheOp = weakCacheOp;
@@ -1540,9 +1545,10 @@ static int const kSongPoolStartCapacity = 250;
                         
                         // skip if this is the selected cell (which gets added below).
                         // Store the currently selected cell's songId for use later.
-                        if ((matrixRows == selectionPos.y) && (matrixCols == selectionPos.x))
-                            selectedSongId = songID;
-//                            continue;
+//CACH2
+//                        if ((matrixRows == selectionPos.y) && (matrixCols == selectionPos.x))
+//                            selectedSongId = songID;
+
                         
                         if (songID != nil) {
                             [wantedCache addObject:songID];
@@ -1622,7 +1628,7 @@ static int const kSongPoolStartCapacity = 250;
  */
 - (void)clearSongCache:(NSArray*)staleSongArray withBOp:(NSBlockOperation*)bOp {
 //    NSLog(@"Retain count for bOp is %ld", CFGetRetainCount((__bridge CFTypeRef)bOp));
-    return;
+
     dispatch_async(cacheClearingQueue, ^{
         for (id<SongIDProtocol> songID in staleSongArray) {
             TGSong *aSong = [self songForID:songID];
