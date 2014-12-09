@@ -10,6 +10,7 @@
 #import <Foundation/Foundation.h>
 #import "TGPlaylistViewController.h"
 
+#import "NSMutableArray+QueueAdditions.h"
 
 // class forward declaration
 @class TGSong;
@@ -130,6 +131,11 @@
     /** The set that keeps track of the currently cached songs by id */
     NSMutableSet *songIDCache;
     
+    /** CACH2 a queue of caches */
+    NSMutableArray* cacheQueue;
+    /** CACH2 a queue of callback blocks */
+    NSMutableArray* callbackQueue;
+    
     /** CACH2 not currently necessary.
      A stack of song Ids that have been explicitly selected by the user and are currently fetching.
      This is separate from the songIDCache in that this is not interruptible and is dealt with in a 
@@ -205,7 +211,6 @@
 - (BOOL)loadFromURL:(NSURL *)anURL ;
 
 - (void)requestImageForSongID:(id<SongIDProtocol>)songID withHandler:(void (^)(NSImage *))imageHandler;
-
 
 //MARK: Song data accessor methods. -
 // Async methods

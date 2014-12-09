@@ -23,6 +23,9 @@
 
 #import "rediscover-swift.h"
 
+//CACH2
+#import "TGTest.h"
+
 
 //@interface SongID : NSObject <SongIDProtocol>
 //+ (SongID *)initWithString:(NSString *)theString;
@@ -179,6 +182,11 @@ static int const kSongPoolStartCapacity = 250;
 //        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleFetchedUUId:) name:@"TGUUIdWasFetched" object:nil];
 //        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(songCoverWasFetched:) name:@"webSongCoverFetcherDidFetch" object:nil];
 //        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(songIsReadyForPlayback:) name:@"songStatusNowReady" object:nil];
+        
+        //CACH2 start the cachequeue off with an empty cache
+        cacheQueue = [[NSMutableArray alloc] init];
+        [cacheQueue enqueue:[NSMutableSet setWithCapacity:0]];
+        callbackQueue = [[NSMutableArray alloc] init];
     }
     
     return self;
@@ -1482,23 +1490,64 @@ static int const kSongPoolStartCapacity = 250;
     });
     //*/
     
-    
-    [self newCacheFromCache:songIDCache withContext:cacheContext andHandler:^(NSMutableSet* theNewCache) {
-        if (theNewCache != nil) {
+    // call the handler as soon as there is a cache in the cache queue.
+    [self performHandlerWhenCacheIsReady:^(NSMutableSet* theCache) {
+        
+//        [self newCacheFromCache:songIDCache withContext:cacheContext andHandler:^(NSMutableSet* theNewCache) {
+        [self newCacheFromCache:theCache withContext:cacheContext andHandler:^(NSMutableSet* theNewCache) {
+            if (theNewCache != nil) {
 
-            // Hmm...there is actually no guarantee that the songIDCache gets written before the next call to newCacheFromCache gets called.
-            // If that does not happen then a subsequent call will use the oldIDCache and theNewCache from the first call will be lost when the
-            // second call returns here and overwrites songIDCache. I suppose I could add theNewCache to a serial FIFO queue that applies it in order
-            // but it doesn't solve the problem that new calls use the old cache. Might as well just merge then.
-            songIDCache = theNewCache; // No need to copy it again. [theNewCache copy];
-//            [songIDCache unionSet:theNewCache];
-            
-        } else {
-            NSLog(@"The new cache was nil. Keeping the old one.");
-        }
+                // Hmm...there is actually no guarantee that the songIDCache gets written before the next call to newCacheFromCache gets called.
+                // If that does not happen then a subsequent call will use the oldIDCache and theNewCache from the first call will be lost when the
+                // second call returns here and overwrites songIDCache. I suppose I could add theNewCache to a serial FIFO queue that applies it in order
+                // but it doesn't solve the problem that new calls use the old cache. Might as well just merge then.
+//                songIDCache = theNewCache; // No need to copy it again. [theNewCache copy];
+    //            [songIDCache unionSet:theNewCache];
 
+                
+                // If there's a callback on the callback queue, dequeue it and call it.
+                if ([callbackQueue count] != 0) {
+                    void (^theCallback)(NSMutableSet*) = [callbackQueue dequeue];
+                    theCallback(theNewCache);
+                } else {
+                    // here we add the new cache to the cache queue.
+                    [cacheQueue enqueue:theNewCache];
+                }
+                
+                // Post a notification that the cache is not empty.
+//                [[NSNotificationCenter defaultCenter] postNotificationName:@"cacheNotEmpty" object:theNewCache];
+                //just for debugging right now
+                songIDCache = theNewCache;
+
+            } else {
+                NSLog(@"The new cache was nil. Keeping the old one.");
+            }
+
+        }];
     }];
 }
+
+- (void)performHandlerWhenCacheIsReady:(void (^)(NSMutableSet*))completionHandler {
+    
+    // There are two situations where the cache queue can be empty:
+    // 1) If no cache has been made yet and none is being made by newCacheFromCache: (at startup this will happen once).
+    // 2) The cache is currenty being used by the newCacheFromCache:
+    //
+    
+    
+        if ([cacheQueue count] != 0){
+            completionHandler([cacheQueue dequeue]);
+        } else {
+            [callbackQueue enqueue:completionHandler];
+        }
+}
+
+
+
+//- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object
+//                        change:(NSDictionary *)change context:(void *)context {
+//    NSLog(@"Whoa there.");
+//}
 
 - (void)newCacheFromCache:(NSMutableSet*)oldCache withContext:(NSDictionary*)cacheContext andHandler:(void (^)(NSMutableSet*))newCacheHandler {
     
