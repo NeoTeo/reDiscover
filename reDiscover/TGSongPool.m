@@ -1538,6 +1538,12 @@ static int const kSongPoolStartCapacity = 250;
         if ([cacheQueue count] != 0){
             completionHandler([cacheQueue dequeue]);
         } else {
+            // Keep the callback queue short by pruning off the end before they even get to initiate a caching request.
+            if ([callbackQueue count] > 2) {
+                // discard the last object in the callback Queue.
+                [callbackQueue removeLastObject];
+            }
+            
             [callbackQueue enqueue:completionHandler];
         }
 }

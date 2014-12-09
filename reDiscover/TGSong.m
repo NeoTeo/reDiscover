@@ -633,7 +633,7 @@ CDFIX */
     _cachedFile = nil;
     //CDFIX
     if ([self songStatus] == kSongStatusReady) {
-
+        NSLog(@"~~~~~~~~~~~~~~~~~~~~~~~~ About to clear Song with Id: %@",[self songID]);
         [self setSongDuration:CMTimeMakeWithSeconds(0, 1)];
         
 //        // Unregister observers
@@ -648,6 +648,7 @@ CDFIX */
         songPlayer = nil;
         songAsset = nil;
         songPlayerItem = nil;
+        playerObserver = nil;
         
         NSLog(@"~~~~~~~~~~~~~~~~~~~~~~~~ Song with Id: %@ has been cleared.",[self songID]);
         [self setSongStatus:kSongStatusUninited];
