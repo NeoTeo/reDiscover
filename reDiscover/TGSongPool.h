@@ -131,6 +131,10 @@
     /** The set that keeps track of the currently cached songs by id */
     NSMutableSet *songIDCache;
     
+    /** CACH2 locks to ensure concurrent access to the queues doesn't break */
+    NSLock* cacheQueueLock;
+    NSLock* callbackQueueLock;
+
     /** CACH2 a queue of caches */
     NSMutableArray* cacheQueue;
     /** CACH2 a queue of callback blocks */

@@ -48,18 +48,18 @@
 
 - (void)fingerprintNewSong:(NSNotification*)notification {
     TGSong* song = (TGSong*)notification.object;
-    NSLog(@"fingerprintNewSong with %@",song);
+    TGLog(TGLOG_ALL,@"fingerprintNewSong with %@",song);
     //wipEv This should be observed by the code that exchanges the fingerprint for a uuid (which happens to be this class as well)
     [[NSNotificationCenter defaultCenter] postNotificationName:@"TGNewSongFingerprinted" object:song];
 }
 
 - (void)dealloc {
-    NSLog(@"freeing chromaprint context.");
+    TGLog(TGLOG_ALL,@"freeing chromaprint context.");
     //chromaprint_free(chromaprintContext);
 }
 
 //- (void)testFunc:(id<SongIDProtocol>) songID {
-//    NSLog(@"I gots a songID %@",songID);
+//    TGLog(TGLOG_ALL,@"I gots a songID %@",songID);
 //}
 
 // A version of the fingerprint request that uses a completion block instead of a delegate callback.
@@ -77,7 +77,7 @@
         
         ChromaprintContext *chromaprintContext = chromaprint_new(CHROMAPRINT_ALGORITHM_DEFAULT);
         NSURL* songURL = [_delegate URLForSongID:songID];
-//        NSLog(@"requestFingerPrintForSong called with song Id %@",songID);
+//        TGLog(TGLOG_ALL,@"requestFingerPrintForSong called with song Id %@",songID);
         [self decodeAudioFileNew:songURL forContext:chromaprintContext ofLength:maxLength andDuration:&duration];
         
         if (chromaprint_get_fingerprint(chromaprintContext, &theFingerprint)) {
@@ -85,7 +85,7 @@
             //MARK: This needs to be extracted from the fingerprinting so we can use whatever uuid method we like
             // independently of the fingerprinter.
             // Since this is synchronous the call will block until either it succeeded or failed to fetch an UUId.
-//            NSLog(@"requesting UUId from generated fingerprint.");
+//            TGLog(TGLOG_ALL,@"requesting UUId from generated fingerprint.");
 //            [self requestUUIDForSongID:songID withDuration:duration andFingerPrint:theFingerprint];
             
             NSString *songFingerPrint = [NSString stringWithCString:theFingerprint encoding:NSASCIIStringEncoding];
@@ -101,7 +101,7 @@
             fingerprintHandler(songFingerPrint);
             
         } else
-            NSLog(@"ERROR: Fingerprinter failed to produce a fingerprint for songId %@",songID);
+            TGLog(TGLOG_ALL,@"ERROR: Fingerprinter failed to produce a fingerprint for songId %@",songID);
         
         chromaprint_free(chromaprintContext);
     });
@@ -116,7 +116,7 @@
         NSData *acoustiData = [[NSData alloc] initWithContentsOfURL:acoustIDURL];
         
         if ([acoustiData length] == 0 ) {
-            NSLog(@"ERROR: requestFingerPrintForSong - no acoustic data!");
+            TGLog(TGLOG_ALL,@"ERROR: requestFingerPrintForSong - no acoustic data!");
             return;
         }
         NSDictionary *acoustiJSON = [NSJSONSerialization JSONObjectWithData:acoustiData options:NSJSONReadingMutableContainers error:nil];
@@ -136,10 +136,10 @@
                 NSArray* releases = [theElement objectForKey:@"releases"];
                 [_delegate setReleases:[NSKeyedArchiver archivedDataWithRootObject:releases] forSongID:songID];
             } else
-                NSLog(@"AcoustID returned 0 results.");
+                TGLog(TGLOG_ALL,@"AcoustID returned 0 results.");
             
         } else
-            NSLog(@"ERROR: AcoustID server returned %@",status);
+            TGLog(TGLOG_ALL,@"ERROR: AcoustID server returned %@",status);
 //    });
 }
 
@@ -170,7 +170,7 @@
     
     NSString *urlString = [fileURL relativePath];
     const char *file_name = [urlString cStringUsingEncoding:NSUTF8StringEncoding];
-    //NSLog(@"the url's string is %@",urlString);
+    //TGLog(TGLOG_ALL,@"the url's string is %@",urlString);
     
 	if (avformat_open_input(&format_ctx, file_name, NULL, NULL) != 0) {
 		fprintf(stderr, "ERROR: couldn't open the file\n");

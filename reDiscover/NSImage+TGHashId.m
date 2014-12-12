@@ -86,7 +86,7 @@
         
         [theImage generateHashForImage:theImage withHandler:^(NSString *theHash) {
             [theImage setHashId:theHash];
-            NSLog(@"tgImageNamed Hashhandler: %@",theHash);
+            TGLog(TGLOG_ALL,@"tgImageNamed Hashhandler: %@",theHash);
         }];
     });
     return theImage;
@@ -101,7 +101,7 @@
         
         [theImage generateHashForImage:theImage withHandler:^(NSString *theHash) {
             [theImage setHashId:theHash];
-            NSLog(@"tgInitWithData Hashhandler: %@",theHash);
+            TGLog(TGLOG_ALL,@"tgInitWithData Hashhandler: %@",theHash);
         }];
     });
     
@@ -117,7 +117,7 @@
         
         [theImage generateHashForImage:theImage withHandler:^(NSString *theHash) {
             [theImage setHashId:theHash];
-            NSLog(@"tgInitWithContentsOfURL Hashhandler: %@",theHash);
+            TGLog(TGLOG_ALL,@"tgInitWithContentsOfURL Hashhandler: %@",theHash);
         }];
     });
     

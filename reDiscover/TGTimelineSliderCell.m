@@ -146,8 +146,12 @@
         
         // Add the new sweet spot markers.
         for (NSNumber *sspot in sweetSpots) {
+            // skip on bogus duration
+            if ([songDuration doubleValue] == 0) {NSLog(@"ERROR: Song duration is 0!");continue;}
             double ssXPos = CGRectGetWidth(barRect)/[songDuration doubleValue]*[sspot doubleValue];
-
+            if(isnan(ssXPos) == YES || isfinite(ssXPos) == NO) {
+                NSLog(@"Something wrong with ssXPos");
+            }
             TGSweetSpotControl *aSSControl = [[TGSweetSpotControl alloc] initWithFrame:NSMakeRect(ssXPos,
                                                                                                   kSweetSpotMarkerHeight,
                                                                             kSweetSpotMarkerHeight,

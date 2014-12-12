@@ -14,7 +14,6 @@ class DropViewController : NSViewController, DropViewDelegate {
     var droppedURL: NSURL?
     
     override func awakeFromNib() {
-        println("wakey wake")
         let dropView = self.view as DropView
         dropView.delegate = self
         
@@ -40,7 +39,6 @@ class DropViewController : NSViewController, DropViewDelegate {
     func dropViewDidReceiveURL(theURL: NSURL) {
         if validateURL(theURL) {
             droppedURL = theURL
-            println("Gogo widget")
 
             performSegueWithIdentifier("oldStyleSegue", sender: self)
             
@@ -48,8 +46,6 @@ class DropViewController : NSViewController, DropViewDelegate {
             // in Finder to drag onto here.
             NSApp.activateIgnoringOtherApps(true)
         }
-
-        println("Done")
     }
 
     func validateURL(theURL: NSURL) -> Bool {

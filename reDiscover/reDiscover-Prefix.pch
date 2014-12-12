@@ -7,3 +7,13 @@
 #ifdef __OBJC__
     #import <Cocoa/Cocoa.h>
 #endif
+
+// Here are the definitions of the tags we use to toggle the various debug logs.
+//#define TGLOG_ALL
+
+#define TGLog(tag, msg, ...) TGLog_eval_(TGLog_do_, tag, msg, ## __VA_ARGS__)
+#define TGLog_eval_(macro, ...) macro(__VA_ARGS__)
+#define TGLog_do_(tag, msg, ...) \
+(#tag[0] == 0 || #tag[0] == '1') ? NSLog(@"%@",[NSString stringWithFormat:msg, ## __VA_ARGS__]) : (void)0;
+
+

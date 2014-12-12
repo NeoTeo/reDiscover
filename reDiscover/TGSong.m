@@ -68,7 +68,7 @@
 //        //if ([self songStatus] == kSongStatusLoading) {
 //            self.customBlock = (MyCustomBlock)completionBlock;
 ////        } else {
-////            NSLog(@"ERROR: Song status is %ld. Returning without setting completion block.",[self songStatus]);
+////            TGLog(TGLOG_ALL,@"ERROR: Song status is %ld. Returning without setting completion block.",[self songStatus]);
 ////        }
 //    }
 //}
@@ -83,13 +83,13 @@ static const void *ItemStatusContext = &ItemStatusContext;
     }
     //CACH2
     if ([self songStatus] == kSongStatusLoading) {
-        NSLog(@"Song %@ was already loading. Returning.",self.songID);
+        TGLog(TGLOG_ALL,@"Song %@ was already loading. Returning.",self.songID);
         return;
     }
     
     NSURL *theURL = [NSURL URLWithString:self.urlString];
     [self setSongStatus:kSongStatusLoading];
-    NSLog(@"------------------------------------------------------------------------------------ Song %@ is now loading.",self.songID);
+    TGLog(TGLOG_ALL,@"------------------------------------------------------------------------------------ Song %@ is now loading.",self.songID);
     if (songAsset == nil) {
         /// This initializes the asset with the song's url.
         ///Since the options are nil the default will be to not require precise timing.
@@ -128,10 +128,10 @@ static const void *ItemStatusContext = &ItemStatusContext;
                 break;
             }
             case AVKeyValueStatusFailed:
-                NSLog(@"There was an error getting track duration.");
+                TGLog(TGLOG_ALL,@"There was an error getting track duration.");
                 break;
             default:
-                NSLog(@"The track is not (yet) loaded!");
+                TGLog(TGLOG_ALL,@"The track is not (yet) loaded!");
                 break;
         }
     }
@@ -143,7 +143,7 @@ static const void *ItemStatusContext = &ItemStatusContext;
     
     // If the song is ready to play, just call the completion block and return.
     if ([self songStatus] == kSongStatusReady) {
-        NSLog(@"performWhenReadyForPlayback: Song was ready. Calling completion block.");
+        TGLog(TGLOG_ALL,@"performWhenReadyForPlayback: Song was ready. Calling completion block.");
         completionBlock();
         return;
     }
@@ -151,7 +151,7 @@ static const void *ItemStatusContext = &ItemStatusContext;
     // If the song is currently loading (waiting for the status to change to ready) then set the completionBlock to call.
     // Note this will overwrite any existing completion block.
     if ([self songStatus] == kSongStatusLoading) {
-        NSLog(@"performWhenReadyForPlayback: song is Loading. Replacing completion block.");
+        TGLog(TGLOG_ALL,@"performWhenReadyForPlayback: song is Loading. Replacing completion block.");
         self.customBlock = (MyCustomBlock)completionBlock;
         return;
     }
@@ -165,7 +165,7 @@ static const void *ItemStatusContext = &ItemStatusContext;
 
     // If the song is ready to play, just call the completion block and return.
     if ([self songStatus] == kSongStatusReady) {
-        NSLog(@"prepareForPlayback song was already prepared. Calling completion block.");
+        TGLog(TGLOG_ALL,@"prepareForPlayback song was already prepared. Calling completion block.");
         completionBlock();
         return;
     }
@@ -173,7 +173,7 @@ static const void *ItemStatusContext = &ItemStatusContext;
     // If the song is currently loading (waiting for the status to change to ready) then set the completionBlock to call.
     // Note this will overwrite any existing completion block.
     if ([self songStatus] == kSongStatusLoading) {
-        NSLog(@"prepareForPlayback song is already loading. Replacing completion block.");
+        TGLog(TGLOG_ALL,@"prepareForPlayback song is already loading. Replacing completion block.");
         self.customBlock = (MyCustomBlock)completionBlock;
         return;
     }
@@ -224,10 +224,10 @@ static const void *ItemStatusContext = &ItemStatusContext;
                 break;
             }
             case AVKeyValueStatusFailed:
-                NSLog(@"There was an error getting track duration.");
+                TGLog(TGLOG_ALL,@"There was an error getting track duration.");
                 break;
             default:
-                NSLog(@"The track is not (yet) loaded!");
+                TGLog(TGLOG_ALL,@"The track is not (yet) loaded!");
                 break;
         }
     }
@@ -299,10 +299,10 @@ CDFIX */
                 break;
             }
             case AVKeyValueStatusFailed:
-                NSLog(@"There was an error getting track duration.");
+                TGLog(TGLOG_ALL,@"There was an error getting track duration.");
                 break;
             default:
-                NSLog(@"The track is not (yet) loaded!");
+                TGLog(TGLOG_ALL,@"The track is not (yet) loaded!");
                 break;
         }
         
@@ -412,7 +412,7 @@ CDFIX */
         float floatDuration = CMTimeGetSeconds([self songDuration]);
         
         if ((floatStart < 0) || (floatStart > floatDuration)) {
-            NSLog(@"setStartTime error: Start time is %f",floatStart);
+            TGLog(TGLOG_ALL,@"setStartTime error: Start time is %f",floatStart);
             return;
         }
     }
@@ -435,7 +435,7 @@ CDFIX */
 //        float floatDuration = CMTimeGetSeconds([self songDuration]);
 //        
 //        if ((floatStart < 0) || (floatStart > floatDuration)) {
-//            NSLog(@"setStartTime error: Start time is %f",floatStart);
+//            TGLog(TGLOG_ALL,@"setStartTime error: Start time is %f",floatStart);
 //            return;
 //        }
 //    }
@@ -457,12 +457,8 @@ CDFIX */
 }
 
 /**
- Mark this song's selectedSweetSpot for saving.
- 
- By moving the selectedSweetSpot into the TEOData.sweetSpots collection, which is backed by
- a core data store, it gets saved on a subsequent call to a songpool save.
- If the selectedSweetSpot it is set to the very beginning of the song it will be ignored 
- because songs without sweet spots play from the beginning by default.
+ Add the selected sweet spot to the song's sweetSpots array.
+ It is not saved to disk yet.
  */
 - (void)storeSelectedSweetSpot {
     //NSNumber* theSS = self.TEOData.selectedSweetSpot;
@@ -477,7 +473,7 @@ CDFIX */
         //self.TEOData.sweetSpots = [updatedSS copy];
         self.sweetSpots = [updatedSS copy];
     } else {
-        NSLog(@"No sweet spot selected!");
+        TGLog(TGLOG_ALL,@"No sweet spot selected!");
     }
     
 }
@@ -526,7 +522,7 @@ CDFIX */
             if (songPlayerItem.status == AVPlayerItemStatusReadyToPlay) {
                 
                 [self setSongStatus:kSongStatusReady];
-                    NSLog(@"------------------------------------------------------------------------------------ Song %@ is now ready.",self.songID);
+                    TGLog(TGLOG_ALL,@"------------------------------------------------------------------------------------ Song %@ is now ready.",self.songID);
 //                [[NSNotificationCenter defaultCenter] postNotificationName:@"songStatusNowReady" object:self];
                 
                 if (self.customBlock != nil) {
@@ -540,11 +536,11 @@ CDFIX */
 //        if ((object == songPlayer) && [keyPath isEqualToString:@"status"]) {
 //            if (songPlayer.status == AVPlayerStatusReadyToPlay) {
 //                //[songPlayer play];
-//                NSLog(@"Now the songPlayer is ready apparently.");
+//                TGLog(TGLOG_ALL,@"Now the songPlayer is ready apparently.");
 //                
 //            } else if (songPlayer.status == AVPlayerStatusFailed) {
 //                // something went wrong. player.error should contain some information
-//                NSLog(@"Something went wrong with playback");
+//                TGLog(TGLOG_ALL,@"Something went wrong with playback");
 //            }
 //        }
         return;
@@ -624,16 +620,16 @@ CDFIX */
         // First cancel any pending prerolls
         [songPlayer cancelPendingPrerolls];
         // Then set a new preroll request.
-//        [songPlayer prerollAtRate:5 completionHandler:^{NSLog(@"Go preroll");}];
+//        [songPlayer prerollAtRate:5 completionHandler:^{TGLog(TGLOG_ALL,@"Go preroll");}];
     }
-    NSLog(@"cached file %@ of length %lld",_cachedFile,_cachedFileLength);
+    TGLog(TGLOG_ALL,@"cached file %@ of length %lld",_cachedFile,_cachedFileLength);
 }
 
 - (void)clearCache {
     _cachedFile = nil;
     //CDFIX
     if ([self songStatus] == kSongStatusReady) {
-        NSLog(@"~~~~~~~~~~~~~~~~~~~~~~~~ About to clear Song with Id: %@",[self songID]);
+        TGLog(TGLOG_ALL,@"~~~~~~~~~~~~~~~~~~~~~~~~ About to clear Song with Id: %@",[self songID]);
         [self setSongDuration:CMTimeMakeWithSeconds(0, 1)];
         
 //        // Unregister observers
@@ -650,7 +646,7 @@ CDFIX */
         songPlayerItem = nil;
         playerObserver = nil;
         
-        NSLog(@"~~~~~~~~~~~~~~~~~~~~~~~~ Song with Id: %@ has been cleared.",[self songID]);
+        TGLog(TGLOG_ALL,@"~~~~~~~~~~~~~~~~~~~~~~~~ Song with Id: %@ has been cleared.",[self songID]);
         [self setSongStatus:kSongStatusUninited];
     }
 
@@ -663,7 +659,7 @@ CDFIX */
  */
 - (void)setCurrentPlayTime:(NSNumber *)playTimeInSeconds {
     double playTime = [playTimeInSeconds doubleValue];
-//    NSLog(@"playTime %f",playTime);
+//    TGLog(TGLOG_ALL,@"playTime %f",playTime);
     if ((playTime >= 0) && (playTime < CMTimeGetSeconds([self songDuration]))) {
         [songPlayer seekToTime:CMTimeMake(playTime*100, 100)];
     }

@@ -57,7 +57,6 @@ class DropView : NSView {
             let fileURL = NSURL(fromPasteboard: pboard)
             delegate?.dropViewDidReceiveURL(fileURL!)
         }
-        println("perform returns true")
         
         return true
     }

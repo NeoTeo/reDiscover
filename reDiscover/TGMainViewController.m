@@ -82,7 +82,7 @@
 }
 
 - (void)dealloc {
-    NSLog(@"TGMainViewController dealloc called.");
+    TGLog(TGLOG_ALL,@"TGMainViewController dealloc called.");
 }
 
 - (void)layOutMainView {
@@ -250,7 +250,7 @@
 //}
 
 - (void)keyDown:(NSEvent *)theEvent {
-    NSLog(@"Yep, key down in the view controller.");
+    TGLog(TGLOG_ALL,@"Yep, key down in the view controller.");
     id<SongIDProtocol> lastRequestedSongID = [_currentSongPool lastRequestedSongID];
     
     NSString *chars = [theEvent characters];
@@ -261,19 +261,19 @@
     } else if ([chars isEqualToString:@"\\"]) {
 //        TGSong *theSong = [_currentSongPool songForID:[_currentSongPool lastRequestedSongID]];
 //        [_currentSongPool sweetSpotFromServerForSong:theSong];
-        NSLog(@"got it");
+        TGLog(TGLOG_ALL,@"got it");
     } else if ([chars isEqualToString:@"a"]) {
-        NSLog(@"song added to playlist.");
+        TGLog(TGLOG_ALL,@"song added to playlist.");
         [self songUIPlusButtonWasPressed];
 //        [self togglePlaylistPanel];
     } else if ([chars isEqualToString:@"s"]) {
         
-        NSLog(@"Store selected sweet spot and save!");
+        TGLog(TGLOG_ALL,@"Store selected sweet spot and save!");
         [_currentSongPool storeSweetSpotForSongID:lastRequestedSongID];
         [_currentSongPool storeSongData];
     } else if ([chars isEqualToString:@" "]){
         
-        NSLog(@"space!");
+        TGLog(TGLOG_ALL,@"space!");
         [self songUISweetSpotButtonWasPressed];
         
     } else if ([chars isEqualToString:@"l"]){
@@ -281,16 +281,16 @@
         
     } else if ([chars isEqualToString:@"p"]){
         
-        NSLog(@"Playlist generation.");
+        TGLog(TGLOG_ALL,@"Playlist generation.");
         [_playlistController storePlaylistWithName:@"ProjectXPlaylist"];
     } else if ([chars isEqualToString:@"t"]){
-        NSLog(@"testicle");
+        TGLog(TGLOG_ALL,@"testicle");
 //        [_currentSongPool testUploadSSForSongID:lastRequestedSongID];
         
 //        [_songGridController runTest];
 //        [_currentSongPool findUUIDOfSongWithURL:[_currentSongPool URLForSongID:lastRequestedSongID]];
     } else if ([chars isEqualToString:@"c"]){
-        NSLog(@"Log caches:");
+        TGLog(TGLOG_ALL,@"Log caches:");
         
         [_currentSongPool debugLogCaches];
     } else {
@@ -299,7 +299,7 @@
         NSCharacterSet *inStringSet = [NSCharacterSet characterSetWithCharactersInString:chars];
         
         if ([alphaNums isSupersetOfSet:inStringSet]) {
-            NSLog(@"key is number %@",chars);
+            TGLog(TGLOG_ALL,@"key is number %@",chars);
             [_songGridController animateMatrixZoom:[chars integerValue]];
         }
     }
@@ -463,7 +463,7 @@
 
 // TGSongPoolDelegate methods
 - (void)songPoolDidLoadAllURLs:(NSUInteger)numberOfURLs {
-    NSLog(@"songPooFinished with %ld songs",(long)numberOfURLs);
+    TGLog(TGLOG_ALL,@"songPooFinished with %ld songs",(long)numberOfURLs);
     //[_songGridController initSongGrid:numberOfURLs];
 }
 
@@ -535,7 +535,7 @@
 }
 
 - (void)songPoolDidStartPlayingSong:(id<SongIDProtocol>)songID {
-    NSLog(@"songPoolDidStartPlayingSong with id:%@",songID);
+    TGLog(TGLOG_ALL,@"songPoolDidStartPlayingSong with id:%@",songID);
     
     NSString* artId = [_currentSongPool artIdForSongId:songID];
 
@@ -566,7 +566,7 @@
 /* CDFIX
 - (void)songPoolDidStartPlayingSong:(id<SongIDProtocol>)songID {
 
-    NSLog(@"songPoolDidStartPlayingSong with id:%@",songID);
+    TGLog(TGLOG_ALL,@"songPoolDidStartPlayingSong with id:%@",songID);
     //MARK: This gets the song image from the cell, rather than from the songpool's cache.
     // That's as it should be because there's a difference between them:
     // A song's artId is a reference to *what* the cover of the song is, whereas the cell's image
@@ -633,21 +633,21 @@ CDFIX */
         });
 //    }else
 //    {
-//        NSLog(@"Refreshing cover of song (%@) that isn't fetching. Probably just a cached song.",songId);
+//        TGLog(TGLOG_ALL,@"Refreshing cover of song (%@) that isn't fetching. Probably just a cached song.",songId);
 //    }
 }
 
 // Observer method called when the song pool caching method has set a cover image for the song.
 - (void)songCoverWasUpdated:(NSNotification*)notification {
     id<SongIDProtocol> songId = notification.object;
-    NSLog(@"SONG COVER UPDATED NOTIFICATION FOR %@",songId);
+    TGLog(TGLOG_ALL,@"SONG COVER UPDATED NOTIFICATION FOR %@",songId);
     NSImage* songImage = [_songGridController coverImageForSongWithId:songId];
     
     if ([songImage.hashId isEqualToString:fetchingImage.hashId] == YES) {
-         NSLog(@"Going to call refreshCoverForSongId.");
+         TGLog(TGLOG_ALL,@"Going to call refreshCoverForSongId.");
         [self refreshCoverForSongId:songId];
     } else
-        NSLog(@"Didn't call refreshCoverForSongId because the cell image is not the Fetching image.");
+        TGLog(TGLOG_ALL,@"Didn't call refreshCoverForSongId because the cell image is not the Fetching image.");
 }
 
 // cdfix
@@ -691,16 +691,16 @@ CDFIX */
 //            
 //        }];
 //    });
-//    //NSLog(@"songPoolDidStartPlayingSong on thread %@ returning",[NSThread currentThread]);
+//    //TGLog(TGLOG_ALL,@"songPoolDidStartPlayingSong on thread %@ returning",[NSThread currentThread]);
 //}
 
 - (void)songPoolDidFinishPlayingSong:(id<SongIDProtocol>)songID {
     // If the currently selected song is the same as the one that just finished, see if there is more on the playlist.
-    NSLog(@"song grid controller. Song %@ finished playing.",(NSString*)songID);
+    TGLog(TGLOG_ALL,@"song grid controller. Song %@ finished playing.",(NSString*)songID);
     if (songID == [_currentSongPool lastRequestedSongID]) {
         id<SongIDProtocol> newSongID = [_playlistController getNextSongIDToPlay];
         if (newSongID == nil) {
-            NSLog(@"No more songs in playlist.");
+            TGLog(TGLOG_ALL,@"No more songs in playlist.");
             return;
         }
         
@@ -709,13 +709,13 @@ CDFIX */
 }
 //- (void)songPoolDidFinishPlayingSong:(NSUInteger)songID {
 //    // If the currently selected song is the same as the one that just finished, see if there is more on the playlist.
-//    NSLog(@"song grid controller. Song %lu finished playing.",(unsigned long)songID);
+//    TGLog(TGLOG_ALL,@"song grid controller. Song %lu finished playing.",(unsigned long)songID);
 //    if (songID == [_currentSongPool lastRequestedSongID]) {
 //        NSInteger newSongID = [_playlistController getNextSongIDToPlay];
 //        if (newSongID != -1) {
 //            [_currentSongPool requestSongPlayback:newSongID withStartTimeInSeconds:0];
 //        } else
-//            NSLog(@"No more songs in playlist.");
+//            TGLog(TGLOG_ALL,@"No more songs in playlist.");
 //    }
 //}
 
@@ -738,9 +738,9 @@ CDFIX */
     if (theContext != nil) {
         NSPoint speedVector = [[theContext objectForKey:@"spd"] pointValue];
         if (fabs(speedVector.y) > 2) {
-            NSLog(@">>>>>>>>>>>>>>>>>>>>>");
-            NSLog(@"Speed cutoff enabled.");//wipwip
-            NSLog(@"<<<<<<<<<<<<<<<<<<<<<");
+            TGLog(TGLOG_ALL,@">>>>>>>>>>>>>>>>>>>>>");
+            TGLog(TGLOG_ALL,@"Speed cutoff enabled.");//wipwip
+            TGLog(TGLOG_ALL,@"<<<<<<<<<<<<<<<<<<<<<");
             return;
         }
     }

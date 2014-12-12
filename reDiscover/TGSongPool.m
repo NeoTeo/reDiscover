@@ -184,6 +184,9 @@ static int const kSongPoolStartCapacity = 250;
 //        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(songIsReadyForPlayback:) name:@"songStatusNowReady" object:nil];
         
         //CACH2 start the cachequeue off with an empty cache
+        cacheQueueLock = [[NSLock alloc] init];
+        callbackQueueLock = [[NSLock alloc] init];
+        
         cacheQueue = [[NSMutableArray alloc] init];
         [cacheQueue enqueue:[NSMutableSet setWithCapacity:0]];
         callbackQueue = [[NSMutableArray alloc] init];
@@ -203,7 +206,7 @@ static int const kSongPoolStartCapacity = 250;
         
         // store the no cover id for later.
         _noCoverArtHashId = theHashId;
-        NSLog(@"The No Cover image has id %@",theHashId);
+        TGLog(TGLOG_ALL,@"The No Cover image has id %@",theHashId);
         
         // And add the image to the runtime image cache.
         [_coverArtById setObject:noCoverImage forKey:theHashId];
@@ -213,7 +216,7 @@ static int const kSongPoolStartCapacity = 250;
         
         // store the no cover id for later.
         _defaultCoverArtHashId = theHashId;
-        NSLog(@"The Default Cover image has id %@",theHashId);
+        TGLog(TGLOG_ALL,@"The Default Cover image has id %@",theHashId);
         
         // And add the image to the runtime image cache.
         [_coverArtById setObject:defaultCoverImage forKey:theHashId];
@@ -223,7 +226,7 @@ static int const kSongPoolStartCapacity = 250;
         
         // store the no cover id for later.
         _fetchingCoverArtHashId = theHashId;
-        NSLog(@"The Fetching Cover image has id %@",theHashId);
+        TGLog(TGLOG_ALL,@"The Fetching Cover image has id %@",theHashId);
         
         // And add the image to the runtime image cache.
         [_coverArtById setObject:fetchingCoverImage forKey:theHashId];
@@ -267,9 +270,9 @@ static int const kSongPoolStartCapacity = 250;
                                                                                     URL:documentsDirectory
                                                                                 options:nil error:&error];
     if (error) {
-        NSLog(@"Error: %@",error);
+        TGLog(TGLOG_ALL,@"Error: %@",error);
     }
-    NSLog(@"setupManagedObjectContext done");
+    TGLog(TGLOG_ALL,@"setupManagedObjectContext done");
     [self initTEOSongDataDictionary];
     
 }
@@ -291,7 +294,7 @@ static int const kSongPoolStartCapacity = 250;
         NSError *error = nil;
         fetchedArray = [self.TEOmanagedObjectContext executeFetchRequest:fetchRequest error:&error];
         if (error != nil) {
-            NSLog(@"Error while fetching TEOSongData.\n%@",
+            TGLog(TGLOG_ALL,@"Error while fetching TEOSongData.\n%@",
                   ([error localizedDescription] != nil) ? [error localizedDescription] : @"Unknown error..");
             return;
         }
@@ -304,14 +307,14 @@ static int const kSongPoolStartCapacity = 250;
         }
         
         self.TEOSongDataDictionary = tmpDictionary;
-        NSLog(@"initTEOSongDataDictionary done");
+        TGLog(TGLOG_ALL,@"initTEOSongDataDictionary done");
     }];
 }
 // END TEOSongData test
 
 
 //- (void)idleTimeBegins {
-//    NSLog(@"song pool idle start");
+//    TGLog(TGLOG_ALL,@"song pool idle start");
 //    
 //    [idleTimeFingerprinterTimer invalidate];
 //    
@@ -324,7 +327,7 @@ static int const kSongPoolStartCapacity = 250;
 //
 //}
 - (void)idleTimeBegins {
-    NSLog(@"song pool idle start");
+    TGLog(TGLOG_ALL,@"song pool idle start");
     //FIXME: This causes a crash (possibly) 'NSGenericException' (reason '*** Collection <__NSDictionaryM: 0x6000000433c0> was mutated while being enumerated.') was raised during dragging session. This could also be an unrelated bug to do with me logging the cache out whilst modifying it...
     return;
     [idleTimeFingerprinterTimer invalidate];
@@ -351,7 +354,7 @@ static int const kSongPoolStartCapacity = 250;
     
     if (aSong == nil) {
         // We've done all the songs. Return without starting a new timer.
-        NSLog(@"No more songs to fingerprint");
+        TGLog(TGLOG_ALL,@"No more songs to fingerprint");
         return;
     }
 
@@ -370,13 +373,13 @@ static int const kSongPoolStartCapacity = 250;
 
 //- (void)handleFetchedUUId:(NSNotification*)notification {
 //    TGSong* song = (TGSong*)notification.object;
-//    NSLog(@"The song %@ now has UUId %@",song,song.uuid);
+//    TGLog(TGLOG_ALL,@"The song %@ now has UUId %@",song,song.uuid);
 //    //    //wipEv This should be observed by the code that exchanges the fingerprint for a uuid (which happens to be this class as well)
 //    ////    [[NSNotificationCenter defaultCenter] postNotificationName:@"TGNewSongFingerprinted" object:song];
 //    
 //    // Now that we know we have a UUId, initiate the fetching of the cover art.
 //    [self requestImageForSongID:song.songID withHandler:^(NSImage* theImage) {
-//        NSLog(@"We have a cover image via the handleFetchedUUId");
+//        TGLog(TGLOG_ALL,@"We have a cover image via the handleFetchedUUId");
 //        // Here we should check if the song wants to have its cover displayed. For now we just do it.
 //        
 //    }];
@@ -386,12 +389,12 @@ static int const kSongPoolStartCapacity = 250;
 - (void)fetchUUIdForSongId:(id<SongIDProtocol>)songID withHandler:(void (^)(NSString*))uuidHandler {
     TGSong* aSong = [self songForID:songID];
     if ([aSong fingerPrintStatus] == kFingerPrintStatusEmpty) {
-//        NSLog(@"SongPool fetchUUIdForSongId about to request a fingerprint for song %@",aSong);
+//        TGLog(TGLOG_ALL,@"SongPool fetchUUIdForSongId about to request a fingerprint for song %@",aSong);
         [aSong setFingerPrintStatus:kFingerPrintStatusRequested];
         
         [songFingerPrinter requestFingerPrintForSong:aSong.songID withHandler:^(NSString* fingerPrint){
             if (fingerPrint == nil) {
-                NSLog(@"requestFingerprintForSong ERROR: NO FINGERPRINT");
+                TGLog(TGLOG_ALL,@"requestFingerprintForSong ERROR: NO FINGERPRINT");
                 [aSong setFingerPrintStatus:kFingerPrintStatusFailed];
                 return;
             }
@@ -402,7 +405,7 @@ static int const kSongPoolStartCapacity = 250;
             // This saves the fingerprint and sets the fingerprinting status to done.
             //[self fingerprintReady:fingerPrint forSongID:aSong.songID];
             if (aSong.uuid == nil) {
-                NSLog(@"No UUID found, keeping fingerprint.");
+                TGLog(TGLOG_ALL,@"No UUID found, keeping fingerprint.");
                 aSong.fingerprint = fingerPrint;
             }
             
@@ -413,7 +416,7 @@ static int const kSongPoolStartCapacity = 250;
             uuidHandler(aSong.uuid);
         }];
     } else {
-        NSLog(@"Fingerprint and uuid requests have already been sent.");
+        TGLog(TGLOG_ALL,@"Fingerprint and uuid requests have already been sent.");
         // Instead of this, set up an event listener that fires when the uuid
 //        [songFingerPrinter requestUUIDForSongID:aSong.songID
 //                                   withDuration:CMTimeGetSeconds(aSong.songDuration)
@@ -424,7 +427,7 @@ static int const kSongPoolStartCapacity = 250;
 }
 
 - (void)idleTimeEnds {
-//    NSLog(@"song pool idle end");
+//    TGLog(TGLOG_ALL,@"song pool idle end");
     
     // Stop the fingerprinter.
     [idleTimeFingerprinterTimer invalidate];
@@ -443,7 +446,7 @@ static int const kSongPoolStartCapacity = 250;
     __block int completedOps = 0;
     opQueue = [[NSOperationQueue alloc] init];
     
-    NSLog(@"loadFromURL running on the main thread? %@",[NSThread isMainThread]?@"Yep":@"Nope");
+    TGLog(TGLOG_ALL,@"loadFromURL running on the main thread? %@",[NSThread isMainThread]?@"Yep":@"Nope");
     
 //    NSFileManager *fileManager = [[NSFileManager alloc] init];
     
@@ -463,7 +466,7 @@ static int const kSongPoolStartCapacity = 250;
                                              errorHandler:^(NSURL *url, NSError *error) {
                                                  // Handle the error.
                                                  // Return YES if the enumeration should continue after the error.
-                                                 NSLog(@"Error getting the directory. %@",error);
+                                                 TGLog(TGLOG_ALL,@"Error getting the directory. %@",error);
                                                  // Return yes to continue traversing.
                                                  return YES;
                                              }];
@@ -480,7 +483,7 @@ static int const kSongPoolStartCapacity = 250;
 
                 if (! [url getResourceValue:&isDirectory forKey:NSURLIsDirectoryKey error:&error]) {
                     // handle error
-                    NSLog(@"An error %@ occurred in the enumeration.",error);
+                    TGLog(TGLOG_ALL,@"An error %@ occurred in the enumeration.",error);
                     errorLoadingSongURLs = YES;
                     
                     // TEO: handle error by making another delegate method that signals failure.
@@ -649,7 +652,7 @@ static int const kSongPoolStartCapacity = 250;
     NSString* artID = theSong.artID;
     
     if (artID != nil) {
-        NSLog(@"song id %@ already had image id %@",songID,artID);
+        TGLog(TGLOG_ALL,@"song id %@ already had image id %@",songID,artID);
         NSImage *songArt = [_coverArtById objectForKey:artID];
         if (imageHandler != nil) {
             imageHandler(songArt);
@@ -671,7 +674,7 @@ static int const kSongPoolStartCapacity = 250;
             if ([_coverArtById objectForKey:tmpImage.hashId] == nil) {
                 [tmpImage hashIdWithHandler:^(NSString* theHashId) {
                     [_coverArtById setObject:tmpImage forKey:theHashId];
-                    NSLog(@"Caching cover art found in metadata");
+                    TGLog(TGLOG_ALL,@"Caching cover art found in metadata");
                     theSong.artID = theHashId;
                 }];
                 
@@ -708,7 +711,7 @@ static int const kSongPoolStartCapacity = 250;
                             
                             // Store the art id in the song so we know this song is associated with a cover from here on.
                             theSong.artID = aSong.artID;
-                            NSLog(@"Found cover art in dictionary, setting art id.");
+                            TGLog(TGLOG_ALL,@"Found cover art in dictionary, setting art id.");
                             if (imageHandler != nil) {
                                 imageHandler([_coverArtById objectForKey:aSong.artID]);
                             }
@@ -736,7 +739,7 @@ static int const kSongPoolStartCapacity = 250;
                     if ([_coverArtById objectForKey:tmpImage.hashId] == nil) {
                         [tmpImage hashIdWithHandler:^(NSString* theHashId) {
                             [_coverArtById setObject:tmpImage forKey:theHashId];
-                            NSLog(@"Caching cover art found in common directory");
+                            TGLog(TGLOG_ALL,@"Caching cover art found in common directory");
                             theSong.artID = theHashId;
                         }];
                     }
@@ -759,7 +762,7 @@ static int const kSongPoolStartCapacity = 250;
                         if ([_coverArtById objectForKey:theImage.hashId] == nil) {
                             [theImage hashIdWithHandler:^(NSString* theHashId) {
                                 [_coverArtById setObject:theImage forKey:theHashId];
-                                NSLog(@"Caching cover art found on the internets.");
+                                TGLog(TGLOG_ALL,@"Caching cover art found on the internets.");
                                 theSong.artID = theHashId;
                             }];
                         }
@@ -772,7 +775,7 @@ static int const kSongPoolStartCapacity = 250;
                         // We've succeeded, so drop out.
                         return;
                     } else {
-                        NSLog(@"got bupkiss from the webs. Returning default No Cover image for song with id %@.",songID);
+                        TGLog(TGLOG_ALL,@"got bupkiss from the webs. Returning default No Cover image for song with id %@.",songID);
                         
                         // At this point if a song has a fingerprint we know it is because it couldn't get a uuid.
                         // In that case we assign it a no cover, since it cannot request a cover without a uuid.
@@ -820,7 +823,7 @@ static int const kSongPoolStartCapacity = 250;
         // either because it is waiting for the server to return it or because the server could not
         // map the fingerprint to a uuid.
 //        if (([theSong fingerPrintStatus] == kFingerPrintStatusDone) || ([theSong fingerPrintStatus] == kFingerPrintStatusRequested)){
-//            NSLog(@"We have a fingerprint but no UUID (yet). The status is %lu",(unsigned long)[theSong fingerPrintStatus]);
+//            TGLog(TGLOG_ALL,@"We have a fingerprint but no UUID (yet). The status is %lu",(unsigned long)[theSong fingerPrintStatus]);
             imageHandler(nil);
 //        } else {
 //
@@ -832,12 +835,12 @@ static int const kSongPoolStartCapacity = 250;
 //MARK: CDFIX - observer methods
 - (void)songCoverWasFetched:(NSNotification*)notification {
     TGSong* song = (TGSong*)notification.object;
-    NSLog(@"songCoverWasFetched with %@",song);
+    TGLog(TGLOG_ALL,@"songCoverWasFetched with %@",song);
 }
 
 //- (void)songIsReadyForPlayback:(NSNotification*)notification {
 //    TGSong* song = (TGSong*)notification.object;
-//    NSLog(@"song %@ is now ready for playback!",song.songID);
+//    TGLog(TGLOG_ALL,@"song %@ is now ready for playback!",song.songID);
 ////    // use payload to get at extra info
 ////    NSDictionary* payload = [notification userInfo];
 ////    [self songReadyForPlayback:song atTime:[payload objectForKey:@"time"]];
@@ -874,7 +877,7 @@ static int const kSongPoolStartCapacity = 250;
                                          errorHandler:^(NSURL *url, NSError *error) {
                                              // Handle the error.
                                              // Return YES if the enumeration should continue after the error.
-                                             NSLog(@"Error getting the file. %@",error);
+                                             TGLog(TGLOG_ALL,@"Error getting the file. %@",error);
                                              // Return yes to continue traversing.
                                              return YES;
                                          }];
@@ -882,7 +885,7 @@ static int const kSongPoolStartCapacity = 250;
     for (NSURL *url in enumerator) {
         if (![url getResourceValue:&isFile forKey:NSURLIsRegularFileKey error:&error]) {
             // handle error
-            NSLog(@"An URL error %@ occurred.",error);
+            TGLog(TGLOG_ALL,@"An URL error %@ occurred.",error);
             return nil;
         }
         if ([isFile boolValue]) {
@@ -910,7 +913,7 @@ static int const kSongPoolStartCapacity = 250;
                     }
                 }
                 
-                NSLog(@"                                   The image %@ did not match",imageURLString);
+                TGLog(TGLOG_ALL,@"                                   The image %@ did not match",imageURLString);
                 
             }
         }
@@ -931,7 +934,7 @@ static int const kSongPoolStartCapacity = 250;
         TGSong *theSong = [self songForID:songID];
         
         if (theSong == nil) {
-            NSLog(@"requestEmbeddedMetadataForSongID - no such song!");
+            TGLog(TGLOG_ALL,@"requestEmbeddedMetadataForSongID - no such song!");
             return ;
         }
         
@@ -1014,7 +1017,7 @@ static int const kSongPoolStartCapacity = 250;
 
 //    if (theSong == nil || theSong.TEOData == nil || theSong.sweetSpots == nil) {
     if (theSong == nil || theSong.sweetSpots == nil) {
-        NSLog(@"setActiveSweetSpotIndex ERROR: unexpected nil");
+        TGLog(TGLOG_ALL,@"setActiveSweetSpotIndex ERROR: unexpected nil");
         return;
     }
     
@@ -1157,7 +1160,7 @@ static int const kSongPoolStartCapacity = 250;
 //- (void)setRequestedPlayheadPosition:(NSNumber *)newPosition forSongID:(id<SongIDProtocol>)songID {
 - (void)setRequestedPlayheadPosition:(NSNumber *)newPosition {
     requestedPlayheadPosition = newPosition;
-//    NSLog(@"setRequestedPlayheadPosition: %@",newPosition);
+//    TGLog(TGLOG_ALL,@"setRequestedPlayheadPosition: %@",newPosition);
     
     TGSong* theSong = [self songForID:[self lastRequestedSongID]];
 //    TGSong* theSong = [self songForID:songID];
@@ -1178,10 +1181,10 @@ static int const kSongPoolStartCapacity = 250;
         TGSong * aSong = [self songForID:songID];
         if (aSong != nil) {
             
-            NSLog(@"loadTrackData called from updateCache");
+            TGLog(TGLOG_ALL,@"loadTrackData called from updateCache");
             [aSong loadTrackDataWithCallBackOnCompetion:NO];
         } else
-            NSLog(@"requested song %@ not there",(NSString*)songID);
+            TGLog(TGLOG_ALL,@"requested song %@ not there",(NSString*)songID);
     }
 }
  */
@@ -1210,7 +1213,7 @@ static int const kSongPoolStartCapacity = 250;
     [songUserDataEntityDescription setName:@"TGSongUserData"];
     [songUserDataEntityDescription setManagedObjectClassName:@"TGSongUserData"];
     
-//    NSLog(@"The songUserData is %@\n",songUserDataEntityDescription);
+//    TGLog(TGLOG_ALL,@"The songUserData is %@\n",songUserDataEntityDescription);
     // Define attributes for the user data.
     NSAttributeDescription *songURL = [[NSAttributeDescription alloc] init];
     [songURL setName:@"songURL"];
@@ -1291,7 +1294,7 @@ static int const kSongPoolStartCapacity = 250;
                                                                                 error:&error];
     
     if (newStore == nil) {
-        NSLog(@"Store Configuration Failed.\n%@",([error localizedDescription] != nil) ?
+        TGLog(TGLOG_ALL,@"Store Configuration Failed.\n%@",([error localizedDescription] != nil) ?
               [error localizedDescription] : @"Unknown Error");
     }
     
@@ -1311,7 +1314,7 @@ static int const kSongPoolStartCapacity = 250;
         NSURL *libraryURL = [fileManager URLForDirectory:NSLibraryDirectory inDomain:NSUserDomainMask appropriateForURL:nil create:YES error:&error];
         
         if (libraryURL == nil) {
-            NSLog(@"Could not access the Library directory\n%@",[error localizedDescription]);
+            TGLog(TGLOG_ALL,@"Could not access the Library directory\n%@",[error localizedDescription]);
         }
         else {
             songUserDataDirectory = [libraryURL URLByAppendingPathComponent:@"ProjectX"];
@@ -1321,7 +1324,7 @@ static int const kSongPoolStartCapacity = 250;
             
             if (properties == nil) {
                 if (![fileManager createDirectoryAtURL:songUserDataDirectory withIntermediateDirectories:YES attributes:nil error:&error]) {
-                    NSLog(@"Could not create directory %@\n%@",[songUserDataDirectory path], [error localizedDescription]);
+                    TGLog(TGLOG_ALL,@"Could not create directory %@\n%@",[songUserDataDirectory path], [error localizedDescription]);
                     songUserDataDirectory = nil;
                 }
             }
@@ -1390,7 +1393,7 @@ static int const kSongPoolStartCapacity = 250;
     if (fetchedArray == nil) {
         fetchedArray = [songPoolManagedContext executeFetchRequest:songUserDataFetchRequest error:&error];
         if (error != nil) {
-            NSLog(@"Error while fetching songUserData.\n%@",
+            TGLog(TGLOG_ALL,@"Error while fetching songUserData.\n%@",
                   ([error localizedDescription] != nil) ? [error localizedDescription] : @"Unknown error..");
             return nil;
         }
@@ -1422,7 +1425,7 @@ static int const kSongPoolStartCapacity = 250;
 //    // Perform the fetch on the context's own thread to avoid threading problems.
 //    [self.TEOmanagedObjectContext performBlock:^{
 //        NSError *error = nil;
-////        NSLog(@"About to sleep thread: %@",[NSThread currentThread]);
+////        TGLog(TGLOG_ALL,@"About to sleep thread: %@",[NSThread currentThread]);
 ////        [NSThread sleepForTimeInterval:50];
 ////        return; // wipwip
 //        // wipwip This is causing the stutter. Find out how to use a NSFetchedResultsController instead.
@@ -1444,9 +1447,9 @@ static int const kSongPoolStartCapacity = 250;
     NSError *error = nil;
     NSArray *results = [songPoolManagedContext executeFetchRequest:fetch error:&error];
     if (results) {
-        NSLog(@"Entititties: %@",results);
+        TGLog(TGLOG_ALL,@"Entititties: %@",results);
     } else {
-        NSLog(@"Error: %@",error);
+        TGLog(TGLOG_ALL,@"Error: %@",error);
     }
     
     return theUUIDString;
@@ -1464,9 +1467,10 @@ static int const kSongPoolStartCapacity = 250;
  is used to determine the optimal caching strategy.
  */
 
+static NSMutableArray* testTouched;
 
 - (void)cacheWithContext:(NSDictionary*)cacheContext {
-  ///*
+
     //CACH2 Add to a separate stack that ensures caching of the selected song is never cancelled and always first.
     id<SongIDProtocol> selectedSongId = [cacheContext objectForKey:@"selectedSongId"];
     
@@ -1476,7 +1480,7 @@ static int const kSongPoolStartCapacity = 250;
     dispatch_async(dispatch_get_global_queue(QOS_CLASS_USER_INTERACTIVE,0), ^{
         TGSong *aSong = [self songForID:selectedSongId];
         if (aSong == NULL) {
-            NSLog(@"ERROR:Caching selected song, the requested ID %@ is not in the song pool.",selectedSongId);
+            TGLog(TGLOG_ALL,@"ERROR:Caching selected song, the requested ID %@ is not in the song pool.",selectedSongId);
             return;
         }
       
@@ -1486,41 +1490,45 @@ static int const kSongPoolStartCapacity = 250;
         // Initiate the fingerprint/UUId generation and fetching of cover art.
         [self fetchUUIdAndCoverArtForSongId:selectedSongId];
         
+        //CACH2 debug. Remove asap
+        if (testTouched == nil) {
+            testTouched = [[NSMutableArray alloc] init];
+        }
+        [testTouched enqueue:selectedSongId];
         
     });
-    //*/
     
     // call the handler as soon as there is a cache in the cache queue.
     [self performHandlerWhenCacheIsReady:^(NSMutableSet* theCache) {
+        // Cheeky insertion of the currently selected song which we've force cached above.
+        // If we don't add this it may never get marked as cached and thus not cleared either.
+        // There is still the issue that clearing can get cancelled...
+        // perhaps it's best to pull cache clearing out of the caching method altogether.
+        [theCache addObject:selectedSongId];
+        TGLog(TGLOG_ALL,@"Cheekily inserting %@ into theCache :%@",selectedSongId,theCache);
         
-//        [self newCacheFromCache:songIDCache withContext:cacheContext andHandler:^(NSMutableSet* theNewCache) {
         [self newCacheFromCache:theCache withContext:cacheContext andHandler:^(NSMutableSet* theNewCache) {
             if (theNewCache != nil) {
 
-                // Hmm...there is actually no guarantee that the songIDCache gets written before the next call to newCacheFromCache gets called.
-                // If that does not happen then a subsequent call will use the oldIDCache and theNewCache from the first call will be lost when the
-                // second call returns here and overwrites songIDCache. I suppose I could add theNewCache to a serial FIFO queue that applies it in order
-                // but it doesn't solve the problem that new calls use the old cache. Might as well just merge then.
-//                songIDCache = theNewCache; // No need to copy it again. [theNewCache copy];
-    //            [songIDCache unionSet:theNewCache];
-
-                
                 // If there's a callback on the callback queue, dequeue it and call it.
                 if ([callbackQueue count] != 0) {
+                    [callbackQueueLock lock];
                     void (^theCallback)(NSMutableSet*) = [callbackQueue dequeue];
+                    [callbackQueueLock unlock];
                     theCallback(theNewCache);
                 } else {
+                    
                     // here we add the new cache to the cache queue.
+                    [cacheQueueLock lock];
                     [cacheQueue enqueue:theNewCache];
+                    [cacheQueueLock unlock];
                 }
                 
-                // Post a notification that the cache is not empty.
-//                [[NSNotificationCenter defaultCenter] postNotificationName:@"cacheNotEmpty" object:theNewCache];
                 //just for debugging right now
                 songIDCache = theNewCache;
 
             } else {
-                NSLog(@"The new cache was nil. Keeping the old one.");
+                TGLog(TGLOG_ALL,@"The new cache was nil. Keeping the old one.");
             }
 
         }];
@@ -1529,22 +1537,30 @@ static int const kSongPoolStartCapacity = 250;
 
 - (void)performHandlerWhenCacheIsReady:(void (^)(NSMutableSet*))completionHandler {
     
-    // There are two situations where the cache queue can be empty:
-    // 1) If no cache has been made yet and none is being made by newCacheFromCache: (at startup this will happen once).
-    // 2) The cache is currenty being used by the newCacheFromCache:
-    //
-    
-    
         if ([cacheQueue count] != 0){
-            completionHandler([cacheQueue dequeue]);
+            
+            [cacheQueueLock lock];
+            NSMutableSet* theCache = [cacheQueue dequeue];
+            [cacheQueueLock unlock];
+            
+            completionHandler(theCache);
         } else {
+            
+            [callbackQueueLock lock];
+            
+            // If we're pruning anyway, wtf is the point of having a callback queue in the first place? Just have a var that is replaced with the latest callback!
+            // The (wrong) assumption here is that the callback is always the same anyway. The values captured by the completion block are unique and cannot be discarded.
+            
             // Keep the callback queue short by pruning off the end before they even get to initiate a caching request.
-            if ([callbackQueue count] > 2) {
-                // discard the last object in the callback Queue.
-                [callbackQueue removeLastObject];
-            }
+//            if ([callbackQueue count] > 1) {
+//                // discard the last object in the callback Queue.
+//                [callbackQueue removeLastObject];
+//                            // Only trouble here is we're losing the selected song which has already been cached and will now not get de-cached.
+//            }
             
             [callbackQueue enqueue:completionHandler];
+            
+            [callbackQueueLock unlock];
         }
 }
 
@@ -1552,7 +1568,7 @@ static int const kSongPoolStartCapacity = 250;
 
 //- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object
 //                        change:(NSDictionary *)change context:(void *)context {
-//    NSLog(@"Whoa there.");
+//    TGLog(TGLOG_ALL,@"Whoa there.");
 //}
 
 - (void)newCacheFromCache:(NSMutableSet*)oldCache withContext:(NSDictionary*)cacheContext andHandler:(void (^)(NSMutableSet*))newCacheHandler {
@@ -1565,6 +1581,7 @@ static int const kSongPoolStartCapacity = 250;
     NSPoint selectionPos    = [[cacheContext objectForKey:@"pos"] pointValue];
     NSPoint gridDims        = [[cacheContext objectForKey:@"gridDims"] pointValue];
     
+    TGLog(TGLOG_ALL,@"About to cancel all ops in the caching op queue. There are currently %lu ops in there",[urlCachingOpQueue operationCount]);
     // We've got a new request so cancel all previous queued up requests.
     [urlCachingOpQueue cancelAllOperations];
     
@@ -1582,7 +1599,7 @@ static int const kSongPoolStartCapacity = 250;
         NSAssert(localCacheOp, @"Error! A weak reference was nil when needed.");
         
         // Check for operation cancellation first thing.
-        if( localCacheOp.isCancelled ) {newCacheHandler(nil); return;}
+        if( localCacheOp.isCancelled ) {TGLog(TGLOG_ALL,@"Cancelling 1");newCacheHandler(nil); return;}
 
         // Make sure we have an inited cache.
         NSMutableSet* wantedCache = [[NSMutableSet alloc] initWithCapacity:25];
@@ -1594,16 +1611,12 @@ static int const kSongPoolStartCapacity = 250;
                     if((matrixCols >=0) && (matrixCols < gridDims.x)) {
                         
                         // Check for operation cancellation
-                        if( localCacheOp.isCancelled ) {newCacheHandler(nil); return;}
-  
+                        if( localCacheOp.isCancelled ) {TGLog(TGLOG_ALL,@"Cancelling 2");newCacheHandler(nil); return;}
+                        
                         id<SongIDProtocol> songID = [_songGridAccessAPI songIDFromGridColumn:matrixCols andRow:matrixRows];
                         
-                        // skip if this is the selected cell (which gets added below).
-                        // Store the currently selected cell's songId for use later.
-//CACH2
-//                        if ((matrixRows == selectionPos.y) && (matrixCols == selectionPos.x))
+// CACH2                       if ((matrixRows == selectionPos.y) && (matrixCols == selectionPos.x))
 //                            selectedSongId = songID;
-
                         
                         if (songID != nil) {
                             [wantedCache addObject:songID];
@@ -1618,7 +1631,7 @@ static int const kSongPoolStartCapacity = 250;
         [staleCache minusSet:wantedCache];
         
         // Check for operation cancellation
-        if( localCacheOp.isCancelled ) {newCacheHandler(nil); return;}
+        if( localCacheOp.isCancelled ) {TGLog(TGLOG_ALL,@"Cancelling 3");newCacheHandler(nil); return;}
 
         // Ensure all stale objects are cleared.
         [self clearSongCache:[staleCache allObjects] withBOp:localCacheOp];
@@ -1635,6 +1648,7 @@ static int const kSongPoolStartCapacity = 250;
         //CACH2 Adding the selectedSongId to the front of the songsToCacheArray is no longer necessary because
         // we already make sure that the selected song is cached before calling newCacheFromCache.
         // It still needs to be in the array though so we know what's cached and what's not.
+        // This is problematic when we cancel a whole caching operation since we then lose and leak the selected song.
 
             // To always give the selected song the highest priority we add it to the front of the array.
             // Remove the song from the set because we want to insert it at the front of the songsToCacheArray.
@@ -1660,19 +1674,20 @@ static int const kSongPoolStartCapacity = 250;
         // use the songsToCacheArray instead as that has been pruned to contain only cached songs.
         NSSet* newWantedCache = [NSSet setWithArray:songsToCacheArray];
         [newMasterCache unionSet:newWantedCache];
-        
+
         newCacheHandler(newMasterCache);
     }];
 
 
     cacheOp.completionBlock = ^{
-        NSLog(@"The caching block %@.",weakCacheOp.isCancelled ? @"cancelled" : @"completed");
+        TGLog(TGLOG_ALL,@"The caching block %@.",weakCacheOp.isCancelled ? @"cancelled" : @"completed");
     };
 
     [urlCachingOpQueue addOperation:cacheOp];
-
+//    TGLog(TGLOG_ALL,@"Operation count %lu",(unsigned long)[urlCachingOpQueue operationCount]);
+    TGLog(TGLOG_ALL, @"Operation count %lu",(unsigned long)[urlCachingOpQueue operationCount]);
     //NSDate* postDate = [NSDate date];
-    //NSLog(@"caching took: %f",[postDate timeIntervalSinceDate:preDate]);
+    //TGLog(TGLOG_ALL,@"caching took: %f",[postDate timeIntervalSinceDate:preDate]);
 }
 
 
@@ -1682,7 +1697,7 @@ static int const kSongPoolStartCapacity = 250;
  The property is not currently used though.
  */
 - (void)clearSongCache:(NSArray*)staleSongArray withBOp:(NSBlockOperation*)bOp {
-//    NSLog(@"Retain count for bOp is %ld", CFGetRetainCount((__bridge CFTypeRef)bOp));
+//    TGLog(TGLOG_ALL,@"Retain count for bOp is %ld", CFGetRetainCount((__bridge CFTypeRef)bOp));
 
     dispatch_async(cacheClearingQueue, ^{
         for (id<SongIDProtocol> songID in staleSongArray) {
@@ -1696,16 +1711,16 @@ static int const kSongPoolStartCapacity = 250;
  Blind caching method that simply initiates loading of all the songs in the array it is given.
  */
 - (void)loadSongCache:(NSMutableArray*)desiredSongArray withBOp:(NSBlockOperation*)bOp  {
-//    NSLog(@"Wait!");
+//    TGLog(TGLOG_ALL,@"Wait!");
 //    [NSThread sleepForTimeInterval:10.0f];
-//    NSLog(@"Carry on.");
+//    TGLog(TGLOG_ALL,@"Carry on.");
     int nextIdx = 1;
     
     for (id<SongIDProtocol> songID in desiredSongArray) {
         
         TGSong *aSong = [self songForID:songID];
         if (aSong == NULL) {
-            NSLog(@"Nope, the requested ID %@ is not in the song pool.",songID);
+            TGLog(TGLOG_ALL,@"Nope, the requested ID %@ is not in the song pool.",songID);
             return;
         }
         
@@ -1716,7 +1731,7 @@ static int const kSongPoolStartCapacity = 250;
         
         // Check for operation cancellation.
         if( (bOp != nil) &&  bOp.isCancelled ) {
-            NSLog(@"==================================================================================================================================================== loadSongCache cancelled");
+            TGLog(TGLOG_ALL,@"==================================================================================================================================================== loadSongCache cancelled");
             // Remove the entries that we didn't manage to cache before having to drop out.
             NSIndexSet *indexSet = [NSIndexSet indexSetWithIndexesInRange:NSMakeRange(nextIdx, [desiredSongArray count]-nextIdx)];
             [desiredSongArray removeObjectsAtIndexes:indexSet];
@@ -1730,11 +1745,11 @@ static int const kSongPoolStartCapacity = 250;
 - (void)fetchUUIdAndCoverArtForSongId:(id<SongIDProtocol>)songId {
     [self fetchUUIdForSongId:songId withHandler:^(NSString* theUUId) {
         
-        NSLog(@"UUId fetch for songId %@ succeeded. Handler call.",songId);
+        TGLog(TGLOG_ALL,@"UUId fetch for songId %@ succeeded. Handler call.",songId);
         
         // Now that we know we have a UUId, initiate the fetching of the cover art.
         [self requestImageForSongID:songId withHandler:^(NSImage* theImage) {
-            NSLog(@"We have a cover image via the block image handler");
+            TGLog(TGLOG_ALL,@"We have a cover image via the block image handler");
             
             // Here we should signal that the song now has cover art. Or update the song in question if its current image == fetching image
             [[NSNotificationCenter defaultCenter] postNotificationName:@"songCoverUpdated" object:songId];
@@ -1767,12 +1782,12 @@ static int const kSongPoolStartCapacity = 250;
     
     TGSong *aSong = [self songForID:songID];
     if (aSong == NULL) {
-        NSLog(@"Nope, the requested ID %@ is not in the song pool.",songID);
+        TGLog(TGLOG_ALL,@"Nope, the requested ID %@ is not in the song pool.",songID);
         return;
     }
     
     lastRequestedSong = aSong;
-    //NSLog(@"requestSongPlayback just set lastRequestedSong to %@",lastRequestedSong.songID);
+    //TGLog(TGLOG_ALL,@"requestSongPlayback just set lastRequestedSong to %@",lastRequestedSong.songID);
     
     //MARK: COVR
     // This allows the main controller to update the song id's cover to "fetching" before the song is ready to play.
@@ -1785,10 +1800,10 @@ static int const kSongPoolStartCapacity = 250;
     }
 
     if ([aSong isReadyForPlayback] == YES) {
-        //NSLog(@"Ready");^
+        //TGLog(TGLOG_ALL,@"Ready");^
         [self songReadyForPlayback:aSong atTime:time];
     } else {
-        NSLog(@"Not ready");
+        TGLog(TGLOG_ALL,@"Not ready");
         // First cancel any pending requests in the operation queue and then add this.
         // This won't delete them from the queue but it will tell each in turn it has been cancelled.
         [urlLoadingOpQueue cancelAllOperations];
@@ -1804,14 +1819,14 @@ static int const kSongPoolStartCapacity = 250;
             
             // Asynch'ly start loading the track data for aSong. songReadyForPlayback will be called back when the song is good to go.
             [aSong performWhenReadyForPlayback:^{
-                NSLog(@"performWhenReadyForPlayback completion block from requestSongPlayback.");
+                TGLog(TGLOG_ALL,@"performWhenReadyForPlayback completion block from requestSongPlayback.");
                 [self songReadyForPlayback:aSong atTime:time];
             }];
         }];
         
         // For debug checking
         cacheOp.completionBlock = ^{
-            NSLog(@"The call to performWhenReadyForPlayback was %@.",weakCacheOp.isCancelled ? @"cancelled" : @"completed");
+            TGLog(TGLOG_ALL,@"The call to performWhenReadyForPlayback was %@.",weakCacheOp.isCancelled ? @"cancelled" : @"completed");
         };
         
         [urlLoadingOpQueue addOperation:cacheOp];
@@ -1835,13 +1850,13 @@ static int const kSongPoolStartCapacity = 250;
     if (currentlyPlayingSong != nextSong) {
         [currentlyPlayingSong playStop];
     } else {
-        NSLog(@"currently playing is the same as next song. Early out.");
+        TGLog(TGLOG_ALL,@"currently playing is the same as next song. Early out.");
         return;
     }
     
     // Don't play the song if it isn't the last requested song.
     if (nextSong != lastRequestedSong) {
-//        NSLog(@"NOoOoooOOOOOOOOoooooooOOOOOO");
+//        TGLog(TGLOG_ALL,@"NOoOoooOOOOOOOOoooooooOOOOOO");
         return;
     }
     NSAssert(startTime != nil, @"Start time is nil!");
@@ -1886,7 +1901,7 @@ static int const kSongPoolStartCapacity = 250;
 //    // At this point we should check if the fingerprint resulted in a songUUID.
 //    // If it did not we keep the finger print so we don't have to re-generate it, otherwise we can delete the it.
 //    if (song.uuid == nil) {
-//        NSLog(@"No UUID found, keeping fingerprint.");
+//        TGLog(TGLOG_ALL,@"No UUID found, keeping fingerprint.");
 //        song.fingerprint = fingerPrint;
 //    }
 //    
@@ -1901,7 +1916,7 @@ static int const kSongPoolStartCapacity = 250;
 
 - (void)songDidFinishPlayback:(TGSong *)song {
     // Pass this on to the delegate (which should be the controller).
-    NSLog(@"song %lu did finish playback. The last requested song is %@",(unsigned long)[song songID],[lastRequestedSong songID]);
+    TGLog(TGLOG_ALL,@"song %lu did finish playback. The last requested song is %@",(unsigned long)[song songID],[lastRequestedSong songID]);
     if ([[self delegate] respondsToSelector:@selector(songPoolDidFinishPlayingSong:)]) {
         [[self delegate] songPoolDidFinishPlayingSong:[song songID]];
     }
@@ -1950,7 +1965,7 @@ static int const kSongPoolStartCapacity = 250;
     
     // Make sure the last request for playback is put on a serial queue so it always is the last song left playing.
     if (song == lastRequestedSong) {
-        //NSLog(@"about to play song which is equal to lastRequestedSong %@",lastRequestedSong.songID);
+        //TGLog(TGLOG_ALL,@"about to play song which is equal to lastRequestedSong %@",lastRequestedSong.songID);
         //     If there's no start time, check the sweet spot server for one. If one is found set the startTime to it.
         if (startTime == nil) {
             // At this point we really ought to make sure we have a song uuid generated from the fingerprint.
@@ -1972,11 +1987,11 @@ static int const kSongPoolStartCapacity = 250;
          Eg. use an opQueue and cancel it before adding a new song? Though that may still let a stale one through.
          */
         dispatch_async(playbackQueue, ^{
-//            NSLog(@"putting song %lu on the playbackQueue",(unsigned long)[song songID]);
+//            TGLog(TGLOG_ALL,@"putting song %lu on the playbackQueue",(unsigned long)[song songID]);
             [self playbackSong:song atTime:startTime];
         });
     } else {
-        NSLog(@"Song %@ rejected for not being the lastRequestedSong.",song.songID);
+        TGLog(TGLOG_ALL,@"Song %@ rejected for not being the lastRequestedSong.",song.songID);
     }
 }
 
@@ -1985,31 +2000,35 @@ static int const kSongPoolStartCapacity = 250;
 
 - (void)debugLogSongWithId:(id<SongIDProtocol>)songId {
     TGSong* theSong = [self songForID:songId];
-    NSLog(@"Debug log for song with id: %@",songId);
-    NSLog(@"vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv");
-    NSLog(@"List sweetspots for song with Id: %@",songId);
+    TGLog(TGLOG_ALL,@"Debug log for song with id: %@",songId);
+    TGLog(TGLOG_ALL,@"vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv");
+    TGLog(TGLOG_ALL,@"List sweetspots for song with Id: %@",songId);
     
-    NSLog(@"The song status is: %@",[self statusValToString:theSong.songStatus]);
-    NSLog(@"The artId: %@",theSong.artID);
-    NSLog(@"The UUID is %@",[self UUIDStringForSongID:songId]);
-    NSLog(@"The song has a fingerprint: %@",[self fingerprintExistsForSongID:songId]?@"Yes":@"No");
-    NSLog(@"The sweetspots are %@",[self sweetSpotsForSongID:songId]);
+    TGLog(TGLOG_ALL,@"The song status is: %@",[self statusValToString:theSong.songStatus]);
+    TGLog(TGLOG_ALL,@"The artId: %@",theSong.artID);
+    TGLog(TGLOG_ALL,@"The UUID is %@",[self UUIDStringForSongID:songId]);
+    TGLog(TGLOG_ALL,@"The song has a fingerprint: %@",[self fingerprintExistsForSongID:songId]?@"Yes":@"No");
+    TGLog(TGLOG_ALL,@"The sweetspots are %@",[self sweetSpotsForSongID:songId]);
     
-    NSLog(@"^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^");
+    TGLog(TGLOG_ALL,@"^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^");
 }
 
 - (void)debugLogCaches {
 
-    NSLog(@"The current cache is:");
-    NSLog(@"+---------------------+");
-    NSLog(@"%@",songIDCache);
-    NSLog(@"+---------------------+");
+    TGLog(TGLOG_ALL,@"The current cache is:");
+    TGLog(TGLOG_ALL,@"+---------------------+");
+    TGLog(TGLOG_ALL,@"%@",songIDCache);
+    TGLog(TGLOG_ALL,@"+---------------------+");
     
     //FIXME: This may cause an exception because if enumerates the songPoolDictionary whilst it is being changed...
     for (id<SongIDProtocol>aSongId in songPoolDictionary) {
         TGSong* aSong = [self songForID:aSongId];
         if ([aSong isReadyForPlayback] && ([songIDCache containsObject:aSongId] == NO)) {
-            NSLog(@"Song %@ is ready for playback but is not in the cache!",aSongId);
+            TGLog(TGLOG_ALL,@"Song %@ is ready for playback but is not in the cache!",aSongId);
+            
+            if (![testTouched containsObject:aSongId]) {
+                TGLog(TGLOG_ALL,@"The songId %@ was loaded but not cached AND not in the touched list!",aSongId);
+            }
         }
     }
 }
