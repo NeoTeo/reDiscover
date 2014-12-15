@@ -627,9 +627,11 @@ CDFIX */
 
 - (void)clearCache {
     _cachedFile = nil;
+//            TGLog(TGLOG_CACH2, @"clearCache %@ with status %lu",self.songID,self.songStatus);
     //CDFIX
-    if ([self songStatus] == kSongStatusReady) {
-        TGLog(TGLOG_ALL,@"~~~~~~~~~~~~~~~~~~~~~~~~ About to clear Song with Id: %@",[self songID]);
+    //CACH2 if we don't clear it even if its status is kSongStatusLoading it will leak.
+    if (1){//([self songStatus] == kSongStatusReady) {
+//        TGLog(TGLOG_CACH2,@"~~~~~~~~~~~~~~~~~~~~~~~~ About to clear Song with Id: %@",[self songID]);
         [self setSongDuration:CMTimeMakeWithSeconds(0, 1)];
         
 //        // Unregister observers
@@ -646,7 +648,7 @@ CDFIX */
         songPlayerItem = nil;
         playerObserver = nil;
         
-        TGLog(TGLOG_ALL,@"~~~~~~~~~~~~~~~~~~~~~~~~ Song with Id: %@ has been cleared.",[self songID]);
+//        TGLog(TGLOG_CACH2,@"~~~~~~~~~~~~~~~~~~~~~~~~ Song with Id: %@ has been cleared.",[self songID]);
         [self setSongStatus:kSongStatusUninited];
     }
 
