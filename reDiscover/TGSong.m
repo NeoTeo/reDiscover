@@ -115,6 +115,7 @@ static const void *ItemStatusContext = &ItemStatusContext;
                     // Now, associate the asset with the player item.
                     if (songPlayerItem == nil) {
                         songPlayerItem = [AVPlayerItem playerItemWithAsset:songAsset];
+                        NSAssert(songPlayerItem != nil, @"ERROR: songPlayerItem is nil!");
                         // Observe the status keypath of the songPlayerItem. When the status changes to ready self.customBlock will be called.
                         [songPlayerItem addObserver:self forKeyPath:@"status" options:NSKeyValueObservingOptionInitial context:&ItemStatusContext];
                     }
