@@ -50,6 +50,10 @@
 - (id<SongIDProtocol>)songIDForSongWithTag:(NSInteger)songTag {
     __block id<SongIDProtocol> songID;
     // Dispatch on a separate queue and wait.
+    if (songTag <= cellTagToSongID.count) {
+        TGLog(TGLOG_ALL, @"Error in songIDForSongWithTag! The songTag is bigger than the cellTagToSongID array");
+
+    }
     // This is done to serialize access to the shared resource to avoid concurrency conflicts.
     dispatch_sync(_matrixAccessQueue,^{
         songID = [cellTagToSongID objectAtIndex:songTag];

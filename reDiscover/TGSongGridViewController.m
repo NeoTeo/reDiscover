@@ -241,7 +241,7 @@
     TGGridCell * theCell = [_songCellMatrix cellWithTag:cellTag];
 
     if ((theCell == nil) || (theCell.image == nil) || (theCell.hideImage == YES)) {
-        NSLog(@"WTF");
+        NSLog(@"WTF! coverImageForSongWithId theCell or theCell.image was nil");
     }
     NSAssert(((theCell != nil) && (theCell.image != nil)), @"coverImageForSongWithId theCell or theCell.image was nil");
     

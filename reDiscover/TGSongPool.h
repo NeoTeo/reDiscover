@@ -149,8 +149,9 @@
      */
     //NSMutableArray* fetchingSongIds;
     
-    // This serial queue ensures all the cache clearing blocks are performed in the background.
-    dispatch_queue_t cacheClearingQueue;
+    /** This serial queue ensures all the cache clearing blocks are performed in the background
+    and that they don't clear the same song simultanously. */
+    dispatch_queue_t songLoadUnloadQueue;
     
     dispatch_queue_t playbackQueue;
     dispatch_queue_t serialDataLoad;

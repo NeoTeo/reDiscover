@@ -26,7 +26,8 @@
         _artID = nil;
         _songDuration = CMTimeMakeWithSeconds(0, 1);
         _songStatus = kSongStatusUninited;
-        _serialTestQueue = dispatch_queue_create("serial test queue", NULL);
+//        _serialTestQueue = dispatch_queue_create("serial test queue", DISPATCH_QUEUE_SERIAL);
+//        _loadUnloadQueue = dispatch_queue_create("song load unload q", DISPATCH_QUEUE_SERIAL);
     }
     return self;
 }
@@ -76,66 +77,74 @@
 // Make the context point to its own pointer.
 static const void *ItemStatusContext = &ItemStatusContext;
 
-- (void)prepareForPlayback {
-    
-    if ([self songStatus] == kSongStatusReady) {
-        return ;
-    }
-    //CACH2
-    if ([self songStatus] == kSongStatusLoading) {
-        TGLog(TGLOG_ALL,@"Song %@ was already loading. Returning.",self.songID);
-        return;
-    }
-    
-    NSURL *theURL = [NSURL URLWithString:self.urlString];
-    [self setSongStatus:kSongStatusLoading];
-    TGLog(TGLOG_ALL,@"------------------------------------------------------------------------------------ Song %@ is now loading.",self.songID);
-    if (songAsset == nil) {
-        /// This initializes the asset with the song's url.
-        ///Since the options are nil the default will be to not require precise timing.
-        songAsset = [AVAsset assetWithURL:theURL];
-    }
-    if (CMTimeGetSeconds(self.songDuration) == 0) {
-        
-        // [songAsset duration] may block for a bit which is just how we want it.
-        // WHY?
-        // Because, since this whole method is sitting in an op queue, if it takes too long
-        // and the user moves on to another song that should be played instead it and all the
-        // subsequent queued calls can be cancelled.
-        // If it just returned immediately there would be a large uncancellable backlog of song asset loads.
-        [self setSongDuration:[songAsset duration]];
-        
-        NSError* error;
-        AVKeyValueStatus tracksStatus = [songAsset statusOfValueForKey:@"duration" error:&error];
-        switch (tracksStatus) {
-            case AVKeyValueStatusLoaded:
-            {
-                // Prepare the asset for playback by loading its tracks.
-                [songAsset loadValuesAsynchronouslyForKeys:@[@"tracks"] completionHandler:^{
-                    // Now, associate the asset with the player item.
-                    if (songPlayerItem == nil) {
-                        songPlayerItem = [AVPlayerItem playerItemWithAsset:songAsset];
-                        NSAssert(songPlayerItem != nil, @"ERROR: songPlayerItem is nil!");
-                        // Observe the status keypath of the songPlayerItem. When the status changes to ready self.customBlock will be called.
-                        [songPlayerItem addObserver:self forKeyPath:@"status" options:NSKeyValueObservingOptionInitial context:&ItemStatusContext];
-                    }
-                    
-                    // This will trigger the player's preparation to play.
-                    if (songPlayer == nil) {
-                        songPlayer = [AVPlayer playerWithPlayerItem:songPlayerItem];
-                    }
-                }];
-                
-                break;
-            }
-            case AVKeyValueStatusFailed:
-                TGLog(TGLOG_ALL,@"There was an error getting track duration.");
-                break;
-            default:
-                TGLog(TGLOG_ALL,@"The track is not (yet) loaded!");
-                break;
+- (void)load {
+    dispatch_sync([_delegate songLoadUnloadQueue], ^{
+        if ([self songStatus] == kSongStatusReady) {
+            return ;
         }
-    }
+        //CACH2
+        if ([self songStatus] == kSongStatusLoading) {
+            TGLog(TGLOG_ALL,@"Song %@ was already loading. Returning.",self.songID);
+            return;
+        }
+        
+        NSURL *theURL = [NSURL URLWithString:self.urlString];
+        [self setSongStatus:kSongStatusLoading];
+        TGLog(TGLOG_ALL,@"------------------------------------------------------------------------------------ Song %@ is now loading.",self.songID);
+        if (songAsset == nil) {
+            /// This initializes the asset with the song's url.
+            ///Since the options are nil the default will be to not require precise timing.
+            songAsset = [AVAsset assetWithURL:theURL];
+        }
+        if (songAsset == nil) {
+            TGLog(TGLOG_CACH2, @"WTF1");
+        }
+
+        if (CMTimeGetSeconds(self.songDuration) == 0) {
+            
+            // [songAsset duration] may block for a bit which is just how we want it.
+            // WHY?
+            // Because, since this whole method is sitting in an op queue, if it takes too long
+            // and the user moves on to another song that should be played instead it and all the
+            // subsequent queued calls can be cancelled.
+            // If it just returned immediately there would be a large uncancellable backlog of song asset loads.
+            [self setSongDuration:[songAsset duration]];
+            
+            NSError* error;
+            AVKeyValueStatus tracksStatus = [songAsset statusOfValueForKey:@"duration" error:&error];
+            switch (tracksStatus) {
+                case AVKeyValueStatusLoaded:
+                {
+                    // Prepare the asset for playback by loading its tracks.
+                    [songAsset loadValuesAsynchronouslyForKeys:@[@"tracks"] completionHandler:^{
+                        // Now, associate the asset with the player item.
+                        if (songPlayerItem == nil) {
+                            songPlayerItem = [AVPlayerItem playerItemWithAsset:songAsset];
+                            if (songPlayerItem == nil) {
+                                TGLog(TGLOG_CACH2, @"WTF2");
+                            }
+                            // Observe the status keypath of the songPlayerItem. When the status changes to ready self.customBlock will be called.
+                            [songPlayerItem addObserver:self forKeyPath:@"status" options:NSKeyValueObservingOptionInitial context:&ItemStatusContext];
+                            TGLog(TGLOG_CACH2, @"TGSong load just 🔵added observer to songPlayerItem %@",songPlayerItem);
+                        }
+                        
+                        // This will trigger the player's preparation to play.
+                        if (songPlayer == nil) {
+                            songPlayer = [AVPlayer playerWithPlayerItem:songPlayerItem];
+                        }
+                    }];
+                    
+                    break;
+                }
+                case AVKeyValueStatusFailed:
+                    TGLog(TGLOG_ALL,@"There was an error getting track duration.");
+                    break;
+                default:
+                    TGLog(TGLOG_ALL,@"The track is not (yet) loaded!");
+                    break;
+            }
+        }
+    });
 }
 
 - (void)performWhenReadyForPlayback:(void (^)(void))completionBlock {
@@ -274,6 +283,7 @@ CDFIX */
                         songPlayerItem = [AVPlayerItem playerItemWithAsset:songAsset];
                         // Observe the status keypath of the songPlayerItem.
                         [songPlayerItem addObserver:self forKeyPath:@"status" options:NSKeyValueObservingOptionInitial context:&ItemStatusContext];
+                        TGLog(TGLOG_CACH2, @"LoadTrackDataWithCallBackOnCompletion just 🔵added observer to songPlayerItem %@",songPlayerItem);
                     }
                     
                     // This will trigger the player's preparation to play.
@@ -521,7 +531,7 @@ CDFIX */
     if (context == &ItemStatusContext) {
         if (object == songPlayerItem && [keyPath isEqualToString:@"status"]) {
             if (songPlayerItem.status == AVPlayerItemStatusReadyToPlay) {
-                
+                TGLog(TGLOG_CACH2, @"songPlayerItem %@ status has gone ready.",songPlayerItem);
                 [self setSongStatus:kSongStatusReady];
                     TGLog(TGLOG_ALL,@"------------------------------------------------------------------------------------ Song %@ is now ready.",self.songID);
 //                [[NSNotificationCenter defaultCenter] postNotificationName:@"songStatusNowReady" object:self];
@@ -626,33 +636,38 @@ CDFIX */
     TGLog(TGLOG_ALL,@"cached file %@ of length %lld",_cachedFile,_cachedFileLength);
 }
 
-- (void)clearCache {
-    _cachedFile = nil;
-//            TGLog(TGLOG_CACH2, @"clearCache %@ with status %lu",self.songID,self.songStatus);
-    //CDFIX
-    //CACH2 if we don't clear it even if its status is kSongStatusLoading it will leak.
-    if (1){//([self songStatus] == kSongStatusReady) {
-//        TGLog(TGLOG_CACH2,@"~~~~~~~~~~~~~~~~~~~~~~~~ About to clear Song with Id: %@",[self songID]);
-        [self setSongDuration:CMTimeMakeWithSeconds(0, 1)];
-        
-//        // Unregister observers
-        if (songPlayer) {
-            [songPlayer removeTimeObserver:playerObserver];
-        }
-//
-        if (songPlayerItem) {
-            [songPlayerItem removeObserver:self forKeyPath:@"status" context:&ItemStatusContext];
-        }
+- (void)unload {
+    dispatch_sync([_delegate songLoadUnloadQueue], ^{
+        _cachedFile = nil;
+    //            TGLog(TGLOG_CACH2, @"clearCache %@ with status %lu",self.songID,self.songStatus);
+        //CDFIX
+        //CACH2 if we don't clear it even if its status is kSongStatusLoading it will leak.
+        //if (1){
+        if([self songStatus] == kSongStatusReady) {
+            TGLog(TGLOG_CACH2,@"~~~~~~~~~~~~~~~~~~~~~~~~ Clearing song with Id: %@",[self songID]);
+            [self setSongDuration:CMTimeMakeWithSeconds(0, 1)];
+            
+    //        // Unregister observers
+            if (songPlayer && playerObserver) {
+                [songPlayer removeTimeObserver:playerObserver];
+            }
+    //
+            if (songPlayerItem) {
+                [songPlayerItem removeObserver:self forKeyPath:@"status" context:&ItemStatusContext];
+                TGLog(TGLOG_CACH2, @"just 🔴removed observer from songPlayerItem %@",songPlayerItem);
+            }
 
-        songPlayer = nil;
-        songAsset = nil;
-        songPlayerItem = nil;
-        playerObserver = nil;
-        
-//        TGLog(TGLOG_CACH2,@"~~~~~~~~~~~~~~~~~~~~~~~~ Song with Id: %@ has been cleared.",[self songID]);
-        [self setSongStatus:kSongStatusUninited];
-    }
+            playerObserver = nil;
+            songAsset = nil;
+            songPlayerItem = nil;
+            songPlayer = nil;
 
+            
+            [self setSongStatus:kSongStatusUninited];
+        } else {
+            TGLog(TGLOG_CACH2, @"Didn't clear song %@ because its status was not kSongStatusReady.",[self songID]);
+        }
+    });
 }
 
 /**

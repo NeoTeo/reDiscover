@@ -94,7 +94,7 @@ enum {
 
 #define TSD
 
-@property dispatch_queue_t serialTestQueue;
+//@property dispatch_queue_t serialTestQueue;
 
 // Typedef a block that takes an NSNumber* and returns void to MyCustomBlock
 typedef void(^MyCustomBlock)(void);
@@ -118,7 +118,7 @@ typedef void(^MyCustomBlock)(void);
 @property NSUInteger SSCheckCountdown;
 
 - (void)setCache:(AVAudioFile*) theFile;
-- (void)clearCache;
+- (void)unload;
 
 - (void)storeSelectedSweetSpot;
 - (NSNumber*)currentSweetSpot;
@@ -127,7 +127,7 @@ typedef void(^MyCustomBlock)(void);
 - (id)init;
 
 //- (void)prepareForPlaybackWithCompletionBlock:(void (^)(void))completionBlock;
-- (void)prepareForPlayback;
+- (void)load;
 - (void)performWhenReadyForPlayback:(void (^)(void))completionBlock;
 //- (void)loadTrackDataWithCallBackOnCompletion:(BOOL)wantsCallback withStartTime:(NSNumber*)startTime;
 //- (void)loadTrackDataAtStartTime:(NSNumber*)startTime withCompletionBlock:(void (^)(void))completionBlock;
@@ -155,5 +155,6 @@ typedef void(^MyCustomBlock)(void);
 - (void)songDidFinishPlayback:(TGSong *)song;
 - (void)songDidUpdatePlayheadPosition:(NSNumber *)playheadPosition;
 - (dispatch_queue_t)serialQueue;
+- (dispatch_queue_t)songLoadUnloadQueue;
 
 @end
