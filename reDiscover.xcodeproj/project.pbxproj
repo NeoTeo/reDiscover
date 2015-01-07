@@ -75,7 +75,6 @@
 		ABB33FF019C72C3800439A5E /* SweetSpotServerIO.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABB33FEF19C72C3800439A5E /* SweetSpotServerIO.swift */; };
 		ABB770AB1950486600155EE7 /* SongID.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABB770AA1950486600155EE7 /* SongID.swift */; };
 		ABCB68EA18FD57E4009CF277 /* TEOSong.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = ABCB68E818FD57E4009CF277 /* TEOSong.xcdatamodeld */; };
-		ABE193BD1A39BAE500DA5C40 /* TGTagLog.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABE193BC1A39BAE500DA5C40 /* TGTagLog.swift */; };
 		ABEC263D1951C6F200A57CE3 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = ABEC263C1951C6F200A57CE3 /* Main.storyboard */; };
 		ABFC8EB219C19C630007ECCB /* uploadedSS.plist in Resources */ = {isa = PBXBuildFile; fileRef = ABFC8EB119C19C630007ECCB /* uploadedSS.plist */; };
 		ABFC8EB519C1BCE90007ECCB /* uploadedSS.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = ABFC8EB319C1BCE90007ECCB /* uploadedSS.xcdatamodeld */; };
@@ -204,7 +203,6 @@
 		ABB33FEF19C72C3800439A5E /* SweetSpotServerIO.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SweetSpotServerIO.swift; sourceTree = "<group>"; };
 		ABB770AA1950486600155EE7 /* SongID.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SongID.swift; sourceTree = "<group>"; };
 		ABCB68E918FD57E4009CF277 /* TEOSong.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = TEOSong.xcdatamodel; sourceTree = "<group>"; };
-		ABE193BC1A39BAE500DA5C40 /* TGTagLog.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TGTagLog.swift; sourceTree = "<group>"; };
 		ABEC263C1951C6F200A57CE3 /* Main.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Main.storyboard; sourceTree = "<group>"; };
 		ABFC8EB119C19C630007ECCB /* uploadedSS.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = uploadedSS.plist; sourceTree = "<group>"; };
 		ABFC8EB419C1BCE90007ECCB /* uploadedSS.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = uploadedSS.xcdatamodel; sourceTree = "<group>"; };
@@ -384,7 +382,6 @@
 		AB85BBCA1875AACF00670905 = {
 			isa = PBXGroup;
 			children = (
-				ABE193BC1A39BAE500DA5C40 /* TGTagLog.swift */,
 				AB85BBDC1875AACF00670905 /* reDiscover */,
 				AB85BBFA1875AACF00670905 /* reDiscoverTests */,
 				AB1756221A2E1788003FC9A3 /* reDiscover Tests */,
@@ -653,7 +650,6 @@
 				AB56D9F418EC14D5005AB947 /* CAKeyframeAnimation+Parametric.m in Sources */,
 				AB3140CF196D5F0F00F910BE /* SongPlayer.swift in Sources */,
 				AB7FFB6119589BF2002D1E63 /* DropViewController.swift in Sources */,
-				ABE193BD1A39BAE500DA5C40 /* TGTagLog.swift in Sources */,
 				AB301E7619050C830093B654 /* TEOSongData.m in Sources */,
 				AB85BC551875AB5200670905 /* TGWindowController.m in Sources */,
 				AB85BC511875AB5200670905 /* TGSweetSpotControl.m in Sources */,
