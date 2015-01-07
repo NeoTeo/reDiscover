@@ -136,7 +136,8 @@
     /** CACH2 locks to ensure concurrent access to the queues doesn't break */
     NSLock* cacheQueueLock;
     NSLock* callbackQueueLock;
-
+    NSLock* selectedSongsCacheLock;
+    
     /** CACH2 a queue of caches */
     NSMutableArray* cacheQueue;
     /** CACH2 a queue of callback blocks */

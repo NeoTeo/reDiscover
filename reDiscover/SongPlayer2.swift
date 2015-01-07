@@ -9,7 +9,7 @@
 import Cocoa
 import AVFoundation
 
-//protocol MyBridge : Hashable {
+//protocol MyBridge : Hashable, SongIDProtocol {
 //    func isEqual(object: MyBridge) -> Bool
 //}
 //
@@ -32,6 +32,8 @@ class SongPlayer2: NSObject {
     let songPlayer: AVPlayer?
     
     var delegate: SongPoolAccessProtocol?
+    
+    // A dictionary of song ids (uses ints because I cannot make SongIDProtocol hashable) and their cached player item.
     var songPlayerCache: [Int:AVPlayerItem]?
 //    var test: [MyBridge:Int]?
     

@@ -80,11 +80,12 @@ static const void *ItemStatusContext = &ItemStatusContext;
 - (void)load {
     dispatch_sync([_delegate songLoadUnloadQueue], ^{
         if ([self songStatus] == kSongStatusReady) {
+            TGLog(TGLOG_TMP,@"Song %@ was already READY. Returning.",self.songID);
             return ;
         }
         //CACH2
         if ([self songStatus] == kSongStatusLoading) {
-            TGLog(TGLOG_ALL,@"Song %@ was already loading. Returning.",self.songID);
+            TGLog(TGLOG_TMP,@"Song %@ was already LOADING. Returning.",self.songID);
             return;
         }
         
@@ -125,7 +126,7 @@ static const void *ItemStatusContext = &ItemStatusContext;
                             }
                             // Observe the status keypath of the songPlayerItem. When the status changes to ready self.customBlock will be called.
                             [songPlayerItem addObserver:self forKeyPath:@"status" options:NSKeyValueObservingOptionInitial context:&ItemStatusContext];
-                            TGLog(TGLOG_CACH2, @"TGSong load just 🔵added observer to songPlayerItem %@",songPlayerItem);
+                            TGLog(TGLOG_TMP, @"song id %@ load just 🔵added observer to songPlayerItem %@",self.songID,songPlayerItem);
                         }
                         
                         // This will trigger the player's preparation to play.
@@ -533,6 +534,7 @@ CDFIX */
             if (songPlayerItem.status == AVPlayerItemStatusReadyToPlay) {
                 TGLog(TGLOG_CACH2, @"songPlayerItem %@ status has gone ready.",songPlayerItem);
                 [self setSongStatus:kSongStatusReady];
+                TGLog(TGLOG_TMP, @"SongId %@ status has gone to ready.",[self songID]);
                     TGLog(TGLOG_ALL,@"------------------------------------------------------------------------------------ Song %@ is now ready.",self.songID);
 //                [[NSNotificationCenter defaultCenter] postNotificationName:@"songStatusNowReady" object:self];
                 
@@ -610,15 +612,6 @@ CDFIX */
     [songPlayer pause];
     // TEO: test to release asset and associated threads. This should for songs not marked as cached.
     return;
-    {
-    songAsset = NULL;
-    songPlayerItem = NULL;
-    songPlayer = NULL;
-//MARK: SPEED
-#pragma TEO: The unloading is not yet implemented. By setting the song status to something other than ready we reload it every time we play it.
-    [self setLoadStatus:kLoadStatusUnloaded];
-    [self setSongStatus:kSongStatusUnloading];
-    }
 }
 
 - (void)setCache:(AVAudioFile*) theFile {
@@ -641,7 +634,9 @@ CDFIX */
         _cachedFile = nil;
     //            TGLog(TGLOG_CACH2, @"clearCache %@ with status %lu",self.songID,self.songStatus);
         //CDFIX
-        //CACH2 if we don't clear it even if its status is kSongStatusLoading it will leak.
+        //CACH2 The song status at this point might be loading because an interrupted cache op may have set it
+        // loading and then immediately after set it to unload.
+        //FIXME:
         //if (1){
         if([self songStatus] == kSongStatusReady) {
             TGLog(TGLOG_CACH2,@"~~~~~~~~~~~~~~~~~~~~~~~~ Clearing song with Id: %@",[self songID]);
@@ -662,10 +657,10 @@ CDFIX */
             songPlayerItem = nil;
             songPlayer = nil;
 
-            
+            TGLog(TGLOG_TMP, @"Actually cleared song %@ and setting its status to 4",[self songID]);
             [self setSongStatus:kSongStatusUninited];
         } else {
-            TGLog(TGLOG_CACH2, @"Didn't clear song %@ because its status was not kSongStatusReady.",[self songID]);
+            TGLog(TGLOG_CACH2, @"Didn't clear song %@ because its status was %lu, not kSongStatusReady.",[self songID],[self songStatus]);
         }
     });
 }
