@@ -23,10 +23,6 @@
 
 #import "rediscover-swift.h"
 
-//CACH2
-#import "TGTest.h"
-
-
 //@interface SongID : NSObject <SongIDProtocol>
 //+ (SongID *)initWithString:(NSString *)theString;
 //@end
