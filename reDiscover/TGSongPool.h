@@ -21,6 +21,7 @@
 @class TGStack;
 @class AVAudioFile;
 @class SweetSpotServerIO;
+@class TGSongAudioCacher;
 
 // protocol forward declaration
 @protocol SongGridAccessProtocol;
@@ -82,6 +83,9 @@
 - (void)newCacheFromCache:(NSMutableSet*)oldCache withContext:(NSDictionary*)cacheContext andHandler:(void (^)(NSMutableSet*))newCacheHandler;
 
 - (NSManagedObjectContext*)TEOSongDataMOC;
+
+// Get the song Id of the the song at the grid position (request goes through to the song grid controller)
+- (id<SongIDProtocol>)songIdFromGridPos:(NSPoint)gridPosition;
 
 // Debug methods
 - (void)debugLogSongWithId:(id<SongIDProtocol>)songId;
@@ -181,6 +185,8 @@
     NSNumber *requestedPlayheadPosition;
     
     SongPlayer* theSongPlayer;
+    
+    TGSongAudioCacher* songCacher;
 }
 
 @property TGStack* requestedSongStack;

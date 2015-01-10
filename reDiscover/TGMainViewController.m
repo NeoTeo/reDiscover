@@ -528,6 +528,8 @@
 
     NSString* artId = [_currentSongPool artIdForSongId:songID];
   
+    // If there is no art for the current song yet then set the cover image on both the
+    // grid and the info panel to the "fetching" image.
     if (artId == nil) {
         [_songGridController setCoverImage:fetchingImage forSongWithID:songID];
         [_songInfoController setSongCoverImage:fetchingImage];

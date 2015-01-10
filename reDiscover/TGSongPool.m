@@ -189,6 +189,10 @@ static int const kSongPoolStartCapacity = 250;
         cacheQueue = [[NSMutableArray alloc] init];
         [cacheQueue enqueue:[NSMutableSet setWithCapacity:0]];
         callbackQueue = [[NSMutableArray alloc] init];
+        
+        //NUCACHE
+        songCacher = [[TGSongAudioCacher alloc] init];
+        songCacher.songPoolAPI = self;
     }
     
     return self;
@@ -1208,6 +1212,10 @@ static int const kSongPoolStartCapacity = 250;
     return songLoadUnloadQueue;
 }
 
+- (id<SongIDProtocol>)songIdFromGridPos:(NSPoint)gridPosition {
+
+    return [_songGridAccessAPI songIDFromGridColumn:gridPosition.x andRow:gridPosition.y];
+}
 
 #pragma mark -
 //MARK: Core Data methods
@@ -1472,6 +1480,9 @@ static int const kSongPoolStartCapacity = 250;
  */
 - (void)cacheWithContext:(NSDictionary*)cacheContext {
 
+    //NUCACHE
+    [songCacher cacheWithContext:cacheContext];
+    
     //CACH2 Add to a separate stack that ensures caching of the selected song is never cancelled and always first.
     id<SongIDProtocol> selectedSongId = [cacheContext objectForKey:@"selectedSongId"];
     
@@ -1485,6 +1496,7 @@ static int const kSongPoolStartCapacity = 250;
             return;
         }
       
+        // Tell the main view controller that we've started fetching data for the selected song so it can update the UI.
         [_delegate songPoolDidStartFetchingSong:selectedSongId];
         [aSong load];
         
@@ -1637,7 +1649,7 @@ static int const kSongPoolStartCapacity = 250;
                         if( localCacheOp.isCancelled ) {TGLog(TGLOG_CACH2,@"Cancelling 2"); return;}
                         
                         id<SongIDProtocol> songID = [_songGridAccessAPI songIDFromGridColumn:matrixCols andRow:matrixRows];
-                        
+                        TGLog(TGLOG_NUCACHE, @"From grid position %ld,%ld we got id %@",(long)matrixCols,(long)matrixRows,songID);
                         if ((songID != nil) && (songID != selectedSongId)) {
 //                        if (songID != nil) {
                             [wantedCache addObject:songID];
@@ -2147,7 +2159,6 @@ static int const kSongPoolStartCapacity = 250;
     if (aSong == nil) {
         return;
     }
-    
     [self requestSongPlayback:songID withStartTimeInSeconds:aSong.currentSweetSpot makeSweetSpot:NO];
 }
 
@@ -2379,6 +2390,11 @@ static int const kSongPoolStartCapacity = 250;
 
 //MARK: Debug methods
 
+//NUCAcHE
+static AVAsset* anAss;
+static AVPlayerItem* anPI;
+static AVPlayer* aPlayer;
+
 - (void)debugLogSongWithId:(id<SongIDProtocol>)songId {
     TGSong* theSong = [self songForID:songId];
     TGLog(TGLOG_DBG,@"Debug log for song with id: %@",songId);
@@ -2392,6 +2408,25 @@ static int const kSongPoolStartCapacity = 250;
     TGLog(TGLOG_DBG,@"The sweetspots are %@",[self sweetSpotsForSongID:songId]);
     
     TGLog(TGLOG_DBG,@"^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^");
+    
+    AVAsset* anAsset = [songCacher songAssetForSongId:songId];
+    if (anAsset != nil) {
+        TGLog(TGLOG_DBG, @"songCacher returned %@",anAsset)
+    } else {
+        TGLog(TGLOG_DBG, @"songCacher returned bummer")
+    }
+    //NUCACHE
+    anAss = [songCacher songAssetForSongId:songId];
+    anPI = [[AVPlayerItem alloc] initWithAsset:anAss];
+    aPlayer = [[AVPlayer alloc] initWithPlayerItem:anPI];
+    if ([aPlayer status] == AVPlayerStatusReadyToPlay) {
+        TGLog(TGLOG_DBG,@"Player status is ready to play");
+        [aPlayer play];
+
+    }
+    return;
+    //NUCACHE end
+
 }
 
 - (void)debugLogCaches {
@@ -2424,6 +2459,9 @@ static int const kSongPoolStartCapacity = 250;
             TGLog(TGLOG_DBG, @"The songId %@ was incorrectly marked as cached!",aSongId);
         }
     }
+    
+    TGLog(TGLOG_DBG,@"+^v^v^v^v^v^v^v^v^v^v^v^v+");
+    [songCacher dumpCacheToLog];
 }
 
 - (NSString*)statusValToString:(NSUInteger)statusVal {

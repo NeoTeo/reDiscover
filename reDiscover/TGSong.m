@@ -94,7 +94,6 @@ static const void *ItemStatusContext = &ItemStatusContext;
         TGLog(TGLOG_ALL,@"------------------------------------------------------------------------------------ Song %@ is now loading.",self.songID);
         if (songAsset == nil) {
             /// This initializes the asset with the song's url.
-            ///Since the options are nil the default will be to not require precise timing.
             songAsset = [AVAsset assetWithURL:theURL];
         }
         if (songAsset == nil) {
@@ -245,7 +244,7 @@ static const void *ItemStatusContext = &ItemStatusContext;
     //});
 }
 CDFIX */
-
+/*
 - (void)loadTrackDataWithCallBackOnCompletion:(BOOL)wantsCallback withStartTime:(NSNumber*)startTime {
 
     NSURL *theURL = [NSURL URLWithString:self.urlString];
@@ -334,6 +333,7 @@ CDFIX */
 //        [[self delegate] songReadyForPlayback:self atTime:startTime];
 //    }
 }
+*/
 
 /**
     Load metadata from the file associated with this song and store it in the TEOData managed context.
