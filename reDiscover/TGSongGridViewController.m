@@ -260,6 +260,8 @@ static NSInteger const kUndefinedID =  -1;
 
 - (id<SongIDProtocol>)cellToSongID:(TGGridCell*)theCell {
     
+    if ( theCell == nil ) return nil;
+    
     NSInteger cellTag = [theCell tag];
     // If the cell has not yet been connected to a song ID, pick one from the unmapped songs and connect it.
     if (cellTag ==  kUndefinedID) {

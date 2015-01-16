@@ -16,12 +16,13 @@
 @class TGSong;
 @class TGFingerPrinter;
 
-@class SongPlayer;
+//@class SongPlayer;
 @class CoverArtArchiveWebFetcher;
 @class TGStack;
 @class AVAudioFile;
 @class SweetSpotServerIO;
 @class TGSongAudioCacher;
+@class TGSongAudioPlayer;
 
 // protocol forward declaration
 @protocol SongGridAccessProtocol;
@@ -80,7 +81,7 @@
 - (void)setActiveSweetSpotIndex:(int)ssIndex forSongID:(id<SongIDProtocol>)songID;
 
 - (void)cacheWithContext:(NSDictionary*)cacheContext;
-- (void)newCacheFromCache:(NSMutableSet*)oldCache withContext:(NSDictionary*)cacheContext andHandler:(void (^)(NSMutableSet*))newCacheHandler;
+//- (void)newCacheFromCache:(NSMutableSet*)oldCache withContext:(NSDictionary*)cacheContext andHandler:(void (^)(NSMutableSet*))newCacheHandler;
 
 - (NSManagedObjectContext*)TEOSongDataMOC;
 
@@ -184,9 +185,9 @@
     /// The requestedPlayheadPosition is bound,via an object controller, to the popup timeline's NSSlider (timelineBar).
     NSNumber *requestedPlayheadPosition;
     
-    SongPlayer* theSongPlayer;
     
     TGSongAudioCacher* songCacher;
+    TGSongAudioPlayer* songPlayer;
 }
 
 @property TGStack* requestedSongStack;

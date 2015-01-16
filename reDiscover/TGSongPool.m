@@ -165,11 +165,7 @@ static int const kSongPoolStartCapacity = 250;
         // The sweetSpotServerIO object handles all comms with the remote sweet spot server.
         _sweetSpotServerIO = [[SweetSpotServerIO alloc] init];
         _sweetSpotServerIO.delegate = self;
-        
-        /// The class that plays back the audio. Not currently used.
-//        theSongPlayer = [[SongPlayer alloc] init];
-//        theSongPlayer.delegate = self;
-        
+                
         // Starting off with an empty songID cache.
         songIDCache = [[NSMutableSet alloc] init];
         songLoadUnloadQueue = dispatch_queue_create("song load unload q", NULL);
@@ -193,6 +189,9 @@ static int const kSongPoolStartCapacity = 250;
         //NUCACHE
         songCacher = [[TGSongAudioCacher alloc] init];
         songCacher.songPoolAPI = self;
+        
+        songPlayer = [[TGSongAudioPlayer alloc] init];
+        [songPlayer setVolume:0.2];
     }
     
     return self;
@@ -1482,7 +1481,7 @@ static int const kSongPoolStartCapacity = 250;
 
     //NUCACHE
     [songCacher cacheWithContext:cacheContext];
-    
+    return;
     //CACH2 Add to a separate stack that ensures caching of the selected song is never cancelled and always first.
     id<SongIDProtocol> selectedSongId = [cacheContext objectForKey:@"selectedSongId"];
     
@@ -1510,8 +1509,6 @@ static int const kSongPoolStartCapacity = 250;
         [selectedSongsCacheLock unlock];
     });
 
-#define CACH2_2
-#ifdef CACH2_2
     // Cancel any previous requests for a cache before adding a new request.
     [urlCachingOpQueue cancelAllOperations];
     
@@ -1524,8 +1521,8 @@ static int const kSongPoolStartCapacity = 250;
     [self newCacheWithContext:cacheContext];
     // The rest is cruft
     return;
-#endif
-    
+
+    /*
     // call the handler as soon as there is a cache in the cache queue.
     [self performHandlerWhenCacheIsReady:^(NSMutableSet* theCache) {
         // Cheeky insertion of the currently selected song which we've force cached above.
@@ -1572,6 +1569,7 @@ static int const kSongPoolStartCapacity = 250;
 
         }];
     }];
+    */
 }
 
 - (void)performHandlerWhenCacheIsReady:(void (^)(NSMutableSet*))completionHandler {
@@ -2191,6 +2189,12 @@ static int const kSongPoolStartCapacity = 250;
         [aSong makeSweetSpotAtTime:time];
     }
 
+    //NUCACHE
+//    [songPlayer setSong:[songCacher songPlayerForSongId:songID]];
+//    [songPlayer playSong];
+    return;
+    //NUCACHE end
+
     if ([aSong isReadyForPlayback] == YES) {
         //TGLog(TGLOG_ALL,@"Ready");^
         [self songReadyForPlayback:aSong atTime:time];
@@ -2390,11 +2394,6 @@ static int const kSongPoolStartCapacity = 250;
 
 //MARK: Debug methods
 
-//NUCAcHE
-static AVAsset* anAss;
-static AVPlayerItem* anPI;
-static AVPlayer* aPlayer;
-
 - (void)debugLogSongWithId:(id<SongIDProtocol>)songId {
     TGSong* theSong = [self songForID:songId];
     TGLog(TGLOG_DBG,@"Debug log for song with id: %@",songId);
@@ -2409,22 +2408,17 @@ static AVPlayer* aPlayer;
     
     TGLog(TGLOG_DBG,@"^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^");
     
-    AVAsset* anAsset = [songCacher songAssetForSongId:songId];
-    if (anAsset != nil) {
-        TGLog(TGLOG_DBG, @"songCacher returned %@",anAsset)
-    } else {
-        TGLog(TGLOG_DBG, @"songCacher returned bummer")
-    }
     //NUCACHE
-    anAss = [songCacher songAssetForSongId:songId];
-    anPI = [[AVPlayerItem alloc] initWithAsset:anAss];
-    aPlayer = [[AVPlayer alloc] initWithPlayerItem:anPI];
-    if ([aPlayer status] == AVPlayerStatusReadyToPlay) {
-        TGLog(TGLOG_DBG,@"Player status is ready to play");
-        [aPlayer play];
-
-    }
-    return;
+//    AVPlayer* aPlayer = [songCacher songPlayerForSongId:songId];
+//    if (aPlayer != nil) {
+//        TGLog(TGLOG_DBG, @"songCacher returned %@",aPlayer)
+//
+//    } else {
+//        TGLog(TGLOG_DBG, @"songCacher returned bummer")
+//    }
+//    
+//    [songPlayer setSong:[songCacher songPlayerForSongId:songId]];
+//    [songPlayer playSong];
     //NUCACHE end
 
 }
