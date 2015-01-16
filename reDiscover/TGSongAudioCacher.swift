@@ -36,7 +36,7 @@ class TGSongAudioCacher : NSObject {
         cachingOpQueue.maxConcurrentOperationCount = 1
     }
     
-    func cacheWithContext(theContext: NSDictionary) {
+/*    func cacheWithContext(theContext: NSDictionary) {
 
         // To make this as responsive as possible we cancel any previous ops and put the operation in an op queue.
     
@@ -46,7 +46,6 @@ class TGSongAudioCacher : NSObject {
         
         operationBlock.addExecutionBlock(){ [unowned operationBlock] in
 
-//            var doneGenerating = false
             self.newCacheFromCache(self.songPlayerCache, withContext: theContext, operationBlock: operationBlock) { newCache in
                 self.songPlayerCache = newCache
             }
@@ -61,7 +60,22 @@ class TGSongAudioCacher : NSObject {
         
         println("cachingOpQueue count: \(cachingOpQueue.operationCount)")
     }
+*/
+    func cacheWithContext(theContext: NSDictionary) {
+        
+        // First cancel any loading in progress and remove the player from the loadingPlayers.
+        let players  = [AVPlayer](loadingPlayers.keys)
+        for player in players {
+            player.removeObserver(self, forKeyPath: "status", context: &self.myContext)
+            loadingPlayers.removeValueForKey(player)
+        }
+        
+        // The start a new cache.
+        newCacheFromCache(self.songPlayerCache, withContext: theContext, operationBlock: nil) { newCache in
+            self.songPlayerCache = newCache
+        }
 
+    }
 //    func newCacheFromCache(oldCache: HashToPlayerDictionary, theContext: NSDictionary, operationBlock: NSBlockOperation?) {
     func newCacheFromCache(oldCache: HashToPlayerDictionary, withContext context: NSDictionary, operationBlock: NSBlockOperation?, completionHandler: (HashToPlayerDictionary)->()) {
         
@@ -153,9 +167,9 @@ class TGSongAudioCacher : NSObject {
     func performWhenReadyForPlayback(songId: SongIDProtocol, readySongHandler: (AVPlayer)->()) {
         // At this point we don't know if the url is for the local file system or streaming.
         let songURL = self.songPoolAPI?.songURLForSongID(songId)
-//        var songAsset: AVURLAsset = AVURLAsset(URL: songURL, options: [AVURLAssetPreferPreciseDurationAndTimingKey:true])
-        var songAsset: AVURLAsset = AVURLAsset(URL: songURL, options: nil)
-        let sema = dispatch_semaphore_create(0)
+        var songAsset: AVURLAsset = AVURLAsset(URL: songURL, options: [AVURLAssetPreferPreciseDurationAndTimingKey:true])
+//        var songAsset: AVURLAsset = AVURLAsset(URL: songURL, options: nil)
+     //   let sema = dispatch_semaphore_create(0)
         
         songAsset.loadValuesAsynchronouslyForKeys(["tracks"]){
             // Everything in here is executed asyncly and thus any access to class properties need to either be atomic or serialized.
@@ -194,7 +208,7 @@ class TGSongAudioCacher : NSObject {
                 readySongHandler(thePlayer)
                 
                 // Signal that we're done.
-                dispatch_semaphore_signal(sema)
+         //       dispatch_semaphore_signal(sema)
             }
             
             // store the completionHandler for this player so it can be called on successful load.
@@ -217,7 +231,7 @@ class TGSongAudioCacher : NSObject {
         // If the operation has reached this point where it's waiting for a signal and has been cancelled, the semaphore will not periodically check for cancellation 
         // and drop out accordingly. This means that as long as this is executing, any operations added to the queue will do nothing until this
         // is finished and is removed from the queue.
-        dispatch_semaphore_wait(sema, DISPATCH_TIME_FOREVER)
+       // dispatch_semaphore_wait(sema, DISPATCH_TIME_FOREVER)
         NSLog("performWhenReadyForPlayback done waiting...")
     }
     
@@ -241,7 +255,7 @@ class TGSongAudioCacher : NSObject {
             self.loadingPlayersLock.lock()
             let completionHandler = self.loadingPlayers.removeValueForKey(playa) as VoidVoidClosure?
             self.loadingPlayersLock.unlock()
-            completionHandler!()
+            completionHandler?()
             
         } else {
             println("Observer with different context. Passing to super.")
