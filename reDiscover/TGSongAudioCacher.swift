@@ -10,31 +10,44 @@ import Cocoa
 import AVFoundation
 
 typealias HashToPlayerDictionary = [UInt:AVPlayer]
+typealias VoidVoidClosure = ()->()
+typealias PlayerToVoidClosure = [AVPlayer:VoidVoidClosure]
 
-class TGSongAudioCacher: NSObject {
+class TGSongAudioCacher : NSObject {
+    
     let cachingOpQueue = NSOperationQueue()
+    
+    // Global context variable used by the observer.
+    private var myContext = 0
+    
     var songPoolAPI: SongPoolAccessProtocol?
-
+    
+    // holds the not yet ready players awaiting status change
+    var loadingPlayers: PlayerToVoidClosure = PlayerToVoidClosure()
+    let loadingPlayersLock = NSLock()
+    
+    // holds the ready players
     var songPlayerCache = HashToPlayerDictionary()
+    let cacheLock = NSLock();
     
     override init() {
         super.init()
         // Ensure the caching operation queue is effectively serial by reducing its concurrent op count to 1.
         cachingOpQueue.maxConcurrentOperationCount = 1
     }
-
     
-    func cacheWithContext(context: NSDictionary) {
+    func cacheWithContext(theContext: NSDictionary) {
+
+        // To make this as responsive as possible we cancel any previous ops and put the operation in an op queue.
+    
         cachingOpQueue.cancelAllOperations()
         
         let operationBlock = NSBlockOperation()
         
         operationBlock.addExecutionBlock(){ [unowned operationBlock] in
-            let newTask = CacherTask()
-            newTask.songPoolAPI = self.songPoolAPI
-            //FIXME: We're going to need to pass in the operationBlock so we can cancel inside.
-            // Call cache with context and a completion closure
-            newTask.newCacheFromCache(self.songPlayerCache, withContext: context) { newCache in
+
+//            var doneGenerating = false
+            self.newCacheFromCache(self.songPlayerCache, withContext: theContext, operationBlock: operationBlock) { newCache in
                 self.songPlayerCache = newCache
             }
         }
@@ -45,77 +58,23 @@ class TGSongAudioCacher: NSObject {
         }
         
         cachingOpQueue.addOperation(operationBlock)
-
-    }
-    
-    func dumpCacheToLog() {
-        for id in songPlayerCache {
-            println(id)
-        }
-    }
-
-}
-
-class CacherTask: NSObject {
-    
-    // Global context variable used by the observer.
-    private var myContext = 0
-    
-    var songPoolAPI: SongPoolAccessProtocol?
-    
-    // holds the not yet ready players awaiting status change
-    //var loadingPlayers = NSMutableArray()
-    typealias VoidVoidClosure = ()->()
-    var loadingPlayers = [AVPlayer:VoidVoidClosure]()
-    let loadingPlayersLock = NSLock()
-    
-    // holds the ready players
-    var songPlayerCache = HashToPlayerDictionary()
-    let cacheLock = NSLock();
-    
-    var wantedCacheCount = 0
-    var doneGenerating = false
-    
-//    let cachingOpQueue = NSOperationQueue()
-    
-//    override init() {
-//        super.init()
-//        // Ensure the caching operation queue is effectively serial by reducing its concurrent op count to 1.
-//        cachingOpQueue.maxConcurrentOperationCount = 1
-//    }
-    /*
-    func cacheWithContext(theContext: NSDictionary) {
-
-        // To make this as responsive as possible we cancel any previous ops and put the operation in an op queue.
-    
-        cachingOpQueue.cancelAllOperations()
         
-        let operationBlock = NSBlockOperation()
-        
-        operationBlock.addExecutionBlock(){ [unowned operationBlock] in
-            self.newCacheFromCache(self.songPlayerCache, theContext: theContext, operationBlock: operationBlock)
-        
-        }
-        
-        operationBlock.completionBlock = {
-            print("-------------- Caching op completed...")
-            if operationBlock.cancelled == true { println("cancelled") } else { println("succeeded")}
-        }
-        
-        cachingOpQueue.addOperation(operationBlock)
         println("cachingOpQueue count: \(cachingOpQueue.operationCount)")
     }
-    */
+
 //    func newCacheFromCache(oldCache: HashToPlayerDictionary, theContext: NSDictionary, operationBlock: NSBlockOperation?) {
-    func newCacheFromCache(oldCache: HashToPlayerDictionary, withContext context: NSDictionary, completionHandler: (HashToPlayerDictionary)->()) {
-        //let minRow          = selectionPos.y as Int
+    func newCacheFromCache(oldCache: HashToPlayerDictionary, withContext context: NSDictionary, operationBlock: NSBlockOperation?, completionHandler: (HashToPlayerDictionary)->()) {
+        
+        var wantedCacheCount = 0
+
         let newCacheLock    = NSLock()
         var newCache: HashToPlayerDictionary = HashToPlayerDictionary() {
             // This keeps track of how many objects have been added to the cache.
             didSet {
-                println("newCache count: \(newCache.count) and wantedCacheCount is \(wantedCacheCount)")
+                println("newCache count: \(newCache.count)")
 //                if doneGenerating == true && newCache.count == wantedCacheCount {
-                if doneGenerating == true {
+                //if doneGenerating == true {
+                if wantedCacheCount != 0 {
                     if newCache.count == wantedCacheCount {
                         println("completion handler that will be replacing cache. wantedCacheCount: \(wantedCacheCount)")
                         completionHandler(newCache)
@@ -128,11 +87,9 @@ class CacherTask: NSObject {
         
 //        if operationBlock?.cancelled == true { print("cancelled inside newCacheFromCache.") ; return }
         
-        generateWantedSongIds(context) { songId in
+        wantedCacheCount = generateWantedSongIds(context, operationBlock: operationBlock) { songId in
             // This is a handler that is passed a songId of a song that needs caching.
-
-            var allDone = true
-    
+//    if operationBlock?.cancelled == true { NSLog("cancelled in flight") ; return }
             // If the song was already in the old cache, copy it to the new cache.
             if let oldPlayer = oldCache[songId.hash] {
                 // since oldCache is a deep copy of the actual cache we are effectively copying the asset.
@@ -149,6 +106,7 @@ class CacherTask: NSObject {
                 }
             }
         }
+
         // This catches the case where the songs cache before the generateWantedSongsIds is done.
         if newCache.count == wantedCacheCount {
 
@@ -159,10 +117,45 @@ class CacherTask: NSObject {
 
     }
 
+    func generateWantedSongIds(theContext: NSDictionary, operationBlock: NSBlockOperation?, idHandler: (SongIDProtocol)->()) -> Int {
+        
+        let selectedSongId  = theContext["selectedSongId"] as SongIDProtocol
+        let selectionPos    = theContext["pos"]!.pointValue as NSPoint
+        let gridDims        = theContext["gridDims"]!.pointValue as NSPoint
+        let radius          = 2
+        
+        //        doneGenerating = false
+        var wantedCacheCount = 0
+        // Figure out what songs to cache
+        for var row = Int(selectionPos.y)-radius ; row <= Int(selectionPos.y)+radius ; row++ {
+            for var col = Int(selectionPos.x)-radius ; col <= Int(selectionPos.x)+radius ; col++ {
+                
+                // Guards
+//                if operationBlock?.cancelled == true { NSLog("cancelled in flight") ; return 0 }
+
+                if row < 0 || col < 0 { continue }
+                if row >= Int(gridDims.y) || col >= Int(gridDims.x) { break }
+                
+                let gridPos = NSPoint(x: col, y: row)
+                
+                if let songId = songPoolAPI?.songIdFromGridPos(gridPos) {
+                    println(songId)
+                    //                    NSLog("The songId is %@", songId.hash);
+                    wantedCacheCount++
+                    idHandler(songId)
+                }
+            }
+        }
+        //        doneGenerating = true
+        return wantedCacheCount
+    }
+    
     func performWhenReadyForPlayback(songId: SongIDProtocol, readySongHandler: (AVPlayer)->()) {
         // At this point we don't know if the url is for the local file system or streaming.
         let songURL = self.songPoolAPI?.songURLForSongID(songId)
-        var songAsset: AVURLAsset = AVURLAsset(URL: songURL, options: [AVURLAssetPreferPreciseDurationAndTimingKey:true])
+//        var songAsset: AVURLAsset = AVURLAsset(URL: songURL, options: [AVURLAssetPreferPreciseDurationAndTimingKey:true])
+        var songAsset: AVURLAsset = AVURLAsset(URL: songURL, options: nil)
+        let sema = dispatch_semaphore_create(0)
         
         songAsset.loadValuesAsynchronouslyForKeys(["tracks"]){
             // Everything in here is executed asyncly and thus any access to class properties need to either be atomic or serialized.
@@ -199,6 +192,9 @@ class CacherTask: NSObject {
                 
                 // Call the handler with the player.
                 readySongHandler(thePlayer)
+                
+                // Signal that we're done.
+                dispatch_semaphore_signal(sema)
             }
             
             // store the completionHandler for this player so it can be called on successful load.
@@ -212,7 +208,17 @@ class CacherTask: NSObject {
             
             // Since the loading begins as soon as the player item is associated with the player I have to do this *after* adding the observer to an uninited player.
             thePlayer.replaceCurrentItemWithPlayerItem(thePlayerItem)
+            
         }
+        
+        NSLog("performWhenReadyForPlayback waiting...")
+        // Wait for the signal that the async song loading has succeeded. 
+        // The problem with this is that a cancellation won't stop this. An operation cancellation will not remove or stop an operation that is already in progress. 
+        // If the operation has reached this point where it's waiting for a signal and has been cancelled, the semaphore will not periodically check for cancellation 
+        // and drop out accordingly. This means that as long as this is executing, any operations added to the queue will do nothing until this
+        // is finished and is removed from the queue.
+        dispatch_semaphore_wait(sema, DISPATCH_TIME_FOREVER)
+        NSLog("performWhenReadyForPlayback done waiting...")
     }
     
 //    func awaitReadyStatus(completionHandler: ()->() {
@@ -244,35 +250,6 @@ class CacherTask: NSObject {
     }
     
     
-    func generateWantedSongIds(theContext: NSDictionary, idHandler: (SongIDProtocol)->()){
-
-        let selectedSongId  = theContext["selectedSongId"] as SongIDProtocol
-        let selectionPos    = theContext["pos"]!.pointValue as NSPoint
-        let gridDims        = theContext["gridDims"]!.pointValue as NSPoint
-        let radius          = 2
-
-        doneGenerating = false
-        wantedCacheCount = 0
-        // Figure out what songs to cache
-        for var row = Int(selectionPos.y)-radius ; row <= Int(selectionPos.y)+radius ; row++ {
-            for var col = Int(selectionPos.x)-radius ; col <= Int(selectionPos.x)+radius ; col++ {
-                
-                // Guards
-                if row < 0 || col < 0 { continue }
-                if row >= Int(gridDims.y) || col >= Int(gridDims.x) { break }
-                
-                let gridPos = NSPoint(x: col, y: row)
-                
-                if let songId = songPoolAPI?.songIdFromGridPos(gridPos) {
-                    println(songId)
-//                    NSLog("The songId is %@", songId.hash);
-                    wantedCacheCount++
-                    idHandler(songId)
-                }
-            }
-        }
-        doneGenerating = true
-    }
     
     func songPlayerForSongId(songId: SongIDProtocol) -> AVPlayer? {
         

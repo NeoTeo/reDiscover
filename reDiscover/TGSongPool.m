@@ -2190,8 +2190,8 @@ static int const kSongPoolStartCapacity = 250;
     }
 
     //NUCACHE
-//    [songPlayer setSong:[songCacher songPlayerForSongId:songID]];
-//    [songPlayer playSong];
+    [songPlayer setSong:[songCacher songPlayerForSongId:songID]];
+    [songPlayer playSong];
     return;
     //NUCACHE end
 
@@ -2417,8 +2417,8 @@ static int const kSongPoolStartCapacity = 250;
 //        TGLog(TGLOG_DBG, @"songCacher returned bummer")
 //    }
 //    
-//    [songPlayer setSong:[songCacher songPlayerForSongId:songId]];
-//    [songPlayer playSong];
+    [songPlayer setSong:[songCacher songPlayerForSongId:songId]];
+    [songPlayer playSong];
     //NUCACHE end
 
 }
