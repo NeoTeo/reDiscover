@@ -153,8 +153,8 @@ class TGSongAudioCacher : NSObject {
     func performWhenReadyForPlayback(songId: SongIDProtocol, readySongHandler: (AVPlayer)->()) {
         // At this point we don't know if the url is for the local file system or streaming.
         let songURL = self.songPoolAPI?.songURLForSongID(songId)
-//        var songAsset: AVURLAsset = AVURLAsset(URL: songURL, options: [AVURLAssetPreferPreciseDurationAndTimingKey:true])
-        var songAsset: AVURLAsset = AVURLAsset(URL: songURL, options: nil)
+        var songAsset: AVURLAsset = AVURLAsset(URL: songURL, options: [AVURLAssetPreferPreciseDurationAndTimingKey:true])
+//        var songAsset: AVURLAsset = AVURLAsset(URL: songURL, options: nil)
         let sema = dispatch_semaphore_create(0)
         
         songAsset.loadValuesAsynchronouslyForKeys(["tracks"]){
