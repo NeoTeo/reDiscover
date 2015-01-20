@@ -13,7 +13,54 @@ typealias HashToPlayerDictionary = [UInt:AVPlayer]
 typealias VoidVoidClosure = ()->()
 typealias PlayerToVoidClosure = [AVPlayer:VoidVoidClosure]
 
+
 class TGSongAudioCacher : NSObject {
+    var songPoolAPI: SongPoolAccessProtocol?
+    let cachingOpQueue = NSOperationQueue()
+    var songPlayerCache = HashToPlayerDictionary()
+    
+    override init() {
+        super.init()
+        // Ensure the caching operation queue is effectively serial by reducing its concurrent op count to 1.
+        cachingOpQueue.maxConcurrentOperationCount = 1
+    }
+
+    func cacheWithContext(theContext: NSDictionary) {
+        // To make this as responsive as possible we cancel any previous ops and put the operation in an op queue.
+        
+        cachingOpQueue.cancelAllOperations()
+        
+        let operationBlock = NSBlockOperation()
+        
+        operationBlock.addExecutionBlock(){ [unowned operationBlock] in
+            let cacheTask = TGSongAudioCacheTask(songPoolAPI: self.songPoolAPI)
+            self.songPlayerCache = cacheTask.cacheWithContext(theContext)
+        }
+        
+        operationBlock.completionBlock = {
+            print("-------------- Caching op completed...")
+            if operationBlock.cancelled == true { println("cancelled") } else { println("succeeded")}
+        }
+        
+        cachingOpQueue.addOperation(operationBlock)
+        
+        println("cachingOpQueue count: \(cachingOpQueue.operationCount)")
+    }
+
+    func songPlayerForSongId(songId: SongIDProtocol) -> AVPlayer? {
+        
+        return songPlayerCache[songId.hash]
+    }
+    
+    func dumpCacheToLog() {
+        for id in songPlayerCache {
+            println(id)
+        }
+    }
+
+}
+
+class TGSongAudioCacheTask : NSObject {
     
     let cachingOpQueue = NSOperationQueue()
     
@@ -29,13 +76,18 @@ class TGSongAudioCacher : NSObject {
     // holds the ready players
     var songPlayerCache = HashToPlayerDictionary()
     let cacheLock = NSLock();
+
+    init(songPoolAPI theAPI: SongPoolAccessProtocol?) {
+        songPoolAPI = theAPI
+    }
     
+    /*
     override init() {
         super.init()
         // Ensure the caching operation queue is effectively serial by reducing its concurrent op count to 1.
         cachingOpQueue.maxConcurrentOperationCount = 1
     }
-    
+    */
 /*    func cacheWithContext(theContext: NSDictionary) {
 
         // To make this as responsive as possible we cancel any previous ops and put the operation in an op queue.
@@ -61,10 +113,9 @@ class TGSongAudioCacher : NSObject {
         println("cachingOpQueue count: \(cachingOpQueue.operationCount)")
     }
 */
-    func cacheWithContext(theContext: NSDictionary) {
-
-//        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) {
-            // First cancel any loading in progress and remove the player from the loadingPlayers.
+    func cacheWithContext(theContext: NSDictionary) -> HashToPlayerDictionary {
+        let condLock = NSConditionLock(condition: 42)
+        
             let players  = [AVPlayer](self.loadingPlayers.keys)
             for player in players {
                 NSLog("Cancelling player %@",player)
@@ -79,17 +130,17 @@ class TGSongAudioCacher : NSObject {
             
             // The start a new cache.
             self.newCacheFromCache(self.songPlayerCache, withContext: theContext, operationBlock: nil) { newCache in
-
-                NSLog("setting songPlayerCache")
-    // Setting this  causes the old songPlayerCache to be deallocated which seems to lock up the main thread for ages.
                 self.songPlayerCache = newCache
-
-                NSLog("songPlayerCache set!")
-                
+                condLock.lock()
+                condLock.unlockWithCondition(69)
             }
+        
+            condLock.lockWhenCondition(69)
+            condLock.unlock()
             NSLog("done...")
-  //      }
+        return songPlayerCache
     }
+    
 //    func newCacheFromCache(oldCache: HashToPlayerDictionary, theContext: NSDictionary, operationBlock: NSBlockOperation?) {
     func newCacheFromCache(oldCache: HashToPlayerDictionary, withContext context: NSDictionary, operationBlock: NSBlockOperation?, completionHandler: (HashToPlayerDictionary)->()) {
         
