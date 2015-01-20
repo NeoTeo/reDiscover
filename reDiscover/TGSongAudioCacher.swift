@@ -141,7 +141,8 @@ class TGSongAudioCacher : NSObject {
             NSLog("boing")
         }
         NSLog("boing2")
-
+        // So newCache is not (necessarily) deleted upon exiting this function because it may have been captured by the closure passed to
+        // the performWhenReadyForPlayback. Once that closure has been called (which in turn triggers the newCache's didSet which calls the completionHandler) it will get deleted.
     }
 
     func generateWantedSongIds(theContext: NSDictionary, operationBlock: NSBlockOperation?, idHandler: (SongIDProtocol)->()) -> Int {
@@ -181,8 +182,8 @@ class TGSongAudioCacher : NSObject {
         
         // At this point we don't know if the url is for the local file system or streaming.
         let songURL = self.songPoolAPI?.songURLForSongID(songId)
-//        var songAsset: AVURLAsset = AVURLAsset(URL: songURL, options: nil)
-        var songAsset: AVURLAsset = AVURLAsset(URL: songURL, options: [AVURLAssetPreferPreciseDurationAndTimingKey:true])
+        var songAsset: AVURLAsset = AVURLAsset(URL: songURL, options: nil)
+//        var songAsset: AVURLAsset = AVURLAsset(URL: songURL, options: [AVURLAssetPreferPreciseDurationAndTimingKey:true])
         
         let thePlayer = AVPlayer()
         // The closure we want to have executed upon successful loading. We store this with the player it belongs to.
@@ -206,6 +207,10 @@ class TGSongAudioCacher : NSObject {
 
         songAsset.loadValuesAsynchronouslyForKeys(["tracks"]){
             // Everything in here is executed asyncly and thus any access to class properties need to either be atomic or serialized.
+            // This completion block is called exactly once per invocation; either sync'ly if an error occurred straight away or
+            // async'ly if a value of any one of the specified keys is loaded OR an error occurred in the loading OR cancelLoading was invoked on the asset.
+            NSLog("loadValuesAsynchronouslyForKeys for asset %@ called",songAsset)
+
             var error: NSError?
             var thePlayerItem: AVPlayerItem?
             
@@ -221,12 +226,11 @@ class TGSongAudioCacher : NSObject {
                 thePlayerItem = AVPlayerItem(URL: songURL)
                 
             default:
-                println("ERROR:")
+                println("ERROR: Cancelled?")
                 return
             }
             
-//            // add an observer to get called when the player status changes.
-//            thePlayer.addObserver(self, forKeyPath: "status", options: .New, context: &self.myContext)
+            // Currently waiting for the duration does not always return (or at least takes way too long).
             
             // Since the loading begins as soon as the player item is associated with the player I have to do this *after* adding the observer to an uninited player.
             thePlayer.replaceCurrentItemWithPlayerItem(thePlayerItem)

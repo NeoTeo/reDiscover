@@ -2409,14 +2409,14 @@ static int const kSongPoolStartCapacity = 250;
     TGLog(TGLOG_DBG,@"^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^");
     
     //NUCACHE
-//    AVPlayer* aPlayer = [songCacher songPlayerForSongId:songId];
-//    if (aPlayer != nil) {
-//        TGLog(TGLOG_DBG, @"songCacher returned %@",aPlayer)
-//
-//    } else {
-//        TGLog(TGLOG_DBG, @"songCacher returned bummer")
-//    }
-//    
+    AVPlayer* aPlayer = [songCacher songPlayerForSongId:songId];
+    if (aPlayer != nil) {
+        TGLog(TGLOG_DBG, @"songCacher returned %@",aPlayer)
+
+    } else {
+        TGLog(TGLOG_DBG, @"songCacher returned bummer")
+    }
+    
     [songPlayer setSong:[songCacher songPlayerForSongId:songId]];
     [songPlayer playSong];
     //NUCACHE end
