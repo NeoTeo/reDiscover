@@ -62,19 +62,33 @@ class TGSongAudioCacher : NSObject {
     }
 */
     func cacheWithContext(theContext: NSDictionary) {
-        
-        // First cancel any loading in progress and remove the player from the loadingPlayers.
-        let players  = [AVPlayer](loadingPlayers.keys)
-        for player in players {
-            player.removeObserver(self, forKeyPath: "status", context: &self.myContext)
-            loadingPlayers.removeValueForKey(player)
-        }
-        
-        // The start a new cache.
-        newCacheFromCache(self.songPlayerCache, withContext: theContext, operationBlock: nil) { newCache in
-            self.songPlayerCache = newCache
-        }
 
+//        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) {
+            // First cancel any loading in progress and remove the player from the loadingPlayers.
+            let players  = [AVPlayer](self.loadingPlayers.keys)
+            for player in players {
+                NSLog("Cancelling player %@",player)
+                // might want to cancel loading here as well?
+                player.removeObserver(self, forKeyPath: "status", context: &self.myContext)
+                player.currentItem?.asset.cancelLoading()
+                
+                self.loadingPlayersLock.lock()
+                self.loadingPlayers.removeValueForKey(player)
+                self.loadingPlayersLock.unlock()
+            }
+            
+            // The start a new cache.
+            self.newCacheFromCache(self.songPlayerCache, withContext: theContext, operationBlock: nil) { newCache in
+
+                NSLog("setting songPlayerCache")
+    // Setting this  causes the old songPlayerCache to be deallocated which seems to lock up the main thread for ages.
+                self.songPlayerCache = newCache
+
+                NSLog("songPlayerCache set!")
+                
+            }
+            NSLog("done...")
+  //      }
     }
 //    func newCacheFromCache(oldCache: HashToPlayerDictionary, theContext: NSDictionary, operationBlock: NSBlockOperation?) {
     func newCacheFromCache(oldCache: HashToPlayerDictionary, withContext context: NSDictionary, operationBlock: NSBlockOperation?, completionHandler: (HashToPlayerDictionary)->()) {
@@ -98,7 +112,6 @@ class TGSongAudioCacher : NSObject {
         }
 
         println("Cachers gonna cache. Old cache size: \(oldCache.count)")
-        
 //        if operationBlock?.cancelled == true { print("cancelled inside newCacheFromCache.") ; return }
         
         wantedCacheCount = generateWantedSongIds(context, operationBlock: operationBlock) { songId in
@@ -120,14 +133,14 @@ class TGSongAudioCacher : NSObject {
                 }
             }
         }
-
         // This catches the case where the songs cache before the generateWantedSongsIds is done.
         if newCache.count == wantedCacheCount {
 
             println("(early bird) completion handler that will be replacing cache. wantedCacheCount: \(wantedCacheCount)")
             completionHandler(newCache)
-
+            NSLog("boing")
         }
+        NSLog("boing2")
 
     }
 
@@ -153,7 +166,7 @@ class TGSongAudioCacher : NSObject {
                 let gridPos = NSPoint(x: col, y: row)
                 
                 if let songId = songPoolAPI?.songIdFromGridPos(gridPos) {
-                    println(songId)
+                    //println(songId)
                     //                    NSLog("The songId is %@", songId.hash);
                     wantedCacheCount++
                     idHandler(songId)
@@ -165,19 +178,39 @@ class TGSongAudioCacher : NSObject {
     }
     
     func performWhenReadyForPlayback(songId: SongIDProtocol, readySongHandler: (AVPlayer)->()) {
+        
         // At this point we don't know if the url is for the local file system or streaming.
         let songURL = self.songPoolAPI?.songURLForSongID(songId)
-        var songAsset: AVURLAsset = AVURLAsset(URL: songURL, options: [AVURLAssetPreferPreciseDurationAndTimingKey:true])
 //        var songAsset: AVURLAsset = AVURLAsset(URL: songURL, options: nil)
-     //   let sema = dispatch_semaphore_create(0)
+        var songAsset: AVURLAsset = AVURLAsset(URL: songURL, options: [AVURLAssetPreferPreciseDurationAndTimingKey:true])
         
+        let thePlayer = AVPlayer()
+        // The closure we want to have executed upon successful loading. We store this with the player it belongs to.
+        let aClosure: VoidVoidClosure = {
+            // remove the player's observer since it may be deallocated subsequently.
+            thePlayer.removeObserver(self, forKeyPath: "status", context: &self.myContext)
+
+            // Call the handler with the player.
+            readySongHandler(thePlayer)
+        }
+        
+        // store the completionHandler for this player so it can be called on successful load.
+        // locking access because it may be accessed async'ly by the observeValueForKeyPath observing a status change.
+        self.loadingPlayersLock.lock()
+        self.loadingPlayers[thePlayer] = aClosure
+        self.loadingPlayersLock.unlock()
+        NSLog("loadingPlayers is now %ld",self.loadingPlayers.count)
+
+        // add an observer to get called when the player status changes.
+        thePlayer.addObserver(self, forKeyPath: "status", options: .New, context: &self.myContext)
+
         songAsset.loadValuesAsynchronouslyForKeys(["tracks"]){
             // Everything in here is executed asyncly and thus any access to class properties need to either be atomic or serialized.
             var error: NSError?
             var thePlayerItem: AVPlayerItem?
             
             // since the completion handler is also called when the call is cancelled we need to check.
-            // Streams don't have a tracks value so if it fails we assume it's a stream.
+            // Streams don't have a tracks value so if it fails we assume it's a stream.    
             switch(songAsset.statusOfValueForKey("tracks", error: &error)) {
             case .Loaded:
                 // This is a file
@@ -191,48 +224,14 @@ class TGSongAudioCacher : NSObject {
                 println("ERROR:")
                 return
             }
-
-            // Associating the player item with the player starts it getting ready to play. Presumably we don't want to wait too long before
-            // adding an observer to the player.
-//            let thePlayer = AVPlayer(playerItem: thePlayerItem)
-            let thePlayer = AVPlayer()
             
-            NSLog("thePlayer is %@",thePlayer)
-            //println("Add observer to \(thePlayer)")
-            // The closure we want to have executed upon successful loading. We store this with the player it belongs to.
-            let aClosure: VoidVoidClosure = {
-                // remove the player's observer since it may be deallocated subsequently.
-                thePlayer.removeObserver(self, forKeyPath: "status", context: &self.myContext)
-                
-                // Call the handler with the player.
-                readySongHandler(thePlayer)
-                
-                // Signal that we're done.
-         //       dispatch_semaphore_signal(sema)
-            }
-            
-            // store the completionHandler for this player so it can be called on successful load.
-            self.loadingPlayersLock.lock()
-            self.loadingPlayers[thePlayer] = aClosure
-            self.loadingPlayersLock.unlock()
-            NSLog("loadingPlayers is now %ld",self.loadingPlayers.count)
-
-            // add an observer to get called when the player status changes.
-            thePlayer.addObserver(self, forKeyPath: "status", options: .New, context: &self.myContext)
+//            // add an observer to get called when the player status changes.
+//            thePlayer.addObserver(self, forKeyPath: "status", options: .New, context: &self.myContext)
             
             // Since the loading begins as soon as the player item is associated with the player I have to do this *after* adding the observer to an uninited player.
             thePlayer.replaceCurrentItemWithPlayerItem(thePlayerItem)
             
         }
-        
-        NSLog("performWhenReadyForPlayback waiting...")
-        // Wait for the signal that the async song loading has succeeded. 
-        // The problem with this is that a cancellation won't stop this. An operation cancellation will not remove or stop an operation that is already in progress. 
-        // If the operation has reached this point where it's waiting for a signal and has been cancelled, the semaphore will not periodically check for cancellation 
-        // and drop out accordingly. This means that as long as this is executing, any operations added to the queue will do nothing until this
-        // is finished and is removed from the queue.
-       // dispatch_semaphore_wait(sema, DISPATCH_TIME_FOREVER)
-        NSLog("performWhenReadyForPlayback done waiting...")
     }
     
 //    func awaitReadyStatus(completionHandler: ()->() {
@@ -241,18 +240,18 @@ class TGSongAudioCacher : NSObject {
     
     override func observeValueForKeyPath(keyPath: String, ofObject object: AnyObject, change: [NSObject : AnyObject], context: UnsafeMutablePointer<Void>) {
         if context == &myContext {
-            println("Status for \(object) changed to \(change[NSKeyValueChangeNewKey])")
+            print("Status for \(object) changed to ")
             let playa = object as AVPlayer
             
             switch playa.status {
             case .ReadyToPlay:
-                println("That means ready to play!")
+                println("Ready to play!")
             default:
                 println("Something went wrong")
             }
-            
+
             // call the closure that corresponds to this player
-            self.loadingPlayersLock.lock()
+            self.loadingPlayersLock.lock() // lock it because there might be concurrent accesses to the loadingPlayers
             let completionHandler = self.loadingPlayers.removeValueForKey(playa) as VoidVoidClosure?
             self.loadingPlayersLock.unlock()
             completionHandler?()
