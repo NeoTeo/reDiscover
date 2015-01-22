@@ -2190,8 +2190,12 @@ static int const kSongPoolStartCapacity = 250;
     }
 
     //NUCACHE
-    [songPlayer setSong:[songCacher songPlayerForSongId:songID]];
-    [songPlayer playSong];
+    [songCacher performWhenPlayerIsAvailableForSongId:songID callBack:^(AVPlayer* thePlayer){
+        [songPlayer setSong:thePlayer];
+        [songPlayer playSong];
+    }];
+//    [songPlayer setSong:[songCacher songPlayerForSongId:songID]];
+//    [songPlayer playSong];
     return;
     //NUCACHE end
 
@@ -2409,16 +2413,23 @@ static int const kSongPoolStartCapacity = 250;
     TGLog(TGLOG_DBG,@"^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^");
     
     //NUCACHE
-    AVPlayer* aPlayer = [songCacher songPlayerForSongId:songId];
-    if (aPlayer != nil) {
-        TGLog(TGLOG_DBG, @"songCacher returned %@",aPlayer)
-
-    } else {
-        TGLog(TGLOG_DBG, @"songCacher returned bummer")
-    }
+//    AVPlayer* aPlayer = [songCacher songPlayerForSongId:songId];
     
-    [songPlayer setSong:[songCacher songPlayerForSongId:songId]];
-    [songPlayer playSong];
+//    [songPlayer setSong:[songCacher songPlayerForSongId:songId]];
+//    [songPlayer playSong];
+    [songCacher performWhenPlayerIsAvailableForSongId:songId callBack:^(AVPlayer* thePlayer){
+        if (thePlayer != nil) {
+            TGLog(TGLOG_DBG, @"songCacher returned %@",thePlayer)
+            
+        } else {
+            TGLog(TGLOG_DBG, @"songCacher returned bummer")
+        }
+
+        // We really need to know what the songId for this player is so we can make sure this is still what we want to play.
+        [songPlayer setSong:thePlayer];
+        [songPlayer playSong];
+    }];
+
     //NUCACHE end
 
 }
