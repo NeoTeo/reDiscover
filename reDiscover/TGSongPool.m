@@ -187,11 +187,11 @@ static int const kSongPoolStartCapacity = 250;
         callbackQueue = [[NSMutableArray alloc] init];
         
         //NUCACHE
-        songCacher = [[TGSongAudioCacher alloc] init];
-        songCacher.songPoolAPI = self;
+        songAudioCacher = [[TGSongAudioCacher alloc] init];
+        songAudioCacher.songPoolAPI = self;
         
-        songPlayer = [[TGSongAudioPlayer alloc] init];
-        [songPlayer setVolume:0.2];
+        songAudioPlayer = [[TGSongAudioPlayer alloc] init];
+        [songAudioPlayer setVolume:0.2];
     }
     
     return self;
@@ -1470,6 +1470,7 @@ static int const kSongPoolStartCapacity = 250;
 #pragma mark -
 // end of Core Data methods
 
+
 #pragma mark Caching methods
 
 /**
@@ -1479,285 +1480,17 @@ static int const kSongPoolStartCapacity = 250;
  */
 - (void)cacheWithContext:(NSDictionary*)cacheContext {
 
-    //NUCACHE
-    [songCacher cacheWithContext:cacheContext];
-    return;
-    //CACH2 Add to a separate stack that ensures caching of the selected song is never cancelled and always first.
+
+    [songAudioCacher cacheWithContext:cacheContext];
     id<SongIDProtocol> selectedSongId = [cacheContext objectForKey:@"selectedSongId"];
     
-    // Push the selected song on the end of the stack.
-    //[fetchingSongIds addObject:selectedSongId];
-    
-    dispatch_async(dispatch_get_global_queue(QOS_CLASS_USER_INTERACTIVE,0), ^{
-        TGSong *aSong = [self songForID:selectedSongId];
-        if (aSong == NULL) {
-            TGLog(TGLOG_ALL,@"ERROR:Caching selected song, the requested ID %@ is not in the song pool.",selectedSongId);
-            return;
-        }
-      
-        // Tell the main view controller that we've started fetching data for the selected song so it can update the UI.
-        [_delegate songPoolDidStartFetchingSong:selectedSongId];
-        [aSong load];
+    // Tell the main view controller that we've started fetching data for the selected song so it can update the UI.
+    [_delegate songPoolDidStartFetchingSong:selectedSongId];
         
-        // Initiate the fingerprint/UUId generation and fetching of cover art.
-        [self fetchUUIdAndCoverArtForSongId:selectedSongId];
-        
-        //CACH2 Track the songs that have been selected by the user and cached separately.
-        // This is to be able to de-cache them separately as well.
-        [selectedSongsCacheLock lock];
-        [selectedSongsCache addObject:selectedSongId];
-        [selectedSongsCacheLock unlock];
-    });
-
-    // Cancel any previous requests for a cache before adding a new request.
-    [urlCachingOpQueue cancelAllOperations];
-    
-    // Make a new cache based on the passed in context and the current cache.
-    // The method runs code added to urlCachingOpQueue that, upon completion will either:
-    // If completion from finishing; will set the created cache to be the current cache and will
-    // remove from the selectedSongsCache all the songs that are not in the current cache.
-    // If completion from cancellation; will de-cache whatever was partially cached and keep current cache. (perhaps it should just union the current cache with whatever was partially cached).
-    //[self newCacheFromCache:songIDCache withContext:cacheContext];
-    [self newCacheWithContext:cacheContext];
-    // The rest is cruft
-    return;
-
-    /*
-    // call the handler as soon as there is a cache in the cache queue.
-    [self performHandlerWhenCacheIsReady:^(NSMutableSet* theCache) {
-        // Cheeky insertion of the currently selected song which we've force cached above.
-        // If we don't add this it may never get marked as cached and thus not cleared either.
-        // There is still the issue that clearing can get cancelled...
-        // perhaps it's best to pull cache clearing out of the caching method altogether.
-        [theCache addObject:selectedSongId];
-//        TGLog(TGLOG_CACH2,@"Cheekily inserting %@ into theCache :%@",selectedSongId,theCache);
-
-        TGLog(TGLOG_CACH2,@"About to cancel all ops in the caching op queue. There are currently %lu ops in there",[urlCachingOpQueue operationCount]);
-        // We're about to call the outer block (the one passed to performHandlerWhenCacheIsReady) with the new cache, so cancel all previous queued up requests.
-        [urlCachingOpQueue cancelAllOperations];
-
-        [self newCacheFromCache:theCache withContext:cacheContext andHandler:^(NSMutableSet* theNewCache) {
-            if (theNewCache != nil) {
-
-                // If there's a callback on the callback queue, dequeue it and call it.
-                if ([callbackQueue count] != 0) {
-                    TGLog(TGLOG_CACH2,@"Found a callback waiting. Dequeueing and calling.");
-                    [callbackQueueLock lock];
-                    void (^theCallback)(NSMutableSet*) = [callbackQueue dequeue];
-                    [callbackQueueLock unlock];
-                    
-                    theCallback(theNewCache);
-                    
-                    if (callbackQueue.count != 0) {
-                        [urlCachingOpQueue cancelAllOperations];
-                    }
-                    
-                } else {
-                    TGLog(TGLOG_CACH2,@"No callbacks waiting. Enqueueing the new cache.");
-                    // here we add the new cache to the cache queue.
-                    [cacheQueueLock lock];
-                    [cacheQueue enqueue:theNewCache];
-                    [cacheQueueLock unlock];
-                }
-                
-                //just for debugging right now
-                songIDCache = theNewCache;
-
-            } else {
-                TGLog(TGLOG_CACH2,@"The new cache was nil. Keeping the old one.");
-            }
-
-        }];
-    }];
-    */
+    // Initiate the fingerprint/UUId generation and fetching of cover art.
+    [self fetchUUIdAndCoverArtForSongId:selectedSongId];
 }
 
-- (void)performHandlerWhenCacheIsReady:(void (^)(NSMutableSet*))completionHandler {
-    
-        if ([cacheQueue count] != 0){
-            
-            [cacheQueueLock lock];
-            NSMutableSet* theCache = [cacheQueue dequeue];
-            [cacheQueueLock unlock];
-            
-            completionHandler(theCache);
-        } else {
-            
-            // There is no cache available which means that the cache is being built by newCacheFromCache:
-            // This means we add our request to the callback queue...
-            [callbackQueueLock lock];
-            
-            [callbackQueue enqueue:completionHandler];
-    
-            [callbackQueueLock unlock];
-            TGLog(TGLOG_CACH2,@"Inserted new completion handler in callbackQueue. Count :%lu",callbackQueue.count);
-            
-            //...and interrupt the current caching operation.
-            //CACH2 we've just added a new request for a cache so it makes sense to interrupt the currently
-            [urlCachingOpQueue cancelAllOperations];
-        }
-}
-
-// So instead of all this crap;
-// just keep track of the actively selected songs in a mutable set, selectedSongsSet, adding selectedSongId to it every time a new song is selected.
-// Then rather than use a previous cache to create a new one, simply create a new cache from nothing but the given context.
-// If the new cache finishes successfully it becomes the current cache and we then traverse the selectedSongsSet and remove
-// all the songs that are not also in the current cache.
-// If the new cache is cancelled we simply leave things alone and keep the old cache.
-
-- (void)newCacheWithContext:(NSDictionary*)cacheContext  {
-    
-    // First we need to decide on a caching strategy.
-    // For now we will simply do a no-brains area caching of two songs in every direction from the current cursor position.
-    // Extract data from context
-    //    NSPoint speedVector     = [[cacheContext objectForKey:@"spd"] pointValue];
-    NSPoint selectionPos    = [[cacheContext objectForKey:@"pos"] pointValue];
-    NSPoint gridDims        = [[cacheContext objectForKey:@"gridDims"] pointValue];
-    
-    id<SongIDProtocol> selectedSongId    = [cacheContext objectForKey:@"selectedSongId"];
-    
-    NSBlockOperation* cacheOp = [[NSBlockOperation alloc] init];
-    
-    // Weakify the block reference to avoid retain cycles.
-    __weak NSBlockOperation* weakCacheOp = cacheOp;
-    
-    NSMutableSet* newMasterCache = [[NSMutableSet alloc] init];
-    
-    [weakCacheOp addExecutionBlock:^{
-        
-
-        // Because we need to pass the weakCacheOp to other methods we create a strong reference to it.
-        // This keeps it alive for the duration of the scope of the block regardless of whether it is dealloc'd elsewhere.
-        NSBlockOperation* localCacheOp = weakCacheOp;
-        NSAssert(localCacheOp, @"Error! A weak reference was nil when needed.");
-        
-        // Check for operation cancellation first thing.
-        if( localCacheOp.isCancelled ) {TGLog(TGLOG_CACH2,@"Cancelling 1"); return;}
-        
-        // Make sure we have an inited cache.
-        NSMutableSet* wantedCache = [[NSMutableSet alloc] initWithCapacity:25];
-        NSInteger radius = 0;
-        
-        for (NSInteger matrixRows=selectionPos.y-radius; matrixRows<=selectionPos.y+radius; matrixRows++) {
-            for (NSInteger matrixCols=selectionPos.x-radius; matrixCols<=selectionPos.x+radius; matrixCols++) {
-                if ((matrixRows >= 0) && (matrixRows <gridDims.y)) {
-                    if((matrixCols >=0) && (matrixCols < gridDims.x)) {
-                        
-                        // Check for operation cancellation
-                        if( localCacheOp.isCancelled ) {TGLog(TGLOG_CACH2,@"Cancelling 2"); return;}
-                        
-                        id<SongIDProtocol> songID = [_songGridAccessAPI songIDFromGridColumn:matrixCols andRow:matrixRows];
-                        TGLog(TGLOG_NUCACHE, @"From grid position %ld,%ld we got id %@",(long)matrixCols,(long)matrixRows,songID);
-                        if ((songID != nil) && (songID != selectedSongId)) {
-//                        if (songID != nil) {
-                            [wantedCache addObject:songID];
-                        }
-                    }
-                }
-            }
-        }
-        
-        // Check for operation cancellation
-        if( localCacheOp.isCancelled ) {TGLog(TGLOG_CACH2,@"Cancelling 3") return;}
-        
-        // Is this much slower than any alternative?
-        NSMutableArray* songsToCacheArray = [[wantedCache allObjects] mutableCopy];
-        
-        // This method *initiates* the loading which may not finish until some time after this operation has finished.
-        [self loadSongCache:songsToCacheArray withBOp:localCacheOp];
-
-
-        // test bodge to wait for the songs to finish
-        if ((songsToCacheArray.count > 0)) {
-            BOOL doneLoading = NO;
-            TGLog(TGLOG_TMP, @"waiting for load of %@ to complete...",songsToCacheArray)
-            while (doneLoading == NO) {
-                doneLoading = YES;
-                for (id<SongIDProtocol>aSongId in songsToCacheArray) {
-                    TGSong* aSong = [self songForID:aSongId];
-                    if ([aSong songStatus] != kSongStatusReady) {
-                        doneLoading = NO;
-                        break;
-                    }
-                }
-            }
-            TGLog(TGLOG_TMP, @"waiting for load to complete...Done")
-
-        }
-
-        // The songsToCacheArray will, after the call to loadSongCache, contain only the songs that were successfully cached.
-        // No cancelling beyond this point.
-        
-        // DEBUG:
-        [_delegate setDebugCachedFlagsForSongIDArray:songsToCacheArray toValue:YES];
-        
-        // Because the loadSongCache may have been interrupted before it finished caching all the wanted songs we need to
-        // use the songsToCacheArray instead as that has been pruned to contain only cached songs.
-        NSMutableSet* cachedSongs = [NSMutableSet setWithArray:songsToCacheArray];
-        [newMasterCache unionSet:cachedSongs];
-        
-        [self test:localCacheOp andCache:newMasterCache];
-    }];
-    
-    
-    // This is called whether the operation finishes or is cancelled.
-    cacheOp.completionBlock = ^{
-        TGLog(TGLOG_CACH2,@"The caching block %@.",weakCacheOp.isCancelled ? @"cancelled" : @"completed");
-/*
-        if (weakCacheOp.isCancelled == NO) {
-        
-            [self checkSet:songIDCache withName:@"songIDCache"];
-            [self checkSet:newMasterCache withName:@"newMasterCache"];
-            // First we need to clear the songs in the old cache that are not in the new one.
-            // we can just use songIDCache directly as no-one else is accessing it and we're about to replace it.
-            NSMutableSet* staleSongs = [songIDCache mutableCopy];
-            [staleSongs minusSet:newMasterCache];
-            //[self clearSongCache:[staleSongs allObjects] withBOp:nil];
-        
-            // Remove from the selections set the song ids that are in the official cache.
-            NSMutableSet* staleSelections = [selectedSongsCache mutableCopy];
-            [staleSelections minusSet:newMasterCache];
-            
-            // Combine all the songs that need unloading
-            [staleSongs unionSet:staleSelections];
-            
-            // Clear all the stale songs
-            [self clearSongCache:[staleSongs allObjects] withBOp:nil];
-            
-            // Remove the selections from the selectedSongsCache (Lock to avoid concurrent access.)
-            [selectedSongsCacheLock lock];
-            
-            // The caching completed, so we can replace the old cache with the new.
-            songIDCache = newMasterCache;
-
-            //[selectedSongsCache minusSet:staleSelections];
-            // We can clear it now that we've used it.
-            [selectedSongsCache removeAllObjects];
-            
-            [selectedSongsCacheLock unlock];
-            
-        } else {
-            
-            // The caching was cancelled. Since some songs may have been loaded before the cancellation we must clear them again.
-            // (we can't include them into the old cache because at this point we don't know if a new cache is already being made)
-            // The problem here is that, since the loading is async and slow, the songs in newMasterCache may yet be set to loaded *after*
-            // we clear them here!
-            // But wait! The load and unload calls are added to the same serial queue so they should be temporally ordered:
-            // First we add the call to load the songs to the list and then we add the calls to clear them to the same list...should work.
-            // No, because the call to load the songs is just a call to *initiate* the loading. Since the actual loading is async it returns
-            // before the loading is finished. When it is finished it sets the song's status flag to finished but by then we've already attempted
-            // to clear it and, because we check the song's status, which would still be set to loading, fail to clear it.
-            //FIXME:
-            TGLog(TGLOG_TMP, @"Interrupted so clearing %@",newMasterCache);
-            [self clearSongCache:[newMasterCache allObjects] withBOp:nil];
-        }
- */
-    };
-    
-    [urlCachingOpQueue addOperation:cacheOp];
-    
-    TGLog(TGLOG_ALL, @"Operation count %lu",(unsigned long)[urlCachingOpQueue operationCount]);
-}
 
 - (void)checkSet:(NSMutableSet*)theSet withName:(NSString*)bufferName{
     for (id<SongIDProtocol>aSongId in theSet) {
@@ -1768,370 +1501,6 @@ static int const kSongPoolStartCapacity = 250;
     }
 }
 
--(void)test:(NSBlockOperation*)bOp andCache:(NSMutableSet*)newMasterCache{
-    if (bOp.isCancelled == NO) {
-        
-        [self checkSet:songIDCache withName:@"songIDCache"];
-        [self checkSet:newMasterCache withName:@"newMasterCache"];
-        // First we need to clear the songs in the old cache that are not in the new one.
-        // we can just use songIDCache directly as no-one else is accessing it and we're about to replace it.
-        NSMutableSet* staleSongs = [songIDCache mutableCopy];
-        [staleSongs minusSet:newMasterCache];
-        //[self clearSongCache:[staleSongs allObjects] withBOp:nil];
-        
-        // Remove from the selections set the song ids that are in the official cache.
-        NSMutableSet* staleSelections = [selectedSongsCache mutableCopy];
-        [staleSelections minusSet:newMasterCache];
-        
-        // Combine all the songs that need unloading
-        [staleSongs unionSet:staleSelections];
-        
-        // Clear all the stale songs
-        [self clearSongCache:[staleSongs allObjects] withBOp:nil];
-        
-        // Remove the selections from the selectedSongsCache (Lock to avoid concurrent access.)
-        [selectedSongsCacheLock lock];
-        
-        // The caching completed, so we can replace the old cache with the new.
-        songIDCache = newMasterCache;
-        
-        //[selectedSongsCache minusSet:staleSelections];
-        // We can clear it now that we've used it.
-        [selectedSongsCache removeAllObjects];
-        
-        [selectedSongsCacheLock unlock];
-        
-    } else {
-        
-        // The caching was cancelled. Since some songs may have been loaded before the cancellation we must clear them again.
-        // (we can't include them into the old cache because at this point we don't know if a new cache is already being made)
-        // The problem here is that, since the loading is async and slow, the songs in newMasterCache may yet be set to loaded *after*
-        // we clear them here!
-        // But wait! The load and unload calls are added to the same serial queue so they should be temporally ordered:
-        // First we add the call to load the songs to the list and then we add the calls to clear them to the same list...should work.
-        // No, because the call to load the songs is just a call to *initiate* the loading. Since the actual loading is async it returns
-        // before the loading is finished. When it is finished it sets the song's status flag to finished but by then we've already attempted
-        // to clear it and, because we check the song's status, which would still be set to loading, fail to clear it.
-        //FIXME:
-        TGLog(TGLOG_TMP, @"Interrupted so clearing %@",newMasterCache);
-        [self clearSongCache:[newMasterCache allObjects] withBOp:nil];
-    }
-}
-
-/*
-- (void)newCacheFromCache:(NSMutableSet*)oldCache withContext:(NSDictionary*)cacheContext  {
-    NSMutableSet* newMasterCache = [oldCache mutableCopy];
-    // First we need to decide on a caching strategy.
-    // For now we will simply do a no-brains area caching of two songs in every direction from the current cursor position.
-    // Extract data from context
-    //    NSPoint speedVector     = [[cacheContext objectForKey:@"spd"] pointValue];
-    NSPoint selectionPos    = [[cacheContext objectForKey:@"pos"] pointValue];
-    NSPoint gridDims        = [[cacheContext objectForKey:@"gridDims"] pointValue];
-    
-    NSBlockOperation* cacheOp = [[NSBlockOperation alloc] init];
-    
-    // Weakify the block reference to avoid retain cycles.
-    __weak NSBlockOperation* weakCacheOp = cacheOp;
-    
-    [weakCacheOp addExecutionBlock:^{
-        
-        // Because we need to pass the weakCacheOp to other methods we create a strong reference to it.
-        // This keeps it alive for the duration of the scope of the block regardless of whether it is dealloc'd elsewhere.
-        NSBlockOperation* localCacheOp = weakCacheOp;
-        NSAssert(localCacheOp, @"Error! A weak reference was nil when needed.");
-        
-        // Check for operation cancellation first thing.
-        if( localCacheOp.isCancelled ) {TGLog(TGLOG_CACH2,@"Cancelling 1"); return;}
-        
-        // Make sure we have an inited cache.
-        NSMutableSet* wantedCache = [[NSMutableSet alloc] initWithCapacity:25];
-        NSInteger radius = 2;
-        
-        for (NSInteger matrixRows=selectionPos.y-radius; matrixRows<=selectionPos.y+radius; matrixRows++) {
-            for (NSInteger matrixCols=selectionPos.x-radius; matrixCols<=selectionPos.x+radius; matrixCols++) {
-                if ((matrixRows >= 0) && (matrixRows <gridDims.y)) {
-                    if((matrixCols >=0) && (matrixCols < gridDims.x)) {
-                        
-                        // Check for operation cancellation
-                        if( localCacheOp.isCancelled ) {TGLog(TGLOG_CACH2,@"Cancelling 2"); return;}
-                        
-                        id<SongIDProtocol> songID = [_songGridAccessAPI songIDFromGridColumn:matrixCols andRow:matrixRows];
-                        
-                        if (songID != nil) {
-                            [wantedCache addObject:songID];
-                        }
-                    }
-                }
-            }
-        }
-        
-        // The existing cache minus the wanted cache is the stale cache (what should be de-cached).
-        NSMutableSet* staleCache = [newMasterCache mutableCopy];
-        [staleCache minusSet:wantedCache];
-        
-        // Check for operation cancellation
-        if( localCacheOp.isCancelled ) {TGLog(TGLOG_CACH2,@"Cancelling 3") return;}
-        
-        // Ensure all stale objects are cleared.
-        [self clearSongCache:[staleCache allObjects] withBOp:localCacheOp];
-        
-        // DEBUG
-        [_delegate setDebugCachedFlagsForSongIDArray:[staleCache allObjects] toValue:NO];
-        
-        // Remove from the existing cache what is not in the wanted cache.
-        [newMasterCache minusSet:staleCache];
-        
-        // Remove the what's already cached from the wanted cache.
-        [wantedCache minusSet:newMasterCache];
-        
-        // Is this much slower than any alternative?
-        NSMutableArray* songsToCacheArray = [[wantedCache allObjects] mutableCopy];
-        
-        [self loadSongCache:songsToCacheArray withBOp:localCacheOp];
-        // The songsToCacheArray will, after the call to loadSongCache, contain only the songs that were successfully cached.
-        // No cancelling beyond this point.
-        
-        // DEBUG:
-        [_delegate setDebugCachedFlagsForSongIDArray:songsToCacheArray toValue:YES];
-        
-        // Because the loadSongCache may have been interrupted before it finished caching all the wanted songs we need to
-        // use the songsToCacheArray instead as that has been pruned to contain only cached songs.
-        NSSet* newWantedCache = [NSSet setWithArray:songsToCacheArray];
-        [newMasterCache unionSet:newWantedCache];
-    }];
-    
-    
-    // This is called whether the operation finishes or is cancelled.
-    cacheOp.completionBlock = ^{
-        TGLog(TGLOG_CACH2,@"The caching block %@.",weakCacheOp.isCancelled ? @"cancelled" : @"completed");
-        
-//        if (weakCacheOp.isCancelled == NO) {
-
-            songIDCache = newMasterCache;
-            
-            // Make a copy of the selectedSongsCache that we need to both enumerate and modify.
-            
-            NSMutableSet* tmpSet = [selectedSongsCache mutableCopy];
-//            [tmpSet minusSet:songIDCache];
-            
-            // This cannot happen concurrently from different threads or we will still have trouble with accessing whilst enumerating.
-            for (id<SongIDProtocol> aSongId in tmpSet) {
-                if ([songIDCache containsObject:aSongId] == NO) {
-                    [selectedSongsCache removeObject:aSongId];
-                    TGSong *aSong = [self songForID:aSongId];
-                    [aSong clearCache];
-                    
-                }
-            }
-//        } else {
-            // The ids in the old cache that are not in the new cache have been cleared, so we need to remove them from the old cache.
-            // The ids in the new cache that are not in the old cache have been loaded, so we need to add those to the old cache (or clear them as we do below).
-            
-            // Instead of clearing the songs that were cached before the operation got cancelled try and union them into the cache instead.
-            //[songIDCache unionSet:newMasterCache];
-//            songIDCache = newMasterCache;
-//            [songIDCache unionSet:selectedSongsCache];
-        
-            // Clear all the songs that were cached before the caching operation was cancelled.
-//            [self clearSongCache:[newMasterCache allObjects] withBOp:nil];
-//        }
-        
-        // The problem here is that once it calls into the newCacheHandler it doesn't come out until it has emptied the callback queue.
-        // This means we cannot add a cache op and then cancel it immediately (so that it only clears the currently selected song).
-    };
-    
-    [urlCachingOpQueue addOperation:cacheOp];
-
-    TGLog(TGLOG_ALL, @"Operation count %lu",(unsigned long)[urlCachingOpQueue operationCount]);
-}
-
-
-- (void)newCacheFromCache:(NSMutableSet*)oldCache withContext:(NSDictionary*)cacheContext andHandler:(void (^)(NSMutableSet*))newCacheHandler {
-    TGLog(TGLOG_CACH2, @"`````````````````````` newCacheFromCache ````````````````````````````````````````");
-//    TGLog(TGLOG_CACH2, @"Coming into newCacheFromCache with %@",oldCache);
-    NSMutableSet* newMasterCache = [oldCache mutableCopy];
-    // First we need to decide on a caching strategy.
-    // For now we will simply do a no-brains area caching of two songs in every direction from the current cursor position.
-    // Extract data from context
-//    NSPoint speedVector     = [[cacheContext objectForKey:@"spd"] pointValue];
-    NSPoint selectionPos    = [[cacheContext objectForKey:@"pos"] pointValue];
-    NSPoint gridDims        = [[cacheContext objectForKey:@"gridDims"] pointValue];
-    
-    
-    //CACH2
-//    // We've got a new request so cancel all previous queued up requests.
-//    [urlCachingOpQueue cancelAllOperations];
-    
-    NSBlockOperation* cacheOp = [[NSBlockOperation alloc] init];
-    
-    // Weakify the block reference to avoid retain cycles.
-    __weak NSBlockOperation* weakCacheOp = cacheOp;
-
-    [weakCacheOp addExecutionBlock:^{
-        TGLog(TGLOG_CACH2, @"`````````````````````` cache op block ````````````````````````````````````````");
-
-        //CACH2 test. If we have callbacks waiting then do the minimum in here by cancelling asap.
-        if (callbackQueue.count != 0) {
-            [weakCacheOp cancel];
-            TGLog(TGLOG_CACH2, @"`````````````````````` CANCELLED ````````````````````````````````````````");
-        }
-        
-        // Because we need to pass the weakCacheOp to other methods we create a strong reference to it.
-        // This keeps it alive for the duration of the scope of the block regardless of whether it is dealloc'd elsewhere.
-        NSBlockOperation* localCacheOp = weakCacheOp;
-        NSAssert(localCacheOp, @"Error! A weak reference was nil when needed.");
-        
-        // Check for operation cancellation first thing.
-        //CACH2 if( localCacheOp.isCancelled ) {TGLog(TGLOG_CACH2,@"Cancelling 1"); return;}
-
-        // Make sure we have an inited cache.
-        NSMutableSet* wantedCache = [[NSMutableSet alloc] initWithCapacity:25];
-        NSInteger radius = 2;
-        
-        for (NSInteger matrixRows=selectionPos.y-radius; matrixRows<=selectionPos.y+radius; matrixRows++) {
-            for (NSInteger matrixCols=selectionPos.x-radius; matrixCols<=selectionPos.x+radius; matrixCols++) {
-                if ((matrixRows >= 0) && (matrixRows <gridDims.y)) {
-                    if((matrixCols >=0) && (matrixCols < gridDims.x)) {
-                        
-                        // Check for operation cancellation
-                        //CACH2 if( localCacheOp.isCancelled ) {TGLog(TGLOG_CACH2,@"Cancelling 2"); return;}
-                        
-                        id<SongIDProtocol> songID = [_songGridAccessAPI songIDFromGridColumn:matrixCols andRow:matrixRows];
-                        
-// CACH2                       if ((matrixRows == selectionPos.y) && (matrixCols == selectionPos.x))
-//                            selectedSongId = songID;
-                        
-                        if (songID != nil) {
-                            [wantedCache addObject:songID];
-                        }
-                    }
-                }
-            }
-        }
-        
-        // The existing cache minus the wanted cache is the stale cache (what should be de-cached).
-        NSMutableSet* staleCache = [newMasterCache mutableCopy];
-        [staleCache minusSet:wantedCache];
-
-        // Check for operation cancellation
-        //CACH2 if( localCacheOp.isCancelled ) {TGLog(TGLOG_CACH2,@"Cancelling 3") return;}
-
-        // Ensure all stale objects are cleared.
-        [self clearSongCache:[staleCache allObjects] withBOp:localCacheOp];
-            
-        // DEBUG
-        [_delegate setDebugCachedFlagsForSongIDArray:[staleCache allObjects] toValue:NO];
-        
-        // Remove from the existing cache what is not in the wanted cache.
-        [newMasterCache minusSet:staleCache];
-
-        // Remove the what's already cached from the wanted cache.
-        [wantedCache minusSet:newMasterCache];
-
-        //CACH2 Adding the selectedSongId to the front of the songsToCacheArray is no longer necessary because
-        // we already make sure that the selected song is cached before calling newCacheFromCache.
-        // It still needs to be in the array though so we know what's cached and what's not.
-        // This is problematic when we cancel a whole caching operation since we then lose and leak the selected song.
-
-            // To always give the selected song the highest priority we add it to the front of the array.
-            // Remove the song from the set because we want to insert it at the front of the songsToCacheArray.
-//            [wantedCache removeObject:selectedSongId];
-        
-            // Is this much slower than any alternative?
-            NSMutableArray* songsToCacheArray = [[wantedCache allObjects] mutableCopy];
-            
-            // Put the selected song at the front so it gets cached first.
-//            if (selectedSongId != nil) {
-//                [songsToCacheArray insertObject:selectedSongId atIndex:0];
-//            }
-
-        
-        [self loadSongCache:songsToCacheArray withBOp:localCacheOp];
-        // The songsToCacheArray will, after the call to loadSongCache, contain only the songs that were successfully cached.
-        // No cancelling beyond this point.
-        
-        // DEBUG:
-        [_delegate setDebugCachedFlagsForSongIDArray:songsToCacheArray toValue:YES];
-        
-        // Because the loadSongCache may have been interrupted before it finished caching all the wanted songs we need to
-        // use the songsToCacheArray instead as that has been pruned to contain only cached songs.
-        NSSet* newWantedCache = [NSSet setWithArray:songsToCacheArray];
-        [newMasterCache unionSet:newWantedCache];
-
-        //CACH2 moved to the completion block
-        //newCacheHandler(newMasterCache);
-    }];
-
-
-    // This is called whether the operation finishes or is cancelled.
-    cacheOp.completionBlock = ^{
-        TGLog(TGLOG_CACH2,@"The caching block %@.",weakCacheOp.isCancelled ? @"cancelled" : @"completed");
-
-        newCacheHandler(newMasterCache);
-        
-        // The problem here is that once it calls into the newCacheHandler it doesn't come out until it has emptied the callback queue.
-        // This means we cannot add a cache op and then cancel it immediately (so that it only clears the currently selected song).
-    };
-
-    [urlCachingOpQueue addOperation:cacheOp];
-//    TGLog(TGLOG_ALL,@"Operation count %lu",(unsigned long)[urlCachingOpQueue operationCount]);
-    TGLog(TGLOG_ALL, @"Operation count %lu",(unsigned long)[urlCachingOpQueue operationCount]);
-    //NSDate* postDate = [NSDate date];
-    //TGLog(TGLOG_ALL,@"caching took: %f",[postDate timeIntervalSinceDate:preDate]);
-}
-*/
-
-/**
- For each of the songIds in the given array call the corresponding song's clearCache method.
- This currently does nothing but clear a property in the song that holds an AVAudioFile.
- The property is not currently used though.
- */
-- (void)clearSongCache:(NSArray*)staleSongArray withBOp:(NSBlockOperation*)bOp {
-    //dispatch_async(cacheClearingQueue, ^{
-    // DEBUG:
-    [_delegate setDebugCachedFlagsForSongIDArray:staleSongArray toValue:NO];
-
-        for (id<SongIDProtocol> songID in staleSongArray) {
-            TGSong *aSong = [self songForID:songID];
-            [aSong unload];
-        }
-    //});
-}
-
-/**
- Blind caching method that simply initiates loading of all the songs in the array it is given.
- */
-- (void)loadSongCache:(NSMutableArray*)desiredSongArray withBOp:(NSBlockOperation*)bOp  {
-//    TGLog(TGLOG_ALL,@"Wait!");
-//    [NSThread sleepForTimeInterval:10.0f];
-//    TGLog(TGLOG_ALL,@"Carry on.");
-    int nextIdx = 1;
-    
-    for (id<SongIDProtocol> songID in desiredSongArray) {
-        TGLog(TGLOG_CACH2, @"About to load songId %@",songID);
-        TGSong *aSong = [self songForID:songID];
-        if (aSong == NULL) {
-            TGLog(TGLOG_ALL,@"Nope, the requested ID %@ is not in the song pool.",songID);
-            return;
-        }
-        
-        [aSong load];
-        
-        // Initiate the fingerprint/UUId generation and fetching of cover art.
-        [self fetchUUIdAndCoverArtForSongId:songID];
-        
-        // Check for operation cancellation.
-        if( (bOp != nil) &&  bOp.isCancelled ) {
-            TGLog(TGLOG_CACH2,@"==================================================================================================================================================== loadSongCache cancelled");
-            // Remove the entries that we didn't manage to cache before having to drop out.
-            NSIndexSet *indexSet = [NSIndexSet indexSetWithIndexesInRange:NSMakeRange(nextIdx, [desiredSongArray count]-nextIdx)];
-            [desiredSongArray removeObjectsAtIndexes:indexSet];
-            return;
-        }
-
-        nextIdx++;
-    }
-}
 
 - (void)fetchUUIdAndCoverArtForSongId:(id<SongIDProtocol>)songId {
     [self fetchUUIdForSongId:songId withHandler:^(NSString* theUUId) {
@@ -2190,9 +1559,15 @@ static int const kSongPoolStartCapacity = 250;
     }
 
     //NUCACHE
-    [songCacher performWhenPlayerIsAvailableForSongId:songID callBack:^(AVPlayer* thePlayer){
-        [songPlayer setSong:thePlayer];
-        [songPlayer playSong];
+    [songAudioCacher performWhenPlayerIsAvailableForSongId:songID callBack:^(AVPlayer* thePlayer){
+        
+        [songAudioPlayer setSongPlayer:thePlayer];
+        
+        // Start observing the new player.
+        [self setSongPlaybackObserver:thePlayer];
+
+        [songAudioPlayer playSong];
+        
     }];
 //    [songPlayer setSong:[songCacher songPlayerForSongId:songID]];
 //    [songPlayer playSong];
@@ -2332,6 +1707,32 @@ static int const kSongPoolStartCapacity = 250;
 //    
 //}
 
+- (void)setSongPlaybackObserver:(AVPlayer*)songPlayer {
+    
+    // Remove existing observer if there is one.
+    AVPlayer* prevPlayer = [songAudioPlayer getPrevSongPlayer];
+    if (prevPlayer != nil && _playerTimerObserver != nil) {
+        [prevPlayer removeTimeObserver:_playerTimerObserver];
+        _playerTimerObserver = nil;
+    }
+    
+    // Add a periodic observer so we can update the timeline GUI.
+    CMTime eachSecond = CMTimeMake(10, 100);
+    dispatch_queue_t timelineSerialQueue = playbackQueue;
+    
+    // Make a weakly retained self and songPlayer for use inside the block to avoid retain cycle.
+    __unsafe_unretained typeof(self) weakSelf = self;
+    __unsafe_unretained AVPlayer* weakSongPlayer = songPlayer;
+    
+    // Every 1/10 of a second update the delegate's playhead position variable.
+    _playerTimerObserver = [songPlayer addPeriodicTimeObserverForInterval:eachSecond queue:timelineSerialQueue usingBlock:^void(CMTime time) {
+
+        CMTime currentPlaybackTime = [weakSongPlayer currentTime];
+        [weakSelf songDidUpdatePlayheadPosition:[NSNumber numberWithDouble:CMTimeGetSeconds(currentPlaybackTime)]];
+    }];
+
+}
+
 /**
  Delegate method that allows a song to set the songpool's playhead position tracker variable.
  Because the playheadPosition is bound to the TGTimelineSliderCell's currentPlayheadPositionInPercent this moves the slider knob.
@@ -2413,21 +1814,13 @@ static int const kSongPoolStartCapacity = 250;
     TGLog(TGLOG_DBG,@"^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^");
     
     //NUCACHE
-//    AVPlayer* aPlayer = [songCacher songPlayerForSongId:songId];
-    
-//    [songPlayer setSong:[songCacher songPlayerForSongId:songId]];
-//    [songPlayer playSong];
-    [songCacher performWhenPlayerIsAvailableForSongId:songId callBack:^(AVPlayer* thePlayer){
+    [songAudioCacher performWhenPlayerIsAvailableForSongId:songId callBack:^(AVPlayer* thePlayer){
         if (thePlayer != nil) {
             TGLog(TGLOG_DBG, @"songCacher returned %@",thePlayer)
             
         } else {
             TGLog(TGLOG_DBG, @"songCacher returned bummer")
         }
-
-        // We really need to know what the songId for this player is so we can make sure this is still what we want to play.
-        [songPlayer setSong:thePlayer];
-        [songPlayer playSong];
     }];
 
     //NUCACHE end
@@ -2466,7 +1859,7 @@ static int const kSongPoolStartCapacity = 250;
     }
     
     TGLog(TGLOG_DBG,@"+^v^v^v^v^v^v^v^v^v^v^v^v+");
-    [songCacher dumpCacheToLog];
+    [songAudioCacher dumpCacheToLog];
 }
 
 - (NSString*)statusValToString:(NSUInteger)statusVal {

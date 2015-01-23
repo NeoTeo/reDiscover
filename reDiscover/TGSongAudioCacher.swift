@@ -55,14 +55,14 @@ class TGSongAudioCacher : NSObject {
             }
         }
         
-        operationBlock.completionBlock = {
-            print("-------------- Caching op completed...")
-            if operationBlock.cancelled == true { println("cancelled") } else { println("succeeded")}
-        }
+//        operationBlock.completionBlock = {
+//
+//            if operationBlock.cancelled == true { println("cancelled") } else { println("succeeded")}
+//        }
         
         cachingOpQueue.addOperation(operationBlock)
         
-        println("cachingOpQueue count: \(cachingOpQueue.operationCount)")
+//        println("cachingOpQueue count: \(cachingOpQueue.operationCount)")
     }
 
     func songPlayerForSongId(songId: SongIDProtocol) -> AVPlayer? {

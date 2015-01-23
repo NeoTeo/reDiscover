@@ -62,6 +62,7 @@
     }];
 }
 
+/*
 //- (void)performBlockWhenReadyForPlayback:(void (^)(void))completionBlock {
 //    if ([self songStatus] == kSongStatusReady) {
 //        completionBlock();
@@ -166,173 +167,6 @@ static const void *ItemStatusContext = &ItemStatusContext;
         return;
     }
 }
-
-/* CDFIX
-- (void)prepareForPlaybackWithCompletionBlock:(void (^)(void))completionBlock {
-    //dispatch_async(_serialTestQueue, ^{
-        // Set the completion block to be called when the songPlayerItem's status changes to ready.
-        self.customBlock = (MyCustomBlock)completionBlock;
-
-    // If the song is ready to play, just call the completion block and return.
-    if ([self songStatus] == kSongStatusReady) {
-        TGLog(TGLOG_ALL,@"prepareForPlayback song was already prepared. Calling completion block.");
-        completionBlock();
-        return;
-    }
-    
-    // If the song is currently loading (waiting for the status to change to ready) then set the completionBlock to call.
-    // Note this will overwrite any existing completion block.
-    if ([self songStatus] == kSongStatusLoading) {
-        TGLog(TGLOG_ALL,@"prepareForPlayback song is already loading. Replacing completion block.");
-        self.customBlock = (MyCustomBlock)completionBlock;
-        return;
-    }
-    
-    NSURL *theURL = [NSURL URLWithString:self.urlString];
-    [self setSongStatus:kSongStatusLoading];
-    
-    if (songAsset == nil) {
-        /// This initializes the asset with the song's url.
-        ///Since the options are nil the default will be to not require precise timing.
-        songAsset = [AVAsset assetWithURL:theURL];
-    }
-    if (CMTimeGetSeconds(self.songDuration) == 0) {
-        
-        // [songAsset duration] may block for a bit which is just how we want it.
-        // WHY?
-        // Because, since this whole method is sitting in an op queue, if it takes too long
-        // and the user moves on to another song that should be played instead it and all the
-        // subsequent queued calls can be cancelled.
-        // If it just returned immediately there would be a large uncancellable backlog of song asset loads.
-        [self setSongDuration:[songAsset duration]];
-        
-        
-        NSError* error;
-        AVKeyValueStatus tracksStatus = [songAsset statusOfValueForKey:@"duration" error:&error];
-        switch (tracksStatus) {
-            case AVKeyValueStatusLoaded:
-            {
-                // Prepare the asset for playback by loading its tracks.
-                [songAsset loadValuesAsynchronouslyForKeys:@[@"tracks"] completionHandler:^{
-                    // Now, associate the asset with the player item.
-                    if (songPlayerItem == nil) {
-                        songPlayerItem = [AVPlayerItem playerItemWithAsset:songAsset];
-                        // Observe the status keypath of the songPlayerItem. When the status changes to ready self.customBlock will be called.
-                        [songPlayerItem addObserver:self forKeyPath:@"status" options:NSKeyValueObservingOptionInitial context:&ItemStatusContext];
-                    }
-                    
-                    // This will trigger the player's preparation to play.
-                    if (songPlayer == nil) {
-                        songPlayer = [AVPlayer playerWithPlayerItem:songPlayerItem];
-                    }
-                    
-//                    // Set the completion block to be called when the songPlayerItem's status changes to ready.
-//                    self.customBlock = (MyCustomBlock)completionBlock;
-                    
-                }];
-                
-                break;
-            }
-            case AVKeyValueStatusFailed:
-                TGLog(TGLOG_ALL,@"There was an error getting track duration.");
-                break;
-            default:
-                TGLog(TGLOG_ALL,@"The track is not (yet) loaded!");
-                break;
-        }
-    }
-    //});
-}
-CDFIX */
-/*
-- (void)loadTrackDataWithCallBackOnCompletion:(BOOL)wantsCallback withStartTime:(NSNumber*)startTime {
-
-    NSURL *theURL = [NSURL URLWithString:self.urlString];
-    [self setSongStatus:kSongStatusLoading];
-    
-    if (songAsset == nil) {
-        /// This initializes the asset with the song's url.
-        ///Since the options are nil the default will be to not require precise timing.
-        songAsset = [AVAsset assetWithURL:theURL];
-    }
-
-    // Enabling this, aside from slowing loading, also makes scrubbing laggy.
-//        NSDictionary *songLoadingOptions = @{AVURLAssetPreferPreciseDurationAndTimingKey : @YES};
-//        songAsset = [[AVURLAsset alloc] initWithURL:theURL options:songLoadingOptions];
-    
-    if (CMTimeGetSeconds(self.songDuration) == 0) {
-
-        // [songAsset duration] may block for a bit which is just how we want it.
-        // WHY?
-        // Because, since this whole method is sitting in an op queue, if it takes too long
-        // and the user moves on to another song that should be played instead it and all the
-        // subsequent queued calls can be cancelled.
-        // If it just returned immediately there would be a large uncancellable backlog of song asset loads.
-        [self setSongDuration:[songAsset duration]];
-        
-        
-        NSError* error;
-        AVKeyValueStatus tracksStatus = [songAsset statusOfValueForKey:@"duration" error:&error];
-        switch (tracksStatus) {
-            case AVKeyValueStatusLoaded:
-            {
-                // Prepare the asset for playback by loading its tracks.
-                [songAsset loadValuesAsynchronouslyForKeys:@[@"tracks"] completionHandler:^{
-                    // Now, associate the asset with the player item.
-                    if (songPlayerItem == nil) {
-                        songPlayerItem = [AVPlayerItem playerItemWithAsset:songAsset];
-                        // Observe the status keypath of the songPlayerItem.
-                        [songPlayerItem addObserver:self forKeyPath:@"status" options:NSKeyValueObservingOptionInitial context:&ItemStatusContext];
-                        TGLog(TGLOG_CACH2, @"LoadTrackDataWithCallBackOnCompletion just 🔵added observer to songPlayerItem %@",songPlayerItem);
-                    }
-                    
-                    // This will trigger the player's preparation to play.
-                    if (songPlayer == nil) {
-                        songPlayer = [AVPlayer playerWithPlayerItem:songPlayerItem];
-                    }
-
-                    if (!wantsCallback) return;
-                    /// This creates a block that will effect the delegate callback and adds it to the customBlock property.
-                    //  This block will be called by the observeValueForKeypath: method that is called when the songPlayerItem is ready
-                    // thus ensuring songReadyForPlayback is not called too early.
-                    // The block is necessary to be able to capture the startTime as it is not possible to (safely) pass a value through
-                    // the observeValueForKeypath method.
-                    
-                    // Make a weakly retained self for use inside the block to avoid retain cycle.
-                    __unsafe_unretained typeof(self) weakSelf = self;
-
-                    self.customBlock = ^{
-                        [[weakSelf delegate] songReadyForPlayback:weakSelf atTime:startTime];
-                    };
-
-                }];
-            
-                break;
-            }
-            case AVKeyValueStatusFailed:
-                TGLog(TGLOG_ALL,@"There was an error getting track duration.");
-                break;
-            default:
-                TGLog(TGLOG_ALL,@"The track is not (yet) loaded!");
-                break;
-        }
-        
-        //}];
-    }
-//    // Get the song duration.
-//    //    This may block which is just how we want it.
-//    if (CMTimeGetSeconds(self.songDuration) == 0) {
-//        [self setSongDuration:[songAsset duration]];
-//    }
-////FIXME: What is to keep this from not failing if the asset is not ready? Why not as mentioned above?
-//    if ([songAsset isPlayable]) {
-//        [self setSongStatus:kSongStatusReady];
-//
-//        if (!wantsCallback) return;
-//        //MARK: consider a closure instead.
-//        [[self delegate] songReadyForPlayback:self atTime:startTime];
-//    }
-}
 */
 
 /**
@@ -347,7 +181,7 @@ CDFIX */
     NSString *tmpString = [self.urlString stringByDeletingPathExtension];
     NSString* fileName = [tmpString lastPathComponent];
     tmpString =[tmpString stringByDeletingLastPathComponent];
-    NSString* album = [tmpString lastPathComponent];
+//    NSString* album = [tmpString lastPathComponent];
     tmpString =[tmpString stringByDeletingLastPathComponent];
     NSString* artist = [tmpString lastPathComponent];
     
@@ -525,7 +359,7 @@ CDFIX */
         }];
     }
 }
-
+/*
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object
                         change:(NSDictionary *)change context:(void *)context {
     
@@ -564,12 +398,13 @@ CDFIX */
     return;
 }
 
+
 - (void)playDidFinish {
     if ([[self delegate] respondsToSelector:@selector(songDidFinishPlayback:)]) {
         [[self delegate] songDidFinishPlayback:self];
     }
 }
-
+*/
 
 //- (void)setStartTime:(NSNumber*)startTime forPlayer:(AVPlayer*)thePlayer {
 ////    [thePlayer prerollAtRate:1.0 completionHandler:^(BOOL finished) {
@@ -603,7 +438,7 @@ CDFIX */
 ////    }];
 //}
 
-
+/*
 - (void)playStop {
 
     [songPlayer removeTimeObserver:playerObserver];
@@ -613,7 +448,8 @@ CDFIX */
     // TEO: test to release asset and associated threads. This should for songs not marked as cached.
     return;
 }
-
+ */
+/*
 - (void)setCache:(AVAudioFile*) theFile {
 //    NSAssert(theFile != nil, @"The audio file is nil!");
 //#ifdef AE
@@ -664,7 +500,7 @@ CDFIX */
         }
     });
 }
-
+*/
 /**
     Immediately set the playhead to the given time offset.
  

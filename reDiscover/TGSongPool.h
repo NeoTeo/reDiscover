@@ -186,9 +186,11 @@
     NSNumber *requestedPlayheadPosition;
     
     
-    TGSongAudioCacher* songCacher;
-    TGSongAudioPlayer* songPlayer;
+    TGSongAudioCacher* songAudioCacher;
+    TGSongAudioPlayer* songAudioPlayer;
+    
 }
+@property (strong)id playerTimerObserver;
 
 @property TGStack* requestedSongStack;
 @property CoverArtArchiveWebFetcher* coverArtWebFetcher;

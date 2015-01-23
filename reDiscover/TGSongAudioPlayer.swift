@@ -11,16 +11,25 @@ import AVFoundation
 
 class TGSongAudioPlayer: NSObject {
 
-    var songPlayer: AVPlayer?
+    var currentPlayer: AVPlayer?
     var prevSongPlayer: AVPlayer?
     var songPlayerItem: AVPlayerItem?
     var currentVolume:Float  = 1.0
     
-    func setSong(newPlayer: AVPlayer) {
-        if songPlayer != nil {
-            prevSongPlayer = songPlayer
+    var songPlayer: AVPlayer? {
+        get {
+            return self.currentPlayer
         }
-        songPlayer = newPlayer
+        set(newPlayer) {
+            if currentPlayer != nil {
+                prevSongPlayer = currentPlayer
+            }
+            currentPlayer = newPlayer
+        }
+    }
+    
+    func getPrevSongPlayer()->AVPlayer? {
+        return prevSongPlayer
     }
     
     func playSong() {
