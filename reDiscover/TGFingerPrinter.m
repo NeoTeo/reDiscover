@@ -45,14 +45,14 @@
     }
     return self;
 }
-
+/*
 - (void)fingerprintNewSong:(NSNotification*)notification {
     TGSong* song = (TGSong*)notification.object;
-    TGLog(TGLOG_ALL,@"fingerprintNewSong with %@",song);
+    TGLog(TGLOG_TMP,@"fingerprintNewSong with %@",song);
     //wipEv This should be observed by the code that exchanges the fingerprint for a uuid (which happens to be this class as well)
     [[NSNotificationCenter defaultCenter] postNotificationName:@"TGNewSongFingerprinted" object:song];
 }
-
+*/
 - (void)dealloc {
     TGLog(TGLOG_ALL,@"freeing chromaprint context.");
     //chromaprint_free(chromaprintContext);
@@ -77,7 +77,7 @@
         
         ChromaprintContext *chromaprintContext = chromaprint_new(CHROMAPRINT_ALGORITHM_DEFAULT);
         NSURL* songURL = [_delegate URLForSongID:songID];
-//        TGLog(TGLOG_ALL,@"requestFingerPrintForSong called with song Id %@",songID);
+        TGLog(TGLOG_TMP,@"requestFingerPrintForSong called with song Id %@",songID);
         [self decodeAudioFileNew:songURL forContext:chromaprintContext ofLength:maxLength andDuration:&duration];
         
         if (chromaprint_get_fingerprint(chromaprintContext, &theFingerprint)) {
@@ -85,7 +85,7 @@
             //MARK: This needs to be extracted from the fingerprinting so we can use whatever uuid method we like
             // independently of the fingerprinter.
             // Since this is synchronous the call will block until either it succeeded or failed to fetch an UUId.
-//            TGLog(TGLOG_ALL,@"requesting UUId from generated fingerprint.");
+//            TGLog(TGLOG_TMP,@"requesting UUId from generated fingerprint.");
 //            [self requestUUIDForSongID:songID withDuration:duration andFingerPrint:theFingerprint];
             
             NSString *songFingerPrint = [NSString stringWithCString:theFingerprint encoding:NSASCIIStringEncoding];

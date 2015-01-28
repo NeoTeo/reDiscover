@@ -402,12 +402,14 @@ static int const kSongPoolStartCapacity = 250;
             }
 
             // Now that we know we have a fingerprint we request a UUId from it.
-            [songFingerPrinter requestUUIDForSongID:songID withDuration:CMTimeGetSeconds(aSong.songDuration) andFingerPrint:(char*)[fingerPrint UTF8String]];
+            //FIXME: It seems wrong to have to ask the song player for the duration of the song...
+            CMTime songDuration = [songAudioPlayer songDuration]; // used to be got from song.songDuration 
+            [songFingerPrinter requestUUIDForSongID:songID withDuration:CMTimeGetSeconds(songDuration) andFingerPrint:(char*)[fingerPrint UTF8String]];
 
             // This saves the fingerprint and sets the fingerprinting status to done.
             //[self fingerprintReady:fingerPrint forSongID:aSong.songID];
             if (aSong.uuid == nil) {
-                TGLog(TGLOG_ALL,@"No UUID found, keeping fingerprint.");
+                TGLog(TGLOG_TMP,@"No UUID found, keeping fingerprint.");
                 aSong.fingerprint = fingerPrint;
             }
             
@@ -418,7 +420,7 @@ static int const kSongPoolStartCapacity = 250;
             uuidHandler(aSong.uuid);
         }];
     } else {
-        TGLog(TGLOG_ALL,@"Fingerprint and uuid requests have already been sent.");
+        TGLog(TGLOG_TMP,@"Fingerprint and uuid requests have already been sent.");
         // Instead of this, set up an event listener that fires when the uuid
 //        [songFingerPrinter requestUUIDForSongID:aSong.songID
 //                                   withDuration:CMTimeGetSeconds(aSong.songDuration)
@@ -973,17 +975,19 @@ static int const kSongPoolStartCapacity = 250;
 
 
 - (NSNumber *)songDurationForSongID:(id<SongIDProtocol>)songID {
-    float secs = CMTimeGetSeconds([[self songForID:songID] songDuration]);
+    CMTime songDuration = [songAudioPlayer songDuration];
+    float secs = CMTimeGetSeconds(songDuration);
+//    float secs = CMTimeGetSeconds([[self songForID:songID] songDuration]);
     return [NSNumber numberWithDouble:secs];
 }
-
+/*
 - (void)setSongDuration:(NSNumber *)duration forSongId:(id<SongIDProtocol>)songId {
     TGSong* aSong = [self songForID:songId];
     if (aSong) {
         aSong.songDuration = CMTimeMake([duration intValue], 1);
     }
 }
-
+*/
 - (NSURL *)songURLForSongID:(id<SongIDProtocol>)songID {
     TGSong *aSong = [self songForID:songID];
     
@@ -1162,7 +1166,6 @@ static int const kSongPoolStartCapacity = 250;
 //- (void)setRequestedPlayheadPosition:(NSNumber *)newPosition forSongID:(id<SongIDProtocol>)songID {
 - (void)setRequestedPlayheadPosition:(NSNumber *)newPosition {
     requestedPlayheadPosition = newPosition;
-    TGLog(TGLOG_DBG,@"setRequestedPlayheadPosition: %@",newPosition);
     
     TGSong* theSong = [self songForID:[self lastRequestedSongID]];
 //    TGSong* theSong = [self songForID:songID];

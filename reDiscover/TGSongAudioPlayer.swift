@@ -74,7 +74,7 @@ class TGSongAudioPlayer: NSObject {
     func playAtTime(startTime: Float64) {
         currentPlayer?.seekToTime(CMTimeMakeWithSeconds(startTime, 1)){ success in
             if success == true {
-                println("Playback from \(startTime) succeeded")
+//                println("Playback from \(startTime) succeeded")
                 self.playSong()
             } else {
                 println("Playback from \(startTime) FAILED")
