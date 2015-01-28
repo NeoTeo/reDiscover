@@ -1162,13 +1162,15 @@ static int const kSongPoolStartCapacity = 250;
 //- (void)setRequestedPlayheadPosition:(NSNumber *)newPosition forSongID:(id<SongIDProtocol>)songID {
 - (void)setRequestedPlayheadPosition:(NSNumber *)newPosition {
     requestedPlayheadPosition = newPosition;
-//    TGLog(TGLOG_ALL,@"setRequestedPlayheadPosition: %@",newPosition);
+    TGLog(TGLOG_DBG,@"setRequestedPlayheadPosition: %@",newPosition);
     
     TGSong* theSong = [self songForID:[self lastRequestedSongID]];
 //    TGSong* theSong = [self songForID:songID];
     
     // Set the current playback time and the currently selected sweet spot to the new position.
-    [theSong setCurrentPlayTime:newPosition];
+    //[theSong setCurrentPlayTime:newPosition];
+
+    //[songAudioPlayer setCurrentPlayTime:[newPosition doubleValue]];
     [theSong setSweetSpot:newPosition];
 }
 
@@ -1491,7 +1493,7 @@ static int const kSongPoolStartCapacity = 250;
     [self fetchUUIdAndCoverArtForSongId:selectedSongId];
 }
 
-
+/*
 - (void)checkSet:(NSMutableSet*)theSet withName:(NSString*)bufferName{
     for (id<SongIDProtocol>aSongId in theSet) {
         TGSong *aSong = [self songForID:aSongId];
@@ -1500,7 +1502,7 @@ static int const kSongPoolStartCapacity = 250;
         }
     }
 }
-
+*/
 
 - (void)fetchUUIdAndCoverArtForSongId:(id<SongIDProtocol>)songId {
     [self fetchUUIdForSongId:songId withHandler:^(NSString* theUUId) {
@@ -1566,47 +1568,64 @@ static int const kSongPoolStartCapacity = 250;
         // Start observing the new player.
         [self setSongPlaybackObserver:thePlayer];
 
-        [songAudioPlayer playSong];
+        //[songAudioPlayer playSong];
         
+        TGSong* song = [self songForID:songID];
+        
+        if (song == lastRequestedSong) {
+            //TGLog(TGLOG_ALL,@"about to play song which is equal to lastRequestedSong %@",lastRequestedSong.songID);
+            //     If there's no start time, check the sweet spot server for one. If one is found set the startTime to it.
+            NSNumber* startTime = time;
+            if (startTime == nil) {
+                // At this point we really ought to make sure we have a song uuid generated from the fingerprint.
+                startTime = [self fetchSongSweetSpot:song];
+                if (startTime == nil) {
+                    startTime = [NSNumber numberWithDouble:0.0];
+                }
+            }
+            //[self playbackSong:song atTime:startTime];
+            [songAudioPlayer playAtTime:[startTime floatValue]];
+            currentlyPlayingSong = song;
+            [self setValue:[NSNumber numberWithFloat:CMTimeGetSeconds([songAudioPlayer songDuration])] forKey:@"currentSongDuration"];
+            [self setRequestedPlayheadPosition:startTime];
+        }
+
     }];
-//    [songPlayer setSong:[songCacher songPlayerForSongId:songID]];
-//    [songPlayer playSong];
-    return;
     //NUCACHE end
-
-    if ([aSong isReadyForPlayback] == YES) {
-        //TGLog(TGLOG_ALL,@"Ready");^
-        [self songReadyForPlayback:aSong atTime:time];
-    } else {
-        TGLog(TGLOG_ALL,@"Not ready");
-        // First cancel any pending requests in the operation queue and then add this.
-        // This won't delete them from the queue but it will tell each in turn it has been cancelled.
-        [urlLoadingOpQueue cancelAllOperations];
-
-        
-        NSBlockOperation* cacheOp = [[NSBlockOperation alloc] init];
-        // Weakify the block reference to avoid retain cycles.
-        __weak NSBlockOperation* weakCacheOp = cacheOp;
-
-        [weakCacheOp addExecutionBlock:^{
-            // Check for operation cancellation
-            if( weakCacheOp.isCancelled ) {return;}
-            
-            // Asynch'ly start loading the track data for aSong. songReadyForPlayback will be called back when the song is good to go.
-            [aSong performWhenReadyForPlayback:^{
-                TGLog(TGLOG_ALL,@"performWhenReadyForPlayback completion block from requestSongPlayback.");
-                [self songReadyForPlayback:aSong atTime:time];
-            }];
-        }];
-        
-        // For debug checking
-        cacheOp.completionBlock = ^{
-            TGLog(TGLOG_ALL,@"The call to performWhenReadyForPlayback was %@.",weakCacheOp.isCancelled ? @"cancelled" : @"completed");
-        };
-        
-        [urlLoadingOpQueue addOperation:cacheOp];
-
-    }
+/*
+//    if ([aSong isReadyForPlayback] == YES) {
+//        //TGLog(TGLOG_ALL,@"Ready");^
+//        [self songReadyForPlayback:aSong atTime:time];
+//    } else {
+//        TGLog(TGLOG_ALL,@"Not ready");
+//        // First cancel any pending requests in the operation queue and then add this.
+//        // This won't delete them from the queue but it will tell each in turn it has been cancelled.
+//        [urlLoadingOpQueue cancelAllOperations];
+//
+//        
+//        NSBlockOperation* cacheOp = [[NSBlockOperation alloc] init];
+//        // Weakify the block reference to avoid retain cycles.
+//        __weak NSBlockOperation* weakCacheOp = cacheOp;
+//
+//        [weakCacheOp addExecutionBlock:^{
+//            // Check for operation cancellation
+//            if( weakCacheOp.isCancelled ) {return;}
+//            
+//            // Asynch'ly start loading the track data for aSong. songReadyForPlayback will be called back when the song is good to go.
+//            [aSong performWhenReadyForPlayback:^{
+//                TGLog(TGLOG_ALL,@"performWhenReadyForPlayback completion block from requestSongPlayback.");
+//                [self songReadyForPlayback:aSong atTime:time];
+//            }];
+//        }];
+//        
+//        // For debug checking
+//        cacheOp.completionBlock = ^{
+//            TGLog(TGLOG_ALL,@"The call to performWhenReadyForPlayback was %@.",weakCacheOp.isCancelled ? @"cancelled" : @"completed");
+//        };
+//        
+//        [urlLoadingOpQueue addOperation:cacheOp];
+//    }
+ */
 }
 
 /// Setter for the playheadPos which is bound to the timeline and the playlist progress bars.
@@ -1619,7 +1638,7 @@ static int const kSongPoolStartCapacity = 250;
     return playheadPos;
 }
 
-
+/*
 - (void)playbackSong:(TGSong *)nextSong atTime:(NSNumber*)startTime {
     // Between checking and stopping, another thread can modify the currentlyPlayingSong thus causing the song to not be stopped.
     if (currentlyPlayingSong != nextSong) {
@@ -1664,7 +1683,7 @@ static int const kSongPoolStartCapacity = 250;
         [self setRequestedPlayheadPosition:startTime];
     }
 }
-
+*/
 /**
  Called by the fingerprinter when a fingerprint is ready.
  Would perhaps be better as an event ?
@@ -1741,60 +1760,25 @@ static int const kSongPoolStartCapacity = 250;
     [self setValue:playheadPosition forKey:@"playheadPos"];
 }
 
-// songReadyForPlayback is called (async'ly) by the song once it is fully loaded.
-- (void)songReadyForPlayback:(TGSong *)song atTime:(NSNumber*)startTime {
-
-    
-    //     If there's no start time, check the sweet spot server for one. If one is found set the startTime to it.
-//    if (startTime == nil) {
-//        startTime = [self fetchSongSweetSpot:song];
+//// songReadyForPlayback is called (async'ly) by the song once it is fully loaded.
+//- (void)songReadyForPlayback:(TGSong *)song atTime:(NSNumber*)startTime {
+//
+//    // Make sure the last request for playback is put on a serial queue so it always is the last song left playing.
+//    if (song == lastRequestedSong) {
+//        //TGLog(TGLOG_ALL,@"about to play song which is equal to lastRequestedSong %@",lastRequestedSong.songID);
+//        //     If there's no start time, check the sweet spot server for one. If one is found set the startTime to it.
 //        if (startTime == nil) {
-//            startTime = [NSNumber numberWithDouble:0.0];
-//        }
- 
-        //MARK: NEXT
-//        // Fetch the song's sweet spots and pass a handler that will play back the song at the sweet spot if one is found.
-//        [self fetchSongSweetSpot:song withHandler:^(NSNumber* theSweetSpot) {
-//            // wip, this just repeats the stuff below.
-//            if (song == lastRequestedSong) {
-//                dispatch_async(playbackQueue, ^{
-//                    [self playbackSong:song atTime:theSweetSpot];
-//                });
+//            // At this point we really ought to make sure we have a song uuid generated from the fingerprint.
+//            startTime = [self fetchSongSweetSpot:song];
+//            if (startTime == nil) {
+//                startTime = [NSNumber numberWithDouble:0.0];
 //            }
-//        }];
+//        }
+//        [self playbackSong:song atTime:startTime];
+//    } else {
+//        TGLog(TGLOG_ALL,@"Song %@ rejected for not being the lastRequestedSong.",song.songID);
 //    }
-    
-    // Make sure the last request for playback is put on a serial queue so it always is the last song left playing.
-    if (song == lastRequestedSong) {
-        //TGLog(TGLOG_ALL,@"about to play song which is equal to lastRequestedSong %@",lastRequestedSong.songID);
-        //     If there's no start time, check the sweet spot server for one. If one is found set the startTime to it.
-        if (startTime == nil) {
-            // At this point we really ought to make sure we have a song uuid generated from the fingerprint.
-            startTime = [self fetchSongSweetSpot:song];
-            if (startTime == nil) {
-                startTime = [NSNumber numberWithDouble:0.0];
-            }
-        }
-//TODO:
-        /*
-         So, we just did a check if the song is still the lastRequestedSong but then, if it is,
-         put a call to playbackSong onto a serial playbackQueue which 
-         
-         a) is not cleared as new items are added on and 
-         b) does not guarantee that the call will occur before lastRequestedSong changes again.
-         
-         A check inside the playbackSong that simply drops out if it no longer is the lastRequestedSong sorts 
-         it out but perhaps it would be better to solve this differently...
-         Eg. use an opQueue and cancel it before adding a new song? Though that may still let a stale one through.
-         */
-        dispatch_async(playbackQueue, ^{
-//            TGLog(TGLOG_ALL,@"putting song %lu on the playbackQueue",(unsigned long)[song songID]);
-            [self playbackSong:song atTime:startTime];
-        });
-    } else {
-        TGLog(TGLOG_ALL,@"Song %@ rejected for not being the lastRequestedSong.",song.songID);
-    }
-}
+//}
 
 
 //MARK: Debug methods

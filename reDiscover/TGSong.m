@@ -323,7 +323,7 @@ static const void *ItemStatusContext = &ItemStatusContext;
     }
     
 }
-
+/*
 //MARK: Audio playback code.
 - (void)playAtTime:(NSNumber*)startTime {
 
@@ -341,7 +341,8 @@ static const void *ItemStatusContext = &ItemStatusContext;
         }
     }
 }
-
+*/
+/*
 - (void)setSongPlaybackObserver {
     if (playerObserver == nil) {
         // Add a periodic observer so we can update the timeline GUI.
@@ -359,6 +360,7 @@ static const void *ItemStatusContext = &ItemStatusContext;
         }];
     }
 }
+ */
 /*
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object
                         change:(NSDictionary *)change context:(void *)context {
@@ -506,6 +508,7 @@ static const void *ItemStatusContext = &ItemStatusContext;
  
     @Params The offset in seconds.
  */
+/*
 - (void)setCurrentPlayTime:(NSNumber *)playTimeInSeconds {
     double playTime = [playTimeInSeconds doubleValue];
 //    TGLog(TGLOG_ALL,@"playTime %f",playTime);
@@ -525,7 +528,7 @@ static const void *ItemStatusContext = &ItemStatusContext;
     }
     return 0;
 }
-
+*/
 - (BOOL)isReadyForPlayback {
     return [self songStatus] == kSongStatusReady;
 }
