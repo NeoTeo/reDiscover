@@ -628,7 +628,7 @@ CDFIX */
                 
                 // Only update the info window for the currently playing song.
                 //if (songId == [_currentSongPool currentlyPlayingSongID]) {
-                if (songId == [_currentSongPool lastRequestedSongID]) {
+                if ([songId isEqual:[_currentSongPool lastRequestedSongID]]) {
                     [_songInfoController setSongCoverImage:tmpImage];
                 }
             }];

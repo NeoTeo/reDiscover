@@ -1555,7 +1555,12 @@ static int const kSongPoolStartCapacity = 250;
     // Currently it doesn't work because the cache cancellation stuff causes some songs marked as fetching to not be cached after all
     // and therefore not having their covers refreshed.
 //    [_delegate songPoolDidStartFetchingSong:songID];
-    
+
+    // Inform the delegate that we've started playing the song.
+    if ([_delegate respondsToSelector:@selector(songPoolDidStartPlayingSong:)]) {
+        [_delegate songPoolDidStartPlayingSong:songID];
+    }
+
     if ( makeSS ) {
         [aSong makeSweetSpotAtTime:time];
     }
@@ -1588,6 +1593,12 @@ static int const kSongPoolStartCapacity = 250;
             currentlyPlayingSong = song;
             [self setValue:[NSNumber numberWithFloat:CMTimeGetSeconds([songAudioPlayer songDuration])] forKey:@"currentSongDuration"];
             [self setRequestedPlayheadPosition:startTime];
+            
+//            // Inform the delegate that we've started playing the song.
+//            if ([_delegate respondsToSelector:@selector(songPoolDidStartPlayingSong:)]) {
+//                [_delegate songPoolDidStartPlayingSong:songID];
+//            }
+
         }
 
     }];
