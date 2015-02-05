@@ -265,10 +265,13 @@ class TGSongAudioCacheTask : NSObject {
                 println("ERROR: Cancelled?")
                 return
             }
-            
-            // Since the loading begins as soon as the player item is associated with the player I have to do this *after* adding the observer to an uninited player.
-            thePlayer.replaceCurrentItemWithPlayerItem(thePlayerItem)
-            
+        
+            //Make sure duration is available before kicking off the loading.
+            songAsset.loadValuesAsynchronouslyForKeys(["duration"]){
+
+                // Since the loading begins as soon as the player item is associated with the player I have to do this *after* adding the observer to an uninited player.
+                thePlayer.replaceCurrentItemWithPlayerItem(thePlayerItem)
+            }
         }
     }
     

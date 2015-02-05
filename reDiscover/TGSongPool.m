@@ -1165,15 +1165,12 @@ static int const kSongPoolStartCapacity = 250;
 */
 //- (void)setRequestedPlayheadPosition:(NSNumber *)newPosition forSongID:(id<SongIDProtocol>)songID {
 - (void)setRequestedPlayheadPosition:(NSNumber *)newPosition {
-    requestedPlayheadPosition = newPosition;
     
+    requestedPlayheadPosition = newPosition;
     TGSong* theSong = [self songForID:[self lastRequestedSongID]];
-//    TGSong* theSong = [self songForID:songID];
     
     // Set the current playback time and the currently selected sweet spot to the new position.
-    //[theSong setCurrentPlayTime:newPosition];
-
-    //[songAudioPlayer setCurrentPlayTime:[newPosition doubleValue]];
+    [songAudioPlayer setCurrentPlayTime:[newPosition doubleValue]];
     [theSong setSweetSpot:newPosition];
 }
 
@@ -1594,7 +1591,9 @@ static int const kSongPoolStartCapacity = 250;
             //[self playbackSong:song atTime:startTime];
             [songAudioPlayer playAtTime:[startTime floatValue]];
             currentlyPlayingSong = song;
+                        TGLog(TGLOG_TMP, @"currentSongDuration %f",CMTimeGetSeconds([songAudioPlayer songDuration]));
             [self setValue:[NSNumber numberWithFloat:CMTimeGetSeconds([songAudioPlayer songDuration])] forKey:@"currentSongDuration"];
+
             [self setRequestedPlayheadPosition:startTime];
             
 //            // Inform the delegate that we've started playing the song.
