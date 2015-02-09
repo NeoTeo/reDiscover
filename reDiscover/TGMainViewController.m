@@ -52,7 +52,7 @@
     _songGridController = [[TGSongGridViewController alloc] initWithNibName:@"TGSongGridView" bundle:nil];
     _playlistController = [[TGPlaylistViewController alloc] initWithNibName:@"TGPlaylistView" bundle:nil];
     _songInfoController = [[TGSongInfoViewController alloc] initWithNibName:@"TGSongInfoView" bundle:nil];
-    _songUIController = [[TGSongUIPopupController alloc] init];
+    _songUIController = [[TGSongUIPopupController alloc] initWithNibName:@"TGSongUIPopupController" bundle:nil];
     
     fetchingImage = [NSImage imageNamed:@"fetchingArt"];
     defaultImage = [NSImage imageNamed:@"songImage"];
@@ -66,7 +66,21 @@
 -(void)mouseDown:(NSEvent *)theEvent {
     
     NSLog(@"Main view controller mouse down.");
-    [_songGridController lmbDownAtMousePos:[theEvent locationInWindow]];
+//    [_songGridController lmbDownAtMousePos:[theEvent locationInWindow]];
+    // Here we should show the song ui
+
+    [_songUIController setCurrentUIPosition:NSMakePoint(0, 0)];//[theEvent locationInWindow]];
+    
+    TGLog(TGLOG_NUUI, @"so far");
+    
+    //[_songGridController.songGridScrollView.contentView addSubview:_songUIController.view];
+    //[self.view addSubview:_songUIController.view];
+    NSView *aView = _songUIController.view;
+    
+    [self.view addSubview:aView];
+    
+    TGLog(TGLOG_NUUI, @"so good");
+
 }
 
 -(void)viewWillAppear {
@@ -77,7 +91,12 @@
 
     [self setSongPool:[[TGSongPool alloc] init]];
     [_currentSongPool loadFromURL:_theURL];
-    
+}
+
+
+-(void)viewDidAppear {
+    [self.view addSubview:_songUIController.view];
+
 }
 
 - (id)initWithFrame:(NSRect)theFrame {
@@ -133,6 +152,8 @@
 
     // Make sure the splitview's subviews are resized according to the newly added constraints.
     [theSplitView adjustSubviews];
+    
+
 /*
     // Make and add debugDisplay
     _debugDisplayController = [[self storyboard] instantiateControllerWithIdentifier:@"DebugDisplayController"];
@@ -141,13 +162,14 @@
 */
     // TEO This is where the TGSongUIViewController should be instantiated and
     // have its delegate set to this class.
-    // Track the mouse movements.
-    NSTrackingArea *trackingArea = [[NSTrackingArea alloc]
-                                    initWithRect:NSMakeRect(0, 0, NSWidth(mainView.frame), NSHeight(mainView.frame))
-                                    options: (NSTrackingMouseEnteredAndExited | NSTrackingMouseMoved | NSTrackingActiveInKeyWindow )
-                                    owner:self userInfo:nil];
-    
-    [mainView addTrackingArea:trackingArea];
+    //NUUI
+//    // Track the mouse movements.
+//    NSTrackingArea *trackingArea = [[NSTrackingArea alloc]
+//                                    initWithRect:NSMakeRect(0, 0, NSWidth(mainView.frame), NSHeight(mainView.frame))
+//                                    options: (NSTrackingMouseEnteredAndExited | NSTrackingMouseMoved | NSTrackingActiveInKeyWindow )
+//                                    owner:self userInfo:nil];
+//    
+//    [mainView addTrackingArea:trackingArea];
 
 }
 
@@ -239,6 +261,7 @@
     // Start the view off with both panels collapsed.
     [self togglePlaylist:nil];
     [self toggleInfo:nil];
+    
 }
 
 - (void)initBindings {
