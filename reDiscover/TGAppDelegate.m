@@ -14,12 +14,6 @@
 
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification
 {
-
-
-    if (_theWindowController == NULL) {
-        _theWindowController = [[TGWindowController alloc] initWithWindowNibName:@"TGWindowController"];
-    }
-    [_theWindowController showWindow:self];    
 }
 
 - (void)applicationWillTerminate:(NSNotification *)notification {

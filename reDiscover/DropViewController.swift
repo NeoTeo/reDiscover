@@ -13,6 +13,18 @@ class DropViewController : NSViewController, DropViewDelegate {
  
     var droppedURL: NSURL?
     
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        
+        // Do any additional setup after loading the view.
+    }
+    
+    override var representedObject: AnyObject? {
+        didSet {
+            // Update the view, if already loaded.
+        }
+    }
+
     override func awakeFromNib() {
         let dropView = self.view as DropView
         dropView.delegate = self
