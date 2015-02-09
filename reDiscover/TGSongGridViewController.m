@@ -1108,6 +1108,10 @@ static NSInteger const kUndefinedID =  -1;
                                andColumn:(NSInteger)theColumn
                                withSpeedVector:(NSPoint)theSpeed {
     
+    // If a popover is shown, don't change cells.
+        if ([[_songTimelineController songTimelinePopover] isShown]) {
+            return;
+        }
     
 //    NSLog(@"The selection speed %@",NSStringFromPoint(theSpeed));
     
@@ -1132,12 +1136,12 @@ static NSInteger const kUndefinedID =  -1;
     [_delegate userSelectedSongID:songID withContext:@{@"pos" : selectionPos, @"spd" : speedVector, @"gridDims" : gridDims}];
     
     // If a popover is shown, hide it.
-    if ([[_songTimelineController songTimelinePopover] isShown]) {
-        [[_songTimelineController songTimelinePopover] close];
-    }
+//    if ([[_songTimelineController songTimelinePopover] isShown]) {
+//        [[_songTimelineController songTimelinePopover] close];
+//    }
     
-    NSRect cellFrame = [_songCellMatrix coverFrameAtRow:theRow column:theColumn];
-    [self togglePopoverAtCellFrame:cellFrame withDelay:3.0];
+//    NSRect cellFrame = [_songCellMatrix coverFrameAtRow:theRow column:theColumn];
+//    [self togglePopoverAtCellFrame:cellFrame withDelay:3.0];
 }
 
 

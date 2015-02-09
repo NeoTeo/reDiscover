@@ -205,26 +205,9 @@
     } else {
         [_myObjectController setContent:_currentSongPool];
     }
-    // Bind the timeline value transformer's maxDuration with the song pool's currentSongDuration.
-    NSValueTransformer * transformer = [NSValueTransformer valueTransformerForName:@"TimelineTransformer"];
-    [transformer bind:@"maxDuration" toObject:_currentSongPool withKeyPath:@"currentSongDuration" options:nil];
-   
-    // Bind the playlist controller's progress indicator value parameter with the song pool's playheadPos via the timeline value transformer.
-    [[_playlistController playlistProgress] bind:@"value"
-                                        toObject:_currentSongPool
-                                     withKeyPath:@"playheadPos"
-                                         options:@{NSValueTransformerNameBindingOption: @"TimelineTransformer"}];
-    
-    // Bind the timeline nsslider (timelineBar) to observe the requestedPlayheadPosition of the currently playing song via the objectcontroller using the TimelineTransformer.
-    [_songGridController.songTimelineController.timelineBar bind:@"value"
-                                                        toObject:_myObjectController
-                                                     withKeyPath:@"selection.requestedPlayheadPosition"
-                                                         options:@{NSValueTransformerNameBindingOption: @"TimelineTransformer"}];
 
-    // Bind the selection's (the songpool) playheadPos with the timeline bar cell's currentPlayheadPositionInPercent so we can animate the bar.
-    [_songGridController.songTimelineController.timelineBar.cell bind:@"currentPlayheadPositionInPercent"
-                                                             toObject:_myObjectController withKeyPath:@"selection.playheadPos"
-                                                              options:@{NSValueTransformerNameBindingOption: @"TimelineTransformer"}];
+    // Hook up the various bindings.
+    [self initBindings];
     
     // Get the sizes of the playlist and info views before they are resized by the layoutSubtree call.
     NSSplitView *theSplitView = [[[self view] subviews] objectAtIndex:0];
@@ -244,6 +227,30 @@
     [self toggleInfo:nil];
 }
 
+- (void)initBindings {
+    
+    // Bind the timeline value transformer's maxDuration with the song pool's currentSongDuration.
+    NSValueTransformer * transformer = [NSValueTransformer valueTransformerForName:@"TimelineTransformer"];
+    [transformer bind:@"maxDuration" toObject:_currentSongPool withKeyPath:@"currentSongDuration" options:nil];
+    
+    // Bind the playlist controller's progress indicator value parameter with the song pool's playheadPos via the timeline value transformer.
+    [[_playlistController playlistProgress] bind:@"value"
+                                        toObject:_currentSongPool
+                                     withKeyPath:@"playheadPos"
+                                         options:@{NSValueTransformerNameBindingOption: @"TimelineTransformer"}];
+    
+    // Bind the timeline nsslider (timelineBar) to observe the requestedPlayheadPosition of the currently playing song via the objectcontroller using the TimelineTransformer.
+    [_songGridController.songTimelineController.timelineBar bind:@"value"
+                                                        toObject:_myObjectController
+                                                     withKeyPath:@"selection.requestedPlayheadPosition"
+                                                         options:@{NSValueTransformerNameBindingOption: @"TimelineTransformer"}];
+    
+    // Bind the selection's (the songpool) playheadPos with the timeline bar cell's currentPlayheadPositionInPercent so we can animate the bar.
+    [_songGridController.songTimelineController.timelineBar.cell bind:@"currentPlayheadPositionInPercent"
+                                                             toObject:_myObjectController withKeyPath:@"selection.playheadPos"
+                                                              options:@{NSValueTransformerNameBindingOption: @"TimelineTransformer"}];
+    
+}
 
 //- (id)lastRequestedSongID {
 //    return [_currentSongPool lastRequestedSongID];
