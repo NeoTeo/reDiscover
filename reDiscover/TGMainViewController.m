@@ -52,6 +52,7 @@
     _songGridController = [[TGSongGridViewController alloc] initWithNibName:@"TGSongGridView" bundle:nil];
     _playlistController = [[TGPlaylistViewController alloc] initWithNibName:@"TGPlaylistView" bundle:nil];
     _songInfoController = [[TGSongInfoViewController alloc] initWithNibName:@"TGSongInfoView" bundle:nil];
+    _songUIController = [[TGSongUIPopupController alloc] init];
     
     fetchingImage = [NSImage imageNamed:@"fetchingArt"];
     defaultImage = [NSImage imageNamed:@"songImage"];
@@ -59,6 +60,13 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(songCoverWasUpdated:) name:@"songCoverUpdated" object:nil];
     
     // ^^ From awakeFromNib
+}
+
+
+-(void)mouseDown:(NSEvent *)theEvent {
+    
+    NSLog(@"Main view controller mouse down.");
+    [_songGridController lmbDownAtMousePos:[theEvent locationInWindow]];
 }
 
 -(void)viewWillAppear {
@@ -133,9 +141,15 @@
 */
     // TEO This is where the TGSongUIViewController should be instantiated and
     // have its delegate set to this class.
+    // Track the mouse movements.
+    NSTrackingArea *trackingArea = [[NSTrackingArea alloc]
+                                    initWithRect:NSMakeRect(0, 0, NSWidth(mainView.frame), NSHeight(mainView.frame))
+                                    options: (NSTrackingMouseEnteredAndExited | NSTrackingMouseMoved | NSTrackingActiveInKeyWindow )
+                                    owner:self userInfo:nil];
     
-}
+    [mainView addTrackingArea:trackingArea];
 
+}
 
 - (void)addConstraintsTo:(NSSplitView *)theSplitView {
     

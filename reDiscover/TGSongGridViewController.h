@@ -80,7 +80,7 @@
 @property NSProgressIndicator *pgIndicator;
 
 
-
+- (void)lmbDownAtMousePos:(NSPoint)mousePos;
 
 - (id)initWithFrame:(NSRect)newFrame;
 - (void)addMatrixCell2:(id<SongIDProtocol>)songID;

@@ -14,7 +14,9 @@
 @class TGSongCellMatrix;
 @class TGPlaylistViewController;
 @class TGSongInfoViewController;
-@class TGSongUIViewController;
+@class TGSongUIPopupController;
+
+//@class TGSongUIViewController;
 //@class TGSongTimelineViewController;
 @class TGIdleTimer;
 @class DebugDisplayController;
@@ -51,8 +53,9 @@
 @property TGPlaylistViewController *playlistController;
 @property TGSongGridViewController *songGridController;
 @property TGSongInfoViewController *songInfoController;
+@property TGSongUIPopupController *songUIController;
 
-@property TGSongUIViewController *songUIController;
+//@property TGSongUIViewController *songUIController;
 
 @property DebugDisplayController* debugDisplayController;
 

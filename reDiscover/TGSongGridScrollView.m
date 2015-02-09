@@ -106,6 +106,7 @@
     return self;
 }
 
+/* NUUI
 -(void)mouseDown:(NSEvent *)theEvent {
     
     NSLog(@"lmb");
@@ -125,6 +126,7 @@
     }
 }
 
+
 - (void)rightMouseDown:(NSEvent *)theEvent {
     NSLog(@"rmb");
     return;
@@ -142,6 +144,7 @@
 //    }
 
 }
+*/
 
 // Update focus notifies the delegate when we change the focus (via the pointer) to a different song.
 //- (void)updateFocus:(NSPoint)locationInWindow {

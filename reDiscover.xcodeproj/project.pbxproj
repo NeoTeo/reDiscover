@@ -18,6 +18,8 @@
 		AB301E7619050C830093B654 /* TEOSongData.m in Sources */ = {isa = PBXBuildFile; fileRef = AB301E7519050C830093B654 /* TEOSongData.m */; };
 		AB3E9752187C20D600BECC09 /* TGPlaylistCellView.m in Sources */ = {isa = PBXBuildFile; fileRef = AB3E9751187C20D600BECC09 /* TGPlaylistCellView.m */; };
 		AB3FF56319C1D3CE00D6C5EF /* UploadedSSData.m in Sources */ = {isa = PBXBuildFile; fileRef = AB3FF56219C1D3CE00D6C5EF /* UploadedSSData.m */; };
+		AB4529381A88EAF300A6B15A /* TGSongUIPopupController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB4529361A88EAF300A6B15A /* TGSongUIPopupController.swift */; };
+		AB4529391A88EAF300A6B15A /* TGSongUIPopupController.xib in Resources */ = {isa = PBXBuildFile; fileRef = AB4529371A88EAF300A6B15A /* TGSongUIPopupController.xib */; };
 		AB4E078C19B618160052EEC0 /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = AB241FD9188977AB00E8E03F /* libz.dylib */; };
 		AB4E078D19B6181E0052EEC0 /* libiconv.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = AB0D052D1889E06400F08566 /* libiconv.dylib */; };
 		AB4E078F19B618260052EEC0 /* QTKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AB4E078E19B618260052EEC0 /* QTKit.framework */; };
@@ -112,6 +114,8 @@
 		AB3E9751187C20D600BECC09 /* TGPlaylistCellView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TGPlaylistCellView.m; sourceTree = "<group>"; };
 		AB3FF56119C1D3CE00D6C5EF /* UploadedSSData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UploadedSSData.h; sourceTree = "<group>"; };
 		AB3FF56219C1D3CE00D6C5EF /* UploadedSSData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UploadedSSData.m; sourceTree = "<group>"; };
+		AB4529361A88EAF300A6B15A /* TGSongUIPopupController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TGSongUIPopupController.swift; sourceTree = "<group>"; };
+		AB4529371A88EAF300A6B15A /* TGSongUIPopupController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = TGSongUIPopupController.xib; sourceTree = "<group>"; };
 		AB4E078E19B618260052EEC0 /* QTKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QTKit.framework; path = System/Library/Frameworks/QTKit.framework; sourceTree = SDKROOT; };
 		AB56D9F218EC14D5005AB947 /* CAKeyframeAnimation+Parametric.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "CAKeyframeAnimation+Parametric.h"; sourceTree = "<group>"; };
 		AB56D9F318EC14D5005AB947 /* CAKeyframeAnimation+Parametric.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "CAKeyframeAnimation+Parametric.m"; sourceTree = "<group>"; };
@@ -276,6 +280,8 @@
 		AB3E974B187BFD6000BECC09 /* Song grid panel */ = {
 			isa = PBXGroup;
 			children = (
+				AB4529361A88EAF300A6B15A /* TGSongUIPopupController.swift */,
+				AB4529371A88EAF300A6B15A /* TGSongUIPopupController.xib */,
 				AB85BC161875AB5200670905 /* TGMainViewController.h */,
 				AB85BC171875AB5200670905 /* TGMainViewController.m */,
 				AB1E831519586C3C00D61BCA /* MainViewController.swift */,
@@ -564,6 +570,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				AB4529391A88EAF300A6B15A /* TGSongUIPopupController.xib in Resources */,
 				AB85BBE11875AACF00670905 /* InfoPlist.strings in Resources */,
 				AB85BC4A1875AB5200670905 /* TGSongInfoView.xib in Resources */,
 				AB85BC561875AB5200670905 /* TGWindowController.xib in Resources */,
@@ -670,6 +677,7 @@
 				AB85BC3F1875AB5200670905 /* TGGridCell.m in Sources */,
 				AB85BC431875AB5200670905 /* TGPlaylist.m in Sources */,
 				AB85BC4C1875AB5200670905 /* TGSongPool.m in Sources */,
+				AB4529381A88EAF300A6B15A /* TGSongUIPopupController.swift in Sources */,
 				AB7E0717195AF25600570E39 /* DropWindowController.swift in Sources */,
 				AB7FFB6319589D1E002D1E63 /* DropView.swift in Sources */,
 				AB5D1DD51A35D714003D07A2 /* NSMutableArray+QueueAdditions.m in Sources */,

@@ -11,7 +11,7 @@
 #import "TGSongGridScrollView.h"
 #import "TGSongPool.h"
 #import "TGPlaylistViewController.h"
-#import "TGSongUIViewController.h"
+//#import "TGSongUIViewController.h"
 #import "TGSongInfoViewController.h"
 #import "TGSongTimelineViewController.h"
 #import "TGMainViewController.h"
@@ -1032,6 +1032,20 @@ static NSInteger const kUndefinedID =  -1;
     NSLog(@"songgridcontroller keydown");
 }
 
+- (void)lmbDownAtMousePos:(NSPoint)mousePos {
+    NSPoint mouseLoc = [_songGridScrollView convertPoint:mousePos fromView:nil];
+    NSInteger mouseRow, mouseCol;
+    [_songGridScrollView.documentView getRow:&mouseRow column:&mouseCol forPoint:mouseLoc];
+    
+    TGGridCell *currentCell = [_songGridScrollView.documentView cellAtRow:mouseRow column:mouseCol];
+    if ([currentCell tag] != -1) {
+        
+        NSRect theRect = [_songGridScrollView.documentView coverFrameAtRow:mouseRow column:mouseCol];
+        [self buttonDownInCellFrame:theRect];
+    }
+   
+}
+
 - (void)buttonDownInCellFrame:(NSRect)cellFrame {
 //    [self togglePopoverAtCellFrame:cellFrame withDelay:0.0];
 //    return;
@@ -1098,7 +1112,7 @@ static NSInteger const kUndefinedID =  -1;
 // TGSongGridScrollViewDelegate methods:
 - (void)songGridScrollViewDidScrollToRect:(NSRect)theRect {
     // TEO: Make a method inside the songUIViewController that is a delegate of the TGSongGridScrollView that is called whenever scrolling/moving.
-    [_songUIViewController setUIPosition:theRect.origin withPopAnimation:NO];
+    //[_songUIViewController setUIPosition:theRect.origin withPopAnimation:NO];
 }
 
 
@@ -1116,7 +1130,7 @@ static NSInteger const kUndefinedID =  -1;
 //    NSLog(@"The selection speed %@",NSStringFromPoint(theSpeed));
     
     NSRect theRect = [_songCellMatrix convertRect:[_songCellMatrix coverFrameAtRow:theRow column:theColumn] toView:_songGridScrollView];
-    [_songUIViewController setUIPosition:theRect.origin withPopAnimation:YES];
+    //[_songUIViewController setUIPosition:theRect.origin withPopAnimation:YES];
     
     TGGridCell *theCell = [_songCellMatrix cellAtRow:theRow column:theColumn];
     // Early out if the coordinates are pointing to an invalid cell.
