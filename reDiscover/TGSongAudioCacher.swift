@@ -266,7 +266,7 @@ class TGSongAudioCacheTask : NSObject {
                 return
             }
         
-            //Make sure duration is available before kicking off the loading.
+            //Make sure the asset's duration value is available before kicking off the song player loading.
             songAsset.loadValuesAsynchronouslyForKeys(["duration"]){
 
                 // Since the loading begins as soon as the player item is associated with the player I have to do this *after* adding the observer to an uninited player.

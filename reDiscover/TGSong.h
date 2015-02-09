@@ -151,7 +151,7 @@ typedef void(^MyCustomBlock)(void);
 @protocol TGSongDelegate <NSObject>
 //@optional
 - (id<SongIDProtocol>)lastRequestedSongID;
-- (void)songReadyForPlayback:(TGSong *)song atTime:(NSNumber*)startTime;
+//- (void)songReadyForPlayback:(TGSong *)song atTime:(NSNumber*)startTime;
 - (void)songDidFinishPlayback:(TGSong *)song;
 - (void)songDidUpdatePlayheadPosition:(NSNumber *)playheadPosition;
 - (dispatch_queue_t)serialQueue;

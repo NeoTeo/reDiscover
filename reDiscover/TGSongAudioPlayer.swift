@@ -91,7 +91,7 @@ class TGSongAudioPlayer: NSObject {
                 println("Playback from \(startTime) succeeded")
                 self.playSong()
             } else {
-                println("Playback from \(startTime) FAILED")
+                println("Playback from \(startTime) failed/was interrupted.")
             }
         }
         

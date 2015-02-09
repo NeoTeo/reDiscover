@@ -67,7 +67,7 @@
 
 - (NSDictionary *)songDataForSongID:(id<SongIDProtocol>)songID;
 - (NSNumber *)songDurationForSongID:(id<SongIDProtocol>)songID;
-- (void)setSongDuration:(NSNumber*)duration forSongId:(id<SongIDProtocol>)songId;
+//- (void)setSongDuration:(NSNumber*)duration forSongId:(id<SongIDProtocol>)songId;
 
 - (id<SongIDProtocol>)lastRequestedSongID;
 - (id<SongIDProtocol>)currentlyPlayingSongID;
@@ -264,7 +264,7 @@
 // TGSongDelegate protocol methods called by TGSong
 - (void)songDidFinishPlayback:(TGSong *)song;
 - (void)songDidUpdatePlayheadPosition:(NSNumber *)playheadPosition;
-- (void)songReadyForPlayback:(TGSong *)song atTime:(NSNumber*)startTime;
+//- (void)songReadyForPlayback:(TGSong *)song atTime:(NSNumber*)startTime;
 - (NSSet*)currentCache;
 
 //MARK: Test methods
