@@ -50,20 +50,18 @@ class SweetSpotServerIO: NSObject {
     func setupUploadedSweetSpotsMOC() {
         var error: NSError?
         
-        if let modelURL = NSBundle.mainBundle().URLForResource("uploadedSS", withExtension: "momd") {
+        if  let modelURL = NSBundle.mainBundle().URLForResource("uploadedSS", withExtension: "momd"),
+            let mom = NSManagedObjectModel(contentsOfURL: modelURL) {
 
-            if let mom = NSManagedObjectModel(contentsOfURL: modelURL) {
+            uploadedSweetSpotsMOC = NSManagedObjectContext(concurrencyType: .MainQueueConcurrencyType)
+            uploadedSweetSpotsMOC?.persistentStoreCoordinator = NSPersistentStoreCoordinator(managedObjectModel: mom)
             
-                uploadedSweetSpotsMOC = NSManagedObjectContext(concurrencyType: .MainQueueConcurrencyType)
-                uploadedSweetSpotsMOC?.persistentStoreCoordinator = NSPersistentStoreCoordinator(managedObjectModel: mom)
-                
-                // Build the URL where to store the data.
-                let documentsDirectory = NSFileManager.defaultManager().URLForDirectory(.DocumentDirectory, inDomain: .UserDomainMask, appropriateForURL: nil, create: true, error: &error)?.URLByAppendingPathComponent("uploadedSS.xml")
+            // Build the URL where to store the data.
+            let documentsDirectory = NSFileManager.defaultManager().URLForDirectory(.DocumentDirectory, inDomain: .UserDomainMask, appropriateForURL: nil, create: true, error: &error)?.URLByAppendingPathComponent("uploadedSS.xml")
 
-                uploadedSweetSpotsMOC?.persistentStoreCoordinator?.addPersistentStoreWithType(NSXMLStoreType,configuration: nil,URL: documentsDirectory, options: nil, error: &error)
-                if error != nil {
-                    println("SweetSpotServerIO init error: \(error)")
-                }
+            uploadedSweetSpotsMOC?.persistentStoreCoordinator?.addPersistentStoreWithType(NSXMLStoreType,configuration: nil,URL: documentsDirectory, options: nil, error: &error)
+            if error != nil {
+                println("SweetSpotServerIO init error: \(error)")
             }
         }
     }
@@ -131,12 +129,11 @@ class SweetSpotServerIO: NSObject {
     
     
     func sweetSpotHasBeenUploaded(theSS: Double, theSongID: SongIDProtocol) -> Bool {
-        if let songUUID = delegate?.UUIDStringForSongID(theSongID) {
-            if let ssData = uploadedSweetSpots[songUUID] as UploadedSSData? {
-                if let sweetSpots = ssData.sweetSpots as NSArray? {
-                    return sweetSpots.containsObject(theSS)
-                }
-            }
+        if  let songUUID = delegate?.UUIDStringForSongID(theSongID),
+            let ssData = uploadedSweetSpots[songUUID] as UploadedSSData?,
+            let sweetSpots = ssData.sweetSpots as NSArray? {
+                
+            return sweetSpots.containsObject(theSS)
         }
         return false
     }

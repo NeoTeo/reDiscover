@@ -263,11 +263,11 @@
 				AB85BC2D1875AB5200670905 /* TGSongUIViewController.m */,
 				AB85BC111875AB5200670905 /* TGGridCell.h */,
 				AB85BC121875AB5200670905 /* TGGridCell.m */,
-				AB85BC151875AB5200670905 /* TGMainView.xib */,
 				AB85BC5D1875AD7A00670905 /* TGSongGridScrollView.h */,
 				AB85BC5E1875AD7A00670905 /* TGSongGridScrollView.m */,
 				AB85BC1F1875AB5200670905 /* TGSongCellMatrix.h */,
 				AB85BC201875AB5200670905 /* TGSongCellMatrix.m */,
+				AB85BC151875AB5200670905 /* TGMainView.xib */,
 				AB85BC211875AB5200670905 /* TGSongGridView.xib */,
 				AB3E974F187BFDC700BECC09 /* song timeline */,
 			);
@@ -279,6 +279,9 @@
 			children = (
 				AB7358EF1A63D6D300E08D5A /* TGSongAudioPlayer.swift */,
 				AB8182D71A5D5DAA000939F1 /* TGSongAudioCacher.swift */,
+				AB71279A19407C8E0002B1F8 /* CoverArtArchiveWebFetcher.swift */,
+				ABB33FEF19C72C3800439A5E /* SweetSpotServerIO.swift */,
+				ABB770AA1950486600155EE7 /* SongID.swift */,
 				AB5D1DD31A35D714003D07A2 /* NSMutableArray+QueueAdditions.h */,
 				AB5D1DD41A35D714003D07A2 /* NSMutableArray+QueueAdditions.m */,
 				AB9A44BD19FFC97B00605DCC /* NSImage+TGHashId.h */,
@@ -287,14 +290,11 @@
 				AB01DB05194F49B800368693 /* TGStack.h */,
 				AB85BC0F1875AB5200670905 /* TGFingerPrinter.h */,
 				AB85BC101875AB5200670905 /* TGFingerPrinter.m */,
-				AB71279A19407C8E0002B1F8 /* CoverArtArchiveWebFetcher.swift */,
 				AB71279919407C8D0002B1F8 /* reDiscover-Bridging-Header.h */,
 				AB85BC2E1875AB5200670905 /* TGSongUserData.h */,
 				AB85BC2F1875AB5200670905 /* TGSongUserData.m */,
 				AB85BC131875AB5200670905 /* TGIdleTimer.h */,
 				AB85BC141875AB5200670905 /* TGIdleTimer.m */,
-				ABCB68E818FD57E4009CF277 /* TEOSong.xcdatamodeld */,
-				ABFC8EB319C1BCE90007ECCB /* uploadedSS.xcdatamodeld */,
 				AB3FF56119C1D3CE00D6C5EF /* UploadedSSData.h */,
 				AB3FF56219C1D3CE00D6C5EF /* UploadedSSData.m */,
 				AB301E7419050C830093B654 /* TEOSongData.h */,
@@ -303,8 +303,8 @@
 				AB85BC281875AB5200670905 /* TGSongPool.m */,
 				AB85BC1D1875AB5200670905 /* TGSong.h */,
 				AB85BC1E1875AB5200670905 /* TGSong.m */,
-				ABB770AA1950486600155EE7 /* SongID.swift */,
-				ABB33FEF19C72C3800439A5E /* SweetSpotServerIO.swift */,
+				ABCB68E818FD57E4009CF277 /* TEOSong.xcdatamodeld */,
+				ABFC8EB319C1BCE90007ECCB /* uploadedSS.xcdatamodeld */,
 			);
 			name = Common;
 			sourceTree = "<group>";
