@@ -45,7 +45,7 @@ class CoverArtArchiveWebFetcher : NSObject {
                 // also look at adding more leniency levels with better secondary choices.
                 if leniencyLevel == 1 || release["title"] as? String == songAlbum {
                     
-                    let releaseMBID = release["id"] as NSString
+                    let releaseMBID = release["id"] as! NSString
                     let coverArtArchiveURL = NSURL(string:"http://coverartarchive.org/release/\(releaseMBID)")
                     // blocks (presumably) until the url returns the data. This means this function should be called on a non-main thread.
                     if coverArtArchiveURL == nil { continue }
@@ -58,17 +58,17 @@ class CoverArtArchiveWebFetcher : NSObject {
                     }
                     
                     // coverartarchive.org returns a dictionary at the top level.
-                    let resultJSON = NSJSONSerialization.JSONObjectWithData(result!, options: NSJSONReadingOptions.MutableContainers, error: nil) as NSDictionary
+                    let resultJSON = NSJSONSerialization.JSONObjectWithData(result!, options: NSJSONReadingOptions.MutableContainers, error: nil) as! NSDictionary
                     
-                    let images = resultJSON["images"] as NSArray
+                    let images = resultJSON["images"] as! NSArray
                     
                     if images.count == 0 {
                         continue
                     }
                     
-                    let imageEntry = images[0] as NSDictionary
+                    let imageEntry = images[0] as! NSDictionary
                     
-                    let imageURL = NSURL(string: imageEntry["image"] as String)
+                    let imageURL = NSURL(string: imageEntry["image"] as! String)
                     if imageURL == nil { continue }
                     
                     let coverArtData = NSData(contentsOfURL: imageURL!)

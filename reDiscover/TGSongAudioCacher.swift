@@ -190,7 +190,7 @@ class TGSongAudioCacheTask : NSObject {
 
     func generateWantedSongIds(theContext: NSDictionary, operationBlock: NSBlockOperation?, idHandler: (SongIDProtocol)->()) -> Int {
         
-        let selectedSongId  = theContext["selectedSongId"] as SongIDProtocol
+        let selectedSongId  = theContext["selectedSongId"] as! SongIDProtocol
         let selectionPos    = theContext["pos"]!.pointValue as NSPoint
         let gridDims        = theContext["gridDims"]!.pointValue as NSPoint
         let radius          = 2
@@ -279,7 +279,7 @@ class TGSongAudioCacheTask : NSObject {
     override func observeValueForKeyPath(keyPath: String, ofObject object: AnyObject, change: [NSObject : AnyObject], context: UnsafeMutablePointer<Void>) {
         if context == &myContext {
 
-            let playa = object as AVPlayer
+            let playa = object as! AVPlayer
             
             // call the closure that corresponds to this player
             //FIXME: Don't actually believe loadingPlayers can be accessed concurrently. 

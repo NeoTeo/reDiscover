@@ -26,7 +26,7 @@ class DropViewController : NSViewController, DropViewDelegate {
     }
 
     override func awakeFromNib() {
-        let dropView = self.view as DropView
+        let dropView = self.view as! DropView
         dropView.delegate = self
         
         // We need this to bring the window to the front on app start.
@@ -38,7 +38,7 @@ class DropViewController : NSViewController, DropViewDelegate {
         println("Drop View Controller preparing for segue")
 
 //        let mainVC = segue.destinationController as MainViewController
-        let mainVC = segue.destinationController as TGMainViewController
+        let mainVC = segue.destinationController as! TGMainViewController
 
         if droppedURL == nil {
             println("Error: no song pool")
