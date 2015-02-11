@@ -57,6 +57,7 @@ class DropViewController : NSViewController, DropViewDelegate {
             // We need to do this again because the app is deactivated when the user clicks a folder
             // in Finder to drag onto here.
             NSApp.activateIgnoringOtherApps(true)
+            self.view.window?.close()
         }
     }
 
