@@ -30,7 +30,7 @@ class DropViewController : NSViewController, DropViewDelegate {
         dropView.delegate = self
         
         // We need this to bring the window to the front on app start.
-        NSApp.activateIgnoringOtherApps(true)
+//        NSApp.activateIgnoringOtherApps(true)
 
     }
    
