@@ -37,5 +37,9 @@ class TGSongUIPopupController: NSViewController {
     
     override func viewDidAppear() {
         println("View DID appear!")
+        println("View DID appear!")
+        println("View DID appear!")
+        let wtf = 32
+        println("WTF! \(wtf)")
     }
 }

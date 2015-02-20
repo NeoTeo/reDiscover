@@ -177,29 +177,25 @@ static const void *ItemStatusContext = &ItemStatusContext;
  */
 - (BOOL)loadSongMetadata {
     //TODO: use the verbose url type.
-//    NSString *tmpString = [self.TEOData.urlString stringByDeletingPathExtension];
-    NSString *tmpString = [self.urlString stringByDeletingPathExtension];
+
+    NSURL *theURL = [NSURL URLWithString:self.urlString];
+    NSString * pathString = [theURL path];
+    
+    NSString *tmpString = [pathString stringByDeletingPathExtension];
     NSString* fileName = [tmpString lastPathComponent];
     tmpString =[tmpString stringByDeletingLastPathComponent];
 //    NSString* album = [tmpString lastPathComponent];
     tmpString =[tmpString stringByDeletingLastPathComponent];
     NSString* artist = [tmpString lastPathComponent];
     
-    // Get other metadata via the MDItem of the file.
-//    NSURL *theURL = [NSURL URLWithString:self.TEOData.urlString];
-    NSURL *theURL = [NSURL URLWithString:self.urlString];
-
-    MDItemRef metadata = MDItemCreate(NULL, (__bridge CFStringRef)[theURL path]);
-    
     // Add reasonable defaults
-//    self.TEOData.artist = [artist stringByRemovingPercentEncoding];//@"Unknown";
-//    self.TEOData.title  = [fileName stringByRemovingPercentEncoding];//@"Unknown";
-//    self.TEOData.album  = [album stringByRemovingPercentEncoding];//@"Unknown";
-//    self.TEOData.genre  = @"Unknown";
     self.artist = [artist stringByRemovingPercentEncoding];//@"Unknown";
     self.title  = [fileName stringByRemovingPercentEncoding];//@"Unknown";
     self.album  = @"Unknown";//[album stringByRemovingPercentEncoding];//@"Unknown";
     self.genre  = @"Unknown";
+    
+    // Get other metadata via the MDItem of the file.
+    MDItemRef metadata = MDItemCreate(kCFAllocatorDefault, (__bridge CFStringRef)pathString);
     
     if (metadata) {
         NSString* aString;

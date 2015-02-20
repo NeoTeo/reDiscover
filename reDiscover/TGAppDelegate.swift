@@ -13,10 +13,14 @@ class TGAppDelegate: NSObject, NSApplicationDelegate {
     func applicationDidFinishLaunching(aNotification: NSNotification) {
         // Insert code here to initialize your application
 //        println("We did \(self.window)")
-        
+        NSApplication.sharedApplication()
     }
     
     func applicationWillTerminate(aNotification: NSNotification) {
         // Insert code here to tear down your application
+    }
+    
+    func applicationDidBecomeActive(notification: NSNotification) {
+        println("Active application!")
     }
 }
