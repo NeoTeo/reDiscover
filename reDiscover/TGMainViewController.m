@@ -52,7 +52,11 @@
     _songGridController = [[TGSongGridViewController alloc] initWithNibName:@"TGSongGridView" bundle:nil];
     _playlistController = [[TGPlaylistViewController alloc] initWithNibName:@"TGPlaylistView" bundle:nil];
     _songInfoController = [[TGSongInfoViewController alloc] initWithNibName:@"TGSongInfoView" bundle:nil];
+    
     _songUIController = [[TGSongUIPopupController alloc] initWithNibName:@"TGSongUIPopupController" bundle:nil];
+    
+    // Start it off hidden.
+    [_songUIController.view setHidden:YES];
     
     fetchingImage = [NSImage imageNamed:@"fetchingArt"];
     defaultImage = [NSImage imageNamed:@"songImage"];
@@ -69,18 +73,11 @@
 //    [_songGridController lmbDownAtMousePos:[theEvent locationInWindow]];
     // Here we should show the song ui
 
-    [_songUIController setCurrentUIPosition:NSMakePoint(0, 0)];//[theEvent locationInWindow]];
+    [_songUIController setCurrentUIPosition:[theEvent locationInWindow]];
     
-    TGLog(TGLOG_NUUI, @"so far");
+    // Toggle the UI
+    [_songUIController showUI:![_songUIController isUIActive]];
     
-    //[_songGridController.songGridScrollView.contentView addSubview:_songUIController.view];
-    //[self.view addSubview:_songUIController.view];
-    NSView *aView = _songUIController.view;
-    
-    [self.view addSubview:aView];
-    
-    TGLog(TGLOG_NUUI, @"so good");
-
 }
 
 -(void)viewWillAppear {

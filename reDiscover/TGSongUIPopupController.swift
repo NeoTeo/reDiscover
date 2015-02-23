@@ -42,4 +42,13 @@ class TGSongUIPopupController: NSViewController {
         let wtf = 32
         println("WTF! \(wtf)")
     }
+    
+    func showUI(state: Bool) {
+        view.hidden = state
+    }
+    
+    func isUIActive() -> Bool {
+        return view.hidden
+    }
+    
 }
