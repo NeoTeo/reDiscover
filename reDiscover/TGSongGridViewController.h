@@ -81,6 +81,7 @@
 
 
 - (void)lmbDownAtMousePos:(NSPoint)mousePos;
+-(NSRect)cellFrameAtMousePos:(NSPoint)mousePos;
 -(NSPoint)centerOfCellAtMousePos:(NSPoint)mousePos;
 
 - (id)initWithFrame:(NSRect)newFrame;

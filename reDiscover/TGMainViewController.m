@@ -59,15 +59,28 @@
 
 
 -(void)mouseDown:(NSEvent *)theEvent {
-    
-    NSLog(@"Main view controller mouse down.");
-//    [_songGridController lmbDownAtMousePos:[theEvent locationInWindow]];
+#define UI_MOUSE_RELATIVE
     // Here we should show the song ui
-
-    NSPoint cellCenter = [theEvent locationInWindow];//[_songGridController centerOfCellAtMousePos:[theEvent locationInWindow]];
-    [_songUIController setCurrentUIPosition:CGPointMake(cellCenter.x-75, cellCenter.y-75)];
+#ifdef UI_MOUSE_RELATIVE
+    // Convert the cell frame from song grid controller view coords back to window coordinates.
+    NSPoint localPoint = [theEvent locationInWindow];
+    localPoint.x -= 75;
+    localPoint.y -= 75;
+#else
+    // Convert from window coordinates to song grid view controller coordinates. This is
+    // the middle pane in the split view which is unaffected by window resizing (when panes are shown/hidden).
+    NSPoint gridViewPos = [_songGridController.view convertPoint:[theEvent locationInWindow] fromView:nil];
     
-    // Toggle the UI
+    // Get the frame of the cell at the position on the grid.
+    NSRect cellFrame = [_songGridController cellFrameAtMousePos:gridViewPos];//[theEvent locationInWindow];
+    
+    // Convert the cell frame from song grid controller view coords back to window coordinates.
+    NSPoint localPoint = [self.view convertPoint:cellFrame.origin fromView:_songGridController.view];
+#endif
+    // Set the UI position to be relative to the cell over which we moused down.
+    [_songUIController setCurrentUIPosition:localPoint];
+    
+    // Toggle the UI.
     [_songUIController showUI:![_songUIController isUIActive]];
     
 }

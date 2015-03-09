@@ -1047,6 +1047,18 @@ static NSInteger const kUndefinedID =  -1;
    
 }
 
+-(NSRect)cellFrameAtMousePos:(NSPoint)mousePos {
+    NSPoint mouseLoc = mousePos;//[_songGridScrollView convertPoint:mousePos fromView:nil];
+    // This gets the point on the scroll view which means that the UI would move with the scroll and
+    // off screen as well.
+//    NSPoint testPoint = [_songGridScrollView.contentView convertPoint:mousePos fromView:nil];
+//    TGLog(TGLOG_NUUI, @"testPos is %@",NSStringFromPoint(testPoint));
+
+    NSInteger mouseRow, mouseCol;
+    [_songGridScrollView.documentView getRow:&mouseRow column:&mouseCol forPoint:mouseLoc];
+    return [_songCellMatrix coverFrameAtRow:mouseRow column:mouseCol];
+}
+
 -(NSPoint)centerOfCellAtMousePos:(NSPoint)mousePos {
     NSPoint mouseLoc = [_songGridScrollView convertPoint:mousePos fromView:nil];
     NSInteger mouseRow, mouseCol;
@@ -1055,7 +1067,10 @@ static NSInteger const kUndefinedID =  -1;
 //    TGGridCell *currentCell = [_songGridScrollView.documentView cellAtRow:mouseRow column:mouseCol];
 //    NSRect theRect = [_songCellMatrix convertRect:[_songCellMatrix coverFrameAtRow:mouseRow column:mouseCol] toView:_songGridScrollView];
     NSRect theRect = [_songCellMatrix coverFrameAtRow:mouseRow column:mouseCol];
-    return [_songGridScrollView convertPoint:theRect.origin toView:nil];
+    NSPoint centerPoint = [_songGridScrollView convertPoint:theRect.origin toView:nil];
+    centerPoint.x += theRect.size.width/2;
+    centerPoint.y -= theRect.size.height/2;
+    return centerPoint;
 }
 
 - (void)buttonDownInCellFrame:(NSRect)cellFrame {
