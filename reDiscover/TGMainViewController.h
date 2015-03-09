@@ -29,7 +29,7 @@
 - (void)setDebugCachedFlagsForSongIDArray:(NSArray*)songIDs toValue:(BOOL)value;
 @end
 
-@interface TGMainViewController : NSViewController <TGMainViewControllerDelegate>
+@interface TGMainViewController : NSViewController //<TGMainViewControllerDelegate>
 {
     CGFloat playlistExpandedWidth;
     CGFloat infoExpandedWidth;

@@ -67,6 +67,7 @@
     [_songTimelineController setDelegate:self];
     // Make sure the timeline controller's other views are also loaded right away.
     [_songTimelineController view];
+//    [[_songTimelineController view] setNeedsDisplay:YES];
     
     [self setupSongGrid];
     
@@ -1046,6 +1047,17 @@ static NSInteger const kUndefinedID =  -1;
    
 }
 
+-(NSPoint)centerOfCellAtMousePos:(NSPoint)mousePos {
+    NSPoint mouseLoc = [_songGridScrollView convertPoint:mousePos fromView:nil];
+    NSInteger mouseRow, mouseCol;
+    [_songGridScrollView.documentView getRow:&mouseRow column:&mouseCol forPoint:mouseLoc];
+    
+//    TGGridCell *currentCell = [_songGridScrollView.documentView cellAtRow:mouseRow column:mouseCol];
+//    NSRect theRect = [_songCellMatrix convertRect:[_songCellMatrix coverFrameAtRow:mouseRow column:mouseCol] toView:_songGridScrollView];
+    NSRect theRect = [_songCellMatrix coverFrameAtRow:mouseRow column:mouseCol];
+    return [_songGridScrollView convertPoint:theRect.origin toView:nil];
+}
+
 - (void)buttonDownInCellFrame:(NSRect)cellFrame {
 //    [self togglePopoverAtCellFrame:cellFrame withDelay:0.0];
 //    return;
@@ -1129,7 +1141,7 @@ static NSInteger const kUndefinedID =  -1;
     
 //    NSLog(@"The selection speed %@",NSStringFromPoint(theSpeed));
     
-    NSRect theRect = [_songCellMatrix convertRect:[_songCellMatrix coverFrameAtRow:theRow column:theColumn] toView:_songGridScrollView];
+    //NSRect theRect = [_songCellMatrix convertRect:[_songCellMatrix coverFrameAtRow:theRow column:theColumn] toView:_songGridScrollView];
     //[_songUIViewController setUIPosition:theRect.origin withPopAnimation:YES];
     
     TGGridCell *theCell = [_songCellMatrix cellAtRow:theRow column:theColumn];

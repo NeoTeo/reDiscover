@@ -81,6 +81,7 @@
 
 
 - (void)lmbDownAtMousePos:(NSPoint)mousePos;
+-(NSPoint)centerOfCellAtMousePos:(NSPoint)mousePos;
 
 - (id)initWithFrame:(NSRect)newFrame;
 - (void)addMatrixCell2:(id<SongIDProtocol>)songID;

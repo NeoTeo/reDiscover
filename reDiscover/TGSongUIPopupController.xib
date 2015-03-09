@@ -1,11 +1,15 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="7515.2" systemVersion="14D72i" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="7519.1" systemVersion="14D87h" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="7515.2"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="7519.1"/>
     </dependencies>
     <objects>
         <customObject id="-2" userLabel="File's Owner" customClass="TGSongUIPopupController" customModule="reDiscover" customModuleProvider="target">
             <connections>
+                <outlet property="gearButton" destination="wpc-DI-qlS" id="DLD-7G-z5R"/>
+                <outlet property="infoButton" destination="usD-FS-Zke" id="xB9-jk-AlR"/>
+                <outlet property="plusButton" destination="GKa-Pw-IkN" id="Lef-SR-9RV"/>
+                <outlet property="timelineButton" destination="PZp-fw-n5j" id="c3d-Pz-s7s"/>
                 <outlet property="view" destination="Hz6-mo-xeY" id="0bl-1N-x8E"/>
             </connections>
         </customObject>
@@ -15,14 +19,46 @@
             <rect key="frame" x="0.0" y="0.0" width="150" height="150"/>
             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
             <subviews>
-                <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Vvw-c1-Jhk">
-                    <rect key="frame" x="38" y="58" width="74" height="34"/>
-                    <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" borderStyle="bezel" title="ARSE" drawsBackground="YES" id="ygd-rH-HXA">
-                        <font key="font" metaFont="system" size="24"/>
-                        <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
-                        <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
-                    </textFieldCell>
-                </textField>
+                <button identifier="timelineButton" horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="PZp-fw-n5j">
+                    <rect key="frame" x="43" y="95" width="39" height="38"/>
+                    <buttonCell key="cell" type="round" bezelStyle="circular" imagePosition="above" alignment="left" borderStyle="border" imageScaling="proportionallyDown" id="F0h-ci-hhU">
+                        <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                        <font key="font" metaFont="label"/>
+                    </buttonCell>
+                    <connections>
+                        <action selector="timelineAction:" target="-2" id="E4J-q5-Tcm"/>
+                    </connections>
+                </button>
+                <button identifier="plusButton" horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="GKa-Pw-IkN">
+                    <rect key="frame" x="104" y="74" width="39" height="38"/>
+                    <buttonCell key="cell" type="round" bezelStyle="circular" imagePosition="above" alignment="left" borderStyle="border" imageScaling="proportionallyDown" id="1kE-Ks-xW9">
+                        <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                        <font key="font" metaFont="label"/>
+                    </buttonCell>
+                    <connections>
+                        <action selector="plusAction:" target="-2" id="Gid-um-pau"/>
+                    </connections>
+                </button>
+                <button identifier="infoButton" horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="usD-FS-Zke">
+                    <rect key="frame" x="76" y="4" width="39" height="38"/>
+                    <buttonCell key="cell" type="round" bezelStyle="circular" imagePosition="above" alignment="left" borderStyle="border" imageScaling="proportionallyDown" id="cdT-6O-0a0">
+                        <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                        <font key="font" metaFont="label"/>
+                    </buttonCell>
+                    <connections>
+                        <action selector="infoAction:" target="-2" id="kUN-xQ-X7v"/>
+                    </connections>
+                </button>
+                <button identifier="GearButton" horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="wpc-DI-qlS">
+                    <rect key="frame" x="14" y="31" width="39" height="38"/>
+                    <buttonCell key="cell" type="round" bezelStyle="circular" imagePosition="above" alignment="left" borderStyle="border" imageScaling="proportionallyDown" id="mrF-ah-V4z">
+                        <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                        <font key="font" metaFont="label"/>
+                    </buttonCell>
+                    <connections>
+                        <action selector="gearAction:" target="-2" id="JwP-Xz-pXk"/>
+                    </connections>
+                </button>
             </subviews>
         </customView>
     </objects>

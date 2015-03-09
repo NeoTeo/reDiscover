@@ -117,8 +117,8 @@ typedef void(^MyCustomBlock)(void);
 /// A counter to provide a variable interval between sweet-spot checks.
 @property NSUInteger SSCheckCountdown;
 
-- (void)setCache:(AVAudioFile*) theFile;
-- (void)unload;
+//- (void)setCache:(AVAudioFile*) theFile;
+//- (void)unload;
 
 - (void)storeSelectedSweetSpot;
 - (NSNumber*)currentSweetSpot;
@@ -127,17 +127,17 @@ typedef void(^MyCustomBlock)(void);
 - (id)init;
 
 //- (void)prepareForPlaybackWithCompletionBlock:(void (^)(void))completionBlock;
-- (void)load;
-- (void)performWhenReadyForPlayback:(void (^)(void))completionBlock;
+//- (void)load;
+//- (void)performWhenReadyForPlayback:(void (^)(void))completionBlock;
 //- (void)loadTrackDataWithCallBackOnCompletion:(BOOL)wantsCallback withStartTime:(NSNumber*)startTime;
 //- (void)loadTrackDataAtStartTime:(NSNumber*)startTime withCompletionBlock:(void (^)(void))completionBlock;
 //- (void)performBlockWhenReadyForPlayback:(void (^)(void))completionBlock;
 
-- (void)playAtTime:(NSNumber*)startTime;
-- (void)playStop;
-- (double)getDuration;
-- (Float64)getCurrentPlayTime;
-- (void)setCurrentPlayTime:(NSNumber *)playTimeInSeconds;
+//- (void)playAtTime:(NSNumber*)startTime;
+//- (void)playStop;
+//- (double)getDuration;
+//- (Float64)getCurrentPlayTime;
+//- (void)setCurrentPlayTime:(NSNumber *)playTimeInSeconds;
 - (void)searchMetadataForCoverImageWithHandler:(void (^)(NSImage *))imageHandler;
 - (BOOL)loadSongMetadata;
 /// returns true if the song is ready for playback.

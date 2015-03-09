@@ -21,17 +21,7 @@
 #import "rediscover-swift.h"
 
 
-@interface TGMainViewController () <TGSongUIViewControllerDelegate, NSSplitViewDelegate, TGSongPoolDelegate>
-    // From TGSongPoolDelegate
-    //      songIDFromGridColumn:andRow
-    //
-    // From TGSongUIViewControllerDelegate
-    // From NSSplitViewDelegate
-    // From TGSongGridViewControllerDelegate
-    //      lastRequestedSongID
-    //      userSelectedSweetSpot:
-    //      userSelectedSongID:
-    //      cacheWithContext:
+@interface TGMainViewController () <NSSplitViewDelegate, TGSongPoolDelegate,TGMainViewControllerDelegate,TGSongUIPopupProtocol>
 @end
 
 // Main coordinating controller.
@@ -54,6 +44,7 @@
     _songInfoController = [[TGSongInfoViewController alloc] initWithNibName:@"TGSongInfoView" bundle:nil];
     
     _songUIController = [[TGSongUIPopupController alloc] initWithNibName:@"TGSongUIPopupController" bundle:nil];
+    _songUIController.delegate = self;
     
     // Start it off hidden.
     [_songUIController.view setHidden:YES];
@@ -73,7 +64,8 @@
 //    [_songGridController lmbDownAtMousePos:[theEvent locationInWindow]];
     // Here we should show the song ui
 
-    [_songUIController setCurrentUIPosition:[theEvent locationInWindow]];
+    NSPoint cellCenter = [theEvent locationInWindow];//[_songGridController centerOfCellAtMousePos:[theEvent locationInWindow]];
+    [_songUIController setCurrentUIPosition:CGPointMake(cellCenter.x-75, cellCenter.y-75)];
     
     // Toggle the UI
     [_songUIController showUI:![_songUIController isUIActive]];
@@ -315,7 +307,7 @@
     } else if ([chars isEqualToString:@" "]){
         
         TGLog(TGLOG_ALL,@"space!");
-        [self songUISweetSpotButtonWasPressed];
+//        [self songUISweetSpotButtonWasPressed];
         
     } else if ([chars isEqualToString:@"l"]){
         [_currentSongPool debugLogSongWithId:lastRequestedSongID];
@@ -362,8 +354,11 @@
 }
 
 
-- (void)songUISweetSpotButtonWasPressed {
-//    [_currentSongPool offsetSweetSpotForSongID:[_currentSongPool lastRequestedSongID] bySeconds:-0.25];
+- (void)songUITimelineButtonWasPressed {
+    NSPoint mPos = [self.view.window mouseLocationOutsideOfEventStream];
+    NSPoint nowPoint = [self.view convertPoint:mPos fromView:nil];
+
+    [_songGridController lmbDownAtMousePos:nowPoint];
 }
 
 #pragma mark -
