@@ -1142,7 +1142,10 @@ static NSInteger const kUndefinedID =  -1;
     //[_songUIViewController setUIPosition:theRect.origin withPopAnimation:NO];
 }
 
+- (BOOL)UIisShowing {
+    return [[_songTimelineController songTimelinePopover] isShown] || [_delegate isUIShowing];
 
+}
 
 // Called when a new row and column is selected either by moving mouse pointer or scrolling a new cell under it.
 - (void)songGridScrollViewDidChangeToRow:(NSInteger)theRow
@@ -1150,7 +1153,7 @@ static NSInteger const kUndefinedID =  -1;
                                withSpeedVector:(NSPoint)theSpeed {
     
     // If a popover is shown, don't change cells.
-        if ([[_songTimelineController songTimelinePopover] isShown]) {
+        if ([self UIisShowing]) {
             return;
         }
     

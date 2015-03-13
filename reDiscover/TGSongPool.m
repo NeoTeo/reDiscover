@@ -314,20 +314,6 @@ static int const kSongPoolStartCapacity = 250;
 }
 // END TEOSongData test
 
-
-//- (void)idleTimeBegins {
-//    TGLog(TGLOG_ALL,@"song pool idle start");
-//    
-//    [idleTimeFingerprinterTimer invalidate];
-//    
-//    // Start a timer that calls idleTimeRequestFingerprint.
-//    idleTimeFingerprinterTimer = [NSTimer scheduledTimerWithTimeInterval:5
-//                                                 target:self
-//                                               selector:@selector(idleTimeRequestFingerprint:)
-//                                                                userInfo:@{@"previousSongID" : [NSNumber numberWithInteger:0]}
-//                                                repeats:YES];
-//
-//}
 - (void)idleTimeBegins {
     TGLog(TGLOG_ALL,@"song pool idle start");
     //FIXME: This causes a crash (possibly) 'NSGenericException' (reason '*** Collection <__NSDictionaryM: 0x6000000433c0> was mutated while being enumerated.') was raised during dragging session. This could also be an unrelated bug to do with me logging the cache out whilst modifying it...
@@ -372,20 +358,6 @@ static int const kSongPoolStartCapacity = 250;
                                                                 userInfo:@{@"songEnumerator" : theSongEnumerator }
                                                                  repeats:YES];
 }
-
-//- (void)handleFetchedUUId:(NSNotification*)notification {
-//    TGSong* song = (TGSong*)notification.object;
-//    TGLog(TGLOG_ALL,@"The song %@ now has UUId %@",song,song.uuid);
-//    //    //wipEv This should be observed by the code that exchanges the fingerprint for a uuid (which happens to be this class as well)
-//    ////    [[NSNotificationCenter defaultCenter] postNotificationName:@"TGNewSongFingerprinted" object:song];
-//    
-//    // Now that we know we have a UUId, initiate the fetching of the cover art.
-//    [self requestImageForSongID:song.songID withHandler:^(NSImage* theImage) {
-//        TGLog(TGLOG_ALL,@"We have a cover image via the handleFetchedUUId");
-//        // Here we should check if the song wants to have its cover displayed. For now we just do it.
-//        
-//    }];
-//}
 
 //- (void)fetchUUIdForSongId:(id<SongIDProtocol>)songID {
 - (void)fetchUUIdForSongId:(id<SongIDProtocol>)songID withHandler:(void (^)(NSString*))uuidHandler {
@@ -842,13 +814,6 @@ static int const kSongPoolStartCapacity = 250;
     TGLog(TGLOG_ALL,@"songCoverWasFetched with %@",song);
 }
 
-//- (void)songIsReadyForPlayback:(NSNotification*)notification {
-//    TGSong* song = (TGSong*)notification.object;
-//    TGLog(TGLOG_ALL,@"song %@ is now ready for playback!",song.songID);
-////    // use payload to get at extra info
-////    NSDictionary* payload = [notification userInfo];
-////    [self songReadyForPlayback:song atTime:[payload objectForKey:@"time"]];
-//}
 
 /**
  Search for image files in the directory containing the given URL that match a particular pattern.
@@ -980,14 +945,7 @@ static int const kSongPoolStartCapacity = 250;
 //    float secs = CMTimeGetSeconds([[self songForID:songID] songDuration]);
     return [NSNumber numberWithDouble:secs];
 }
-/*
-- (void)setSongDuration:(NSNumber *)duration forSongId:(id<SongIDProtocol>)songId {
-    TGSong* aSong = [self songForID:songId];
-    if (aSong) {
-        aSong.songDuration = CMTimeMake([duration intValue], 1);
-    }
-}
-*/
+
 - (NSURL *)songURLForSongID:(id<SongIDProtocol>)songID {
     TGSong *aSong = [self songForID:songID];
     
@@ -1174,24 +1132,6 @@ static int const kSongPoolStartCapacity = 250;
     [theSong setSweetSpot:newPosition];
 }
 
-/*
-// updateCache:
-// The song pool doesn't know about the layout of the song grid so it cannot decide which songs to cache.
-// Therefore it is passed an array of ids that need caching.
-// De-cache those songs in the cache that are no longer needed and initiate the caching of the new songs.
-// TEO: consider adding an age/counter to the cached songs such that they don't get unloaded immediately (temporal caching).
-- (void)updateCache:(NSArray *)songIDArray {
-    for (id songID in songIDArray) {
-        TGSong * aSong = [self songForID:songID];
-        if (aSong != nil) {
-            
-            TGLog(TGLOG_ALL,@"loadTrackData called from updateCache");
-            [aSong loadTrackDataWithCallBackOnCompetion:NO];
-        } else
-            TGLog(TGLOG_ALL,@"requested song %@ not there",(NSString*)songID);
-    }
-}
- */
 
 - (id<SongIDProtocol>)lastRequestedSongID {
     return [lastRequestedSong songID];
@@ -1423,52 +1363,6 @@ static int const kSongPoolStartCapacity = 250;
     songArrayHandler(theSongs);
 }
 
-// cdfix
-//// Fetch all songs from the given album asynchronously and call the given songArrayHandler block with the result.
-//-(void)requestSongsFromAlbumWithName:(NSString*)albumName withHandler:(void (^)(NSArray*))songArrayHandler {
-//    NSFetchRequest *fetch = [NSFetchRequest fetchRequestWithEntityName:@"TEOSongData"];
-//
-//    NSPredicate *thePredicate = [NSPredicate predicateWithFormat:@"album = %@",albumName];
-//    [fetch setPredicate:thePredicate];
-//    //MARK: cdfix - this won't find anything because the album data et al. is not added to the managed object until come save time.
-//    // Doing it this way is also nonperformant since this is being called as the user is scrolling through songs and needs to be
-//    // as responsive as possible.
-//    // What we should do instead is, in loadURL, build a dictionary of albums where the key is the album name, and the value is
-//    // a set of songs (which each have artist(s) associated with them. From here we then simply look up the album and extract the songs in it.
-//    // Perform the fetch on the context's own thread to avoid threading problems.
-//    [self.TEOmanagedObjectContext performBlock:^{
-//        NSError *error = nil;
-////        TGLog(TGLOG_ALL,@"About to sleep thread: %@",[NSThread currentThread]);
-////        [NSThread sleepForTimeInterval:50];
-////        return; // wipwip
-//        // wipwip This is causing the stutter. Find out how to use a NSFetchedResultsController instead.
-//        NSArray* results = [self.TEOmanagedObjectContext executeFetchRequest:fetch error:&error];
-////    return; // wipwip
-//        songArrayHandler(results);
-//
-//    }];
-//}
-
-/*
-// Not currently used.
-- (NSString *)findUUIDOfSongWithURL:(NSURL *)songURL {
-    NSString *theUUIDString = @"arses";
-    NSFetchRequest *fetch = [NSFetchRequest fetchRequestWithEntityName:@"TGSongUserData"];
-    NSPredicate *thePredicate = [NSPredicate predicateWithFormat:@"songURL = %@",[songURL absoluteString]];
-    [fetch setPredicate:thePredicate];
-    
-    NSError *error = nil;
-    NSArray *results = [songPoolManagedContext executeFetchRequest:fetch error:&error];
-    if (results) {
-        TGLog(TGLOG_ALL,@"Entititties: %@",results);
-    } else {
-        TGLog(TGLOG_ALL,@"Error: %@",error);
-    }
-    
-    return theUUIDString;
-}
-*/
-
 #pragma mark -
 // end of Core Data methods
 
@@ -1492,17 +1386,6 @@ static int const kSongPoolStartCapacity = 250;
     // Initiate the fingerprint/UUId generation and fetching of cover art.
     [self fetchUUIdAndCoverArtForSongId:selectedSongId];
 }
-
-/*
-- (void)checkSet:(NSMutableSet*)theSet withName:(NSString*)bufferName{
-    for (id<SongIDProtocol>aSongId in theSet) {
-        TGSong *aSong = [self songForID:aSongId];
-        if ([aSong songStatus] != kSongStatusReady) {
-            TGLog(TGLOG_TMP, @"WTF this song %@ is not ready but is in %@.",aSongId,bufferName)
-        }
-    }
-}
-*/
 
 - (void)fetchUUIdAndCoverArtForSongId:(id<SongIDProtocol>)songId {
     [self fetchUUIdForSongId:songId withHandler:^(NSString* theUUId) {
@@ -1596,49 +1479,10 @@ static int const kSongPoolStartCapacity = 250;
 
             [self setRequestedPlayheadPosition:startTime];
             
-//            // Inform the delegate that we've started playing the song.
-//            if ([_delegate respondsToSelector:@selector(songPoolDidStartPlayingSong:)]) {
-//                [_delegate songPoolDidStartPlayingSong:songID];
-//            }
-
         }
 
     }];
     //NUCACHE end
-/*
-//    if ([aSong isReadyForPlayback] == YES) {
-//        //TGLog(TGLOG_ALL,@"Ready");^
-//        [self songReadyForPlayback:aSong atTime:time];
-//    } else {
-//        TGLog(TGLOG_ALL,@"Not ready");
-//        // First cancel any pending requests in the operation queue and then add this.
-//        // This won't delete them from the queue but it will tell each in turn it has been cancelled.
-//        [urlLoadingOpQueue cancelAllOperations];
-//
-//        
-//        NSBlockOperation* cacheOp = [[NSBlockOperation alloc] init];
-//        // Weakify the block reference to avoid retain cycles.
-//        __weak NSBlockOperation* weakCacheOp = cacheOp;
-//
-//        [weakCacheOp addExecutionBlock:^{
-//            // Check for operation cancellation
-//            if( weakCacheOp.isCancelled ) {return;}
-//            
-//            // Asynch'ly start loading the track data for aSong. songReadyForPlayback will be called back when the song is good to go.
-//            [aSong performWhenReadyForPlayback:^{
-//                TGLog(TGLOG_ALL,@"performWhenReadyForPlayback completion block from requestSongPlayback.");
-//                [self songReadyForPlayback:aSong atTime:time];
-//            }];
-//        }];
-//        
-//        // For debug checking
-//        cacheOp.completionBlock = ^{
-//            TGLog(TGLOG_ALL,@"The call to performWhenReadyForPlayback was %@.",weakCacheOp.isCancelled ? @"cancelled" : @"completed");
-//        };
-//        
-//        [urlLoadingOpQueue addOperation:cacheOp];
-//    }
- */
 }
 
 /// Setter for the playheadPos which is bound to the timeline and the playlist progress bars.
@@ -1651,69 +1495,6 @@ static int const kSongPoolStartCapacity = 250;
     return playheadPos;
 }
 
-/*
-- (void)playbackSong:(TGSong *)nextSong atTime:(NSNumber*)startTime {
-    // Between checking and stopping, another thread can modify the currentlyPlayingSong thus causing the song to not be stopped.
-    if (currentlyPlayingSong != nextSong) {
-        [currentlyPlayingSong playStop];
-    } else {
-        TGLog(TGLOG_ALL,@"currently playing is the same as next song. Early out.");
-        return;
-    }
-    
-    // Don't play the song if it isn't the last requested song.
-    if (nextSong != lastRequestedSong) {
-//        TGLog(TGLOG_ALL,@"NOoOoooOOOOOOOOoooooooOOOOOO");
-        return;
-    }
-    NSAssert(startTime != nil, @"Start time is nil!");
-    //MARK: xeno. Calling playAtTime causes lagging when scrolling.
-    // Why do we have a playAtTime which sets the start time here and then a bit further down
-    // we also call setRequestedPlayheadPosition which calls the song's setCurrentPlayTime ?
-    [nextSong playAtTime:startTime];
-
-    if (startTime != nil) {
-        currentlyPlayingSong = nextSong;
-        
-        NSNumber *theSongDuration = [NSNumber numberWithDouble:[currentlyPlayingSong getDuration]];
-        [self setValue:theSongDuration forKey:@"currentSongDuration"];
-
-        // Song fingerprints are generated and UUID fetched during idle time in the background.
-        // However, if the song about to be played hasn't got a UUID or fingerprint, an async request will be initiated here.
-        // This should not be called on the playback queue!
-// This is being called (indirectly) by songPoolDidStartPlayingSong in the subsequent call
-//        if (nextSong.uuid == NULL) {
-//            [self fetchUUIdForSongId:nextSong.songID];// withHandler:nil];
-//        }
-
-        //MARK: consider using an event to signal this instead.
-        // Inform the delegate that we've started playing the song.
-        if ([_delegate respondsToSelector:@selector(songPoolDidStartPlayingSong:)]) {
-            [_delegate songPoolDidStartPlayingSong:[nextSong songID]];
-        }
-
-        // Set the requested playheadposition tracker to the song's start time in a KVC compliant fashion.
-        [self setRequestedPlayheadPosition:startTime];
-    }
-}
-*/
-/**
- Called by the fingerprinter when a fingerprint is ready.
- Would perhaps be better as an event ?
- */
-//- (void)fingerprintReady:(NSString *)fingerPrint forSongID:(id<SongIDProtocol>)songID {
-//    
-//    TGSong* song = [self songForID:songID];
-//    
-//    // At this point we should check if the fingerprint resulted in a songUUID.
-//    // If it did not we keep the finger print so we don't have to re-generate it, otherwise we can delete the it.
-//    if (song.uuid == nil) {
-//        TGLog(TGLOG_ALL,@"No UUID found, keeping fingerprint.");
-//        song.fingerprint = fingerPrint;
-//    }
-//    
-//    [song setFingerPrintStatus:kFingerPrintStatusDone];
-//}
 
 #pragma mark -
 #pragma mark Delegate Methods
@@ -1728,16 +1509,6 @@ static int const kSongPoolStartCapacity = 250;
         [[self delegate] songPoolDidFinishPlayingSong:[song songID]];
     }
 }
-
-
-//// TEO currently not called by anyone. Should probably be called by TGSong loadSongMetaData but since it isn't 
-//- (void)songDidLoadEmbeddedMetadata:(TGSong *)song {
-//    
-//    if ([[self delegate] respondsToSelector:@selector(songPoolDidLoadDataForSongID:)]) {
-//        [[self delegate] songPoolDidLoadDataForSongID:[song songID]];
-//    }
-//    
-//}
 
 - (void)setSongPlaybackObserver:(AVPlayer*)songPlayer {
     
@@ -1772,27 +1543,6 @@ static int const kSongPoolStartCapacity = 250;
 - (void)songDidUpdatePlayheadPosition:(NSNumber *)playheadPosition {
     [self setValue:playheadPosition forKey:@"playheadPos"];
 }
-
-//// songReadyForPlayback is called (async'ly) by the song once it is fully loaded.
-//- (void)songReadyForPlayback:(TGSong *)song atTime:(NSNumber*)startTime {
-//
-//    // Make sure the last request for playback is put on a serial queue so it always is the last song left playing.
-//    if (song == lastRequestedSong) {
-//        //TGLog(TGLOG_ALL,@"about to play song which is equal to lastRequestedSong %@",lastRequestedSong.songID);
-//        //     If there's no start time, check the sweet spot server for one. If one is found set the startTime to it.
-//        if (startTime == nil) {
-//            // At this point we really ought to make sure we have a song uuid generated from the fingerprint.
-//            startTime = [self fetchSongSweetSpot:song];
-//            if (startTime == nil) {
-//                startTime = [NSNumber numberWithDouble:0.0];
-//            }
-//        }
-//        [self playbackSong:song atTime:startTime];
-//    } else {
-//        TGLog(TGLOG_ALL,@"Song %@ rejected for not being the lastRequestedSong.",song.songID);
-//    }
-//}
-
 
 //MARK: Debug methods
 

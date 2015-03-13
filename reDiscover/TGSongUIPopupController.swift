@@ -63,11 +63,11 @@ class TGSongUIPopupController: NSViewController {
     
     
     func showUI(state: Bool) {
-        view.hidden = state
+        view.hidden = !state
     }
     
     func isUIActive() -> Bool {
-        return view.hidden
+        return !view.hidden
     }
     
 }

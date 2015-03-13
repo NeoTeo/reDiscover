@@ -85,6 +85,10 @@
     
 }
 
+-(BOOL)isUIShowing {
+    return [_songUIController isUIActive];;
+}
+
 -(void)viewWillAppear {
 
     [self.view.window makeFirstResponder:self];
