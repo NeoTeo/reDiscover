@@ -619,6 +619,96 @@ static int const kSongPoolStartCapacity = 250;
 }
 
 /**
+ Load metadata from the file associated with this song and store it in the TEOData managed context.
+ 
+ @returns YES on success and NO on failure to find any metadata.
+ In either case the TEOData will be set to some reasonable defaults.
+ */
+- (BOOL)loadSongMetadataForSongId:(id<SongIDProtocol>)songId {
+    //TODO: use the verbose url type.
+    TGSong * theSong = [self songForID:songId];
+    if (theSong == nil) { return NO; }
+    
+    NSURL *theURL = [NSURL URLWithString:theSong.urlString];
+    NSString * pathString = [theURL path];
+    
+    NSString *tmpString = [pathString stringByDeletingPathExtension];
+    NSString* fileName = [tmpString lastPathComponent];
+    tmpString =[tmpString stringByDeletingLastPathComponent];
+    //    NSString* album = [tmpString lastPathComponent];
+    tmpString =[tmpString stringByDeletingLastPathComponent];
+    NSString* artist = [tmpString lastPathComponent];
+    
+    // Add reasonable defaults
+    theSong.artist = [artist stringByRemovingPercentEncoding];//@"Unknown";
+    theSong.title  = [fileName stringByRemovingPercentEncoding];//@"Unknown";
+    theSong.album  = @"Unknown";//[album stringByRemovingPercentEncoding];//@"Unknown";
+    theSong.genre  = @"Unknown";
+    
+    // Get other metadata via the MDItem of the file.
+    MDItemRef metadata = MDItemCreate(kCFAllocatorDefault, (__bridge CFStringRef)pathString);
+    
+    if (metadata) {
+        NSString* aString;
+        NSArray* artists;
+        
+        if ((artists = CFBridgingRelease(MDItemCopyAttribute(metadata, kMDItemAuthors)))) {
+            //           self.TEOData.artist = [artists objectAtIndex:0];
+            theSong.artist = [artists objectAtIndex:0];
+        }
+        
+        if ((aString = CFBridgingRelease(MDItemCopyAttribute(metadata, kMDItemTitle)))) {
+            //self.TEOData.title = aString;
+            theSong.title = aString;
+        }
+        
+        if ((aString = CFBridgingRelease(MDItemCopyAttribute(metadata, kMDItemAlbum)))) {
+            //self.TEOData.album = aString;
+            theSong.album = aString;
+        }
+        
+        if ((aString = CFBridgingRelease(MDItemCopyAttribute(metadata, kMDItemMusicalGenre)))) {
+            //self.TEOData.genre = aString;
+            theSong.genre = aString;
+        }
+        
+        // Make sure that sucker is released.
+        CFRelease(metadata);
+        return YES;
+    }
+    return NO;
+}
+
+
+- (void)searchMetadataForCoverImageForSongId:(id<SongIDProtocol>)songId withHandler:(void (^)(NSImage *))imageHandler {
+    
+    TGSong * theSong = [self songForID:songId];
+    if (theSong == nil) { imageHandler(nil); }
+    
+    AVURLAsset *songAsset = [[AVURLAsset alloc] initWithURL:[NSURL URLWithString:theSong.urlString] options:nil];
+    
+    [songAsset loadValuesAsynchronouslyForKeys:@[@"commonMetadata"] completionHandler:^{
+        
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            
+            NSArray *artworks = [AVMetadataItem metadataItemsFromArray:songAsset.commonMetadata  withKey:AVMetadataCommonKeyArtwork keySpace:AVMetadataKeySpaceCommon];
+            
+            for (AVMetadataItem *metadataItem in artworks) {
+                
+                // Use the passed in callback to return image.
+                imageHandler([[NSImage alloc] initWithData:[metadataItem.value copyWithZone:nil]]);
+                return;
+            }
+            
+            // No luck. Call the image handler with nil.
+            imageHandler(nil);
+            
+        });
+    }];
+}
+
+
+/**
     Attempt to find the cover image for the song using a variety of strategies and, if found, will pass the image to the given imageHandler block.
  */
 - (void)requestImageForSongID:(id<SongIDProtocol>)songID withHandler:(void (^)(NSImage *))imageHandler {
@@ -642,7 +732,7 @@ static int const kSongPoolStartCapacity = 250;
     // This is done by chaining asynchronous requests for data from either our Core Data store, from the file system and
     // finally from the network.
     // Request a cover image from the song passing in a block we want executed on resolution.
-    [theSong searchMetadataForCoverImageWithHandler:^(NSImage *tmpImage) {
+    [self searchMetadataForCoverImageForSongId:songID withHandler:^(NSImage *tmpImage) {
     
         if (tmpImage != nil) {
 
@@ -909,7 +999,7 @@ static int const kSongPoolStartCapacity = 250;
         
         // If the metadata has not yet been set, do it.
         if (theSong.title == nil) {
-            [theSong loadSongMetadata];
+            [self loadSongMetadataForSongId:songID];
             
             // If the song's album is not the default value,
             // add album the song belongs to the list of albums
@@ -1592,7 +1682,7 @@ static int const kSongPoolStartCapacity = 250;
         
         TGSong* aSong = [self songForID:aSongId];
         
-        if ([aSong isReadyForPlayback] && ([songIDCache containsObject:aSongId] == NO)) {
+        if ([songIDCache containsObject:aSongId] == NO) {
             TGLog(TGLOG_DBG,@"Song %@ is ready for playback but is not in the cache!",aSongId);
             
             if (![selectedSongsCache containsObject:aSongId]) {

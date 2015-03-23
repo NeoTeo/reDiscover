@@ -1,0 +1,91 @@
+//
+//  CoverArtController.swift
+//  reDiscover
+//
+//  Created by Teo on 16/03/15.
+//  Copyright (c) 2015 Teo Sartori. All rights reserved.
+//
+
+import Foundation
+import AVFoundation
+
+struct CoverArtController {
+    var coverArtById = [Int : NSImage](minimumCapacity: 25)
+    
+    init() {
+        if let noCoverImage = NSImage(named: "noCover") {
+            coverArtById[noCoverImage.hash] = noCoverImage
+        }
+        if let defaultCoverImage = NSImage(named: "songImage") {
+            coverArtById[defaultCoverImage.hash] = defaultCoverImage
+        }
+        if let fetchingCoverImage = NSImage(named: "fetchingArt") {
+            coverArtById[fetchingCoverImage.hash] = fetchingCoverImage
+        }
+    }
+}
+
+
+// So funcs with side effect can hardly be called functional...
+extension CoverArtController {
+    
+    func requestImageForSong(song: Song,artHandler: (NSImage?)->Void ) {
+        if let id = song.artId {
+            artHandler(coverArtById[id])
+            return
+        }
+        
+        self.fetchCoverArtFromSong(song) { images in
+            if images != nil {
+                
+                // For now just use the first image.
+                let coverArt = images![0] as NSImage
+                let artId = coverArt.hash
+                
+                // If the image is not already in the local art cache, add it.
+                if(self.coverArtById[artId] == nil) {
+                    // Cannot mutate the dictionary (unless I declare this function as mutating).
+                    // It is ok to mutate the dictionary, because the dictionary itself is a value type.
+                    // This means anyone else who accesses it (which is noone outside this struct anyway) will be accessing their own copy.
+                    // Even so, I want to change this to take the dictionary as an argument.
+                    //self.coverArtById[artId] = coverArt
+                }
+                
+            } else {
+                
+            }
+        }
+    }
+    
+    func fetchCoverArtFromSong(song: Song, imageHandler: ([NSImage]?)->Void) {
+        let songAsset = AVURLAsset(URL: NSURL(string: song.urlString) , options: nil)
+        
+        songAsset.loadValuesAsynchronouslyForKeys(["commonMetadata"]) {
+            // This closure is called when the loadValues has completed.
+            
+            //MARK: Not sure it's necessary to do this next bit async'ly but for now I'll keep it.
+            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) {
+                
+                // The as! is a forced failable cast new in Swift 1.2 that makes it explicit that the cast may fail
+                // and will produce a runtime error if it does.
+                if let imagedata: [AVMetadataItem]! = AVMetadataItem.metadataItemsFromArray(songAsset.commonMetadata, withKey: AVMetadataCommonIdentifierArtwork, keySpace: AVMetadataKeySpaceCommon) as! [AVMetadataItem]! {
+                    var images = [NSImage]()
+                    
+                    // Populate the images array with however many images were returned.
+                    for mdItem: AVMetadataItem in imagedata {
+                        if let image = NSImage(data: mdItem.value().copyWithZone(nil) as! NSData) {
+                            images.append(image)
+                        }
+                        
+                        // Let the image handler take it from here.
+                        imageHandler(images)
+                    }
+                    
+                }
+                
+                // No images :(
+                imageHandler(nil)
+            }
+        }
+    }
+}

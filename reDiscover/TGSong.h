@@ -24,7 +24,7 @@
 @protocol SongPoolAccessProtocol;
 
 // Enum declarations
-
+/*
 // States of the songStatus property:
 enum {
     kSongStatusLoading         = 0,
@@ -45,6 +45,7 @@ enum {
     kLoadStatusCancelled            = 0xE,
     kLoadStatusFailed               = 0xF
 };
+*/
 
 // States of the fingerPrintStatus property:
 enum {
@@ -103,11 +104,6 @@ typedef void(^MyCustomBlock)(void);
 // called when the KVO observed SongPlayerItem status changes to ready. 
 @property (nonatomic, copy) MyCustomBlock customBlock;
 
-//// A place to store the song's requested start time between being called and
-//// actually being ready to play back. Since KVO doesn't provide custom data to go
-//// through its calls I'm having to store it "on the side". Not happy about this.
-//@property NSNumber* startTime;
-
 /// An id key into the songpool's art dictionary. A value of nil signals no art.
 @property NSString* artID;
 
@@ -117,28 +113,12 @@ typedef void(^MyCustomBlock)(void);
 /// A counter to provide a variable interval between sweet-spot checks.
 @property NSUInteger SSCheckCountdown;
 
-//- (void)setCache:(AVAudioFile*) theFile;
-//- (void)unload;
-
 - (void)storeSelectedSweetSpot;
 - (NSNumber*)currentSweetSpot;
 - (void)makeSweetSpotAtTime:(NSNumber*)startTime;
 - (void)setSweetSpot:(NSNumber*)theSS;
 - (id)init;
 
-//- (void)prepareForPlaybackWithCompletionBlock:(void (^)(void))completionBlock;
-//- (void)load;
-//- (void)performWhenReadyForPlayback:(void (^)(void))completionBlock;
-//- (void)loadTrackDataWithCallBackOnCompletion:(BOOL)wantsCallback withStartTime:(NSNumber*)startTime;
-//- (void)loadTrackDataAtStartTime:(NSNumber*)startTime withCompletionBlock:(void (^)(void))completionBlock;
-//- (void)performBlockWhenReadyForPlayback:(void (^)(void))completionBlock;
-
-//- (void)playAtTime:(NSNumber*)startTime;
-//- (void)playStop;
-//- (double)getDuration;
-//- (Float64)getCurrentPlayTime;
-//- (void)setCurrentPlayTime:(NSNumber *)playTimeInSeconds;
-- (void)searchMetadataForCoverImageWithHandler:(void (^)(NSImage *))imageHandler;
 - (BOOL)loadSongMetadata;
 /// returns true if the song is ready for playback.
 - (BOOL)isReadyForPlayback;
@@ -151,7 +131,6 @@ typedef void(^MyCustomBlock)(void);
 @protocol TGSongDelegate <NSObject>
 //@optional
 - (id<SongIDProtocol>)lastRequestedSongID;
-//- (void)songReadyForPlayback:(TGSong *)song atTime:(NSNumber*)startTime;
 - (void)songDidFinishPlayback:(TGSong *)song;
 - (void)songDidUpdatePlayheadPosition:(NSNumber *)playheadPosition;
 - (dispatch_queue_t)serialQueue;
