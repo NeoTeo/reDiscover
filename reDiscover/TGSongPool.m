@@ -359,11 +359,11 @@ static int const kSongPoolStartCapacity = 250;
                                                                  repeats:YES];
 }
 
-//- (void)fetchUUIdForSongId:(id<SongIDProtocol>)songID {
+
 - (void)fetchUUIdForSongId:(id<SongIDProtocol>)songID withHandler:(void (^)(NSString*))uuidHandler {
     TGSong* aSong = [self songForID:songID];
     if ([aSong fingerPrintStatus] == kFingerPrintStatusEmpty) {
-//        TGLog(TGLOG_ALL,@"SongPool fetchUUIdForSongId about to request a fingerprint for song %@",aSong);
+
         [aSong setFingerPrintStatus:kFingerPrintStatusRequested];
         
         [songFingerPrinter requestFingerPrintForSong:aSong.songID withHandler:^(NSString* fingerPrint){
@@ -379,7 +379,6 @@ static int const kSongPoolStartCapacity = 250;
             [songFingerPrinter requestUUIDForSongID:songID withDuration:CMTimeGetSeconds(songDuration) andFingerPrint:(char*)[fingerPrint UTF8String]];
 
             // This saves the fingerprint and sets the fingerprinting status to done.
-            //[self fingerprintReady:fingerPrint forSongID:aSong.songID];
             if (aSong.uuid == nil) {
                 TGLog(TGLOG_TMP,@"No UUID found, keeping fingerprint.");
                 aSong.fingerprint = fingerPrint;
@@ -1474,6 +1473,11 @@ static int const kSongPoolStartCapacity = 250;
     [_delegate songPoolDidStartFetchingSong:selectedSongId];
         
     // Initiate the fingerprint/UUId generation and fetching of cover art.
+    // Split this into synchronous functions called on a single separate thread:
+    // 1) Get fingerprint for the song unless already there.
+    // 2) Get UUId from fingerprint unless already there.
+    // 3) Get Cover Art from UUId unless already there.
+    // 4) Notify all done.
     [self fetchUUIdAndCoverArtForSongId:selectedSongId];
 }
 
@@ -1680,7 +1684,7 @@ static int const kSongPoolStartCapacity = 250;
     //FIXME: This may cause an exception because if enumerates the songPoolDictionary whilst it is being changed...
     for (id<SongIDProtocol>aSongId in songPoolDictionary) {
         
-        TGSong* aSong = [self songForID:aSongId];
+//        TGSong* aSong = [self songForID:aSongId];
         
         if ([songIDCache containsObject:aSongId] == NO) {
             TGLog(TGLOG_DBG,@"Song %@ is ready for playback but is not in the cache!",aSongId);
@@ -1690,9 +1694,9 @@ static int const kSongPoolStartCapacity = 250;
             }
         }
         
-        if (([aSong isReadyForPlayback] == NO) && ([songIDCache containsObject:aSongId] == YES)){
-            TGLog(TGLOG_DBG, @"The songId %@ was incorrectly marked as cached!",aSongId);
-        }
+//        if (([aSong isReadyForPlayback] == NO) && ([songIDCache containsObject:aSongId] == YES)){
+//            TGLog(TGLOG_DBG, @"The songId %@ was incorrectly marked as cached!",aSongId);
+//        }
     }
     
     TGLog(TGLOG_DBG,@"+^v^v^v^v^v^v^v^v^v^v^v^v+");

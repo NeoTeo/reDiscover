@@ -8,7 +8,11 @@
 
 import Foundation
 
-struct Song {
+protocol TGSSong {
+    
+}
+
+struct Song : TGSSong {
     let artist:     String
     let title:      String
     let album:      String

@@ -23,6 +23,9 @@
 @protocol SongIDProtocol;
 @protocol SongPoolAccessProtocol;
 
+//@protocol TGSong
+//@property id<SongIDProtocol>songID;
+//@end
 // Enum declarations
 /*
 // States of the songStatus property:
@@ -56,6 +59,7 @@ enum {
 };
 
 @interface TGSong : NSObject
+//@interface Song : NSObject <TGSong>
 {
     AVURLAsset *songAsset;
     AVPlayerItem *songPlayerItem;
@@ -119,9 +123,9 @@ typedef void(^MyCustomBlock)(void);
 - (void)setSweetSpot:(NSNumber*)theSS;
 - (id)init;
 
-- (BOOL)loadSongMetadata;
+//- (BOOL)loadSongMetadata;
 /// returns true if the song is ready for playback.
-- (BOOL)isReadyForPlayback;
+//- (BOOL)isReadyForPlayback;
 
 @property id<SongPoolAccessProtocol>songPoolAPI;
 @property id <TGSongDelegate>delegate;

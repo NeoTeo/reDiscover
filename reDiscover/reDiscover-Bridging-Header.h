@@ -9,3 +9,6 @@
 
 // SweetSpotServerIO needs to know about the UploadedSSData class
 #import "UploadedSSData.h"
+
+// Fingerprinter needs to know about chromaprint.
+#import "chromaprint.h"

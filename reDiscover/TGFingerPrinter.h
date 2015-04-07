@@ -12,7 +12,7 @@
 //#import "/Users/teo/Dropbox/usr/local/include/chromaprint.h"
 //#import "/Users/teo/Dropbox/usr/local/include/chromaprint.h"
 // Forward declarations.
-@class TGSong;
+//@class TGSong;
 @protocol TGFingerPrinterDelegate;
 @protocol SongIDProtocol;
 @protocol SongPoolAccessProtocol;

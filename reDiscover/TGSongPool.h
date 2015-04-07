@@ -13,7 +13,10 @@
 #import "NSMutableArray+QueueAdditions.h"
 
 // class forward declaration
+
+
 @class TGSong;
+
 @class TGFingerPrinter;
 
 //@class SongPlayer;
@@ -167,6 +170,7 @@
     NSMutableDictionary *songPoolDictionary;
     TGSong *currentlyPlayingSong;
     TGSong *lastRequestedSong;
+
     int32_t srCounter;
     
     TGFingerPrinter *songFingerPrinter;
@@ -258,7 +262,6 @@
 - (void)storeSongData;
 - (NSArray *)fetchMetadataFromLocalStore;
 - (BOOL)loadMetadataIntoSong:(TGSong *)aSong;
-
 
 // Other protocols' delegate methods that TGSongPool implements
 // TGSongDelegate protocol methods called by TGSong
