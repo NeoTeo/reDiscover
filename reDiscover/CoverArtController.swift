@@ -9,25 +9,108 @@
 import Foundation
 import AVFoundation
 
-struct CoverArtController {
-    var coverArtById = [Int : NSImage](minimumCapacity: 25)
+@objc enum DefaultImage: Int {
+    case None
+    case Blank
+    case Fetching
+}
+//
+class SongArtCache : NSObject {
+    typealias HashToImageDict = [String : NSImage]
     
-    init() {
-        if let noCoverImage = NSImage(named: "noCover") {
-            coverArtById[noCoverImage.hash] = noCoverImage
-        }
-        if let defaultCoverImage = NSImage(named: "songImage") {
-            coverArtById[defaultCoverImage.hash] = defaultCoverImage
-        }
-        if let fetchingCoverImage = NSImage(named: "fetchingArt") {
-            coverArtById[fetchingCoverImage.hash] = fetchingCoverImage
-        }
+    private let coverArtById: HashToImageDict
+
+    // Three class variables that always contain the same images.
+    private static var noCoverImage: NSImage?
+    private static var blankCoverImage: NSImage?
+    private static var fetchingCoverImage: NSImage?
+    
+    override init() {
+        var defaultCache = HashToImageDict()
+        coverArtById = defaultCache
     }
+    
+    init(startCache: HashToImageDict) {
+        coverArtById = startCache
+    }
+
+    static func getNoCoverImage() -> NSImage? {
+        if noCoverImage == nil {
+            noCoverImage = NSImage(named: "noCover")
+        }
+        return noCoverImage
+    }
+
+    static func getBlankCoverImage() -> NSImage? {
+        if blankCoverImage == nil {
+            blankCoverImage = NSImage(named: "songImage")
+        }
+        return blankCoverImage
+    }
+
+    static func getFetchingCoverImage() -> NSImage? {
+        if fetchingCoverImage == nil {
+            fetchingCoverImage = NSImage(named: "songImage")
+        }
+        return fetchingCoverImage
+    }
+
+    func addImage(image: NSImage?) -> SongArtCache {
+
+        if let img = image {
+            var tmpCache = coverArtById
+            tmpCache[img.hashId] = img
+            return SongArtCache(startCache: tmpCache)
+        }
+        
+        // If nothing was added we just return the same cache
+        return self
+    }
+    
+    func artForSong(song: TGSongProtocol) -> NSImage? {
+        // Return art that is already in the cache.
+        if let id = song.artID,
+            art = coverArtById[id] {
+            return art
+        }
+        
+        // No artID means we need to try different ways of finding it.
+        let arts = SongMetaData.getCoverArtForSong(song)
+        println("I hope i gots lots of arts: \(arts.count)")
+        return nil
+    }    
 }
 
+//struct SongArtCache {
+//    var coverArtById = [Int : NSImage](minimumCapacity: 25)
+//        let noCoverHash: Int?
+//    let defaultCoverHash: Int?
+//    let fetchingCoverHash: Int?
+//if  let noCoverImage = NSImage(named: "noCover"),
+//    let defaultCoverImage = NSImage(named: "songImage"),
+//    let fetchingCoverImage = NSImage(named: "fetchingArt")
+//{
+//    noCoverHash = noCoverImage.hash
+//    defaultCoverHash = defaultCoverImage.hash
+//    fetchingCoverHash = fetchingCoverImage.hash
+//    
+//    defaultCache[noCoverHash!] = noCoverImage
+//    defaultCache[defaultCoverHash!] = defaultCoverImage
+//    defaultCache[fetchingCoverHash!] = fetchingCoverImage
+//} else {
+//    noCoverHash = nil
+//    defaultCoverHash = nil
+//    fetchingCoverHash = nil
+//    println("Error! Missing a default image")
+//}
+//
+//
+//
+//}
 
+/*
 // So funcs with side effect can hardly be called functional...
-extension CoverArtController {
+extension SongArtCache {
     
     func requestImageForSong(song: Song,artHandler: (NSImage?)->Void ) {
         if let id = song.artId {
@@ -89,3 +172,4 @@ extension CoverArtController {
         }
     }
 }
+*/

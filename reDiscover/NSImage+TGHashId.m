@@ -6,6 +6,9 @@
 //  Copyright (c) 2014 Teo Sartori. All rights reserved.
 //
 
+// Since NSObject's hash function only works on the object and not on the contents of it (eg an image) we
+// have to roll our own.
+
 #import "NSImage+TGHashId.h"
 
 #import <objc/runtime.h>

@@ -12,3 +12,8 @@
 
 // Fingerprinter needs to know about chromaprint.
 #import "chromaprint.h"
+
+// For songUUID
+#import "TGSongProtocol.h"
+
+#import "NSImage+TGHashId.h"

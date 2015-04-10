@@ -22,7 +22,7 @@
 //#import "/Users/teo/Dropbox/usr/local/include/chromaprint.h"
 #import <CommonCrypto/CommonDigest.h>
 
-//#import "TGSong.h"
+#import "TGSongProtocol.h"
 //#import "TEOSongData.h"
 
 @implementation TGFingerPrinter
@@ -48,47 +48,38 @@
  Produces a fingerprint from the given song using the chromaprint library.
 
  @params theSong The song to fingerprint.
- @returns the fingerprint as an NSString*.
+ @returns the fingerprint as a nullable NSString*.
  */
-- (NSString *)fingerprintForSong:(TGSong*)theSong {
-    /*
+- (nullable NSString *)fingerprintForSong:(id<TGSongProtocol>)theSong {
+    
     int maxLength = 120;
     char *theFingerprint;
     int duration;
     
     ChromaprintContext *chromaprintContext = chromaprint_new(CHROMAPRINT_ALGORITHM_DEFAULT);
 
-    NSURL* songURL = [_delegate URLForSongID:theSong.songID];
+    id<SongIDProtocol> songID = theSong.songID;
+    
+    NSURL* songURL = [_delegate URLForSongID:songID];
     TGLog(TGLOG_TMP,@"requestFingerPrintForSong called with song Id %@",songID);
     [self decodeAudioFileNew:songURL forContext:chromaprintContext ofLength:maxLength andDuration:&duration];
     
     if (chromaprint_get_fingerprint(chromaprintContext, &theFingerprint)) {
         
-        //MARK: This needs to be extracted from the fingerprinting so we can use whatever uuid method we like
-        // independently of the fingerprinter.
-        // Since this is synchronous the call will block until either it succeeded or failed to fetch an UUId.
-        //            TGLog(TGLOG_TMP,@"requesting UUId from generated fingerprint.");
-        //            [self requestUUIDForSongID:songID withDuration:duration andFingerPrint:theFingerprint];
-        
         NSString *songFingerPrint = [NSString stringWithCString:theFingerprint encoding:NSASCIIStringEncoding];
-        
-        // Presumably the duration returned from fingerprinting is the most accurate so store it in the song.
-        //            [_songPoolAPI setSongDuration:[NSNumber numberWithInt:duration] forSongId:songID];
-        //            [self requestUUIDForSongID:songID withDuration:duration andFingerPrint:(char*)[songFingerPrint UTF8String]];
         
         // Deallocate the fingerprint data.
         chromaprint_dealloc(theFingerprint);
         
         // Call the handler with the generated fingerprint.
-        fingerprintHandler(songFingerPrint);
+        return songFingerPrint;
         
     } else
         TGLog(TGLOG_ALL,@"ERROR: Fingerprinter failed to produce a fingerprint for songId %@",songID);
     
     chromaprint_free(chromaprintContext);
 
-    */
-    return @"";
+    return nil;
 }
 
 // A version of the fingerprint request that uses a completion block instead of a delegate callback.

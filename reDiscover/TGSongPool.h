@@ -26,6 +26,8 @@
 @class SweetSpotServerIO;
 @class TGSongAudioCacher;
 @class TGSongAudioPlayer;
+@class SongArtCache;
+//@class UUIDMaker;
 
 // protocol forward declaration
 @protocol SongGridAccessProtocol;
@@ -36,6 +38,7 @@
 *   To conform to the SongIDProtocol a class must also adopt the NSCopying.
  */
 @protocol SongIDProtocol <NSObject, NSCopying>
+@property NSUInteger idValue;
 - (BOOL)isEqual:(id)object;
 - (id)copyWithZone:(struct _NSZone *)zone;
 @property (readonly) NSUInteger hash;
@@ -174,6 +177,8 @@
     int32_t srCounter;
     
     TGFingerPrinter *songFingerPrinter;
+//    UUIDMaker *songUUIDMaker;
+    SongArtCache* artCache;
     
     NSManagedObjectModel *songUserDataManagedObjectModel;
     NSManagedObjectContext *songPoolManagedContext;

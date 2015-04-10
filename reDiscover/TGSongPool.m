@@ -126,7 +126,9 @@ static int const kSongPoolStartCapacity = 250;
         // Create and hook up the song fingerprinter.
         songFingerPrinter = [[TGFingerPrinter alloc] init];
         [songFingerPrinter setDelegate:self];
-
+        
+//        songUUIDMaker = [[UUIDMaker alloc] init];
+        artCache = [[SongArtCache alloc] init];
         /* cdfix
         // Core Data initialization.
         {
@@ -685,7 +687,7 @@ static int const kSongPoolStartCapacity = 250;
     if (theSong == nil) { imageHandler(nil); }
     
     AVURLAsset *songAsset = [[AVURLAsset alloc] initWithURL:[NSURL URLWithString:theSong.urlString] options:nil];
-    
+
     [songAsset loadValuesAsynchronouslyForKeys:@[@"commonMetadata"] completionHandler:^{
         
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
@@ -734,7 +736,6 @@ static int const kSongPoolStartCapacity = 250;
     [self searchMetadataForCoverImageForSongId:songID withHandler:^(NSImage *tmpImage) {
     
         if (tmpImage != nil) {
-
             // Store the image in the local cache if it isn't already there so we won't have to re-fetch it from the file.
             if ([_coverArtById objectForKey:tmpImage.hashId] == nil) {
                 [tmpImage hashIdWithHandler:^(NSString* theHashId) {
@@ -1475,9 +1476,39 @@ static int const kSongPoolStartCapacity = 250;
     // Initiate the fingerprint/UUId generation and fetching of cover art.
     // Split this into synchronous functions called on a single separate thread:
     // 1) Get fingerprint for the song unless already there.
+    // TGFingerprinter fingerprintForSong
     // 2) Get UUId from fingerprint unless already there.
+    // UUIDForSong
     // 3) Get Cover Art from UUId unless already there.
+    //
     // 4) Notify all done.
+    //MARK: REFAC
+
+    dispatch_async(dispatch_get_global_queue(QOS_CLASS_BACKGROUND, 0), ^{
+        id<TGSongProtocol> __nonnull aSong  = [self songForID:selectedSongId];
+        
+        NSString* aFingerprint = [songFingerPrinter fingerprintForSong:aSong];
+        if (aFingerprint != nil) {
+
+            CMTime songDuration = [songAudioPlayer songDuration];
+            NSString *songUUID = [UUIDMaker UUIDForSong:aSong duration:CMTimeGetSeconds(songDuration) fingerprint:aFingerprint];
+            TGLog(TGLOG_REFAC, @"New fingerprinter returned %@",songUUID);
+
+            NSImage* theImage = [SongArtCache getNoCoverImage];
+            if (theImage != nil) {
+                TGLog(TGLOG_REFAC, @"New image getter returned an image!");
+            }
+            artCache = [artCache addImage:theImage];
+
+            NSImage *otherImg = [artCache artForSong:aSong];
+            if (otherImg != nil) {
+                TGLog(TGLOG_REFAC, @"goddam %@",otherImg);
+            }
+        }
+//        dispatch_async(dispatch_get_main_queue(), { () -> Void in
+//            println("This is run on the main queue, after the previous code in outer block")
+//        })
+    });
     [self fetchUUIdAndCoverArtForSongId:selectedSongId];
 }
 

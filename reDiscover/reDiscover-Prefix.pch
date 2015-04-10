@@ -15,6 +15,7 @@
 #define TGLOG_DBG
 #define TGLOG_TMP
 #define TGLOG_NUUI
+#define TGLOG_REFAC
 
 #define TGLog(tag, msg, ...) TGLog_eval_(TGLog_do_, tag, msg, ## __VA_ARGS__)
 #define TGLog_eval_(macro, ...) macro(__VA_ARGS__)

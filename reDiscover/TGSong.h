@@ -10,6 +10,7 @@
 
 // CMTime is a struct so it can't be forward declared and must be imported.
 #import <CoreMedia/CMTime.h>
+#import "TGSongProtocol.h"
 
 //MARK: Forward declarations.
 @class AVURLAsset;
@@ -23,9 +24,10 @@
 @protocol SongIDProtocol;
 @protocol SongPoolAccessProtocol;
 
-//@protocol TGSong
+//@protocol TGSongProtocol
 //@property id<SongIDProtocol>songID;
 //@end
+
 // Enum declarations
 /*
 // States of the songStatus property:
@@ -58,7 +60,7 @@ enum {
     kFingerPrintStatusFailed        = 0xff
 };
 
-@interface TGSong : NSObject
+@interface TGSong : NSObject <TGSongProtocol>
 //@interface Song : NSObject <TGSong>
 {
     AVURLAsset *songAsset;
@@ -69,6 +71,7 @@ enum {
 }
 
 // song data that is shadowed and saved by TEOSongData in the SongPool
+//FIXME: Make all these (readonly) when ready.
 @property NSString*         album;
 @property NSString*         artist;
 @property NSArray*          sweetSpots;
@@ -109,7 +112,7 @@ typedef void(^MyCustomBlock)(void);
 @property (nonatomic, copy) MyCustomBlock customBlock;
 
 /// An id key into the songpool's art dictionary. A value of nil signals no art.
-@property NSString* artID;
+@property (nonatomic, copy) NSString* artID;
 
 ///// An id key into the songpool's art dictionary. Values of -1 will be no art and 0 will be the default "no cover" art.
 //@property NSInteger artID;

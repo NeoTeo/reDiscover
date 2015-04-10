@@ -16,6 +16,8 @@
 @protocol TGFingerPrinterDelegate;
 @protocol SongIDProtocol;
 @protocol SongPoolAccessProtocol;
+@protocol TGSongProtocol;
+
 
 @interface TGFingerPrinter : NSObject
 {
@@ -26,6 +28,9 @@
 //    NSOperationQueue *opQueue;
 }
 
+- (nullable NSString *)fingerprintForSong:(__nonnull id<TGSongProtocol>)theSong;
+
+#pragma clang assume_nonnull begin
 - (void)requestFingerPrintForSong:(id<SongIDProtocol>)songID withHandler:(void (^)(NSString*))fingerprintHandler;
 - (void)requestUUIDForSongID:(id<SongIDProtocol>)songID withDuration:(int)duration andFingerPrint:(char*)theFingerprint;
 - (NSInteger)decodeAudioFile:(NSURL *)fileURL forContext:(ChromaprintContext *)theContext ofLength:(NSInteger)maxLength andDuration:(int *)duration;
@@ -33,15 +38,18 @@
 
 @property id<TGFingerPrinterDelegate> delegate;
 @property id<SongPoolAccessProtocol>songPoolAPI;
-
+#pragma clang assume_nonnull end
 @end
 
 
 
 @protocol TGFingerPrinterDelegate <NSObject>
 @optional
+#pragma clang assume_nonnull begin
 //- (void)fingerprintReady:(NSString *)fingerPrint forSongID:(id<SongIDProtocol>)songID;
 - (NSURL *)URLForSongID:(id<SongIDProtocol>)songID;
 -(void)setUUIDString:(NSString*)theUUID forSongID:(id<SongIDProtocol>)songID;
 - (void)setReleases:(NSData*)releases forSongID:(id<SongIDProtocol>)songID;
+#pragma clang assume_nonnull end
+
 @end
