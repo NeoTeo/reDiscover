@@ -26,7 +26,7 @@
 @class SweetSpotServerIO;
 @class TGSongAudioCacher;
 @class TGSongAudioPlayer;
-@class SongArtCache;
+//@class SongArtCache;
 //@class UUIDMaker;
 
 // protocol forward declaration
@@ -178,7 +178,7 @@
     
     TGFingerPrinter *songFingerPrinter;
 //    UUIDMaker *songUUIDMaker;
-    SongArtCache* artCache;
+//    SongArtCache* artCache;
     
     NSManagedObjectModel *songUserDataManagedObjectModel;
     NSManagedObjectContext *songPoolManagedContext;

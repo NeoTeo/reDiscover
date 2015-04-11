@@ -128,7 +128,7 @@ static int const kSongPoolStartCapacity = 250;
         [songFingerPrinter setDelegate:self];
         
 //        songUUIDMaker = [[UUIDMaker alloc] init];
-        artCache = [[SongArtCache alloc] init];
+//        artCache = [[SongArtCache alloc] init];
         /* cdfix
         // Core Data initialization.
         {
@@ -1492,15 +1492,9 @@ static int const kSongPoolStartCapacity = 250;
 
             CMTime songDuration = [songAudioPlayer songDuration];
             NSString *songUUID = [UUIDMaker UUIDForSong:aSong duration:CMTimeGetSeconds(songDuration) fingerprint:aFingerprint];
-            TGLog(TGLOG_REFAC, @"New fingerprinter returned %@",songUUID);
-
-            NSImage* theImage = [SongArtCache getNoCoverImage];
-            if (theImage != nil) {
-                TGLog(TGLOG_REFAC, @"New image getter returned an image!");
-            }
-            artCache = [artCache addImage:theImage];
-
-            NSImage *otherImg = [artCache artForSong:aSong];
+            // setting the song's anything should give me a new song
+            NSImage *otherImg = [SongArt artForSong:aSong];
+            
             if (otherImg != nil) {
                 TGLog(TGLOG_REFAC, @"goddam %@",otherImg);
             }

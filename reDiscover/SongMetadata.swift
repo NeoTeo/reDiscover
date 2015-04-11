@@ -38,7 +38,7 @@ extension SongMetaData {
                 dispatch_semaphore_wait(sema, DISPATCH_TIME_FOREVER)
 
                 let artworks = AVMetadataItem.metadataItemsFromArray(songAsset.commonMetadata, withKey: AVMetadataCommonKeyArtwork, keySpace:AVMetadataKeySpaceCommon)
-                println("We gots \(artworks.count)")
+
                 var retArt = [NSImage?]()
                 for aw in artworks {
                     retArt.append(aw as? NSImage)

@@ -27,6 +27,8 @@
 		AB5D1DD51A35D714003D07A2 /* NSMutableArray+QueueAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = AB5D1DD41A35D714003D07A2 /* NSMutableArray+QueueAdditions.m */; };
 		AB663FD81A8AA14700E50596 /* TGSongGridView.xib in Resources */ = {isa = PBXBuildFile; fileRef = AB663FD71A8AA14700E50596 /* TGSongGridView.xib */; };
 		AB71279B19407C8E0002B1F8 /* CoverArtArchiveWebFetcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB71279A19407C8E0002B1F8 /* CoverArtArchiveWebFetcher.swift */; };
+		AB725A3A1AD91E8C003E94E6 /* SongArtFinder.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB725A391AD91E8C003E94E6 /* SongArtFinder.swift */; };
+		AB725A3C1AD92256003E94E6 /* SongArtCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB725A3B1AD92256003E94E6 /* SongArtCache.swift */; };
 		AB7358F01A63D6D300E08D5A /* TGSongAudioPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB7358EF1A63D6D300E08D5A /* TGSongAudioPlayer.swift */; };
 		AB7FFB6119589BF2002D1E63 /* DropViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB7FFB6019589BF2002D1E63 /* DropViewController.swift */; };
 		AB7FFB6319589D1E002D1E63 /* DropView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB7FFB6219589D1E002D1E63 /* DropView.swift */; };
@@ -64,7 +66,6 @@
 		AB91A02E1972D097005DF712 /* DebugDisplayController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB91A02C1972D097005DF712 /* DebugDisplayController.swift */; };
 		AB9A44BF19FFC97B00605DCC /* NSImage+TGHashId.m in Sources */ = {isa = PBXBuildFile; fileRef = AB9A44BE19FFC97B00605DCC /* NSImage+TGHashId.m */; };
 		ABB33FF019C72C3800439A5E /* SweetSpotServerIO.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABB33FEF19C72C3800439A5E /* SweetSpotServerIO.swift */; };
-		ABB770AB1950486600155EE7 /* SongID.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABB770AA1950486600155EE7 /* SongID.swift */; };
 		ABCB68EA18FD57E4009CF277 /* TEOSong.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = ABCB68E818FD57E4009CF277 /* TEOSong.xcdatamodeld */; };
 		ABEC263D1951C6F200A57CE3 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = ABEC263C1951C6F200A57CE3 /* Main.storyboard */; };
 		ABED8E301AB72C2A005B1403 /* Song.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABED8E2F1AB72C2A005B1403 /* Song.swift */; };
@@ -114,7 +115,9 @@
 		AB5D1DD41A35D714003D07A2 /* NSMutableArray+QueueAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSMutableArray+QueueAdditions.m"; sourceTree = "<group>"; };
 		AB663FD71A8AA14700E50596 /* TGSongGridView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = TGSongGridView.xib; sourceTree = "<group>"; };
 		AB71279919407C8D0002B1F8 /* reDiscover-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "reDiscover-Bridging-Header.h"; sourceTree = "<group>"; };
-		AB71279A19407C8E0002B1F8 /* CoverArtArchiveWebFetcher.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CoverArtArchiveWebFetcher.swift; sourceTree = "<group>"; };
+		AB71279A19407C8E0002B1F8 /* CoverArtArchiveWebFetcher.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CoverArtArchiveWebFetcher.swift; path = reDiscover/CoverArtArchiveWebFetcher.swift; sourceTree = "<group>"; };
+		AB725A391AD91E8C003E94E6 /* SongArtFinder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SongArtFinder.swift; path = reDiscover/SongArtFinder.swift; sourceTree = "<group>"; };
+		AB725A3B1AD92256003E94E6 /* SongArtCache.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SongArtCache.swift; path = reDiscover/SongArtCache.swift; sourceTree = "<group>"; };
 		AB7358EF1A63D6D300E08D5A /* TGSongAudioPlayer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TGSongAudioPlayer.swift; sourceTree = "<group>"; };
 		AB7FFB6019589BF2002D1E63 /* DropViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DropViewController.swift; sourceTree = "<group>"; };
 		AB7FFB6219589D1E002D1E63 /* DropView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DropView.swift; sourceTree = "<group>"; };
@@ -184,12 +187,11 @@
 		AB9A44BD19FFC97B00605DCC /* NSImage+TGHashId.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSImage+TGHashId.h"; sourceTree = "<group>"; };
 		AB9A44BE19FFC97B00605DCC /* NSImage+TGHashId.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSImage+TGHashId.m"; sourceTree = "<group>"; };
 		ABB33FEF19C72C3800439A5E /* SweetSpotServerIO.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SweetSpotServerIO.swift; sourceTree = "<group>"; };
-		ABB770AA1950486600155EE7 /* SongID.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SongID.swift; sourceTree = "<group>"; };
 		ABCB68E918FD57E4009CF277 /* TEOSong.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = TEOSong.xcdatamodel; sourceTree = "<group>"; };
 		ABEC263C1951C6F200A57CE3 /* Main.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Main.storyboard; sourceTree = "<group>"; };
 		ABED8E2F1AB72C2A005B1403 /* Song.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Song.swift; sourceTree = "<group>"; };
 		ABED8E311AB72F4F005B1403 /* SongMetadata.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SongMetadata.swift; path = reDiscover/SongMetadata.swift; sourceTree = "<group>"; };
-		ABED8E331AB73B6E005B1403 /* CoverArtController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CoverArtController.swift; sourceTree = "<group>"; };
+		ABED8E331AB73B6E005B1403 /* CoverArtController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CoverArtController.swift; path = reDiscover/CoverArtController.swift; sourceTree = "<group>"; };
 		ABFC8EB119C19C630007ECCB /* uploadedSS.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = uploadedSS.plist; sourceTree = "<group>"; };
 		ABFC8EB419C1BCE90007ECCB /* uploadedSS.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = uploadedSS.xcdatamodel; sourceTree = "<group>"; };
 		ABFD9DD21AD41B7C00718631 /* TGSongProtocol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TGSongProtocol.h; sourceTree = "<group>"; };
@@ -286,10 +288,7 @@
 				ABED8E2F1AB72C2A005B1403 /* Song.swift */,
 				AB7358EF1A63D6D300E08D5A /* TGSongAudioPlayer.swift */,
 				AB8182D71A5D5DAA000939F1 /* TGSongAudioCacher.swift */,
-				ABED8E331AB73B6E005B1403 /* CoverArtController.swift */,
-				AB71279A19407C8E0002B1F8 /* CoverArtArchiveWebFetcher.swift */,
 				ABB33FEF19C72C3800439A5E /* SweetSpotServerIO.swift */,
-				ABB770AA1950486600155EE7 /* SongID.swift */,
 				AB5D1DD31A35D714003D07A2 /* NSMutableArray+QueueAdditions.h */,
 				AB5D1DD41A35D714003D07A2 /* NSMutableArray+QueueAdditions.m */,
 				AB9A44BD19FFC97B00605DCC /* NSImage+TGHashId.h */,
@@ -359,9 +358,21 @@
 			name = "song timeline";
 			sourceTree = "<group>";
 		};
+		AB725A3D1AD922BC003E94E6 /* SongArt */ = {
+			isa = PBXGroup;
+			children = (
+				AB725A391AD91E8C003E94E6 /* SongArtFinder.swift */,
+				AB725A3B1AD92256003E94E6 /* SongArtCache.swift */,
+				ABED8E331AB73B6E005B1403 /* CoverArtController.swift */,
+				AB71279A19407C8E0002B1F8 /* CoverArtArchiveWebFetcher.swift */,
+			);
+			name = SongArt;
+			sourceTree = "<group>";
+		};
 		AB85BBCA1875AACF00670905 = {
 			isa = PBXGroup;
 			children = (
+				AB725A3D1AD922BC003E94E6 /* SongArt */,
 				ABFD9DD21AD41B7C00718631 /* TGSongProtocol.h */,
 				ABFD9DD31AD4217700718631 /* SongUUID.swift */,
 				ABED8E311AB72F4F005B1403 /* SongMetadata.swift */,
@@ -624,7 +635,6 @@
 				AB85BC5F1875AD7A00670905 /* TGSongGridScrollView.m in Sources */,
 				AB85BC501875AB5200670905 /* TGSongUserData.m in Sources */,
 				ABCB68EA18FD57E4009CF277 /* TEOSong.xcdatamodeld in Sources */,
-				ABB770AB1950486600155EE7 /* SongID.swift in Sources */,
 				AB85BC421875AB5200670905 /* TGMainViewController.m in Sources */,
 				AB56D9F418EC14D5005AB947 /* CAKeyframeAnimation+Parametric.m in Sources */,
 				AB7FFB6119589BF2002D1E63 /* DropViewController.swift in Sources */,
@@ -640,9 +650,11 @@
 				AB1BC13F1976C91E003F02B9 /* ScrollingTextView.swift in Sources */,
 				ABED8E321AB72F4F005B1403 /* SongMetadata.swift in Sources */,
 				AB85BC451875AB5200670905 /* TGPlaylistViewController.m in Sources */,
+				AB725A3A1AD91E8C003E94E6 /* SongArtFinder.swift in Sources */,
 				AB85BC531875AB5200670905 /* TGTimelineSliderCell.m in Sources */,
 				AB85BC4F1875AB5200670905 /* TGSongUIViewController.m in Sources */,
 				AB85BC4B1875AB5200670905 /* TGSongInfoViewController.m in Sources */,
+				AB725A3C1AD92256003E94E6 /* SongArtCache.swift in Sources */,
 				AB91A02E1972D097005DF712 /* DebugDisplayController.swift in Sources */,
 				AB85BC3E1875AB5200670905 /* TGFingerPrinter.m in Sources */,
 				AB4529661A895B4100A6B15A /* TGAppDelegate.swift in Sources */,
