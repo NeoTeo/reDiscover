@@ -1076,7 +1076,8 @@ static int const kSongPoolStartCapacity = 250;
     }
     
     if (ssIndex >= 0 && ssIndex < theSong.sweetSpots.count ) {
-        [theSong makeSweetSpotAtTime:theSong.sweetSpots[ssIndex]];
+        //MARK: REFAC
+        //[theSong makeSweetSpotAtTime:theSong.sweetSpots[ssIndex]];
     }
 }
 
@@ -1110,17 +1111,17 @@ static int const kSongPoolStartCapacity = 250;
 }
 
 
-- (NSSet*)currentCache {
-    return songIDCache;
-}
+//- (NSSet*)currentCache {
+//    return songIDCache;
+//}
 
-- (NSNumber*)cachedLengthForSongID:(id<SongIDProtocol>)songID {
-    return [NSNumber numberWithLongLong:[self songForID:songID].cachedFileLength];
-}
+//- (NSNumber*)cachedLengthForSongID:(id<SongIDProtocol>)songID {
+//    return [NSNumber numberWithLongLong:[self songForID:songID].cachedFileLength];
+//}
 
-- (AVAudioFile*)cachedAudioFileForSongID:(id<SongIDProtocol>)songID {
-    return [self songForID:songID].cachedFile;
-}
+//- (AVAudioFile*)cachedAudioFileForSongID:(id<SongIDProtocol>)songID {
+//    return [self songForID:songID].cachedFile;
+//}
 
 - (NSString*)albumForSongID:(id<SongIDProtocol>)songID {
         return [self songForID:songID].album;
@@ -1180,8 +1181,9 @@ static int const kSongPoolStartCapacity = 250;
 //- (NSNumber *)fetchSongSweetSpot:(TGSong *)song withHandler:(void (^)(NSNumber*))sweetSpotHandler {
     // Get the song's start time in seconds.
 //    NSNumber *startTime = [song startTime];
-    NSNumber *startTime = [song currentSweetSpot];
-    
+    //MARK: REFAC
+//    NSNumber *startTime = [song currentSweetSpot];
+    NSNumber *startTime = [NSNumber numberWithFloat:[SweetSpotControl currentSweetSpotForSong:song]];
     /// Request sweetspots from the sweetspot server if the song does not have a start time, has a uuid and has not
     /// exceeded its alotted queries.
 
@@ -1219,7 +1221,11 @@ static int const kSongPoolStartCapacity = 250;
     
     // Set the current playback time and the currently selected sweet spot to the new position.
     [songAudioPlayer setCurrentPlayTime:[newPosition doubleValue]];
-    [theSong setSweetSpot:newPosition];
+//    [theSong setSweetSpot:newPosition];
+    
+    //MARK: REFAC
+    id<TGSongProtocol> newSong = [SweetSpotControl songWithSweetSpot:theSong atTime:[newPosition floatValue]];
+    [songPoolDictionary setObject:newSong forKey:newSong.songID];
 }
 
 
@@ -1530,7 +1536,12 @@ static int const kSongPoolStartCapacity = 250;
     if (aSong == nil) {
         return;
     }
-    [self requestSongPlayback:songID withStartTimeInSeconds:aSong.currentSweetSpot makeSweetSpot:NO];
+    
+    //MARK: REFAC
+    NSNumber *startTime = [NSNumber numberWithFloat:[SweetSpotControl currentSweetSpotForSong:aSong]];
+    [self requestSongPlayback:songID withStartTimeInSeconds:startTime makeSweetSpot:NO];
+
+//    [self requestSongPlayback:songID withStartTimeInSeconds:aSong.currentSweetSpot makeSweetSpot:NO];
 }
 
 
@@ -1564,7 +1575,10 @@ static int const kSongPoolStartCapacity = 250;
     }
 
     if ( makeSS ) {
-        [aSong makeSweetSpotAtTime:time];
+        //MARK: REFAC
+//        [aSong makeSweetSpotAtTime:time];
+        id<TGSongProtocol> newSong = [SweetSpotControl songWithSweetSpot:aSong atTime:[time floatValue]];
+        [songPoolDictionary setObject:newSong forKey:newSong.songID];
     }
 
     //NUCACHE
@@ -1671,7 +1685,7 @@ static int const kSongPoolStartCapacity = 250;
     TGLog(TGLOG_DBG,@"vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv");
     TGLog(TGLOG_DBG,@"List sweetspots for song with Id: %@",songId);
     
-    TGLog(TGLOG_DBG,@"The song status is: %@",[self statusValToString:theSong.songStatus]);
+//    TGLog(TGLOG_DBG,@"The song status is: %@",[self statusValToString:theSong.songStatus]);
     TGLog(TGLOG_DBG,@"The artId: %@",theSong.artID);
     TGLog(TGLOG_DBG,@"The UUID is %@",[self UUIDStringForSongID:songId]);
     TGLog(TGLOG_DBG,@"The song has a fingerprint: %@",[self fingerprintExistsForSongID:songId]?@"Yes":@"No");

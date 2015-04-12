@@ -63,8 +63,8 @@
 - (NSString*)UUIDStringForSongID:(id<SongIDProtocol>)songID;
 - (NSData*)releasesForSongID:(id<SongIDProtocol>)songID;
 - (NSString*)albumForSongID:(id<SongIDProtocol>)songID;
-- (AVAudioFile*)cachedAudioFileForSongID:(id<SongIDProtocol>)songID;
-- (NSNumber*)cachedLengthForSongID:(id<SongIDProtocol>)songID;
+//- (AVAudioFile*)cachedAudioFileForSongID:(id<SongIDProtocol>)songID;
+//- (NSNumber*)cachedLengthForSongID:(id<SongIDProtocol>)songID;
 
 - (void)requestSongPlayback:(id<SongIDProtocol>)songID;
 - (void)requestSongPlayback:(id<SongIDProtocol>)songID
@@ -273,7 +273,7 @@
 - (void)songDidFinishPlayback:(TGSong *)song;
 - (void)songDidUpdatePlayheadPosition:(NSNumber *)playheadPosition;
 //- (void)songReadyForPlayback:(TGSong *)song atTime:(NSNumber*)startTime;
-- (NSSet*)currentCache;
+//- (NSSet*)currentCache;
 
 //MARK: Test methods
 - (void)testUploadSSForSongID:(id<SongIDProtocol>)theID;
