@@ -25,6 +25,7 @@
 		AB4E079219B61AEC0052EEC0 /* VideoDecodeAcceleration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AB241FD61889776700E8E03F /* VideoDecodeAcceleration.framework */; };
 		AB56D9F418EC14D5005AB947 /* CAKeyframeAnimation+Parametric.m in Sources */ = {isa = PBXBuildFile; fileRef = AB56D9F318EC14D5005AB947 /* CAKeyframeAnimation+Parametric.m */; };
 		AB5D1DD51A35D714003D07A2 /* NSMutableArray+QueueAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = AB5D1DD41A35D714003D07A2 /* NSMutableArray+QueueAdditions.m */; };
+		AB638F861ADBC70200D4C8FA /* SongAlbums.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB638F851ADBC70200D4C8FA /* SongAlbums.swift */; };
 		AB663FD81A8AA14700E50596 /* TGSongGridView.xib in Resources */ = {isa = PBXBuildFile; fileRef = AB663FD71A8AA14700E50596 /* TGSongGridView.xib */; };
 		AB71279B19407C8E0002B1F8 /* CoverArtArchiveWebFetcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB71279A19407C8E0002B1F8 /* CoverArtArchiveWebFetcher.swift */; };
 		AB725A3A1AD91E8C003E94E6 /* SongArtFinder.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB725A391AD91E8C003E94E6 /* SongArtFinder.swift */; };
@@ -114,6 +115,7 @@
 		AB56D9F318EC14D5005AB947 /* CAKeyframeAnimation+Parametric.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "CAKeyframeAnimation+Parametric.m"; sourceTree = "<group>"; };
 		AB5D1DD31A35D714003D07A2 /* NSMutableArray+QueueAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSMutableArray+QueueAdditions.h"; sourceTree = "<group>"; };
 		AB5D1DD41A35D714003D07A2 /* NSMutableArray+QueueAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSMutableArray+QueueAdditions.m"; sourceTree = "<group>"; };
+		AB638F851ADBC70200D4C8FA /* SongAlbums.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SongAlbums.swift; path = reDiscover/SongAlbums.swift; sourceTree = "<group>"; };
 		AB663FD71A8AA14700E50596 /* TGSongGridView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = TGSongGridView.xib; sourceTree = "<group>"; };
 		AB71279919407C8D0002B1F8 /* reDiscover-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "reDiscover-Bridging-Header.h"; sourceTree = "<group>"; };
 		AB71279A19407C8E0002B1F8 /* CoverArtArchiveWebFetcher.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CoverArtArchiveWebFetcher.swift; path = reDiscover/CoverArtArchiveWebFetcher.swift; sourceTree = "<group>"; };
@@ -388,6 +390,7 @@
 				ABFD9DD21AD41B7C00718631 /* TGSongProtocol.h */,
 				ABFD9DD31AD4217700718631 /* SongUUID.swift */,
 				ABED8E311AB72F4F005B1403 /* SongMetadata.swift */,
+				AB638F851ADBC70200D4C8FA /* SongAlbums.swift */,
 				AB85BBDC1875AACF00670905 /* reDiscover */,
 				AB85BBFA1875AACF00670905 /* reDiscoverTests */,
 				AB1756221A2E1788003FC9A3 /* reDiscover Tests */,
@@ -661,6 +664,7 @@
 				AB85BBE31875AACF00670905 /* main.m in Sources */,
 				AB85BC401875AB5200670905 /* TGIdleTimer.m in Sources */,
 				AB1BC13F1976C91E003F02B9 /* ScrollingTextView.swift in Sources */,
+				AB638F861ADBC70200D4C8FA /* SongAlbums.swift in Sources */,
 				ABED8E321AB72F4F005B1403 /* SongMetadata.swift in Sources */,
 				AB85BC451875AB5200670905 /* TGPlaylistViewController.m in Sources */,
 				AB725A3A1AD91E8C003E94E6 /* SongArtFinder.swift in Sources */,

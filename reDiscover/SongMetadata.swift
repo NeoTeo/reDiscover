@@ -8,9 +8,35 @@
 
 import Foundation
 import AVFoundation
-
-class SongMetaData : NSObject {
+// The problem I'm having with this massive initializer is probably symptomatic of
+// a design problem. It seems to suggest that I have too many disparate concepts
+// globbed together in one class and I should try to reduce and/or split
+// the properties into sub structures that are logically grouped.
+// Eg. is selectedSweetSpot really metadata on the song?
+// Does songReleases belong inside the song?
+// is the fingerPrintStatus not metadata on the fingerprint?
+// We should distinguish between metadata on the song and data that is effectively
+// housekeeping/state of the song instance?
+class SongMetaData : NSObject, NSCopying {
+    let title:              String?
+    let album:              String?
+    let artist:             String?
+    let year:               UInt?
+    let genre:              String?
+    let songReleases:       NSData?
     
+    init(title: String?, album: String?,artist: String?,year: UInt?,genre: String?,songReleases: NSData?) {
+            self.title          = title
+            self.album          = album
+            self.artist         = artist
+            self.year           = year
+            self.genre          = genre
+            self.songReleases   = songReleases?.copy() as? NSData
+    }
+    
+    func copyWithZone(zone: NSZone) -> AnyObject {
+        return SongMetaData(title: title, album: album, artist: artist, year: year, genre: genre, songReleases: songReleases)
+    }
 }
 
 extension SongMetaData {
@@ -51,5 +77,10 @@ extension SongMetaData {
     
     func loadForSongId(songId: SongIDProtocol) -> Bool {
         return true
+    }
+    
+    // replaces SongPool requestEmbeddedMetadataForSongID:
+    static func metaDataForSong(song: TGSongProtocol) -> SongMetaData {
+        return song.metadata
     }
 }

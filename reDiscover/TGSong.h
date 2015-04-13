@@ -19,6 +19,7 @@
 @class NSURL;
 @class TEOSongData;
 @class AVAudioFile;
+@class SongMetaData;
 
 @protocol TGSongDelegate;
 @protocol SongIDProtocol;
@@ -40,6 +41,8 @@ enum {
 //FIXME: Make all these (readonly) when ready and make them ivars by moving
 // them into the interface definition above.
 // Should this not be in SongMetaData really?
+@property (nonatomic, copy) SongMetaData *metadata;
+
 @property NSString*         album;
 @property NSString*         artist;
 @property NSArray*          sweetSpots;

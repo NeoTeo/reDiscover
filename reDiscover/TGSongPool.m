@@ -1183,7 +1183,7 @@ static int const kSongPoolStartCapacity = 250;
 //    NSNumber *startTime = [song startTime];
     //MARK: REFAC
 //    NSNumber *startTime = [song currentSweetSpot];
-    NSNumber *startTime = [NSNumber numberWithFloat:[SweetSpotControl currentSweetSpotForSong:song]];
+    NSNumber *startTime = [NSNumber numberWithFloat:[SweetSpotControl selectedSweetSpotForSong:song]];
     /// Request sweetspots from the sweetspot server if the song does not have a start time, has a uuid and has not
     /// exceeded its alotted queries.
 
@@ -1224,7 +1224,7 @@ static int const kSongPoolStartCapacity = 250;
 //    [theSong setSweetSpot:newPosition];
     
     //MARK: REFAC
-    id<TGSongProtocol> newSong = [SweetSpotControl songWithSweetSpot:theSong atTime:[newPosition floatValue]];
+    id<TGSongProtocol> newSong = [SweetSpotControl songWithSelectedSweetSpot:theSong atTime:[newPosition floatValue]];
     [songPoolDictionary setObject:newSong forKey:newSong.songID];
 }
 
@@ -1413,8 +1413,12 @@ static int const kSongPoolStartCapacity = 250;
 }
 
 - (void)storeSweetSpotForSongID:(id<SongIDProtocol>)songID {
-    TGSong *tmpSong = [self songForID:songID];
-    [tmpSong storeSelectedSweetSpot];
+    //TGSong *tmpSong = [self songForID:songID];
+    //MARK: REFAC
+    id<TGSongProtocol> tmpSong = [self songForID:songID];
+    //[tmpSong storeSelectedSweetSpot];
+    tmpSong = [SweetSpotControl songWithAddedSweetSpot:tmpSong withSweetSpot:[SweetSpotControl selectedSweetSpotForSong:tmpSong]];
+    [songPoolDictionary setObject:tmpSong forKey:tmpSong.songID];
 }
 
 // Currently only called manually by pressing the s key.
@@ -1538,7 +1542,7 @@ static int const kSongPoolStartCapacity = 250;
     }
     
     //MARK: REFAC
-    NSNumber *startTime = [NSNumber numberWithFloat:[SweetSpotControl currentSweetSpotForSong:aSong]];
+    NSNumber *startTime = [NSNumber numberWithFloat:[SweetSpotControl selectedSweetSpotForSong:aSong]];
     [self requestSongPlayback:songID withStartTimeInSeconds:startTime makeSweetSpot:NO];
 
 //    [self requestSongPlayback:songID withStartTimeInSeconds:aSong.currentSweetSpot makeSweetSpot:NO];
@@ -1577,7 +1581,7 @@ static int const kSongPoolStartCapacity = 250;
     if ( makeSS ) {
         //MARK: REFAC
 //        [aSong makeSweetSpotAtTime:time];
-        id<TGSongProtocol> newSong = [SweetSpotControl songWithSweetSpot:aSong atTime:[time floatValue]];
+        id<TGSongProtocol> newSong = [SweetSpotControl songWithSelectedSweetSpot:aSong atTime:[time floatValue]];
         [songPoolDictionary setObject:newSong forKey:newSong.songID];
     }
 

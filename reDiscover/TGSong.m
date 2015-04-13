@@ -19,13 +19,10 @@
 - (id)init {
     self = [super init];
     if (self) {
-        
-//        _songTimeScale = 100; // Centiseconds.
         _fingerPrintStatus = kFingerPrintStatusEmpty;
         _SSCheckCountdown = 0;
         _artID = nil;
         _songDuration = CMTimeMakeWithSeconds(0, 1);
-        //_songStatus = kSongStatusUninited;
     }
     return self;
 }
@@ -36,6 +33,7 @@
 
 - (id)copyWithZone:(NSZone *)zone {
     TGSong *newSong = [[TGSong alloc] init];
+    newSong.metadata            = self.metadata;    // is declared as a copy
     
     newSong.album               = [self.album copy];
     newSong.artist              = [self.artist copy];
@@ -83,28 +81,28 @@
     //self.TEOData.selectedSweetSpot = theSS;
     self.selectedSweetSpot = theSS;
 }
-*/
 
-/**
- Add the selected sweet spot to the song's sweetSpots array.
- It is not saved to disk yet.
- */
+
+
+// Add the selected sweet spot to the song's sweetSpots array.
+// It is not saved to disk yet.
+
 - (void)storeSelectedSweetSpot {
-    //NSNumber* theSS = self.TEOData.selectedSweetSpot;
+
     NSNumber* theSS = self.selectedSweetSpot;
     if (theSS) {
-//        NSMutableArray* updatedSS = [NSMutableArray arrayWithArray:self.TEOData.sweetSpots];
+
         NSMutableArray* updatedSS = [NSMutableArray arrayWithArray:self.sweetSpots];
-        //MARK: Add a check for dupes.
+        //FIXME: Use an NSSet to avoid dupes
         // put the ss in the array
         [updatedSS addObject:theSS];
 
-        //self.TEOData.sweetSpots = [updatedSS copy];
         self.sweetSpots = [updatedSS copy];
     } else {
         TGLog(TGLOG_ALL,@"No sweet spot selected!");
     }
     
 }
+*/
 
 @end
