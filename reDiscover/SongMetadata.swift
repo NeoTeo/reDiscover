@@ -25,17 +25,20 @@ class SongMetaData : NSObject, NSCopying {
     let genre:              String?
     let songReleases:       NSData?
     
-    init(title: String?, album: String?,artist: String?,year: UInt?,genre: String?,songReleases: NSData?) {
-            self.title          = title
-            self.album          = album
-            self.artist         = artist
-            self.year           = year
-            self.genre          = genre
-            self.songReleases   = songReleases?.copy() as? NSData
+//    init(title: String?, album: String?,artist: String?,year: UInt?,genre: String?,songReleases: NSData?) {
+    init(title: String?, album: String?,artist: String?,year: UInt,genre: String?,songReleases: NSData?) {
+        self.title          = title == nil ? "No title" : title
+        self.album          = album == nil ? "No album" : album
+        self.artist         = artist == nil ? "No artist" : artist
+        self.year           = year
+        self.genre          = genre == nil ? "No genre" : genre
+//        self.songReleases   = songReleases.copy() as? NSData
+        self.songReleases   = songReleases?.copy() as? NSData
     }
     
     func copyWithZone(zone: NSZone) -> AnyObject {
-        return SongMetaData(title: title, album: album, artist: artist, year: year, genre: genre, songReleases: songReleases)
+        return SongMetaData(title: title!, album: album!, artist: artist!, year: year!, genre: genre!, songReleases: songReleases!)
+//        return SongMetaData(title: title, album: album, artist: artist, year: year, genre: genre, songReleases: songReleases)
     }
 }
 
@@ -50,7 +53,7 @@ extension SongMetaData {
     */
     static func getCoverArtForSong(song: TGSong?) -> [NSImage?] {
         if  let sng = song,
-            let songAsset = AVURLAsset(URL: NSURL(string: sng.urlString) , options: nil) {
+            let songAsset = AVURLAsset(URL: NSURL(string: sng.urlString!) , options: nil) {
             
                 let sema = dispatch_semaphore_create(0)
                 
@@ -81,6 +84,6 @@ extension SongMetaData {
     
     // replaces SongPool requestEmbeddedMetadataForSongID:
     static func metaDataForSong(song: TGSong) -> SongMetaData {
-        return song.metadata
+        return song.metadata!
     }
 }

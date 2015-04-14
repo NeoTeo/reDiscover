@@ -13,7 +13,7 @@
 
 #import <AVFoundation/AVFoundation.h>
 #import "TGSongProtocol.h"
-
+/*
 @implementation TGSong
 
 - (id)init {
@@ -26,6 +26,7 @@
     }
     return self;
 }
+
 
 - (id)copy {
     return [self copyWithZone:nil];
@@ -53,22 +54,21 @@
     return newSong;
 }
 
-/*
-- (NSNumber*)currentSweetSpot {
-    //return self.TEOData.selectedSweetSpot;
+ - (NSNumber*)currentSweetSpot {
+    return self.TEOData.selectedSweetSpot;
     return self.selectedSweetSpot;
 }
 
 - (void)makeSweetSpotAtTime:(NSNumber*)startTime {
     float floatStart = [startTime floatValue];
-    //if ( _songStatus == kSongStatusReady) {
+    if ( _songStatus == kSongStatusReady) {
         float floatDuration = CMTimeGetSeconds([self songDuration]);
         
         if ((floatStart < 0) || (floatStart > floatDuration)) {
             TGLog(TGLOG_ALL,@"setStartTime error: Start time is %f",floatStart);
             return;
         }
-    //}
+    }
     
     [self setSweetSpot:startTime];
 }
@@ -78,14 +78,14 @@
         return;
     }
 
-    //self.TEOData.selectedSweetSpot = theSS;
+    self.TEOData.selectedSweetSpot = theSS;
     self.selectedSweetSpot = theSS;
 }
 
 
 
-// Add the selected sweet spot to the song's sweetSpots array.
-// It is not saved to disk yet.
+ Add the selected sweet spot to the song's sweetSpots array.
+ It is not saved to disk yet.
 
 - (void)storeSelectedSweetSpot {
 
@@ -93,8 +93,8 @@
     if (theSS) {
 
         NSMutableArray* updatedSS = [NSMutableArray arrayWithArray:self.sweetSpots];
-        //FIXME: Use an NSSet to avoid dupes
-        // put the ss in the array
+        FIXME: Use an NSSet to avoid dupes
+         put the ss in the array
         [updatedSS addObject:theSS];
 
         self.sweetSpots = [updatedSS copy];
@@ -103,6 +103,7 @@
     }
     
 }
-*/
+
 
 @end
+*/

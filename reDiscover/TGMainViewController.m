@@ -601,7 +601,8 @@
         [_songGridController setCoverImage:fetchingImage forSongWithID:songID];
         [_songInfoController setSongCoverImage:fetchingImage];
     }
-    
+
+    /* REFAC
     // Request metadata for the song and pass in the block to be called when done.
     [_currentSongPool requestEmbeddedMetadataForSongID:songID withHandler:^(NSDictionary* theData){
         
@@ -611,6 +612,10 @@
         // Tell the info panel to change to display the new song's data.
         [_songInfoController setSong:theData];
     }];
+    */
+
+    //REFAC
+    [_songInfoController setSong:[_currentSongPool songDataForSongID:songID]];
     
     // Let the timelinecontroller know that we've changed song.
     // (would a song change be better signalled as a global notification?)
@@ -665,31 +670,39 @@
 }
 CDFIX */
 - (void)refreshCoverForSongId:(id<SongIDProtocol>)songId {
-//    NSImage* songImage = [_songGridController coverImageForSongWithId:songId];
     
     // Only update song whose image has been set to fetching.
     //if ([songImage.hashId isEqualToString:fetchingImage.hashId] == YES) {
-        dispatch_async(dispatch_get_global_queue(QOS_CLASS_USER_INTERACTIVE, 0), ^{
-            [_currentSongPool requestImageForSongID:songId withHandler:^(NSImage *tmpImage) {
-                // none of the attempts returned an image so just show the no cover cover.
-                if (tmpImage == nil) {
-                    tmpImage = [NSImage imageNamed:@"noCover"];
-                }
-                
-                // Set the scroll view controller cover image.
-                [_songGridController setCoverImage:tmpImage forSongWithID:songId];
-                
-                // Only update the info window for the currently playing song.
-                //if (songId == [_currentSongPool currentlyPlayingSongID]) {
-                if ([songId isEqual:[_currentSongPool lastRequestedSongID]]) {
-                    [_songInfoController setSongCoverImage:tmpImage];
-                }
-            }];
-        });
-//    }else
-//    {
-//        TGLog(TGLOG_ALL,@"Refreshing cover of song (%@) that isn't fetching. Probably just a cached song.",songId);
-//    }
+    dispatch_async(dispatch_get_global_queue(QOS_CLASS_USER_INTERACTIVE, 0), ^{
+        //MARK: REFAC start
+        NSImage *art = [SongArt artForSong:[_currentSongPool songForID:songId]];
+        // Set the scroll view controller cover image.
+        [_songGridController setCoverImage:art forSongWithID:songId];
+        
+        // Only update the info window for the currently playing song.
+        //if (songId == [_currentSongPool currentlyPlayingSongID]) {
+        if ([songId isEqual:[_currentSongPool lastRequestedSongID]]) {
+            [_songInfoController setSongCoverImage:art];
+        }
+        //MARK: REFAC end
+        /*
+        [_currentSongPool requestImageForSongID:songId withHandler:^(NSImage *tmpImage) {
+            // none of the attempts returned an image so just show the no cover cover.
+            if (tmpImage == nil) {
+                tmpImage = [NSImage imageNamed:@"noCover"];
+            }
+            
+            // Set the scroll view controller cover image.
+            [_songGridController setCoverImage:tmpImage forSongWithID:songId];
+            
+            // Only update the info window for the currently playing song.
+            //if (songId == [_currentSongPool currentlyPlayingSongID]) {
+            if ([songId isEqual:[_currentSongPool lastRequestedSongID]]) {
+                [_songInfoController setSongCoverImage:tmpImage];
+            }
+        }];
+        */
+    });
 }
 
 // Observer method called when the song pool caching method has set a cover image for the song.

@@ -35,7 +35,8 @@
         av_register_all();
         av_log_set_level(AV_LOG_ERROR);
         fingerprintingQueue = dispatch_queue_create("fingerprinting queue", NULL);
-
+        
+        fingerPrintStatus = [NSMutableDictionary dictionaryWithCapacity:100];
     }
     return self;
 }
@@ -80,6 +81,20 @@
     chromaprint_free(chromaprintContext);
 
     return nil;
+}
+
+//MARK: REFAC - added this to move out of TGSong
+- (NSUInteger)fingerPrintStatusForSong:(id<TGSong>)theSong {
+    NSUInteger status = [fingerPrintStatus[theSong.songID] unsignedIntegerValue];
+    return status;
+}
+
+//MARK: REFAC - added this to move out of TGSong
+/**
+ This does not modify the song, but does modify the fingerPrintStatus dictionary.
+ */
+- (void)setFingerPrintStatusForSong:(id<TGSong>)theSong toStatus:(UInt)status {
+    fingerPrintStatus[theSong.songID] = [NSNumber numberWithUnsignedInteger:status];
 }
 
 // A version of the fingerprint request that uses a completion block instead of a delegate callback.

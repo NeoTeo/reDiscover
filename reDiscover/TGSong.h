@@ -21,7 +21,7 @@
 @class AVAudioFile;
 @class SongMetaData;
 
-@protocol TGSongDelegate;
+@protocol TGSong;
 @protocol SongIDProtocol;
 @protocol SongPoolAccessProtocol;
 
@@ -34,7 +34,7 @@ enum {
     kFingerPrintStatusDone          = 0x02,
     kFingerPrintStatusFailed        = 0xff
 };
-
+/*
 @interface TGSong : NSObject <TGSong,NSCopying>
 
 // song data that is shadowed and saved by TEOSongData in the SongPool
@@ -89,12 +89,12 @@ typedef void(^MyCustomBlock)(void);
 @property id<SongPoolAccessProtocol>songPoolAPI;
 @property id <TGSongDelegate>delegate;
 @end
-
+*/
 
 @protocol TGSongDelegate <NSObject>
 //@optional
 - (id<SongIDProtocol>)lastRequestedSongID;
-- (void)songDidFinishPlayback:(TGSong *)song;
+- (void)songDidFinishPlayback:(id<TGSong>)song;
 - (void)songDidUpdatePlayheadPosition:(NSNumber *)playheadPosition;
 - (dispatch_queue_t)serialQueue;
 - (dispatch_queue_t)songLoadUnloadQueue;

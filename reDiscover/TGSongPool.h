@@ -32,7 +32,7 @@
 // protocol forward declaration
 @protocol SongGridAccessProtocol;
 @protocol TGMainViewControllerDelegate;
-
+@protocol TGSong;
 /**
 *   A SongID must conform to the SongIDProtocol.
 *   To conform to the SongIDProtocol a class must also adopt the NSCopying.
@@ -58,6 +58,8 @@
 
 // Methods that SongPool implements for others to call.
 @protocol SongPoolAccessProtocol
+//MARK: REFAC - added to give TGMainViewController access.
+-(id<TGSong>)songForID:(id<SongIDProtocol>)songID;
 
 - (NSURL *)songURLForSongID:(id<SongIDProtocol>)songID;
 - (NSString*)UUIDStringForSongID:(id<SongIDProtocol>)songID;
@@ -171,8 +173,8 @@
     
     NSUInteger songPoolStartCapacity;
     NSMutableDictionary *songPoolDictionary;
-    TGSong *currentlyPlayingSong;
-    TGSong *lastRequestedSong;
+    id<TGSong> currentlyPlayingSong;
+    id<TGSong> lastRequestedSong;
 
     int32_t srCounter;
     
@@ -236,11 +238,11 @@
 - (BOOL)validateURL:(NSURL *)anURL;
 - (BOOL)loadFromURL:(NSURL *)anURL ;
 
-- (void)requestImageForSongID:(id<SongIDProtocol>)songID withHandler:(void (^)(NSImage *))imageHandler;
+//- (void)requestImageForSongID:(id<SongIDProtocol>)songID withHandler:(void (^)(NSImage *))imageHandler;
 
 //MARK: Song data accessor methods. -
 // Async methods
-- (void)requestEmbeddedMetadataForSongID:(id<SongIDProtocol>)songID withHandler:(void (^)(NSDictionary*))dataHandler;
+//- (void)requestEmbeddedMetadataForSongID:(id<SongIDProtocol>)songID withHandler:(void (^)(NSDictionary*))dataHandler;
 
 - (void)storeSweetSpotForSongID:(id<SongIDProtocol>)songID;
 
@@ -266,11 +268,11 @@
 // Core Data methods
 - (void)storeSongData;
 - (NSArray *)fetchMetadataFromLocalStore;
-- (BOOL)loadMetadataIntoSong:(TGSong *)aSong;
+- (BOOL)loadMetadataIntoSong:(id<TGSong>)aSong;
 
 // Other protocols' delegate methods that TGSongPool implements
 // TGSongDelegate protocol methods called by TGSong
-- (void)songDidFinishPlayback:(TGSong *)song;
+- (void)songDidFinishPlayback:(id<TGSong>)song;
 - (void)songDidUpdatePlayheadPosition:(NSNumber *)playheadPosition;
 //- (void)songReadyForPlayback:(TGSong *)song atTime:(NSNumber*)startTime;
 //- (NSSet*)currentCache;

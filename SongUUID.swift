@@ -16,12 +16,21 @@ struct UUIDData : SongData {
     let uuid: String?
 }
 
-@objc
-class UUIDMaker : NSObject {
 
+class SongUUID : NSObject {
 
+    static func getUUIDForSong(song: TGSong) -> String {
+        return song.UUId!
+    }
+    
+    static func songWithNewUUId(song: TGSong, newUUId: String) -> TGSong {
+        return Song(songId: song.songID, metadata: song.metadata, urlString: song.urlString,
+            sweetSpots: song.sweetSpots, fingerPrint: song.fingerPrint, selectedSS: song.selectedSweetSpot,
+            releases: song.songReleases, artId: song.artID, UUId: newUUId)
+    }
+    
 //    func UUIDForSong(song: SongIDProtocol, duration: UInt, fingerprint: String) -> SongUUID? {
-    class func UUIDForSong(song: TGSong, duration: UInt, fingerprint: String) -> String? {
+    static func lookupUUIDForSong(song: TGSong, duration: UInt, fingerprint: String) -> String {
         let path = "http://api.acoustid.org/v2/lookup?client=8XaBELgH&meta=releases&duration=\(duration)&fingerprint=\(fingerprint)"
         if let
             acoustIdURL = NSURL(string: path),
@@ -29,7 +38,7 @@ class UUIDMaker : NSObject {
             
                 if acoustiData.length == 0 {
                     println("UUIDForSong - no acoustic data!")
-                    return nil
+                    return ""
                 }
                 if let acoustiJSON = NSJSONSerialization.JSONObjectWithData(acoustiData, options: .MutableContainers, error: nil) as? NSDictionary {
                     if let status = acoustiJSON.objectForKey("status") as? NSString where status.isEqualToString("ok"),
@@ -43,6 +52,6 @@ class UUIDMaker : NSObject {
                     }
                 }
         }
-        return nil
+        return ""
     }
 }

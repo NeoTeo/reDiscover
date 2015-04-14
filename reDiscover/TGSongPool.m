@@ -152,11 +152,11 @@ static int const kSongPoolStartCapacity = 250;
         
         // Get any user metadata from the local Core Data store.
         //cdfix [self fetchMetadataFromLocalStore];
-
+/* REFAC
         // Register to be notified of idle time starting and ending.
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(idleTimeBegins) name:@"TGIdleTimeBegins" object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(idleTimeEnds) name:@"TGIdleTimeEnds" object:nil];
-        
+*/
         /// The CoverArtArchiveWebFetcher handles all comms with the remote cover art archive.
         _coverArtWebFetcher = [[CoverArtArchiveWebFetcher alloc] init];
         _coverArtWebFetcher.delegate = self;
@@ -316,6 +316,7 @@ static int const kSongPoolStartCapacity = 250;
 }
 // END TEOSongData test
 
+/* REFAC
 - (void)idleTimeBegins {
     TGLog(TGLOG_ALL,@"song pool idle start");
     //FIXME: This causes a crash (possibly) 'NSGenericException' (reason '*** Collection <__NSDictionaryM: 0x6000000433c0> was mutated while being enumerated.') was raised during dragging session. This could also be an unrelated bug to do with me logging the cache out whilst modifying it...
@@ -337,7 +338,7 @@ static int const kSongPoolStartCapacity = 250;
     
     NSEnumerator* theSongEnumerator = [[theTimer userInfo] objectForKey:@"songEnumerator"];
     
-    TGSong* aSong = [theSongEnumerator nextObject];
+    id<TGSong> aSong = [theSongEnumerator nextObject];
     
     // Stop the fingerprinter timer.
     [idleTimeFingerprinterTimer invalidate];
@@ -360,18 +361,23 @@ static int const kSongPoolStartCapacity = 250;
                                                                 userInfo:@{@"songEnumerator" : theSongEnumerator }
                                                                  repeats:YES];
 }
+*/
 
-
+/*
 - (void)fetchUUIdForSongId:(id<SongIDProtocol>)songID withHandler:(void (^)(NSString*))uuidHandler {
-    TGSong* aSong = [self songForID:songID];
-    if ([aSong fingerPrintStatus] == kFingerPrintStatusEmpty) {
-
-        [aSong setFingerPrintStatus:kFingerPrintStatusRequested];
+    
+    id<TGSong> aSong = [self songForID:songID];
+    
+//    if ([aSong fingerPrintStatus] == kFingerPrintStatusEmpty) {
+    if ([songFingerPrinter fingerPrintStatusForSong:aSong] == kFingerPrintStatusEmpty) {
+//        [aSong setFingerPrintStatus:kFingerPrintStatusRequested];
+        [songFingerPrinter setFingerPrintStatusForSong:aSong toStatus:kFingerPrintStatusRequested];
         
         [songFingerPrinter requestFingerPrintForSong:aSong.songID withHandler:^(NSString* fingerPrint){
             if (fingerPrint == nil) {
                 TGLog(TGLOG_ALL,@"requestFingerprintForSong ERROR: NO FINGERPRINT");
-                [aSong setFingerPrintStatus:kFingerPrintStatusFailed];
+                //[aSong setFingerPrintStatus:kFingerPrintStatusFailed];
+                [songFingerPrinter setFingerPrintStatusForSong:aSong toStatus:kFingerPrintStatusFailed];
                 return;
             }
 
@@ -386,7 +392,8 @@ static int const kSongPoolStartCapacity = 250;
                 aSong.fingerprint = fingerPrint;
             }
             
-            [aSong setFingerPrintStatus:kFingerPrintStatusDone];
+//            [aSong setFingerPrintStatus:kFingerPrintStatusDone];
+            [songFingerPrinter setFingerPrintStatusForSong:aSong toStatus:kFingerPrintStatusDone];
             
             // Signal the successful generation of a fingerprint and the retrieval of a UUId
 //            [[NSNotificationCenter defaultCenter] postNotificationName:@"TGUUIdWasFetched" object:aSong];
@@ -402,6 +409,7 @@ static int const kSongPoolStartCapacity = 250;
     }
     
 }
+*/
 
 - (void)idleTimeEnds {
 //    TGLog(TGLOG_ALL,@"song pool idle end");
@@ -477,19 +485,20 @@ static int const kSongPoolStartCapacity = 250;
                     if (UTTypeConformsTo(fileUTI, kUTTypeAudio))
                     {
                         // Create a song object with the given url. This does not start loading it from disk.
-                        TGSong *newSong = [[TGSong alloc] init];
+                        //TGSong *newSong = [[TGSong alloc] init];
                         
                         // Set the song pool to be a song's delegate.
-                        [newSong setDelegate:self];
+                        //[newSong setDelegate:self];
                         // Set the song's song pool API in a move away from using delegates for everything... wip
-                        [newSong setSongPoolAPI:self];
+                        //[newSong setSongPoolAPI:self];
                         
                         //CDFIX
                         // Set the song cover image id to the default (empty).
-                        newSong.artID = nil;//_defaultCoverArtHashId;
+                        //newSong.artID = nil;//_defaultCoverArtHashId;
                         
                         // The song id is assigned.
-                        [newSong setSongID:[SongID initWithString:[url absoluteString]]];
+                        //[newSong setSongID:[SongID initWithString:[url absoluteString]]];
+
                         NSAssert(serialDataLoad != nil, @"WTF serialDataLoad is nil!");
                         dispatch_async(serialDataLoad, ^{
                             
@@ -500,8 +509,25 @@ static int const kSongPoolStartCapacity = 250;
                             
                             
                             TEOSongData* teoData = [self.TEOSongDataDictionary objectForKey:[url absoluteString]];
+                            SongMetaData* metadata = [[SongMetaData alloc] initWithTitle:teoData.title
+                                                                                   album:teoData.album
+                                                                                  artist:teoData.artist
+                                                                                    year:[teoData.year unsignedIntegerValue]
+                                                                                   genre:teoData.genre
+                                                                            songReleases:teoData.songReleases];
+                            id<SongIDProtocol> songId = [SongID initWithString:[url absoluteString]];
+                            
+                            id<TGSong>newSong = [[Song alloc]initWithSongId:songId
+                                                    metadata: metadata
+                                                   urlString: [url absoluteString]
+                                                  sweetSpots: teoData.sweetSpots
+                                                 fingerPrint: teoData.fingerprint
+                                                  selectedSS: [teoData.selectedSweetSpot floatValue]
+                                                    releases: teoData.songReleases
+                                                       artId: @""
+                                                        UUId: @""];
                             // cdfix
-                            [self copyData:teoData toSong:newSong forURL:[url absoluteString]];
+                            //[self copyData:teoData toSong:newSong forURL:[url absoluteString]];
  
                        /*
                             // Only add the loaded url if it isn't already in the dictionary.
@@ -585,7 +611,7 @@ static int const kSongPoolStartCapacity = 250;
  @property NSNumber*         selectedSweetSpot;
  @property NSData*           songReleases;
  */
-
+/*
 - (void) copyData:(TEOSongData*)songData toSong:(TGSong*)aSong forURL:(NSString*)songURL {
     
     // If there is no existing song Data we create one...(not sure if this should be deferred to when we actually save)
@@ -614,7 +640,7 @@ static int const kSongPoolStartCapacity = 250;
         
     }
 }
-
+*/
 - (NSString*)artIdForSongId:(id<SongIDProtocol>)songId {
     return [[self songForID:songId] artID];
 }
@@ -625,9 +651,10 @@ static int const kSongPoolStartCapacity = 250;
  @returns YES on success and NO on failure to find any metadata.
  In either case the TEOData will be set to some reasonable defaults.
  */
+/*
 - (BOOL)loadSongMetadataForSongId:(id<SongIDProtocol>)songId {
     //TODO: use the verbose url type.
-    TGSong * theSong = [self songForID:songId];
+    id<TGSong> theSong = [self songForID:songId];
     if (theSong == nil) { return NO; }
     
     NSURL *theURL = [NSURL URLWithString:theSong.urlString];
@@ -679,11 +706,81 @@ static int const kSongPoolStartCapacity = 250;
     }
     return NO;
 }
+*/
+- (BOOL)loadSongMetadataForSongId:(id<SongIDProtocol>)songId {
+    //TODO: use the verbose url type.
+    id<TGSong> theSong = [self songForID:songId];
+    if (theSong == nil) { return NO; }
+    
+    NSURL *theURL = [NSURL URLWithString:theSong.urlString];
+    NSString * pathString = [theURL path];
+    
+    NSString *tmpString = [pathString stringByDeletingPathExtension];
+    NSString* fileName = [tmpString lastPathComponent];
+    tmpString =[tmpString stringByDeletingLastPathComponent];
+    //    NSString* album = [tmpString lastPathComponent];
+    tmpString =[tmpString stringByDeletingLastPathComponent];
+    NSString* artist = [tmpString lastPathComponent];
+    
+    // Add reasonable defaults
+    artist = [artist stringByRemovingPercentEncoding];//@"Unknown";
+    NSString *title  = [fileName stringByRemovingPercentEncoding];//@"Unknown";
+    NSString *album  = @"Unknown";//[album stringByRemovingPercentEncoding];//@"Unknown";
+    NSString *genre  = @"Unknown";
+    NSUInteger year = 1971;
+    
+    // Get other metadata via the MDItem of the file.
+    MDItemRef metadata = MDItemCreate(kCFAllocatorDefault, (__bridge CFStringRef)pathString);
+    
+    if (metadata) {
+        NSString* aString;
+        NSArray* artists;
+        
+        if ((artists = CFBridgingRelease(MDItemCopyAttribute(metadata, kMDItemAuthors)))) {
+            artist = [artists objectAtIndex:0];
+        }
+        
+        if ((aString = CFBridgingRelease(MDItemCopyAttribute(metadata, kMDItemTitle)))) {
+            title = aString;
+        }
+        
+        if ((aString = CFBridgingRelease(MDItemCopyAttribute(metadata, kMDItemAlbum)))) {
+            album = aString;
+        }
+        
+        if ((aString = CFBridgingRelease(MDItemCopyAttribute(metadata, kMDItemMusicalGenre)))) {
+            genre = aString;
+        }
+        
+//        if ((aString = CFBridgingRelease(MDItemCopyAttribute(metadata, kMDItemRecordingYear)))) {
+//            year = aString;
+//        }
 
+        
+        // Make sure that sucker is released.
+        CFRelease(metadata);
+        SongMetaData *songMD = [[SongMetaData alloc] initWithTitle:title album:album artist:artist year:year genre:genre songReleases:theSong.songReleases];
+        id<TGSong> newSong = [[Song alloc] initWithSongId:songId
+                                         metadata:songMD
+                                        urlString:theSong.urlString
+                                       sweetSpots:theSong.sweetSpots
+                                      fingerPrint:theSong.fingerPrint
+                                       selectedSS:theSong.selectedSweetSpot
+                                         releases:theSong.songReleases
+                                            artId:theSong.artID
+                                             UUId: theSong.UUId];
+
+        // Add the song to the songpool.
+        [songPoolDictionary setObject:newSong forKey:newSong.songID];
+        
+        return YES;
+    }
+    return NO;
+}
 
 - (void)searchMetadataForCoverImageForSongId:(id<SongIDProtocol>)songId withHandler:(void (^)(NSImage *))imageHandler {
     
-    TGSong * theSong = [self songForID:songId];
+    id<TGSong> theSong = [self songForID:songId];
     if (theSong == nil) { imageHandler(nil); }
     
     AVURLAsset *songAsset = [[AVURLAsset alloc] initWithURL:[NSURL URLWithString:theSong.urlString] options:nil];
@@ -712,10 +809,12 @@ static int const kSongPoolStartCapacity = 250;
 /**
     Attempt to find the cover image for the song using a variety of strategies and, if found, will pass the image to the given imageHandler block.
  */
+//MARK: REFAC
+/*
 - (void)requestImageForSongID:(id<SongIDProtocol>)songID withHandler:(void (^)(NSImage *))imageHandler {
 
     // First we should check if the song has an image stashed in the songpool local/temporary store.
-    TGSong * theSong = [self songForID:songID];
+    id<TGSong> theSong = [self songForID:songID];
     NSString* artID = theSong.artID;
     
     if (artID != nil) {
@@ -764,11 +863,11 @@ static int const kSongPoolStartCapacity = 250;
             // This will produce the wrong result for the (rare) albums where each song has a separate image.
             // Additionally this only produces album art once other songs' album art has been resolved which only
             // happens when the song is actively selected and played.
-            [self requestSongIdsFromAlbumWithName:theSong.album withHandler:^(NSArray* songIds) {
+            [self requestSongIdsFromAlbumWithName:theSong.metadata.album withHandler:^(NSArray* songIds) {
 
                 // Excluding the original song whose art we're looking for see if the others have it.
                 for (id<SongIDProtocol> songId in songIds) {
-                    TGSong* aSong = [self songForID:songId];
+                    id<TGSong> aSong = [self songForID:songId];
                     
                     if (aSong && ![aSong isEqualTo:theSong]) {
                         
@@ -863,7 +962,7 @@ static int const kSongPoolStartCapacity = 250;
         
     }];
 }
-
+*/
 
 /**
  Request the cover art from the web for the given song.
@@ -986,11 +1085,12 @@ static int const kSongPoolStartCapacity = 250;
  If the song already has the metadata it calls the dataHandler with the existing data.
  If the song does not exist it logs the fact and simply returns without calling the dataHandler.
  */
+/* REFAC
 - (void)requestEmbeddedMetadataForSongID:(id<SongIDProtocol>)songID withHandler:(void (^)(NSDictionary*))dataHandler{
     
     dispatch_async(serialDataLoad, ^{
         
-        TGSong *theSong = [self songForID:songID];
+        id<TGSong> theSong = [self songForID:songID];
         
         if (theSong == nil) {
             TGLog(TGLOG_ALL,@"requestEmbeddedMetadataForSongID - no such song!");
@@ -1027,7 +1127,7 @@ static int const kSongPoolStartCapacity = 250;
         
     });
 }
-
+*/
 
 - (NSNumber *)songDurationForSongID:(id<SongIDProtocol>)songID {
     CMTime songDuration = [songAudioPlayer songDuration];
@@ -1037,7 +1137,7 @@ static int const kSongPoolStartCapacity = 250;
 }
 
 - (NSURL *)songURLForSongID:(id<SongIDProtocol>)songID {
-    TGSong *aSong = [self songForID:songID];
+    id<TGSong> aSong = [self songForID:songID];
     
     if (aSong) {
         return [NSURL URLWithString:[self songForID:songID].urlString];
@@ -1048,12 +1148,12 @@ static int const kSongPoolStartCapacity = 250;
 
 
 - (NSDictionary *)songDataForSongID:(id<SongIDProtocol>)songID {
-    TGSong *song = [self songForID:songID];
+    id<TGSong> song = [self songForID:songID];
     return @{@"Id": songID,
-             @"Artist": song.artist,
-             @"Title": song.title,
-             @"Album": song.album,
-             @"Genre": song.genre};
+             @"Artist": song.metadata.artist,
+             @"Title": song.metadata.title,
+             @"Album": song.metadata.album,
+             @"Genre": song.metadata.genre};
 }
 
 
@@ -1067,7 +1167,7 @@ static int const kSongPoolStartCapacity = 250;
 
 - (void)setActiveSweetSpotIndex:(int)ssIndex forSongID:(id<SongIDProtocol>)songID {
 
-    TGSong* theSong = [self songForID:songID];
+    id<TGSong> theSong = [self songForID:songID];
 
 //    if (theSong == nil || theSong.TEOData == nil || theSong.sweetSpots == nil) {
     if (theSong == nil || theSong.sweetSpots == nil) {
@@ -1083,10 +1183,21 @@ static int const kSongPoolStartCapacity = 250;
 
 
 - (void)replaceSweetSpots:(NSArray*)sweetSpots forSongID:(id<SongIDProtocol>)songID {
-    TGSong* theSong = [self songForID:songID];
+    id<TGSong> theSong = [self songForID:songID];
     if (theSong == nil) { return; }
     
-    theSong.sweetSpots = sweetSpots;
+    //theSong.sweetSpots = sweetSpots;
+    id<TGSong> newSong = [[Song alloc] initWithSongId:songID
+                                     metadata:theSong.metadata
+                                    urlString:theSong.urlString
+                                   sweetSpots:sweetSpots
+                                  fingerPrint:theSong.fingerPrint
+                                   selectedSS:theSong.selectedSweetSpot
+                                     releases:theSong.songReleases
+                                        artId:theSong.artID
+                                         UUId:theSong.UUId];
+    // Add the song to the songpool.
+    [songPoolDictionary setObject:newSong forKey:newSong.songID];
     
     // wipwip
     // This does not change the playback position though because it's called after the playback is requested.
@@ -1104,7 +1215,7 @@ static int const kSongPoolStartCapacity = 250;
 
 
 - (NSArray*)sweetSpotsForSongID:(id<SongIDProtocol>)songID {
-    TGSong* theSong = [self songForID:songID];
+    id<TGSong> theSong = [self songForID:songID];
     if (theSong == nil) { return nil; }
     
     return theSong.sweetSpots;
@@ -1124,7 +1235,7 @@ static int const kSongPoolStartCapacity = 250;
 //}
 
 - (NSString*)albumForSongID:(id<SongIDProtocol>)songID {
-        return [self songForID:songID].album;
+        return [self songForID:songID].metadata.album;
 }
 
 - (NSData*)releasesForSongID:(id<SongIDProtocol>)songID {
@@ -1132,24 +1243,45 @@ static int const kSongPoolStartCapacity = 250;
 }
 
 - (void)setReleases:(NSData*)releases forSongID:(id<SongIDProtocol>)songID {
-    [self songForID:songID].songReleases = releases;
+    id<TGSong> theSong = [self songForID:songID];
+    if (theSong == nil) { return; }
+    
+    //theSong.sweetSpots = sweetSpots;
+    id<TGSong> newSong = [[Song alloc] initWithSongId:songID
+                                     metadata:theSong.metadata
+                                    urlString:theSong.urlString
+                                   sweetSpots:theSong.sweetSpots
+                                  fingerPrint:theSong.fingerPrint
+                                   selectedSS:theSong.selectedSweetSpot
+                                     releases:releases
+                                        artId:theSong.artID
+                                         UUId:theSong.UUId];
+    
+    // replace old song with the new song in the songpool.
+    [songPoolDictionary setObject:newSong forKey:newSong.songID];
+
+//    [self songForID:songID].songReleases = releases;
 }
 
 - (NSString *)UUIDStringForSongID:(id<SongIDProtocol>)songID {
     if (![self validSongID:songID]) return nil;
-    return [self songForID:songID].uuid;
+    return [SongUUID getUUIDForSong:[self songForID:songID]];
+//    return [self songForID:songID].uuid;
 }
 
 -(void)setUUIDString:(NSString*)theUUID forSongID:(id<SongIDProtocol>)songID {
     if (![self validSongID:songID]) return;
     
-    [self songForID:songID].uuid = theUUID ;
+    id<TGSong> newSong = [SongUUID songWithNewUUId:[self songForID:songID] newUUId:theUUID];
+    // replace old song with the new song in the songpool.
+    [songPoolDictionary setObject:newSong forKey:newSong.songID];
     
-    TGSong* theSong = [self songForID:songID];
-    theSong.fingerprint = nil;
+    //[self songForID:songID].uuid = theUUID ;
+//    TGSong* theSong = [self songForID:songID];
+//    theSong.fingerprint = nil;
     
     // With an UUId (re)try to fetch the sweet spots from the server.
-    [self fetchSongSweetSpot:theSong];
+    [self fetchSongSweetSpot:newSong];
 
 }
 
@@ -1164,7 +1296,7 @@ static int const kSongPoolStartCapacity = 250;
 - (BOOL)fingerprintExistsForSongID:(id<SongIDProtocol>)songID {
     if (![self validSongID:songID]) return NO;
     
-    return [self songForID:songID].fingerprint != nil;
+    return [self songForID:songID].fingerPrint != nil;
 }
 - (void)testUploadSSForSongID:(id<SongIDProtocol>)theID {
     [_sweetSpotServerIO uploadSweetSpotsForSongID:theID];
@@ -1177,7 +1309,7 @@ static int const kSongPoolStartCapacity = 250;
  @params song The song we want the sweet spot for.
  @returns The currently selected sweet spot for the given song.
 */
-- (NSNumber *)fetchSongSweetSpot:(TGSong *)song {
+- (NSNumber *)fetchSongSweetSpot:(id<TGSong>)song {
 //- (NSNumber *)fetchSongSweetSpot:(TGSong *)song withHandler:(void (^)(NSNumber*))sweetSpotHandler {
     // Get the song's start time in seconds.
 //    NSNumber *startTime = [song startTime];
@@ -1192,13 +1324,14 @@ static int const kSongPoolStartCapacity = 250;
     /// A manual refresh would be the way to force a check.
     /// Also, if there's no uuid, should we send off for fingerprinting and uuid lookup or should this occur higher up the stack
     /// and the check for uuid should opt out sooner...
+    /* REFAC
     if ((startTime == nil) && (song.uuid != nil) && (song.SSCheckCountdown-- == 0)) {
         // Reset the counter.
         song.SSCheckCountdown = (NSUInteger)kSSCheckCounterSize;
         
         [_sweetSpotServerIO requestSweetSpotsForSongID:song.songID];
     }
-    
+    */
     return startTime;
 }
 
@@ -1217,7 +1350,7 @@ static int const kSongPoolStartCapacity = 250;
 - (void)setRequestedPlayheadPosition:(NSNumber *)newPosition {
     
     requestedPlayheadPosition = newPosition;
-    TGSong* theSong = [self songForID:[self lastRequestedSongID]];
+    id<TGSong> theSong = [self songForID:[self lastRequestedSongID]];
     
     // Set the current playback time and the currently selected sweet spot to the new position.
     [songAudioPlayer setCurrentPlayTime:[newPosition doubleValue]];
@@ -1237,7 +1370,7 @@ static int const kSongPoolStartCapacity = 250;
     return [currentlyPlayingSong songID];
 }
 
--(TGSong *)songForID:(id<SongIDProtocol>)songID {
+-(id<TGSong>)songForID:(id<SongIDProtocol>)songID {
     return [songPoolDictionary objectForKey:songID];
 }
 
@@ -1501,21 +1634,26 @@ static int const kSongPoolStartCapacity = 250;
         if (aFingerprint != nil) {
 
             CMTime songDuration = [songAudioPlayer songDuration];
-            NSString *songUUID = [UUIDMaker UUIDForSong:aSong duration:CMTimeGetSeconds(songDuration) fingerprint:aFingerprint];
+            NSString *songUUID = [SongUUID lookupUUIDForSong:aSong duration:CMTimeGetSeconds(songDuration) fingerprint:aFingerprint];
             // setting the song's anything should give me a new song
             NSImage *otherImg = [SongArt artForSong:aSong];
             
             if (otherImg != nil) {
                 TGLog(TGLOG_REFAC, @"goddam %@",otherImg);
             }
+            // So now we need to add that image to the image cache if it isn't already there.
+            
+            // Here we should signal that the song now has cover art. Or update the song in question if its current image == fetching image
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"songCoverUpdated" object:selectedSongId];
+
         }
 //        dispatch_async(dispatch_get_main_queue(), { () -> Void in
 //            println("This is run on the main queue, after the previous code in outer block")
 //        })
     });
-    [self fetchUUIdAndCoverArtForSongId:selectedSongId];
+    //[self fetchUUIdAndCoverArtForSongId:selectedSongId];
 }
-
+/*
 - (void)fetchUUIdAndCoverArtForSongId:(id<SongIDProtocol>)songId {
     [self fetchUUIdForSongId:songId withHandler:^(NSString* theUUId) {
         
@@ -1530,13 +1668,14 @@ static int const kSongPoolStartCapacity = 250;
         }];
     }];
 }
+*/
 
 /**
  Initiate a request to play back the given song at its selected sweet spot.
  :params: songID The id of the song to play.
 */
 - (void)requestSongPlayback:(id<SongIDProtocol>)songID {
-    TGSong *aSong = [self songForID:songID];
+    id<TGSong> aSong = [self songForID:songID];
     if (aSong == nil) {
         return;
     }
@@ -1558,7 +1697,7 @@ static int const kSongPoolStartCapacity = 250;
  */
 - (void)requestSongPlayback:(id<SongIDProtocol>)songID withStartTimeInSeconds:(NSNumber *)time makeSweetSpot:(BOOL)makeSS {
     
-    TGSong *aSong = [self songForID:songID];
+    id<TGSong> aSong = [self songForID:songID];
     if (aSong == NULL) {
         TGLog(TGLOG_ALL,@"Nope, the requested ID %@ is not in the song pool.",songID);
         return;
@@ -1595,7 +1734,7 @@ static int const kSongPoolStartCapacity = 250;
 
         //[songAudioPlayer playSong];
         
-        TGSong* song = [self songForID:songID];
+        id<TGSong> song = [self songForID:songID];
         
         if (song == lastRequestedSong) {
             //TGLog(TGLOG_ALL,@"about to play song which is equal to lastRequestedSong %@",lastRequestedSong.songID);
@@ -1639,7 +1778,7 @@ static int const kSongPoolStartCapacity = 250;
 // TSGSongDelegate methods.
 #pragma mark TGSongDelegate methods
 
-- (void)songDidFinishPlayback:(TGSong *)song {
+- (void)songDidFinishPlayback:(id<TGSong>)song {
     // Pass this on to the delegate (which should be the controller).
     TGLog(TGLOG_ALL,@"song %lu did finish playback. The last requested song is %@",(unsigned long)[song songID],[lastRequestedSong songID]);
     if ([[self delegate] respondsToSelector:@selector(songPoolDidFinishPlayingSong:)]) {
@@ -1684,7 +1823,7 @@ static int const kSongPoolStartCapacity = 250;
 //MARK: Debug methods
 
 - (void)debugLogSongWithId:(id<SongIDProtocol>)songId {
-    TGSong* theSong = [self songForID:songId];
+    id<TGSong> theSong = [self songForID:songId];
     TGLog(TGLOG_DBG,@"Debug log for song with id: %@",songId);
     TGLog(TGLOG_DBG,@"vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv");
     TGLog(TGLOG_DBG,@"List sweetspots for song with Id: %@",songId);

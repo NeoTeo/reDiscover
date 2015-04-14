@@ -26,9 +26,14 @@
     dispatch_queue_t fingerprintingQueue;
     // A concurrent queue for fingerprinting multiple songs.
 //    NSOperationQueue *opQueue;
+    NSMutableDictionary *fingerPrintStatus;
 }
 
 - (nullable NSString *)fingerprintForSong:(__nonnull id<TGSong>)theSong;
+
+//MARK: REFAC
+- (NSUInteger)fingerPrintStatusForSong:(nonnull id<TGSong>)theSong;
+- (void)setFingerPrintStatusForSong:(nonnull id<TGSong>)theSong toStatus:(UInt)status;
 
 #pragma clang assume_nonnull begin
 - (void)requestFingerPrintForSong:(id<SongIDProtocol>)songID withHandler:(void (^)(NSString*))fingerprintHandler;
