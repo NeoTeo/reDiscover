@@ -15,7 +15,7 @@ import Foundation
 // Dictionary. 
 // One solution could have been to make the SongAlbums an Obj-C class. 
 // In the end I've opted to stick with Swift since I'd like to move as much of the project to it as possible.
-//typealias Album = Set<TGSongProtocol> // no go since TGSongProtocol, an Obj-C protocol, cannot adopt Hashable.
+//typealias Album = Set<TGSong> // no go since TGSong, an Obj-C protocol, cannot adopt Hashable.
 typealias Album = NSSet
 
 class SongAlbums : NSObject {

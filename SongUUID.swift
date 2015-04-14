@@ -21,7 +21,7 @@ class UUIDMaker : NSObject {
 
 
 //    func UUIDForSong(song: SongIDProtocol, duration: UInt, fingerprint: String) -> SongUUID? {
-    class func UUIDForSong(song: TGSongProtocol, duration: UInt, fingerprint: String) -> String? {
+    class func UUIDForSong(song: TGSong, duration: UInt, fingerprint: String) -> String? {
         let path = "http://api.acoustid.org/v2/lookup?client=8XaBELgH&meta=releases&duration=\(duration)&fingerprint=\(fingerprint)"
         if let
             acoustIdURL = NSURL(string: path),

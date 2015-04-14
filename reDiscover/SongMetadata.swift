@@ -48,7 +48,7 @@ extension SongMetaData {
     :param: song A song or nil
     :returns: An array of NSImages or an array of nil if nothing was found.
     */
-    static func getCoverArtForSong(song: TGSongProtocol?) -> [NSImage?] {
+    static func getCoverArtForSong(song: TGSong?) -> [NSImage?] {
         if  let sng = song,
             let songAsset = AVURLAsset(URL: NSURL(string: sng.urlString) , options: nil) {
             
@@ -80,7 +80,7 @@ extension SongMetaData {
     }
     
     // replaces SongPool requestEmbeddedMetadataForSongID:
-    static func metaDataForSong(song: TGSongProtocol) -> SongMetaData {
+    static func metaDataForSong(song: TGSong) -> SongMetaData {
         return song.metadata
     }
 }

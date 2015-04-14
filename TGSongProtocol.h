@@ -14,7 +14,8 @@
 @class SongMetaData;
 
 // The protocol
-@protocol TGSongProtocol <NSCopying>
+@protocol TGSong <NSCopying>
+
 @property (readonly) id<SongIDProtocol>songID;
 @property (nonatomic,copy) NSString *artID;
 @property (readonly) NSString *urlString;

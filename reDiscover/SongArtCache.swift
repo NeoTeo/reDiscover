@@ -37,7 +37,7 @@ struct SongArtCache {
         return self
     }
     
-    func artForSong(song: TGSongProtocol) -> NSImage? {
+    func artForSong(song: TGSong) -> NSImage? {
         // Return art that is already in the cache.
         if let id = song.artID,
             art = coverArtById[id] {

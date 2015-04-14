@@ -50,7 +50,7 @@
  @params theSong The song to fingerprint.
  @returns the fingerprint as a nullable NSString*.
  */
-- (nullable NSString *)fingerprintForSong:(id<TGSongProtocol>)theSong {
+- (nullable NSString *)fingerprintForSong:(id<TGSong>)theSong {
     
     int maxLength = 120;
     char *theFingerprint;

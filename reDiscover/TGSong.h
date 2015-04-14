@@ -35,7 +35,7 @@ enum {
     kFingerPrintStatusFailed        = 0xff
 };
 
-@interface TGSong : NSObject <TGSongProtocol,NSCopying>
+@interface TGSong : NSObject <TGSong,NSCopying>
 
 // song data that is shadowed and saved by TEOSongData in the SongPool
 //FIXME: Make all these (readonly) when ready and make them ivars by moving
@@ -80,7 +80,7 @@ typedef void(^MyCustomBlock)(void);
 - (id)copy;
 - (id)copyWithZone:(NSZone *)zone;
 
-- (void)storeSelectedSweetSpot;
+//- (void)storeSelectedSweetSpot;
 //- (NSNumber*)currentSweetSpot;
 //- (void)makeSweetSpotAtTime:(NSNumber*)startTime;
 //- (void)setSweetSpot:(NSNumber*)theSS;

@@ -16,7 +16,7 @@
 @protocol TGFingerPrinterDelegate;
 @protocol SongIDProtocol;
 @protocol SongPoolAccessProtocol;
-@protocol TGSongProtocol;
+@protocol TGSong;
 
 
 @interface TGFingerPrinter : NSObject
@@ -28,7 +28,7 @@
 //    NSOperationQueue *opQueue;
 }
 
-- (nullable NSString *)fingerprintForSong:(__nonnull id<TGSongProtocol>)theSong;
+- (nullable NSString *)fingerprintForSong:(__nonnull id<TGSong>)theSong;
 
 #pragma clang assume_nonnull begin
 - (void)requestFingerPrintForSong:(id<SongIDProtocol>)songID withHandler:(void (^)(NSString*))fingerprintHandler;

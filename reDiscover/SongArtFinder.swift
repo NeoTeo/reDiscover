@@ -15,7 +15,7 @@ different ways.
 2) 
 */
 struct SongArtFinder {
-    static func findArtForSong(song: TGSongProtocol) -> NSImage? {
+    static func findArtForSong(song: TGSong) -> NSImage? {
         // No existing artID. Try looking in the metadata.
         let arts = SongMetaData.getCoverArtForSong(song)
         if arts.count > 0 {

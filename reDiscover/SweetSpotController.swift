@@ -17,17 +17,20 @@ typealias SweetSpot = Float
 // with the new sweetspot.
 class SweetSpotControl : NSObject {
     
-    static func selectedSweetSpotForSong(song: TGSongProtocol) -> Float {
+    static func selectedSweetSpotForSong(song: TGSong) -> Float {
         // Swift doesn't know what is inside the NSNumber, so we tell it.
         if let sss = song.selectedSweetSpot {
             return Float(sss);
         }
+        // Add request to sweetSpotServerIO (once rewritten) to check the server at some appropriate interval for
+        // sweet spots for this song. The server may receive them at any time.
         return 0.0
     }
     
-    static func sweetSpotsForSong(song: TGSongProtocol) -> [SweetSpot]? {
+    static func sweetSpotsForSong(song: TGSong) -> [SweetSpot]? {
         return song.sweetSpots as? [SweetSpot]
     }
+    
     // Used to be makeSweetSpotAtTime:
     /**
     Make a copy of the given song with a sweet spot set to the given time.
@@ -36,20 +39,15 @@ class SweetSpotControl : NSObject {
     :param: startTime The time, in seconds, of the sweet spot.
     :returns: A copy of the given song with an added sweet spot at the given time.
     */
-    static func songWithSelectedSweetSpot(song: TGSongProtocol, atTime startTime: SweetSpot) -> TGSongProtocol {
-        // Make a new song where the given sweet spot (time) has been included.
-        // Since we want to end up with a song being immutable, the way to make a
-        // song with new properties is to call its constructor.
-//        let songDuration = song.songDuration
-        var newSong = song.copy() as! TGSongProtocol
+    static func songWithSelectedSweetSpot(song: TGSong, atTime startTime: SweetSpot) -> TGSong {
+        var newSong = song.copy() as! TGSong
         newSong.selectedSweetSpot = startTime
         return newSong
-        //return SweetSpotControl.songWithSweetSpot(song, startTime)
     }
     
     // replacement for TGSong storeSelectedSweetSpot
-    static func songWithAddedSweetSpot(song: TGSongProtocol, withSweetSpot sweetSpot: SweetSpot) -> TGSongProtocol {
-        var newSong = song.copy() as! TGSongProtocol
+    static func songWithAddedSweetSpot(song: TGSong, withSweetSpot sweetSpot: SweetSpot) -> TGSong {
+        var newSong = song.copy() as! TGSong
         var tmpSpots = SweetSpotControl.sweetSpotsForSong(song)
         tmpSpots?.append(sweetSpot)
         newSong.sweetSpots = tmpSpots

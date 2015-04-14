@@ -59,7 +59,7 @@ class SongArt : NSObject {
         return image.hashId
     }
     
-    static func artForSong(song: TGSongProtocol) -> NSImage {
+    static func artForSong(song: TGSong) -> NSImage {
         
         // Check if the song already has art in the artCache.
         // Return it if it does.

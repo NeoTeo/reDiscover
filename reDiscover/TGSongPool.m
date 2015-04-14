@@ -1224,7 +1224,7 @@ static int const kSongPoolStartCapacity = 250;
 //    [theSong setSweetSpot:newPosition];
     
     //MARK: REFAC
-    id<TGSongProtocol> newSong = [SweetSpotControl songWithSelectedSweetSpot:theSong atTime:[newPosition floatValue]];
+    id<TGSong> newSong = [SweetSpotControl songWithSelectedSweetSpot:theSong atTime:[newPosition floatValue]];
     [songPoolDictionary setObject:newSong forKey:newSong.songID];
 }
 
@@ -1415,7 +1415,7 @@ static int const kSongPoolStartCapacity = 250;
 - (void)storeSweetSpotForSongID:(id<SongIDProtocol>)songID {
     //TGSong *tmpSong = [self songForID:songID];
     //MARK: REFAC
-    id<TGSongProtocol> tmpSong = [self songForID:songID];
+    id<TGSong> tmpSong = [self songForID:songID];
     //[tmpSong storeSelectedSweetSpot];
     tmpSong = [SweetSpotControl songWithAddedSweetSpot:tmpSong withSweetSpot:[SweetSpotControl selectedSweetSpotForSong:tmpSong]];
     [songPoolDictionary setObject:tmpSong forKey:tmpSong.songID];
@@ -1495,7 +1495,7 @@ static int const kSongPoolStartCapacity = 250;
     //MARK: REFAC
 
     dispatch_async(dispatch_get_global_queue(QOS_CLASS_BACKGROUND, 0), ^{
-        id<TGSongProtocol> __nonnull aSong  = [self songForID:selectedSongId];
+        id<TGSong> __nonnull aSong  = [self songForID:selectedSongId];
         
         NSString* aFingerprint = [songFingerPrinter fingerprintForSong:aSong];
         if (aFingerprint != nil) {
@@ -1581,7 +1581,7 @@ static int const kSongPoolStartCapacity = 250;
     if ( makeSS ) {
         //MARK: REFAC
 //        [aSong makeSweetSpotAtTime:time];
-        id<TGSongProtocol> newSong = [SweetSpotControl songWithSelectedSweetSpot:aSong atTime:[time floatValue]];
+        id<TGSong> newSong = [SweetSpotControl songWithSelectedSweetSpot:aSong atTime:[time floatValue]];
         [songPoolDictionary setObject:newSong forKey:newSong.songID];
     }
 
