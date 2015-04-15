@@ -25,20 +25,18 @@ class SongMetaData : NSObject, NSCopying {
     let genre:              String?
     let songReleases:       NSData?
     
-//    init(title: String?, album: String?,artist: String?,year: UInt?,genre: String?,songReleases: NSData?) {
+
     init(title: String?, album: String?,artist: String?,year: UInt,genre: String?,songReleases: NSData?) {
         self.title          = title == nil ? "No title" : title
         self.album          = album == nil ? "No album" : album
         self.artist         = artist == nil ? "No artist" : artist
         self.year           = year
         self.genre          = genre == nil ? "No genre" : genre
-//        self.songReleases   = songReleases.copy() as? NSData
         self.songReleases   = songReleases?.copy() as? NSData
     }
     
     func copyWithZone(zone: NSZone) -> AnyObject {
         return SongMetaData(title: title!, album: album!, artist: artist!, year: year!, genre: genre!, songReleases: songReleases!)
-//        return SongMetaData(title: title, album: album, artist: artist, year: year, genre: genre, songReleases: songReleases)
     }
 }
 
@@ -66,11 +64,16 @@ extension SongMetaData {
                 // Wait for the load to complete.
                 dispatch_semaphore_wait(sema, DISPATCH_TIME_FOREVER)
 
-                let artworks = AVMetadataItem.metadataItemsFromArray(songAsset.commonMetadata, withKey: AVMetadataCommonKeyArtwork, keySpace:AVMetadataKeySpaceCommon)
+                let artworks = AVMetadataItem.metadataItemsFromArray(songAsset.commonMetadata, withKey: AVMetadataCommonKeyArtwork, keySpace:AVMetadataKeySpaceCommon) as! [AVMetadataItem]
 
                 var retArt = [NSImage?]()
-                for aw in artworks {
-                    retArt.append(aw as? NSImage)
+                for aw: AVMetadataItem in artworks {
+//                    if aw.keySpace == AVMetadataKeySpaceID3 {
+//                        
+//                    }
+                    
+                    let ima = NSImage(data: aw.dataValue)
+                    retArt.append(ima)
                 }
                 return retArt
         }
@@ -78,8 +81,50 @@ extension SongMetaData {
         return [nil]
     }
     
-    func loadForSongId(songId: SongIDProtocol) -> Bool {
-        return true
+    static func songWithLoadedMetaData(song: TGSong) -> TGSong {
+        return Song(songId: song.songID,
+            metadata: SongMetaData.loadMetaData(fromURLString: song.urlString!),
+            urlString: song.urlString,
+            sweetSpots: song.sweetSpots,
+            fingerPrint: song.fingerPrint,
+            selectedSS: song.selectedSweetSpot,
+            releases: song.songReleases,
+            artId: song.artID,
+            UUId: song.UUId)
+    }
+    
+    /**
+    Loads the metadata from the file at the given url.
+
+    :params: urlString The song url string.
+    :returns: the metadata.
+    */
+    static func loadMetaData(fromURLString urlString: String) -> SongMetaData {
+        
+        var title: String?
+        var album: String?
+        var genre: String?
+        var artist: String?
+        var year: UInt = 0
+        
+        if let songURL = NSURL(string: urlString) {
+            let pathString = songURL.path
+            
+            if let metadata = MDItemCreateWithURL(kCFAllocatorDefault, songURL) {
+                if let artists = MDItemCopyAttribute(metadata,kMDItemAuthors) as? NSArray {
+                    artist = artists[0] as? String
+                }
+                
+                title = MDItemCopyAttribute(metadata,kMDItemTitle) as? String
+                album = MDItemCopyAttribute(metadata,kMDItemAlbum) as? String
+                genre = MDItemCopyAttribute(metadata,kMDItemMusicalGenre) as? String
+                if let y = MDItemCopyAttribute(metadata,kMDItemRecordingYear) as? UInt {
+                    year = y
+                }
+            }
+        }
+        //FIXME: That year might crash
+        return SongMetaData(title: title, album: album, artist: artist, year: year, genre: genre, songReleases: nil)
     }
     
     // replaces SongPool requestEmbeddedMetadataForSongID:

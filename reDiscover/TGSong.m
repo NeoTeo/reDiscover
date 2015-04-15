@@ -9,7 +9,7 @@
 #import "TGSong.h"
 #import "TGSongPool.h"
 #import "TEOSongData.h"
-#import "NSImage+TGHashId.h"
+//#import "NSImage+TGHashId.h"
 
 #import <AVFoundation/AVFoundation.h>
 #import "TGSongProtocol.h"

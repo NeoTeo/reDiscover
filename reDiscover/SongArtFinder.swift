@@ -14,7 +14,7 @@ different ways.
 1) Looks in the metadata via the SongMetaData class.
 2) 
 */
-struct SongArtFinder {
+@objc class SongArtFinder {
     static func findArtForSong(song: TGSong) -> NSImage? {
         // No existing artID. Try looking in the metadata.
         let arts = SongMetaData.getCoverArtForSong(song)

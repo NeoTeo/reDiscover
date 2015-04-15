@@ -16,7 +16,7 @@
 #import "TGSongInfoViewController.h"
 #import "TGSongTimelineViewController.h"
 #import "TGTimelineTransformer.h"
-#import "NSImage+TGHashId.h"
+//#import "NSImage+TGHashId.h"
 
 #import "rediscover-swift.h"
 
@@ -623,52 +623,6 @@
     [_songGridController.songTimelineController setCurrentSongID:songID];
 }
 
-/* CDFIX
-- (void)songPoolDidStartPlayingSong:(id<SongIDProtocol>)songID {
-
-    TGLog(TGLOG_ALL,@"songPoolDidStartPlayingSong with id:%@",songID);
-    //MARK: This gets the song image from the cell, rather than from the songpool's cache.
-    // That's as it should be because there's a difference between them:
-    // A song's artId is a reference to *what* the cover of the song is, whereas the cell's image
-    // is what it is currently being displayed as.
-    NSImage* songImage = [_songGridController coverImageForSongWithId:songID];
-    //[_songInfoController setSongCoverImage:songImage];
-    
-    // If the image is the default image, change it to the fetching image to signal we're working on it.
-    // At this point the song image may still be in the image caching queue and not even be set to fetching,
-    // but it will eventually get set by the caching.
-    if ([songImage.hashId isEqualToString:defaultImage.hashId] == YES)
-    {
-        songImage = fetchingImage;
-        [_songGridController setCoverImage:songImage forSongWithID:songID];
-        //[_songInfoController setSongCoverImage:fetchingImage];
-    }
-    [_songInfoController setSongCoverImage:songImage];
-
-    
-    // Request metadata for the song and pass in the block to be called when done.
-    [_currentSongPool requestEmbeddedMetadataForSongID:songID withHandler:^(NSDictionary* theData){
-        
-        //TODO:
-        // We should check if it's already set with this id before resetting it.
-        // Use the Id embedded in the data.
-        // Tell the info panel to change to display the new song's data.
-        [_songInfoController setSong:theData];
-
-        //MARK: CDFIX - move all this into a method that observes when a cover is loaded.
-        // Still needs a way of figuring whether the song that is ready was cached or requested playback...
-
-        // Then async'ly request an album image for the song and pass it a block callback.
-        // Commented out because this is already being called when the caching gets an album.
-//        [self refreshCoverForSongId:songID];
-    }];
-    
-    // Let the timelinecontroller know that we've changed song.
-    // (would a song change be better signalled as a global notification?)
-    //MARK: wipEv change this to a notification
-    [_songGridController.songTimelineController setCurrentSongID:songID];
-}
-CDFIX */
 - (void)refreshCoverForSongId:(id<SongIDProtocol>)songId {
     
     // Only update song whose image has been set to fetching.
@@ -676,6 +630,8 @@ CDFIX */
     dispatch_async(dispatch_get_global_queue(QOS_CLASS_USER_INTERACTIVE, 0), ^{
         //MARK: REFAC start
         NSImage *art = [SongArt artForSong:[_currentSongPool songForID:songId]];
+        if (art == nil)
+            art = [SongArt getNoCoverImage];
         // Set the scroll view controller cover image.
         [_songGridController setCoverImage:art forSongWithID:songId];
         
@@ -718,50 +674,6 @@ CDFIX */
         TGLog(TGLOG_ALL,@"Didn't call refreshCoverForSongId because the cell image is not the Fetching image.");
 }
 
-// cdfix
-//- (void)songPoolDidStartPlayingSong:(id<SongIDProtocol>)songID {
-//
-//    // Request metadata for the song and pass in the block to be called when done.
-//    [_currentSongPool requestEmbeddedMetadataForSongID:songID withHandler:^(NSDictionary* theData){
-//        // Tell the info panel to change to display the new song's data.
-//        [_songInfoController setSong:theData];
-//    }];
-//
-//    // Let the timelinecontroller know that we've changed song.
-//    // (would a song change be better signalled as a global notification?)
-//    //MARK: wipEv change this to a notification
-//    [_songGridController.songTimelineController setCurrentSongID:songID];
-//    
-//    // Don't wait for a result. Set to the "fetching artwork..." whilst waiting.
-//    NSImage* fetchingImage = [NSImage imageNamed:@"fetchingArt"];
-//    [_songGridController setCoverImage:fetchingImage forSongWithID:songID];
-//    [_songInfoController setSongCoverImage:fetchingImage];
-//    
-//    // Then async'ly request an album image for the song and pass it a block callback.
-//    dispatch_async(dispatch_get_global_queue(QOS_CLASS_USER_INTERACTIVE, 0), ^{
-//        [_currentSongPool requestImageForSongID:songID withHandler:^(NSImage *tmpImage) {
-//    return;//wipwip The following still causes some lag.
-//            // none of the attempts returned an image so just show the no cover cover.
-//            if (tmpImage == nil) {
-//                tmpImage = [NSImage imageNamed:@"noCover"];
-//                //NSBeep();
-//            }
-//            
-//            // Set the scroll view controller cover image.
-//            [_songGridController setCoverImage:tmpImage forSongWithID:songID];
-//            
-//            // Only update the info window for the currently playing song.
-//            //MARK: ARS
-//            if (songID == [_currentSongPool currentlyPlayingSongID]) {
-//                [_songInfoController setSongCoverImage:tmpImage];
-//            }
-//            
-//            
-//        }];
-//    });
-//    //TGLog(TGLOG_ALL,@"songPoolDidStartPlayingSong on thread %@ returning",[NSThread currentThread]);
-//}
-
 - (void)songPoolDidFinishPlayingSong:(id<SongIDProtocol>)songID {
     // If the currently selected song is the same as the one that just finished, see if there is more on the playlist.
     TGLog(TGLOG_ALL,@"song grid controller. Song %@ finished playing.",(NSString*)songID);
@@ -775,23 +687,6 @@ CDFIX */
         [_currentSongPool requestSongPlayback:newSongID withStartTimeInSeconds:0 makeSweetSpot:NO];
     }
 }
-//- (void)songPoolDidFinishPlayingSong:(NSUInteger)songID {
-//    // If the currently selected song is the same as the one that just finished, see if there is more on the playlist.
-//    TGLog(TGLOG_ALL,@"song grid controller. Song %lu finished playing.",(unsigned long)songID);
-//    if (songID == [_currentSongPool lastRequestedSongID]) {
-//        NSInteger newSongID = [_playlistController getNextSongIDToPlay];
-//        if (newSongID != -1) {
-//            [_currentSongPool requestSongPlayback:newSongID withStartTimeInSeconds:0];
-//        } else
-//            TGLog(TGLOG_ALL,@"No more songs in playlist.");
-//    }
-//}
-
-// TGSongGridViewControllerDelegate methods
-//- (void)requestSongArrayPreload:(NSArray *)theArray {
-//    
-//    [_currentSongPool preloadSongArray:theArray];
-//}
 
 #pragma mark TGSongGridViewControllerDelegate method implementations
 

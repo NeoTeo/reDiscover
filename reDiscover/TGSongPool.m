@@ -19,7 +19,7 @@
 #import "TEOSongData.h"
 
 #import "UploadedSSData.h"
-#import "NSImage+TGHashId.h"
+//#import "NSImage+TGHashId.h"
 
 #import "rediscover-swift.h"
 
@@ -77,8 +77,8 @@
 @end
 
 // constant definitions
-static int const kSSCheckCounterSize    = 10;
-static int const kDefaultAlbumSongCount = 8;
+//static int const kSSCheckCounterSize    = 10;
+//static int const kDefaultAlbumSongCount = 8;
 static int const kSongPoolStartCapacity = 250;
 
 @implementation TGSongPool
@@ -121,7 +121,7 @@ static int const kSongPoolStartCapacity = 250;
         timelineUpdateQueue = dispatch_queue_create("timeline GUI updater queue", NULL);
         
         
-        [self initBasicCovers];
+        //[self initBasicCovers];
         
         // Create and hook up the song fingerprinter.
         songFingerPrinter = [[TGFingerPrinter alloc] init];
@@ -199,7 +199,7 @@ static int const kSongPoolStartCapacity = 250;
     return self;
 }
 
-
+/*
 - (void)initBasicCovers {
     // Set up session cache of image covers.
     //        _artArray = [[NSMutableArray alloc] initWithCapacity:100];
@@ -237,7 +237,7 @@ static int const kSongPoolStartCapacity = 250;
     }];
 
 }
-
+*/
 
 /**
  TEOSongData set up the Core Data context and store.
@@ -707,6 +707,7 @@ static int const kSongPoolStartCapacity = 250;
     return NO;
 }
 */
+/* REFAC
 - (BOOL)loadSongMetadataForSongId:(id<SongIDProtocol>)songId {
     //TODO: use the verbose url type.
     id<TGSong> theSong = [self songForID:songId];
@@ -777,7 +778,7 @@ static int const kSongPoolStartCapacity = 250;
     }
     return NO;
 }
-
+*/
 - (void)searchMetadataForCoverImageForSongId:(id<SongIDProtocol>)songId withHandler:(void (^)(NSImage *))imageHandler {
     
     id<TGSong> theSong = [self songForID:songId];
@@ -1149,6 +1150,7 @@ static int const kSongPoolStartCapacity = 250;
 
 - (NSDictionary *)songDataForSongID:(id<SongIDProtocol>)songID {
     id<TGSong> song = [self songForID:songID];
+    
     return @{@"Id": songID,
              @"Artist": song.metadata.artist,
              @"Title": song.metadata.title,
@@ -1634,14 +1636,28 @@ static int const kSongPoolStartCapacity = 250;
         if (aFingerprint != nil) {
 
             CMTime songDuration = [songAudioPlayer songDuration];
+            
             NSString *songUUID = [SongUUID lookupUUIDForSong:aSong duration:CMTimeGetSeconds(songDuration) fingerprint:aFingerprint];
-            // setting the song's anything should give me a new song
+            aSong = [SongUUID songWithNewUUId:aSong newUUId:songUUID];
+            
+            // Check the cache for art associated with this song's artId.
             NSImage *otherImg = [SongArt artForSong:aSong];
             
-            if (otherImg != nil) {
-                TGLog(TGLOG_REFAC, @"goddam %@",otherImg);
+            if (otherImg == nil) {
+                // Ask the SongArtFinder to find it and if it succeeds,
+                // add the found art to the artCache.
+                otherImg = [SongArtFinder findArtForSong:aSong];
+                if (otherImg != nil) {
+                    aSong = [SongArt songWithArtId:aSong artId:[SongArt addImage:otherImg]];
+                }
+                
+            } else {
+                TGLog(TGLOG_REFAC, @"Whoa");
             }
-            // So now we need to add that image to the image cache if it isn't already there.
+            
+            aSong = [SongMetaData songWithLoadedMetaData:aSong];
+            // replace old song with the new song in the songpool.
+            [songPoolDictionary setObject:aSong forKey:aSong.songID];
             
             // Here we should signal that the song now has cover art. Or update the song in question if its current image == fetching image
             [[NSNotificationCenter defaultCenter] postNotificationName:@"songCoverUpdated" object:selectedSongId];

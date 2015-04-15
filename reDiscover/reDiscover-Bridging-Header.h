@@ -16,4 +16,6 @@
 // For songUUID
 #import "TGSongProtocol.h"
 
-#import "NSImage+TGHashId.h"
+//#import "NSImage+TGHashId.h"
+
+#import <CommonCrypto/CommonCrypto.h>
