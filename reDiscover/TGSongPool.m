@@ -1617,6 +1617,9 @@ static int const kSongPoolStartCapacity = 250;
     [songAudioCacher cacheWithContext:cacheContext];
     id<SongIDProtocol> selectedSongId = [cacheContext objectForKey:@"selectedSongId"];
     
+    //REFAC - set the lastSelectedSongID here so that the songPoolDidStartFetchingSong knows.
+    lastRequestedSong = [self songForID:selectedSongId];
+    
     // Tell the main view controller that we've started fetching data for the selected song so it can update the UI.
     [_delegate songPoolDidStartFetchingSong:selectedSongId];
         
@@ -1634,12 +1637,15 @@ static int const kSongPoolStartCapacity = 250;
     dispatch_async(dispatch_get_global_queue(QOS_CLASS_BACKGROUND, 0), ^{
         id<TGSong> __nonnull aSong  = [self songForID:selectedSongId];
         
-        NSString* aFingerprint = [songFingerPrinter fingerprintForSong:aSong];
-        if (aFingerprint != nil) {
+        if ([aSong fingerPrint] == nil) {
+            aSong = [songFingerPrinter songWithFingerPrint:aSong];
+        }
+        
+        if (aSong.fingerPrint != nil) {
 
             CMTime songDuration = [songAudioPlayer songDuration];
             
-            NSString *songUUID = [SongUUID lookupUUIDForSong:aSong duration:CMTimeGetSeconds(songDuration) fingerprint:aFingerprint];
+            NSString *songUUID = [SongUUID lookupUUIDForSong:aSong duration:CMTimeGetSeconds(songDuration) fingerprint:aSong.fingerPrint];
             aSong = [SongUUID songWithNewUUId:aSong newUUId:songUUID];
             
             // Check the cache for art associated with this song's artId.

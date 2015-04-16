@@ -42,7 +42,7 @@ class SongArt : NSObject {
     
     static func getFetchingCoverImage() -> NSImage? {
         if fetchingCoverImage == nil {
-            fetchingCoverImage = NSImage(named: "songImage")
+            fetchingCoverImage = NSImage(named: "fetchingArt")
         }
         return fetchingCoverImage
     }

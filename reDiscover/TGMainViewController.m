@@ -575,7 +575,22 @@
         }];
     }
 }
-
+- (void)updatePanelsForSong:(id<SongIDProtocol>)songId defaultImage:(NSImage*)defImg {
+    dispatch_async(dispatch_get_global_queue(QOS_CLASS_USER_INTERACTIVE, 0), ^{
+        // Only update the info window for the currently playing song.
+            NSImage *art = [SongArt artForSong:[_currentSongPool songForID:songId]];
+            if (art == nil)
+                art = defImg;
+            [_songGridController setCoverImage:art forSongWithID:songId];
+        
+        if ([songId isEqual:[_currentSongPool lastRequestedSongID]])
+        {
+            [_songInfoController setSongCoverImage:art];
+            [_songInfoController setSong:[_currentSongPool songDataForSongID:songId]];
+        }
+    });
+}
+/* REFAC
 //MARK: COVR
 - (void)songPoolDidStartFetchingSong:(id<SongIDProtocol>)songID {
 
@@ -588,34 +603,24 @@
         [_songInfoController setSongCoverImage:fetchingImage];
     }
 }
+*/
+- (void)songPoolDidStartFetchingSong:(id<SongIDProtocol>)songID {
+    [self updatePanelsForSong:songID defaultImage:[SongArt getFetchingCoverImage]];
+}
 
 - (void)songPoolDidStartPlayingSong:(id<SongIDProtocol>)songID {
-    TGLog(TGLOG_ALL,@"songPoolDidStartPlayingSong with id:%@",songID);
-    
-    NSString* artId = [_currentSongPool artIdForSongId:songID];
-
-    if (artId != nil) {
-        [self refreshCoverForSongId:songID];
-    } else {
-        //MARK: COVR these should be commented out once the cover stuff is working properly
-        [_songGridController setCoverImage:fetchingImage forSongWithID:songID];
-        [_songInfoController setSongCoverImage:fetchingImage];
-    }
-
-    /* REFAC
-    // Request metadata for the song and pass in the block to be called when done.
-    [_currentSongPool requestEmbeddedMetadataForSongID:songID withHandler:^(NSDictionary* theData){
-        
-        //TODO:
-        // We should check if it's already set with this id before resetting it.
-        // Use the Id embedded in the data.
-        // Tell the info panel to change to display the new song's data.
-        [_songInfoController setSong:theData];
-    }];
-    */
-
-    //REFAC
-    [_songInfoController setSong:[_currentSongPool songDataForSongID:songID]];
+    [self updatePanelsForSong:songID defaultImage:[SongArt getFetchingCoverImage]];
+//    NSString* artId = [_currentSongPool artIdForSongId:songID];
+//
+//    if (artId != nil) {
+//        [self refreshCoverForSongId:songID];
+//    } else {
+//        //MARK: COVR these should be commented out once the cover stuff is working properly
+//        [_songGridController setCoverImage:fetchingImage forSongWithID:songID];
+//        [_songInfoController setSongCoverImage:fetchingImage];
+//    }
+//
+//    [_songInfoController setSong:[_currentSongPool songDataForSongID:songID]];
     
     // Let the timelinecontroller know that we've changed song.
     // (would a song change be better signalled as a global notification?)
@@ -623,6 +628,38 @@
     [_songGridController.songTimelineController setCurrentSongID:songID];
 }
 
+/* REFAC
+- (void)songPoolDidStartPlayingSong:(id<SongIDProtocol>)songID {
+    TGLog(TGLOG_ALL,@"songPoolDidStartPlayingSong with id:%@",songID);
+    
+    NSString* artId = [_currentSongPool artIdForSongId:songID];
+    
+    if (artId != nil) {
+        [self refreshCoverForSongId:songID];
+    } else {
+        //MARK: COVR these should be commented out once the cover stuff is working properly
+        [_songGridController setCoverImage:fetchingImage forSongWithID:songID];
+        [_songInfoController setSongCoverImage:fetchingImage];
+    }
+    
+     // Request metadata for the song and pass in the block to be called when done.
+     [_currentSongPool requestEmbeddedMetadataForSongID:songID withHandler:^(NSDictionary* theData){
+     
+     //TODO:
+     // We should check if it's already set with this id before resetting it.
+     // Use the Id embedded in the data.
+     // Tell the info panel to change to display the new song's data.
+     [_songInfoController setSong:theData];
+     }];
+
+    
+    // Let the timelinecontroller know that we've changed song.
+    // (would a song change be better signalled as a global notification?)
+    //MARK: wipEv change this to a notification
+    [_songGridController.songTimelineController setCurrentSongID:songID];
+}
+*/
+/*
 - (void)refreshCoverForSongId:(id<SongIDProtocol>)songId {
     
     // Only update song whose image has been set to fetching.
@@ -636,44 +673,54 @@
         [_songGridController setCoverImage:art forSongWithID:songId];
         
         // Only update the info window for the currently playing song.
-        //if (songId == [_currentSongPool currentlyPlayingSongID]) {
         if ([songId isEqual:[_currentSongPool lastRequestedSongID]]) {
-            [_songInfoController setSongCoverImage:art];
             
+            [_songInfoController setSongCoverImage:art];
+
             [_songInfoController setSong:[_currentSongPool songDataForSongID:songId]];
         }
-        //MARK: REFAC end
-        /*
-        [_currentSongPool requestImageForSongID:songId withHandler:^(NSImage *tmpImage) {
-            // none of the attempts returned an image so just show the no cover cover.
-            if (tmpImage == nil) {
-                tmpImage = [NSImage imageNamed:@"noCover"];
-            }
-            
-            // Set the scroll view controller cover image.
-            [_songGridController setCoverImage:tmpImage forSongWithID:songId];
-            
-            // Only update the info window for the currently playing song.
-            //if (songId == [_currentSongPool currentlyPlayingSongID]) {
-            if ([songId isEqual:[_currentSongPool lastRequestedSongID]]) {
-                [_songInfoController setSongCoverImage:tmpImage];
-            }
-        }];
-        */
     });
 }
-
+ */
+/* REFAC
+- (void)refreshCoverForSongId:(id<SongIDProtocol>)songId {
+    
+    // Only update song whose image has been set to fetching.
+    //if ([songImage.hashId isEqualToString:fetchingImage.hashId] == YES) {
+    dispatch_async(dispatch_get_global_queue(QOS_CLASS_USER_INTERACTIVE, 0), ^{
+         [_currentSongPool requestImageForSongID:songId withHandler:^(NSImage *tmpImage) {
+         // none of the attempts returned an image so just show the no cover cover.
+         if (tmpImage == nil) {
+         tmpImage = [NSImage imageNamed:@"noCover"];
+         }
+         
+         // Set the scroll view controller cover image.
+         [_songGridController setCoverImage:tmpImage forSongWithID:songId];
+         
+         // Only update the info window for the currently playing song.
+         //if (songId == [_currentSongPool currentlyPlayingSongID]) {
+         if ([songId isEqual:[_currentSongPool lastRequestedSongID]]) {
+         [_songInfoController setSongCoverImage:tmpImage];
+         }
+         }];
+    });
+}
+*/
 // Observer method called when the song pool caching method has set a cover image for the song.
 - (void)songCoverWasUpdated:(NSNotification*)notification {
     id<SongIDProtocol> songId = notification.object;
-    TGLog(TGLOG_REFAC,@"SONG COVER UPDATED NOTIFICATION FOR %@",songId);
-    NSImage* songImage = [_songGridController coverImageForSongWithId:songId];
-    
-    if ([songImage.hashId isEqualToString:fetchingImage.hashId] == YES) {
-         TGLog(TGLOG_ALL,@"Going to call refreshCoverForSongId.");
-        [self refreshCoverForSongId:songId];
-    } else
-        TGLog(TGLOG_ALL,@"Didn't call refreshCoverForSongId because the cell image is not the Fetching image.");
+//    TGLog(TGLOG_REFAC,@"SONG COVER UPDATED NOTIFICATION FOR %@",songId);
+    // REFAC NSImage* songImage = [_songGridController coverImageForSongWithId:songId];
+    //NSImage *songImage = [SongArt artForSong:[_currentSongPool songForID:songId]];
+    id<TGSong> theSong = [_currentSongPool songForID:songId];
+    if ([theSong.artID isEqualToString:[_songGridController coverImageForSongWithId:songId].hashId] == false)
+    {
+         TGLog(TGLOG_REFAC,@"Going to call refreshCoverForSongId.");
+        //[self refreshCoverForSongId:songId];
+        [self updatePanelsForSong:songId defaultImage:[SongArt getNoCoverImage]];
+    }
+//    else
+//        TGLog(TGLOG_REFAC,@"Didn't call refreshCoverForSongId because the cell image is not the Fetching image.");
 }
 
 - (void)songPoolDidFinishPlayingSong:(id<SongIDProtocol>)songID {

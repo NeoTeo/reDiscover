@@ -30,7 +30,8 @@
 }
 
 - (nullable NSString *)fingerprintForSong:(__nonnull id<TGSong>)theSong;
-
+- (id<TGSong>)songWithFingerPrint:(id<TGSong>)song;
+    
 //MARK: REFAC
 - (NSUInteger)fingerPrintStatusForSong:(nonnull id<TGSong>)theSong;
 - (void)setFingerPrintStatusForSong:(nonnull id<TGSong>)theSong toStatus:(UInt)status;

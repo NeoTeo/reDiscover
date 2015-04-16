@@ -45,6 +45,19 @@
     TGLog(TGLOG_ALL,@"freeing chromaprint context.");
 }
 
+- (id<TGSong>)songWithFingerPrint:(id<TGSong>)song {
+    NSString *fingerprint = [self fingerprintForSong:song];
+    return [[Song alloc] initWithSongId:song.songID
+                               metadata:song.metadata
+                              urlString:song.urlString
+                             sweetSpots:song.sweetSpots
+                            fingerPrint:fingerprint
+                             selectedSS:song.selectedSweetSpot
+                               releases:song.songReleases
+                                  artId:song.artID
+                                   UUId:song.UUId];
+}
+
 /**
  Produces a fingerprint from the given song using the chromaprint library.
 
