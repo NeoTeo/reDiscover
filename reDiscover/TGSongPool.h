@@ -165,6 +165,9 @@
     
     /** This serial queue ensures all the cache clearing blocks are performed in the background
     and that they don't clear the same song simultanously. */
+    // REFAC
+    dispatch_queue_t songPoolQueue;
+    
     dispatch_queue_t songLoadUnloadQueue;
     
     dispatch_queue_t playbackQueue;

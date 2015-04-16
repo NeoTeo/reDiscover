@@ -639,6 +639,8 @@
         //if (songId == [_currentSongPool currentlyPlayingSongID]) {
         if ([songId isEqual:[_currentSongPool lastRequestedSongID]]) {
             [_songInfoController setSongCoverImage:art];
+            
+            [_songInfoController setSong:[_currentSongPool songDataForSongID:songId]];
         }
         //MARK: REFAC end
         /*
@@ -664,7 +666,7 @@
 // Observer method called when the song pool caching method has set a cover image for the song.
 - (void)songCoverWasUpdated:(NSNotification*)notification {
     id<SongIDProtocol> songId = notification.object;
-    TGLog(TGLOG_ALL,@"SONG COVER UPDATED NOTIFICATION FOR %@",songId);
+    TGLog(TGLOG_REFAC,@"SONG COVER UPDATED NOTIFICATION FOR %@",songId);
     NSImage* songImage = [_songGridController coverImageForSongWithId:songId];
     
     if ([songImage.hashId isEqualToString:fetchingImage.hashId] == YES) {

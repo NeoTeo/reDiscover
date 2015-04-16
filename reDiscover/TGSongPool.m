@@ -172,6 +172,8 @@ static int const kSongPoolStartCapacity = 250;
         songIDCache = [[NSMutableSet alloc] init];
         songLoadUnloadQueue = dispatch_queue_create("song load unload q", NULL);
         
+        songPoolQueue = dispatch_queue_create("songPool dictionary access q", DISPATCH_QUEUE_SERIAL);
+        
         // Register to be notified of song uuid being fetched
 //        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleFetchedUUId:) name:@"TGUUIdWasFetched" object:nil];
 //        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(songCoverWasFetched:) name:@"webSongCoverFetcherDidFetch" object:nil];
@@ -1656,16 +1658,20 @@ static int const kSongPoolStartCapacity = 250;
             }
             
             aSong = [SongMetaData songWithLoadedMetaData:aSong];
-            // replace old song with the new song in the songpool.
-            [songPoolDictionary setObject:aSong forKey:aSong.songID];
             
-            // Here we should signal that the song now has cover art. Or update the song in question if its current image == fetching image
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"songCoverUpdated" object:selectedSongId];
-
+            // Since the code within this dispatch_async can run concurrently in multiple
+            // threads, the concurrent access to the songPoolDictionary should be flattened
+            // into a serial queue (songPoolQueue) running in a separate thread.
+            dispatch_sync(songPoolQueue, ^{
+                // replace old song with the new song in the songpool.
+                [songPoolDictionary setObject:aSong forKey:aSong.songID];
+                
+                // Here we should signal that the song now has cover art.
+                // Or update the song in question if its current image == fetching image
+                [[NSNotificationCenter defaultCenter] postNotificationName:@"songCoverUpdated" object:selectedSongId];
+                [[NSNotificationCenter defaultCenter] postNotificationName:@"songMetaDataUpdated" object:selectedSongId];
+            });
         }
-//        dispatch_async(dispatch_get_main_queue(), { () -> Void in
-//            println("This is run on the main queue, after the previous code in outer block")
-//        })
     });
     //[self fetchUUIdAndCoverArtForSongId:selectedSongId];
 }
