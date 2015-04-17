@@ -30,11 +30,11 @@
 }
 
 - (nullable NSString *)fingerprintForSong:(__nonnull id<TGSong>)theSong;
-- (id<TGSong>)songWithFingerPrint:(id<TGSong>)song;
+- (__nonnull id<TGSong>)songWithFingerPrint:(__nonnull id<TGSong>)song;
     
 //MARK: REFAC
-- (NSUInteger)fingerPrintStatusForSong:(nonnull id<TGSong>)theSong;
-- (void)setFingerPrintStatusForSong:(nonnull id<TGSong>)theSong toStatus:(UInt)status;
+- (NSUInteger)fingerPrintStatusForSong:(__nonnull id<TGSong>)theSong;
+- (void)setFingerPrintStatusForSong:(__nonnull id<TGSong>)theSong toStatus:(UInt)status;
 
 #pragma clang assume_nonnull begin
 - (void)requestFingerPrintForSong:(id<SongIDProtocol>)songID withHandler:(void (^)(NSString*))fingerprintHandler;

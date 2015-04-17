@@ -70,6 +70,7 @@
 		ABB2B6621ADEB38F004F9F87 /* NSImage+HashId.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABB2B6611ADEB38F004F9F87 /* NSImage+HashId.swift */; };
 		ABB33FF019C72C3800439A5E /* SweetSpotServerIO.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABB33FEF19C72C3800439A5E /* SweetSpotServerIO.swift */; };
 		ABCB68EA18FD57E4009CF277 /* TEOSong.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = ABCB68E818FD57E4009CF277 /* TEOSong.xcdatamodeld */; };
+		ABE49BB51AE16105008A28B0 /* SongID.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABE49BB41AE16105008A28B0 /* SongID.swift */; };
 		ABEC263D1951C6F200A57CE3 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = ABEC263C1951C6F200A57CE3 /* Main.storyboard */; };
 		ABED8E321AB72F4F005B1403 /* SongMetadata.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABED8E311AB72F4F005B1403 /* SongMetadata.swift */; };
 		ABED8E341AB73B6E005B1403 /* CoverArtController.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABED8E331AB73B6E005B1403 /* CoverArtController.swift */; };
@@ -192,6 +193,7 @@
 		ABB2B6611ADEB38F004F9F87 /* NSImage+HashId.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSImage+HashId.swift"; sourceTree = "<group>"; };
 		ABB33FEF19C72C3800439A5E /* SweetSpotServerIO.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SweetSpotServerIO.swift; sourceTree = "<group>"; };
 		ABCB68E918FD57E4009CF277 /* TEOSong.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = TEOSong.xcdatamodel; sourceTree = "<group>"; };
+		ABE49BB41AE16105008A28B0 /* SongID.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SongID.swift; sourceTree = "<group>"; };
 		ABEC263C1951C6F200A57CE3 /* Main.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Main.storyboard; sourceTree = "<group>"; };
 		ABED8E311AB72F4F005B1403 /* SongMetadata.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SongMetadata.swift; path = reDiscover/SongMetadata.swift; sourceTree = "<group>"; };
 		ABED8E331AB73B6E005B1403 /* CoverArtController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CoverArtController.swift; path = reDiscover/CoverArtController.swift; sourceTree = "<group>"; };
@@ -383,6 +385,7 @@
 		AB85BBCA1875AACF00670905 = {
 			isa = PBXGroup;
 			children = (
+				ABE49BB41AE16105008A28B0 /* SongID.swift */,
 				AB725A3E1ADA9311003E94E6 /* SweetSpot */,
 				AB725A3D1AD922BC003E94E6 /* SongArt */,
 				ABFD9DD21AD41B7C00718631 /* TGSongProtocol.h */,
@@ -646,6 +649,7 @@
 				AB85BC5F1875AD7A00670905 /* TGSongGridScrollView.m in Sources */,
 				AB85BC501875AB5200670905 /* TGSongUserData.m in Sources */,
 				ABCB68EA18FD57E4009CF277 /* TEOSong.xcdatamodeld in Sources */,
+				ABE49BB51AE16105008A28B0 /* SongID.swift in Sources */,
 				AB85BC421875AB5200670905 /* TGMainViewController.m in Sources */,
 				AB725A401ADA93E9003E94E6 /* SweetSpotController.swift in Sources */,
 				AB56D9F418EC14D5005AB947 /* CAKeyframeAnimation+Parametric.m in Sources */,

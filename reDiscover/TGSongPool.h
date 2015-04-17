@@ -12,6 +12,7 @@
 
 #import "NSMutableArray+QueueAdditions.h"
 
+
 // class forward declaration
 
 
@@ -33,27 +34,29 @@
 @protocol SongGridAccessProtocol;
 @protocol TGMainViewControllerDelegate;
 @protocol TGSong;
+
 /**
 *   A SongID must conform to the SongIDProtocol.
 *   To conform to the SongIDProtocol a class must also adopt the NSCopying.
  */
 @protocol SongIDProtocol <NSObject, NSCopying>
-@property NSUInteger idValue;
-- (BOOL)isEqual:(id)object;
-- (id)copyWithZone:(struct _NSZone *)zone;
-@property (readonly) NSUInteger hash;
+//@property NSUInteger idValue;
+//- (BOOL)isEqual:(id)object;
+//- (id)copyWithZone:(struct _NSZone *)zone;
+//@property (readonly) NSUInteger hash;
 @end
 
 /**
  The SongID is the type that identifies a song in the current instance of the application.
  SongIDs do not persist across instances.
  */
+/*
 @interface SongID : NSObject <SongIDProtocol>
 @property NSUInteger idValue;
 + (instancetype)initWithString:(NSString *)theString;
-- (id)copyWithZone:(struct _NSZone *)zone;
+//- (id)copyWithZone:(struct _NSZone *)zone;
 @end
-
+*/
 
 
 // Methods that SongPool implements for others to call.

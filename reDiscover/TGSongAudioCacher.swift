@@ -48,7 +48,7 @@ class TGSongAudioCacher : NSObject {
             
             if let pp = self.pendingPlayerRequestCallback {
                 // Check if the pending player request is in this new cache
-                if let player = self.songPlayerCache[pp.songId.hash] {
+                if let player = self.songPlayerCache[UInt(pp.songId.hash)] {
                     pp.callBack(player)
                     self.pendingPlayerRequestCallback = nil
                 }
@@ -67,13 +67,13 @@ class TGSongAudioCacher : NSObject {
 
     func songPlayerForSongId(songId: SongIDProtocol) -> AVPlayer? {
         
-        return songPlayerCache[songId.hash]
+        return songPlayerCache[UInt(songId.hash)]
     }
     
     
     func performWhenPlayerIsAvailableForSongId(songId: SongIDProtocol, callBack: (AVPlayer)->()) {
         // If the requested Player is already in the cache, execute immediately
-        if let player = songPlayerCache[songId.hash] {
+        if let player = songPlayerCache[UInt(songId.hash)] {
             callBack(player)
         } else {
             // Add the callback to a dictionary where it's associated with the songId.
@@ -163,11 +163,11 @@ class TGSongAudioCacheTask : NSObject {
         wantedCacheCount = generateWantedSongIds(context, operationBlock: operationBlock) { songId in
             // This is a handler that is passed a songId of a song that needs caching.
             // If the song was already in the old cache, copy it to the new cache.
-            if let oldPlayer = oldCache[songId.hash] {
+            if let oldPlayer = oldCache[UInt(songId.hash)] {
                 // since oldCache is a deep copy of the actual cache we are effectively copying the asset.
                 // We need to lock it during access because it might get accessed concurrently by the loading completion block below.
                 newCacheLock.lock()
-                newCache[songId.hash] = oldPlayer
+                newCache[UInt(songId.hash)] = oldPlayer
                 newCacheLock.unlock()
             } else {
                 
@@ -175,7 +175,7 @@ class TGSongAudioCacheTask : NSObject {
                 self.performWhenReadyForPlayback(songId){ songPlayer in
                  
                     newCacheLock.lock()
-                    newCache[songId.hash] = songPlayer
+                    newCache[UInt(songId.hash)] = songPlayer
                     newCacheLock.unlock()
                 }
             }

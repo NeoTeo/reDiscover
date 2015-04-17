@@ -26,6 +26,7 @@
 //@interface SongID : NSObject <SongIDProtocol>
 //+ (SongID *)initWithString:(NSString *)theString;
 //@end
+/*
 @implementation SongID
 + (instancetype)initWithString:(NSString *)theString {
     SongID* theID = [[SongID alloc] init];
@@ -70,7 +71,7 @@
 }
 
 @end
-
+*/
 
 // The private interface declaration overrides the public one to declare conformity to the Delegate protocols.
 @interface TGSongPool () <TGSongDelegate,TGFingerPrinterDelegate,SongPoolAccessProtocol>
@@ -517,7 +518,8 @@ static int const kSongPoolStartCapacity = 250;
                                                                                     year:[teoData.year unsignedIntegerValue]
                                                                                    genre:teoData.genre
                                                                             songReleases:teoData.songReleases];
-                            id<SongIDProtocol> songId = [SongID initWithString:[url absoluteString]];
+                            
+                            id<SongIDProtocol> songId = [[SongID alloc] initWithString:[url absoluteString]];
                             
                             id<TGSong>newSong = [[Song alloc]initWithSongId:songId
                                                     metadata: metadata
@@ -558,7 +560,7 @@ static int const kSongPoolStartCapacity = 250;
                         
                         // Inform the delegate that another song object has been loaded. This causes a cell in the song matrix to be added.
                         if ((_delegate != Nil) && [_delegate respondsToSelector:@selector(songPoolDidLoadSongURLWithID:)]) {
-                            [_delegate songPoolDidLoadSongURLWithID:[SongID initWithString:[url absoluteString]]];
+                            [_delegate songPoolDidLoadSongURLWithID:[[SongID alloc] initWithString:[url absoluteString]]];
                         }
                     }
                 }

@@ -68,6 +68,6 @@
 
 - (void)setSongPool:(TGSongPool *)theSongPool;
 //- (void)setDebugCachedFlagsForSongIDArray:(NSArray*)songIDs toValue:(BOOL)value;
-- (void)refreshCoverForSongId:(id<SongIDProtocol>)songId;
+//- (void)refreshCoverForSongId:(id<SongIDProtocol>)songId;
 
 @end
