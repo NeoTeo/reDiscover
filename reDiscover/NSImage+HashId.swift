@@ -10,8 +10,6 @@ import Foundation
 
 extension NSImage {
     func hashId() -> String! {
-//        let str = self.cStringUsingEncoding(NSUTF8StringEncoding)
-//        let strLen = CUnsignedInt(self.lengthOfBytesUsingEncoding(NSUTF8StringEncoding))
         let digestLen = Int(CC_MD5_DIGEST_LENGTH)
         let imageData = self.TIFFRepresentation
         let dataLen = CUnsignedInt(imageData!.length)
@@ -26,6 +24,6 @@ extension NSImage {
         
         result.destroy()
         
-        return hash as String//String(format: hash)
+        return hash as String
     }
 }
