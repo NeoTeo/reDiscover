@@ -23,56 +23,6 @@
 
 #import "rediscover-swift.h"
 
-//@interface SongID : NSObject <SongIDProtocol>
-//+ (SongID *)initWithString:(NSString *)theString;
-//@end
-/*
-@implementation SongID
-+ (instancetype)initWithString:(NSString *)theString {
-    SongID* theID = [[SongID alloc] init];
-    theID.idValue = theString.hash;
-    return theID;
-}
-
-- (BOOL)isEqualToSongID:(SongID *)anID {
-    if (anID.idValue == self.idValue) {
-        return YES;
-    }
-    return NO;
-}
-
-- (BOOL)isEqual:(id)object {
-    if (self == object) {
-        return YES;
-    }
-    
-    if (![object isKindOfClass:[SongID class]]) {
-        return NO;
-    }
-    
-    return [self isEqualToSongID:(SongID*)object];
-}
-
-- (NSUInteger)hash {
-    return self.idValue;
-}
-
-- (id)copyWithZone:(struct _NSZone *)zone {
-    SongID* copy = [[self class] allocWithZone:zone];
-    if (copy) {
-        copy.idValue = self.idValue;
-    }
-    return copy;
-}
-
-- (NSString*) description
-{
-    return [NSString stringWithFormat:@"idValue: <%ld> ", _idValue];
-}
-
-@end
-*/
-
 // The private interface declaration overrides the public one to declare conformity to the Delegate protocols.
 @interface TGSongPool () <TGSongDelegate,TGFingerPrinterDelegate,SongPoolAccessProtocol>
 @end
@@ -783,6 +733,7 @@ static int const kSongPoolStartCapacity = 250;
     return NO;
 }
 */
+/* REFAC - replaced by SongMetaData getCoverArtForSong
 - (void)searchMetadataForCoverImageForSongId:(id<SongIDProtocol>)songId withHandler:(void (^)(NSImage *))imageHandler {
     
     id<TGSong> theSong = [self songForID:songId];
@@ -809,7 +760,7 @@ static int const kSongPoolStartCapacity = 250;
         });
     }];
 }
-
+*/
 
 /**
     Attempt to find the cover image for the song using a variety of strategies and, if found, will pass the image to the given imageHandler block.

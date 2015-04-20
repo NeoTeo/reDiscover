@@ -7,8 +7,11 @@
 //
 
 import Foundation
-//NSObjectProtocol
 
+/**
+The SongID is the type that identifies a song in the current instance of the application.
+SongIDs do not persist across instances.
+*/
 @objc class SongID : NSObject, SongIDProtocol {
     var idValue: Int
     
@@ -20,6 +23,7 @@ import Foundation
         return anId.idValue == self.idValue
     }
     
+    // Override NSObject's isEqual, hash and description methods
     override func isEqual(object: AnyObject?) -> Bool {
         if self === object {
             return true
@@ -42,6 +46,7 @@ import Foundation
         return String(format: "idValue: <%ld>",idValue)
     }
     
+    // To comply with the NSCopying protocol
     func copyWithZone(zone: NSZone) -> AnyObject {
         let copy = SongID.allocWithZone(zone)
         copy.idValue = self.idValue

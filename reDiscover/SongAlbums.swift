@@ -17,9 +17,18 @@ import Foundation
 // In the end I've opted to stick with Swift since I'd like to move as much of the project to it as possible.
 //typealias Album = Set<TGSong> // no go since TGSong, an Obj-C protocol, cannot adopt Hashable.
 typealias Album = NSSet
+typealias AlbumId = String
 
 class SongAlbums : NSObject {
     private static var albumCache = [String : Album]()
+    
+    static func albumIdForSong(song: TGSong) -> AlbumId? {
+        if let artist = song.metadata?.artist,let album = song.metadata?.album {
+                
+            return Hasher.hashFromString(album+artist)
+        }
+        return nil
+    }
     
     // This is not good enough - there are many albums with the same name.
     // We have to store and look up albums based on a hash of (at a minimum) artist and album names.

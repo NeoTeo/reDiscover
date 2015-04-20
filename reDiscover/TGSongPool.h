@@ -27,8 +27,6 @@
 @class SweetSpotServerIO;
 @class TGSongAudioCacher;
 @class TGSongAudioPlayer;
-//@class SongArtCache;
-//@class UUIDMaker;
 
 // protocol forward declaration
 @protocol SongGridAccessProtocol;
@@ -36,27 +34,11 @@
 @protocol TGSong;
 
 /**
-*   A SongID must conform to the SongIDProtocol.
-*   To conform to the SongIDProtocol a class must also adopt the NSCopying.
+   A SongID must conform to the SongIDProtocol.
+   Currently there's not much point to the SongIDProtocol other than decoupling.
  */
 @protocol SongIDProtocol <NSObject, NSCopying>
-//@property NSUInteger idValue;
-//- (BOOL)isEqual:(id)object;
-//- (id)copyWithZone:(struct _NSZone *)zone;
-//@property (readonly) NSUInteger hash;
 @end
-
-/**
- The SongID is the type that identifies a song in the current instance of the application.
- SongIDs do not persist across instances.
- */
-/*
-@interface SongID : NSObject <SongIDProtocol>
-@property NSUInteger idValue;
-+ (instancetype)initWithString:(NSString *)theString;
-//- (id)copyWithZone:(struct _NSZone *)zone;
-@end
-*/
 
 
 // Methods that SongPool implements for others to call.
