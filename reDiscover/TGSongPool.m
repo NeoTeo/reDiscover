@@ -108,6 +108,7 @@ static int const kSongPoolStartCapacity = 250;
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(idleTimeBegins) name:@"TGIdleTimeBegins" object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(idleTimeEnds) name:@"TGIdleTimeEnds" object:nil];
 */
+        albumCollection = [[AlbumCollection alloc] init];
         /// The CoverArtArchiveWebFetcher handles all comms with the remote cover art archive.
         _coverArtWebFetcher = [[CoverArtArchiveWebFetcher alloc] init];
         _coverArtWebFetcher.delegate = self;
@@ -1073,6 +1074,7 @@ static int const kSongPoolStartCapacity = 250;
                 } else {
                     NSMutableSet* songSet = [_allAlbums objectForKey:theSong.album];
                     [songSet addObject:theSong.songID];
+                     [_allAlbums setObject:songSet forKey:theSong.album];
                 }
                 
             }
@@ -1618,6 +1620,21 @@ static int const kSongPoolStartCapacity = 250;
             
             aSong = [SongMetaData songWithLoadedMetaData:aSong];
             
+            // Get the song's album if there. If not it means its metadata is borken.
+            NSString *aId = [Album albumIdForSong:aSong];
+            if (aId != nil) {
+                // Get the album the song belongs to, whether it's in it or not.
+                Album *album = [AlbumCollection albumWithIdFromCollection:albumCollection albumId:aId];
+                if (album == nil) {
+                    album = [[Album alloc] initWithAlbumId:aId songIds:[NSSet setWithObject:selectedSongId]];
+                }
+                else {
+                    album = [Album albumWithAddedSong:aSong oldAlbum:album];
+                }
+                TGLog(TGLOG_REFAC, @"album %@: %ld",album.id, album.songIds.count);
+                albumCollection = [AlbumCollection collectionWithAddedAlbum:albumCollection album:album];
+                TGLog(TGLOG_REFAC, @"albumCollection size: %ld",albumCollection.albumCache.count);
+            }
             // Since the code within this dispatch_async can run concurrently in multiple
             // threads, the concurrent access to the songPoolDictionary should be flattened
             // into a serial queue (songPoolQueue) running in a separate thread.

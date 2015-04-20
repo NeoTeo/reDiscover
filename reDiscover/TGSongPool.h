@@ -27,6 +27,7 @@
 @class SweetSpotServerIO;
 @class TGSongAudioCacher;
 @class TGSongAudioPlayer;
+@class AlbumCollection;
 
 // protocol forward declaration
 @protocol SongGridAccessProtocol;
@@ -152,6 +153,7 @@
     and that they don't clear the same song simultanously. */
     // REFAC
     dispatch_queue_t songPoolQueue;
+    AlbumCollection *albumCollection;
     
     dispatch_queue_t songLoadUnloadQueue;
     

@@ -13,17 +13,15 @@ import Foundation
 // needs to be defined as an Obj-C protocol. Since Obj-C protocols cannot inherit
 // the Swift Hashable protocol it cannot be used as a type in a Swift Set or
 // Dictionary.
-// One solution could have been to make the SongAlbums an Obj-C class.
-// In the end I've opted to stick with Swift since I'd like to move as much of the project to it as possible.
-//typealias Album = Set<TGSong> // no go since TGSong, an Obj-C protocol, cannot adopt Hashable.
-//typealias Album = NSSet
 typealias AlbumId = String
 
 class Album : NSObject {
     
+    let id: AlbumId
     let songIds: NSSet
     
-    init(songIds: NSSet){
+    init(albumId: AlbumId, songIds: NSSet){
+        id = albumId
         self.songIds = songIds
     }
 }
@@ -39,9 +37,13 @@ extension Album {
     }
  
     /**
-    Returns a new album 
+    Returns a new album formed by adding a given song to the given album.
     */
     static func albumWithAddedSong(song: TGSong,oldAlbum: Album) -> Album {
-        return Album(songIds: oldAlbum.songIds.setByAddingObject(song.songID))
+        if let aId = Album.albumIdForSong(song) {
+            return Album(albumId: aId, songIds: oldAlbum.songIds.setByAddingObject(song.songID))
+        }
+        println("Album.albumWithAddedSong returned the old album without changes.")
+        return oldAlbum
     }
 }
