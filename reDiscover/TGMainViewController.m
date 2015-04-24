@@ -46,6 +46,9 @@
     _songUIController = [[TGSongUIPopupController alloc] initWithNibName:@"TGSongUIPopupController" bundle:nil];
     _songUIController.delegate = self;
     
+    _debugDisplay = [[DebugDisplay alloc] initWithNibName:@"DebugDisplay" bundle:nil];
+    [_debugDisplay setUiPosition:NSMakePoint(10, self.view.frame.size.height-150)];
+    [_debugDisplay showUI:NO];
     // Start it off hidden.
     [_songUIController.view setHidden:YES];
     
@@ -104,7 +107,9 @@
 
 -(void)viewDidAppear {
     [self.view addSubview:_songUIController.view];
-
+    
+    // Add debug view overlay
+    [self.view addSubview:_debugDisplay.view];
 }
 
 - (id)initWithFrame:(NSRect)theFrame {
@@ -341,7 +346,11 @@
         
 //        [_songGridController runTest];
 //        [_currentSongPool findUUIDOfSongWithURL:[_currentSongPool URLForSongID:lastRequestedSongID]];
+    } else if ([chars isEqualToString:@"d"]){
+        TGLog(TGLOG_REFAC,@"debug UI toggle");
+        [_debugDisplay showUI:![_debugDisplay isVisible]];
     } else if ([chars isEqualToString:@"c"]){
+        
         TGLog(TGLOG_ALL,@"Log caches:");
         
         [_currentSongPool debugLogCaches];

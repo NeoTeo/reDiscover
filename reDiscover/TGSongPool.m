@@ -1602,6 +1602,8 @@ static int const kSongPoolStartCapacity = 250;
             
         });
         
+        [DebugDisplay updateDebugStrings:[NSString stringWithFormat:@"%lu",(unsigned long)[songPoolDictionary count]]];
+        
         if ([aSong fingerPrint] == nil) {
             aSong = [songFingerPrinter songWithFingerPrint:aSong];
         }

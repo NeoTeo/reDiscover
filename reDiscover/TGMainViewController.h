@@ -19,7 +19,7 @@
 //@class TGSongUIViewController;
 //@class TGSongTimelineViewController;
 @class TGIdleTimer;
-@class DebugDisplayController;
+@class DebugDisplay;
 
 @protocol TGSongPoolDelegate;
 @protocol SongIDProtocol;
@@ -58,7 +58,7 @@
 
 //@property TGSongUIViewController *songUIController;
 
-@property DebugDisplayController* debugDisplayController;
+@property DebugDisplay* debugDisplay;
 
 @property NSDictionary *genreToColourDictionary;
 
