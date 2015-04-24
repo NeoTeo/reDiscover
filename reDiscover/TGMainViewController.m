@@ -54,6 +54,8 @@
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(songCoverWasUpdated:) name:@"songCoverUpdated" object:nil];
     
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(songMetaDataWasUpdated:) name:@"songMetaDataUpdated" object:nil];
+    
     // ^^ From awakeFromNib
 }
 
@@ -706,6 +708,16 @@
     });
 }
 */
+- (void)songMetaDataWasUpdated:(NSNotification*)notification {
+    id<SongIDProtocol> songId = notification.object;
+    if ([songId isEqual:[_currentSongPool lastRequestedSongID]])
+    {
+        TGLog(TGLOG_REFAC, @"songMetaDataWasUpdated");
+
+        [_songInfoController setSong:[_currentSongPool songDataForSongID:songId]];
+    }
+}
+
 // Observer method called when the song pool caching method has set a cover image for the song.
 - (void)songCoverWasUpdated:(NSNotification*)notification {
     id<SongIDProtocol> songId = notification.object;

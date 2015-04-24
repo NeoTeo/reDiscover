@@ -1588,9 +1588,19 @@ static int const kSongPoolStartCapacity = 250;
     //
     // 4) Notify all done.
     //MARK: REFAC
-
     dispatch_async(dispatch_get_global_queue(QOS_CLASS_BACKGROUND, 0), ^{
         id<TGSong> __nonnull aSong  = [self songForID:selectedSongId];
+
+//        // Look at the file for metadata
+        aSong = [SongMetaData songWithLoadedMetaData:aSong];
+
+        dispatch_sync(songPoolQueue, ^{
+            // replace old song with the new song in the songpool.
+            [songPoolDictionary setObject:aSong forKey:aSong.songID];
+            // Or update the song in question if its current image == fetching image
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"songMetaDataUpdated" object:selectedSongId];
+            
+        });
         
         if ([aSong fingerPrint] == nil) {
             aSong = [songFingerPrinter songWithFingerPrint:aSong];
@@ -1618,7 +1628,7 @@ static int const kSongPoolStartCapacity = 250;
                 TGLog(TGLOG_REFAC, @"Whoa");
             }
             
-            aSong = [SongMetaData songWithLoadedMetaData:aSong];
+
             
             // Get the song's album if there. If not it means its metadata is borken.
             NSString *aId = [Album albumIdForSong:aSong];
@@ -1641,11 +1651,11 @@ static int const kSongPoolStartCapacity = 250;
             dispatch_sync(songPoolQueue, ^{
                 // replace old song with the new song in the songpool.
                 [songPoolDictionary setObject:aSong forKey:aSong.songID];
-                
+                TGLog(TGLOG_REFAC, @"all done with: %@",aSong.metadata.title);
                 // Here we should signal that the song now has cover art.
                 // Or update the song in question if its current image == fetching image
                 [[NSNotificationCenter defaultCenter] postNotificationName:@"songCoverUpdated" object:selectedSongId];
-                [[NSNotificationCenter defaultCenter] postNotificationName:@"songMetaDataUpdated" object:selectedSongId];
+        
             });
         }
     });
