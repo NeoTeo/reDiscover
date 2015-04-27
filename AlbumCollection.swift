@@ -33,4 +33,19 @@ extension AlbumCollection {
         tmpCache[album.id] = album
         return AlbumCollection(albums: tmpCache)
     }
+    
+    class func artForAlbum(album: Album, inCollection: AlbumCollection) -> NSImage? {
+        let songIds = album.songIds.allObjects
+        var albumArts = [NSImage?]()
+        
+        for songId in songIds as! [SongIDProtocol] {
+            if let song = SongPool.songForSongId(songId),
+                let songArt = SongArt.artForSong(song) {
+                  //FIXME: For now just return any song art we find
+                    return songArt
+            }
+            
+        }
+        return nil
+    }
 }

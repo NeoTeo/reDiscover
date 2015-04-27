@@ -108,6 +108,7 @@ static int const kSongPoolStartCapacity = 250;
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(idleTimeBegins) name:@"TGIdleTimeBegins" object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(idleTimeEnds) name:@"TGIdleTimeEnds" object:nil];
 */
+        [SongPool setDelegate:self];
         albumCollection = [[AlbumCollection alloc] init];
         /// The CoverArtArchiveWebFetcher handles all comms with the remote cover art archive.
         _coverArtWebFetcher = [[CoverArtArchiveWebFetcher alloc] init];
@@ -821,7 +822,7 @@ static int const kSongPoolStartCapacity = 250;
             // Additionally this only produces album art once other songs' album art has been resolved which only
             // happens when the song is actively selected and played.
             [self requestSongIdsFromAlbumWithName:theSong.metadata.album withHandler:^(NSArray* songIds) {
-
+arses
                 // Excluding the original song whose art we're looking for see if the others have it.
                 for (id<SongIDProtocol> songId in songIds) {
                     id<TGSong> aSong = [self songForID:songId];
@@ -1588,6 +1589,7 @@ static int const kSongPoolStartCapacity = 250;
     //
     // 4) Notify all done.
     //MARK: REFAC
+//    arses
     dispatch_async(dispatch_get_global_queue(QOS_CLASS_BACKGROUND, 0), ^{
         id<TGSong> __nonnull aSong  = [self songForID:selectedSongId];
 
@@ -1614,27 +1616,11 @@ static int const kSongPoolStartCapacity = 250;
             
             NSString *songUUID = [SongUUID lookupUUIDForSong:aSong duration:CMTimeGetSeconds(songDuration) fingerprint:aSong.fingerPrint];
             aSong = [SongUUID songWithNewUUId:aSong newUUId:songUUID];
-            
-            // Check the cache for art associated with this song's artId.
-            NSImage *otherImg = [SongArt artForSong:aSong];
-            
-            if (otherImg == nil) {
-                // Ask the SongArtFinder to find it and if it succeeds,
-                // add the found art to the artCache.
-                otherImg = [SongArtFinder findArtForSong:aSong];
-                if (otherImg != nil) {
-                    aSong = [SongArt songWithArtId:aSong artId:[SongArt addImage:otherImg]];
-                }
-                
-            } else {
-                TGLog(TGLOG_REFAC, @"Whoa");
-            }
-            
 
-            
             // Get the song's album if there. If not it means its metadata is borken.
             NSString *aId = [Album albumIdForSong:aSong];
             if (aId != nil) {
+                
                 // Get the album the song belongs to, whether it's in it or not.
                 Album *album = [AlbumCollection albumWithIdFromCollection:albumCollection albumId:aId];
                 if (album == nil) {
@@ -1643,10 +1629,26 @@ static int const kSongPoolStartCapacity = 250;
                 else {
                     album = [Album albumWithAddedSong:aSong oldAlbum:album];
                 }
-                TGLog(TGLOG_REFAC, @"album %@: %ld",album.id, album.songIds.count);
+                
                 albumCollection = [AlbumCollection collectionWithAddedAlbum:albumCollection album:album];
-                TGLog(TGLOG_REFAC, @"albumCollection size: %ld",albumCollection.albumCache.count);
             }
+            
+            
+            // Check the cache for art associated with this song's artId.
+            NSImage *otherImg = [SongArt artForSong:aSong];
+            
+            if (otherImg == nil) {
+                // Ask the SongArtFinder to find it and if it succeeds,
+                // add the found art to the artCache.
+                otherImg = [SongArtFinder findArtForSong:aSong collection:albumCollection];
+                if (otherImg != nil) {
+                    aSong = [SongArt songWithArtId:aSong artId:[SongArt addImage:otherImg]];
+                }
+                
+            } else {
+                TGLog(TGLOG_REFAC, @"Whoa");
+            }
+            
             // Since the code within this dispatch_async can run concurrently in multiple
             // threads, the concurrent access to the songPoolDictionary should be flattened
             // into a serial queue (songPoolQueue) running in a separate thread.
