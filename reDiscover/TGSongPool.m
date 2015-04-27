@@ -975,6 +975,7 @@ arses
 
  @params theURL The URL to search.
  */
+//arses
 -(NSImage*)searchForCoverImageAtURL:(NSURL*)theURL {
     NSString* filePathString = [[theURL filePathURL] absoluteString];
     
@@ -1604,8 +1605,6 @@ arses
             
         });
         
-        [DebugDisplay updateDebugStrings:[NSString stringWithFormat:@"%lu",(unsigned long)[songPoolDictionary count]]];
-        
         if ([aSong fingerPrint] == nil) {
             aSong = [songFingerPrinter songWithFingerPrint:aSong];
         }
@@ -1638,6 +1637,9 @@ arses
             NSImage *otherImg = [SongArt artForSong:aSong];
             
             if (otherImg == nil) {
+                NSURL *arse =[ NSURL URLWithString:aSong.urlString];
+                [DebugDisplay updateDebugStrings:[NSString stringWithFormat:@"%@",[arse filePathURL].lastPathComponent]];
+
                 // Ask the SongArtFinder to find it and if it succeeds,
                 // add the found art to the artCache.
                 otherImg = [SongArtFinder findArtForSong:aSong collection:albumCollection];

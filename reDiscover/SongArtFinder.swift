@@ -27,6 +27,11 @@ different ways.
             return art
         }
         
+        if let urlString = song.urlString,
+            let url = NSURL(string: urlString),
+            let dirURL = url.filePathURL?.URLByDeletingLastPathComponent {
+            LocalFileIO.imageURLsAtPath(dirURL)
+        }
         return nil
     }
     

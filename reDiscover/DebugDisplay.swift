@@ -11,7 +11,7 @@ import Cocoa
 class DebugDisplay: NSViewController {
     
     var position: NSPoint = NSPoint(x: 0, y: 0)
-    var dimensions: NSSize = NSSize(width: 150, height: 150)
+    var dimensions: NSSize = NSSize(width: 500, height: 150)
 
     var refreshTimer: NSTimer?
     
