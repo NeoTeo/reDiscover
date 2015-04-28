@@ -26,21 +26,29 @@ different ways.
         if let art = findArtForAlbum(forSong: song, inCollection: collection) {
             return art
         }
-        
+
+        if let art = findArtInSongDirectory(song) {
+            return art
+        }
+
+        return nil
+    }
+    
+    private class func findArtInSongDirectory(song: TGSong) -> NSImage? {
         if let urlString = song.urlString,
             let url = NSURL(string: urlString),
             let dirURL = url.filePathURL?.URLByDeletingLastPathComponent {
-            let imageURLs = LocalFileIO.imageURLsAtPath(dirURL)
+                let imageURLs = LocalFileIO.imageURLsAtPath(dirURL)
                 
             var words = ["scan","album","art","cover","front","fold"]
+                
             if let albumName = dirURL.filePathURL?.absoluteString?.lastPathComponent.stringByRemovingPercentEncoding {
                 words.append(albumName)
             }
-
+            
             if let matches = imageURLs?.filter(lastURLComponentInMatchWordsFilter(words)) where matches.count > 0 {
                 return NSImage(contentsOfURL: matches[0])
             }
-
         }
         return nil
     }
