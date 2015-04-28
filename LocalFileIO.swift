@@ -14,8 +14,25 @@ class LocalFileIO: NSObject {
         println("LocalFileIO \(dirURL.filePathURL?.absoluteString)")
         let fileManager = NSFileManager.defaultManager()
         if let dirContents = fileManager.contentsOfDirectoryAtURL(dirURL, includingPropertiesForKeys: nil, options: .SkipsHiddenFiles, error: nil) {
-         
-            println("The dir contents \(dirContents)")
+            
+            var imageURLs = [NSURL]()
+            
+            for item in dirContents as! [NSURL] {
+                
+                let ext = item.pathExtension
+                let unmanagedFileUTI = UTTypeCreatePreferredIdentifierForTag(kUTTagClassFilenameExtension, ext, nil)
+                let fileUTI = unmanagedFileUTI.takeRetainedValue()
+                
+                // Only add image files.
+                if UTTypeConformsTo(fileUTI, kUTTypeImage) != 0 {
+                    imageURLs.append(item)
+                }
+            }
+            
+            // return the array if we put anyting in it.
+            if imageURLs.count > 0 {
+                return imageURLs
+            }
         }
         
         return nil

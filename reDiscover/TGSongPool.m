@@ -822,7 +822,7 @@ static int const kSongPoolStartCapacity = 250;
             // Additionally this only produces album art once other songs' album art has been resolved which only
             // happens when the song is actively selected and played.
             [self requestSongIdsFromAlbumWithName:theSong.metadata.album withHandler:^(NSArray* songIds) {
-arses
+
                 // Excluding the original song whose art we're looking for see if the others have it.
                 for (id<SongIDProtocol> songId in songIds) {
                     id<TGSong> aSong = [self songForID:songId];
@@ -855,7 +855,7 @@ arses
                 NSURL*      theURL = [NSURL URLWithString:theSong.urlString];
                 
                 NSImage*    tmpImage = [self searchForCoverImageAtURL:theURL];
-                
+         arses
                 if (tmpImage != nil) {
                     
                     // Store the image in the local cache if it isn't already there so we won't have to re-fetch it from the file.

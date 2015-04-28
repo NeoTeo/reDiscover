@@ -30,10 +30,42 @@ different ways.
         if let urlString = song.urlString,
             let url = NSURL(string: urlString),
             let dirURL = url.filePathURL?.URLByDeletingLastPathComponent {
-            LocalFileIO.imageURLsAtPath(dirURL)
+            let imageURLs = LocalFileIO.imageURLsAtPath(dirURL)
+                
+            // extract the file names from the urls.
+            let imageNames = imageURLs?.map { url -> String in
+                let urlString = url.filePathURL?.absoluteString?.lastPathComponent.stringByRemovingPercentEncoding
+                return urlString! as String
+            }
+            println("The image names are: \(imageNames)")
+            var words = ["scan","album","art","cover"]
+            if let songFileName = url.filePathURL?.absoluteString?.lastPathComponent.stringByRemovingPercentEncoding {
+                words.append(songFileName)
+            }
+            println("Trying to match \(words)")
+            let matches = imageNames?.filter(makeWordFilter(words))
+            println("Well: \(matches)")
         }
         return nil
     }
+    
+    private class func makeWordFilter(matchWords: [String]) -> (String) -> Bool {
+        // Make a bar separated string from the array of strings 
+        // to use in the regular expression.
+        var rex = matchWords.reduce("(") {$0 + $1 + "|"}
+        let endIdx = advance(rex.endIndex,-1)
+        rex = rex.substringToIndex(endIdx)
+        rex.insert(")", atIndex: endIdx)
+        
+        // Return a lambda that returns true if its input matches any of the matchWords.
+        return { word in
+            let regEx = NSRegularExpression(pattern: rex, options: .CaseInsensitive, error: nil)
+            let matchRange = regEx?.rangeOfFirstMatchInString(word, options: .ReportCompletion, range: NSMakeRange(0, count(word)))
+
+            return matchRange?.location != NSNotFound
+        }
+    }
+    
     
     /**
     Look at the other songs in the same album the given song belongs to see if they
@@ -48,4 +80,5 @@ different ways.
         return nil
     }
     
+
 }
