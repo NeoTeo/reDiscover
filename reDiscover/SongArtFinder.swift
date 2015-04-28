@@ -32,21 +32,42 @@ different ways.
             let dirURL = url.filePathURL?.URLByDeletingLastPathComponent {
             let imageURLs = LocalFileIO.imageURLsAtPath(dirURL)
                 
-            // extract the file names from the urls.
-            let imageNames = imageURLs?.map { url -> String in
-                let urlString = url.filePathURL?.absoluteString?.lastPathComponent.stringByRemovingPercentEncoding
-                return urlString! as String
+            var words = ["scan","album","art","cover","front","fold"]
+            if let albumName = dirURL.filePathURL?.absoluteString?.lastPathComponent.stringByRemovingPercentEncoding {
+                words.append(albumName)
             }
-            println("The image names are: \(imageNames)")
-            var words = ["scan","album","art","cover"]
-            if let songFileName = url.filePathURL?.absoluteString?.lastPathComponent.stringByRemovingPercentEncoding {
-                words.append(songFileName)
+
+            if let matches = imageURLs?.filter(lastURLComponentInMatchWordsFilter(words)) where matches.count > 0 {
+                return NSImage(contentsOfURL: matches[0])
             }
-            println("Trying to match \(words)")
-            let matches = imageNames?.filter(makeWordFilter(words))
-            println("Well: \(matches)")
+
         }
         return nil
+    }
+    
+    /**
+    This function, given an array of matchWords will return a new lambda function which
+    takes an URL and returns true if the last component the URL matches any of the words 
+    in the matchWords.
+    */
+    private class func lastURLComponentInMatchWordsFilter(matchWords: [String]) -> (NSURL) -> Bool {
+        // Make a bar separated string from the array of strings
+        // to use in the regular expression.
+        var rex = matchWords.reduce("(") {$0 + $1 + "|"}
+        let endIdx = advance(rex.endIndex,-1)
+        rex = rex.substringToIndex(endIdx)
+        rex.insert(")", atIndex: endIdx)
+        
+        // Return a lambda that returns true if its input matches any of the matchWords.
+        return { url in
+            if let word = url.filePathURL?.absoluteString?.lastPathComponent.stringByRemovingPercentEncoding {
+                let regEx = NSRegularExpression(pattern: rex, options: .CaseInsensitive, error: nil)
+                let matchRange = regEx?.rangeOfFirstMatchInString(word, options: .ReportCompletion, range: NSMakeRange(0, count(word)))
+                
+                return matchRange?.location != NSNotFound
+            }
+            return false
+        }
     }
     
     private class func makeWordFilter(matchWords: [String]) -> (String) -> Bool {
