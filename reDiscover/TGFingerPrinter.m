@@ -55,7 +55,8 @@
                              selectedSS:song.selectedSweetSpot
                                releases:song.songReleases
                                   artId:song.artID
-                                   UUId:song.UUId];
+                                   UUId:song.UUId
+                                  RelId:song.RelId];
 }
 
 /**
@@ -75,7 +76,7 @@
     id<SongIDProtocol> songID = theSong.songID;
     
     NSURL* songURL = [_delegate URLForSongID:songID];
-    TGLog(TGLOG_TMP,@"requestFingerPrintForSong called with song Id %@",songID);
+//    TGLog(TGLOG_TMP,@"requestFingerPrintForSong called with song Id %@",songID);
     [self decodeAudioFileNew:songURL forContext:chromaprintContext ofLength:maxLength andDuration:&duration];
     
     if (chromaprint_get_fingerprint(chromaprintContext, &theFingerprint)) {
@@ -125,7 +126,7 @@
         
         ChromaprintContext *chromaprintContext = chromaprint_new(CHROMAPRINT_ALGORITHM_DEFAULT);
         NSURL* songURL = [_delegate URLForSongID:songID];
-        TGLog(TGLOG_TMP,@"requestFingerPrintForSong called with song Id %@",songID);
+//        TGLog(TGLOG_TMP,@"requestFingerPrintForSong called with song Id %@",songID);
         [self decodeAudioFileNew:songURL forContext:chromaprintContext ofLength:maxLength andDuration:&duration];
         
         if (chromaprint_get_fingerprint(chromaprintContext, &theFingerprint)) {

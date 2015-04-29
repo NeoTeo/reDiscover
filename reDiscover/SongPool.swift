@@ -25,7 +25,8 @@ class SongPool : NSObject {
                 selectedSS: song.selectedSweetSpot,
                 releases: song.songReleases,
                 artId: song.artID,
-                UUId: song.UUId)
+                UUId: song.UUId,
+                RelId: song.RelId)
         }
         return nil
     }

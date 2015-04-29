@@ -23,20 +23,18 @@ class SongMetaData : NSObject, NSCopying {
     let artist:             String
     let year:               UInt
     let genre:              String
-    let songReleases:       NSData?
     
 
-    init(title: String?, album: String?,artist: String?, year: UInt, genre: String?, songReleases: NSData?) {
+    init(title: String?, album: String?,artist: String?, year: UInt, genre: String?) {
         self.title          = title == nil ? "No title" : title!
         self.album          = album == nil ? "No album" : album!
         self.artist         = artist == nil ? "No artist" : artist!
         self.year           = year
         self.genre          = genre == nil ? "No genre" : genre!
-        self.songReleases   = songReleases?.copy() as? NSData
     }
     
     func copyWithZone(zone: NSZone) -> AnyObject {
-        return SongMetaData(title: title, album: album, artist: artist, year: year, genre: genre, songReleases: songReleases!)
+        return SongMetaData(title: title, album: album, artist: artist, year: year, genre: genre)
     }
 }
 
@@ -120,7 +118,8 @@ extension SongMetaData {
                     selectedSS: song.selectedSweetSpot,
                     releases: song.songReleases,
                     artId: song.artID,
-                    UUId: song.UUId)
+                    UUId: song.UUId,
+                    RelId: song.RelId)
         }
         return song
     }
@@ -135,13 +134,15 @@ extension SongMetaData {
         let titles = AVMetadataItem.metadataItemsFromArray(metadata, withKey: AVMetadataCommonKeyTitle, keySpace:AVMetadataKeySpaceCommon) as [AnyObject]!
         let albums = AVMetadataItem.metadataItemsFromArray(metadata, withKey: AVMetadataCommonKeyAlbumName, keySpace:AVMetadataKeySpaceCommon) as [AnyObject]!
         let artists = AVMetadataItem.metadataItemsFromArray(metadata, withKey: AVMetadataCommonKeyArtist, keySpace:AVMetadataKeySpaceCommon) as [AnyObject]!
-
+        let years = AVMetadataItem.metadataItemsFromArray(metadata, withKey: AVMetadataCommonKeyCreationDate, keySpace:AVMetadataKeySpaceCommon) as [AnyObject]!
 
         if titles.count > 0 { title = (titles[0] as! AVMetadataItem).value() as! String }
         if albums.count > 0 { album = (albums[0] as! AVMetadataItem).value() as! String }
         if artists.count > 0 { artist = (artists[0] as! AVMetadataItem).value() as! String }
+        //FIXME: Beware, this can also be a string value!
+        if years.count > 0 { year = (years[0] as! AVMetadataItem).numberValue as! UInt }
         
-        return SongMetaData(title: title, album: album, artist: artist, year: year, genre: genre, songReleases: nil)
+        return SongMetaData(title: title, album: album, artist: artist, year: year, genre: genre)
     }
     
     static func extractCoverArt(fromRawMetadata metadata: [AnyObject]) -> [NSImage?] {
@@ -182,7 +183,7 @@ extension SongMetaData {
             }
         }
 
-        return SongMetaData(title: title, album: album, artist: artist, year: year, genre: genre, songReleases: nil)
+        return SongMetaData(title: title, album: album, artist: artist, year: year, genre: genre)
     }
     
     // replaces SongPool requestEmbeddedMetadataForSongID:

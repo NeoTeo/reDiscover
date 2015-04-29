@@ -86,7 +86,7 @@ class SongArt : NSObject {
     */
     static func songWithArtId(song: TGSong, artId: SongArtId) -> TGSong {
         
-        let newSong = Song(songId: song.songID, metadata: song.metadata, urlString: song.urlString, sweetSpots: song.sweetSpots, fingerPrint: song.fingerPrint, selectedSS: song.selectedSweetSpot, releases: song.songReleases, artId: artId as String, UUId: song.UUId)
+        let newSong = Song(songId: song.songID, metadata: song.metadata, urlString: song.urlString, sweetSpots: song.sweetSpots, fingerPrint: song.fingerPrint, selectedSS: song.selectedSweetSpot, releases: song.songReleases, artId: artId as String, UUId: song.UUId, RelId: song.RelId)
         
         return newSong
     }

@@ -22,9 +22,10 @@ import Foundation
     var fingerPrint: String? { get }
     var songReleases: NSData? { get }
     var UUId: String? { get }
+    var RelId: String? { get }
     
     init(songId: SongIDProtocol, metadata: SongMetaData?, urlString: String?, sweetSpots: [SweetSpot]?,
-        fingerPrint: String?, selectedSS: SweetSpot, releases: NSData?, artId: String?, UUId: String?)
+        fingerPrint: String?, selectedSS: SweetSpot, releases: NSData?, artId: String?, UUId: String?, RelId: String?)
     
     //func isEqualTo(aSong: TGSong) -> Bool;
     //func copy()
@@ -41,9 +42,10 @@ class Song : NSObject,TGSong {
     let fingerPrint: String?
     let songReleases: NSData?
     let UUId: String?
+    let RelId: String?
     
     required init(songId: SongIDProtocol, metadata: SongMetaData?, urlString: String?, sweetSpots: [SweetSpot]?,
-        fingerPrint: String?, selectedSS: SweetSpot, releases: NSData?, artId: String?, UUId: String?) {
+        fingerPrint: String?, selectedSS: SweetSpot, releases: NSData?, artId: String?, UUId: String?, RelId: String?) {
     
         self.songID              = songId
         self.urlString           = urlString
@@ -54,6 +56,7 @@ class Song : NSObject,TGSong {
         self.fingerPrint         = fingerPrint
         self.songReleases        = releases
         self.UUId                = UUId
+        self.RelId               = RelId
     }
     
 //    func isEqualTo(aSong: TGSong) -> Bool {

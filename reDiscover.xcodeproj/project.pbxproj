@@ -70,6 +70,7 @@
 		ABB2B6621ADEB38F004F9F87 /* NSImage+HashId.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABB2B6611ADEB38F004F9F87 /* NSImage+HashId.swift */; };
 		ABB33FF019C72C3800439A5E /* SweetSpotServerIO.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABB33FEF19C72C3800439A5E /* SweetSpotServerIO.swift */; };
 		ABCB68EA18FD57E4009CF277 /* TEOSong.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = ABCB68E818FD57E4009CF277 /* TEOSong.xcdatamodeld */; };
+		ABDBA6871AF0F5A60069CFFB /* AcoustIDWebService.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABDBA6861AF0F5A60069CFFB /* AcoustIDWebService.swift */; };
 		ABE49BB51AE16105008A28B0 /* SongID.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABE49BB41AE16105008A28B0 /* SongID.swift */; };
 		ABE49BB71AE50991008A28B0 /* Hasher.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABE49BB61AE50991008A28B0 /* Hasher.swift */; };
 		ABE49BB91AE50F48008A28B0 /* AlbumCollection.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABE49BB81AE50F48008A28B0 /* AlbumCollection.swift */; };
@@ -198,6 +199,7 @@
 		ABB2B6611ADEB38F004F9F87 /* NSImage+HashId.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSImage+HashId.swift"; sourceTree = "<group>"; };
 		ABB33FEF19C72C3800439A5E /* SweetSpotServerIO.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SweetSpotServerIO.swift; sourceTree = "<group>"; };
 		ABCB68E918FD57E4009CF277 /* TEOSong.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = TEOSong.xcdatamodel; sourceTree = "<group>"; };
+		ABDBA6861AF0F5A60069CFFB /* AcoustIDWebService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AcoustIDWebService.swift; sourceTree = "<group>"; };
 		ABE49BB41AE16105008A28B0 /* SongID.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SongID.swift; sourceTree = "<group>"; };
 		ABE49BB61AE50991008A28B0 /* Hasher.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Hasher.swift; sourceTree = "<group>"; };
 		ABE49BB81AE50F48008A28B0 /* AlbumCollection.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AlbumCollection.swift; sourceTree = "<group>"; };
@@ -395,6 +397,7 @@
 		AB85BBCA1875AACF00670905 = {
 			isa = PBXGroup;
 			children = (
+				ABDBA6861AF0F5A60069CFFB /* AcoustIDWebService.swift */,
 				ABF767441AEE82B4007C7A12 /* LocalFileIO.swift */,
 				ABE49BBA1AE50FC2008A28B0 /* Album.swift */,
 				ABE49BB41AE16105008A28B0 /* SongID.swift */,
@@ -688,6 +691,7 @@
 				AB85BC401875AB5200670905 /* TGIdleTimer.m in Sources */,
 				AB1BC13F1976C91E003F02B9 /* ScrollingTextView.swift in Sources */,
 				ABED8E321AB72F4F005B1403 /* SongMetadata.swift in Sources */,
+				ABDBA6871AF0F5A60069CFFB /* AcoustIDWebService.swift in Sources */,
 				AB85BC451875AB5200670905 /* TGPlaylistViewController.m in Sources */,
 				AB725A3A1AD91E8C003E94E6 /* SongArtFinder.swift in Sources */,
 				AB85BC531875AB5200670905 /* TGTimelineSliderCell.m in Sources */,

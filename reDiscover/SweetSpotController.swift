@@ -41,7 +41,7 @@ class SweetSpotControl : NSObject {
     :returns: A copy of the given song with an added sweet spot at the given time.
     */
     static func songWithSelectedSweetSpot(song: TGSong, atTime startTime: SweetSpot) -> TGSong {
-        return Song(songId: song.songID, metadata: song.metadata, urlString: song.urlString, sweetSpots: song.sweetSpots, fingerPrint: song.fingerPrint, selectedSS: startTime, releases: song.songReleases, artId: song.artID, UUId: song.UUId)
+        return Song(songId: song.songID, metadata: song.metadata, urlString: song.urlString, sweetSpots: song.sweetSpots, fingerPrint: song.fingerPrint, selectedSS: startTime, releases: song.songReleases, artId: song.artID, UUId: song.UUId, RelId: song.RelId)
         
 //        return TGSong(  metadata: song.metadata,
 //                        urlString: song.urlString,
@@ -63,6 +63,6 @@ class SweetSpotControl : NSObject {
             tmpSpots = [sweetSpot]
         }
 
-        return Song(songId: song.songID, metadata: song.metadata, urlString: song.urlString, sweetSpots: tmpSpots!, fingerPrint: song.fingerPrint, selectedSS: song.selectedSweetSpot, releases: song.songReleases, artId: song.artID, UUId: song.UUId)
+        return Song(songId: song.songID, metadata: song.metadata, urlString: song.urlString, sweetSpots: tmpSpots!, fingerPrint: song.fingerPrint, selectedSS: song.selectedSweetSpot, releases: song.songReleases, artId: song.artID, UUId: song.UUId, RelId: song.RelId)
     }
 }

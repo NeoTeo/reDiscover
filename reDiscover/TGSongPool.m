@@ -108,11 +108,15 @@ static int const kSongPoolStartCapacity = 250;
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(idleTimeBegins) name:@"TGIdleTimeBegins" object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(idleTimeEnds) name:@"TGIdleTimeEnds" object:nil];
 */
+        //FIXME: Change the delegate to actually passing the artForSong method the required params.
+        [CoverArtArchiveWebFetcher setDelegate:self];
         [SongPool setDelegate:self];
         albumCollection = [[AlbumCollection alloc] init];
+        
         /// The CoverArtArchiveWebFetcher handles all comms with the remote cover art archive.
-        _coverArtWebFetcher = [[CoverArtArchiveWebFetcher alloc] init];
-        _coverArtWebFetcher.delegate = self;
+//MARK: REFAC
+//        _coverArtWebFetcher = [[CoverArtArchiveWebFetcher alloc] init];
+//        _coverArtWebFetcher.delegate = self;
         
         // Set up TEOSongData
         [self setupManagedObjectContext];
@@ -468,8 +472,7 @@ static int const kSongPoolStartCapacity = 250;
                                                                                    album:teoData.album
                                                                                   artist:teoData.artist
                                                                                     year:[teoData.year unsignedIntegerValue]
-                                                                                   genre:teoData.genre
-                                                                            songReleases:teoData.songReleases];
+                                                                                   genre:teoData.genre];
                             
                             id<SongIDProtocol> songId = [[SongID alloc] initWithString:[url absoluteString]];
                             
@@ -481,7 +484,8 @@ static int const kSongPoolStartCapacity = 250;
                                                   selectedSS: [teoData.selectedSweetSpot floatValue]
                                                     releases: teoData.songReleases
                                                        artId: @""
-                                                        UUId: @""];
+                                                        UUId: nil
+                                                        RelId: nil];
                             // cdfix
                             //[self copyData:teoData toSong:newSong forURL:[url absoluteString]];
  
@@ -855,7 +859,7 @@ static int const kSongPoolStartCapacity = 250;
                 NSURL*      theURL = [NSURL URLWithString:theSong.urlString];
                 
                 NSImage*    tmpImage = [self searchForCoverImageAtURL:theURL];
-         arses
+ 
                 if (tmpImage != nil) {
                     
                     // Store the image in the local cache if it isn't already there so we won't have to re-fetch it from the file.
@@ -878,6 +882,7 @@ static int const kSongPoolStartCapacity = 250;
                 //
                 // 3. Look up track then album then artist name online.
                 //
+ 
                 [self requestCoverArtFromWebForSong:songID withHandler:^(NSImage* theImage) {
                     if (theImage != nil) {
                         
@@ -928,6 +933,7 @@ static int const kSongPoolStartCapacity = 250;
  otherwise just send request immediately. 
  The given hander is passed down to the cover art fetcher and is called by it on termination.
  */
+/*
 -(void)requestCoverArtFromWebForSong:(id<SongIDProtocol>)songID withHandler:(void (^)(NSImage*))imageHandler {
     //TGSong * theSong = [self songForID:songID];
     NSString* theUUId = [self UUIDStringForSongID:songID];
@@ -953,7 +959,7 @@ static int const kSongPoolStartCapacity = 250;
 //        }
     }
 }
-
+*/
 
 //MARK: CDFIX - observer methods
 - (void)songCoverWasFetched:(NSNotification*)notification {
@@ -975,7 +981,7 @@ static int const kSongPoolStartCapacity = 250;
 
  @params theURL The URL to search.
  */
-//arses
+/*
 -(NSImage*)searchForCoverImageAtURL:(NSURL*)theURL {
     NSString* filePathString = [[theURL filePathURL] absoluteString];
     
@@ -1037,7 +1043,7 @@ static int const kSongPoolStartCapacity = 250;
     }
     return nil;
 }
-
+*/
 
 /**
  Async'ly load the song metadata and call the given dataHandler with it.
@@ -1156,7 +1162,8 @@ static int const kSongPoolStartCapacity = 250;
                                    selectedSS:theSong.selectedSweetSpot
                                      releases:theSong.songReleases
                                         artId:theSong.artID
-                                         UUId:theSong.UUId];
+                                         UUId:theSong.UUId
+                                        RelId:theSong.RelId];
     // Add the song to the songpool.
     [songPoolDictionary setObject:newSong forKey:newSong.songID];
     
@@ -1216,7 +1223,8 @@ static int const kSongPoolStartCapacity = 250;
                                    selectedSS:theSong.selectedSweetSpot
                                      releases:releases
                                         artId:theSong.artID
-                                         UUId:theSong.UUId];
+                                         UUId:theSong.UUId
+                                        RelId:theSong.RelId];
     
     // replace old song with the new song in the songpool.
     [songPoolDictionary setObject:newSong forKey:newSong.songID];
@@ -1233,7 +1241,7 @@ static int const kSongPoolStartCapacity = 250;
 -(void)setUUIDString:(NSString*)theUUID forSongID:(id<SongIDProtocol>)songID {
     if (![self validSongID:songID]) return;
     
-    id<TGSong> newSong = [SongUUID songWithNewUUId:[self songForID:songID] newUUId:theUUID];
+    id<TGSong> newSong = [SongUUID songWithNewUUId:[self songForID:songID] newUUId:theUUID newReleaseId:nil];
     // replace old song with the new song in the songpool.
     [songPoolDictionary setObject:newSong forKey:newSong.songID];
     
@@ -1610,12 +1618,23 @@ static int const kSongPoolStartCapacity = 250;
         }
         
         if (aSong.fingerPrint != nil) {
-
-            CMTime songDuration = [songAudioPlayer songDuration];
             
-            NSString *songUUID = [SongUUID lookupUUIDForSong:aSong duration:CMTimeGetSeconds(songDuration) fingerprint:aSong.fingerPrint];
-            aSong = [SongUUID songWithNewUUId:aSong newUUId:songUUID];
-
+            if (aSong.UUId == nil) {
+                //FIXME: See if we can get the duration from the fingerprint instead.
+                CMTime songDuration = [songAudioPlayer songDuration];
+                NSDictionary *acoustIdData = [AcoustIDWebService dataDictForFingerprint:CMTimeGetSeconds(songDuration) fingerprint:aSong.fingerPrint];
+                
+                // Consider just having AcoustIDWebService return the bestMatchReleaseId instead
+                NSDictionary *bestRelease = [AcoustIDWebService bestMatchReleaseForSong:aSong inDictionary:acoustIdData];
+                // At this point we should call a func that picks the best id from the acoustIdData based
+                // on how well each matches the other metadata we have on the song.
+                
+                if( acoustIdData != nil) {
+//                    TGLog(TGLOG_REFAC, @"AcoustID data %@",acoustIdData);
+                    NSString *songUUID = [SongUUID extractUUIDFromDictionary:acoustIdData];
+                    aSong = [SongUUID songWithNewUUId:aSong newUUId:songUUID newReleaseId:[bestRelease objectForKey:@"id"]];
+                }
+            }
             // Get the song's album if there. If not it means its metadata is borken.
             NSString *aId = [Album albumIdForSong:aSong];
             if (aId != nil) {
@@ -1657,7 +1676,7 @@ static int const kSongPoolStartCapacity = 250;
             dispatch_sync(songPoolQueue, ^{
                 // replace old song with the new song in the songpool.
                 [songPoolDictionary setObject:aSong forKey:aSong.songID];
-                TGLog(TGLOG_REFAC, @"all done with: %@",aSong.metadata.title);
+//                TGLog(TGLOG_REFAC, @"all done with: %@",aSong.metadata.title);
                 // Here we should signal that the song now has cover art.
                 // Or update the song in question if its current image == fetching image
                 [[NSNotificationCenter defaultCenter] postNotificationName:@"songCoverUpdated" object:selectedSongId];

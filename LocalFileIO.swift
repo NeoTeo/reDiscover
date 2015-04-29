@@ -11,7 +11,7 @@ import Cocoa
 class LocalFileIO: NSObject {
 
     class func imageURLsAtPath(dirURL: NSURL) -> [NSURL]? {
-        println("LocalFileIO \(dirURL.filePathURL?.absoluteString)")
+
         let fileManager = NSFileManager.defaultManager()
         if let dirContents = fileManager.contentsOfDirectoryAtURL(dirURL, includingPropertiesForKeys: nil, options: .SkipsHiddenFiles, error: nil) {
             

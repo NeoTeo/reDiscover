@@ -721,8 +721,6 @@
     id<SongIDProtocol> songId = notification.object;
     if ([songId isEqual:[_currentSongPool lastRequestedSongID]])
     {
-        TGLog(TGLOG_REFAC, @"songMetaDataWasUpdated");
-
         [_songInfoController setSong:[_currentSongPool songDataForSongID:songId]];
     }
 }
@@ -736,12 +734,8 @@
     id<TGSong> theSong = [_currentSongPool songForID:songId];
     if ([theSong.artID isEqualToString:[_songGridController coverImageForSongWithId:songId].hashId] == false)
     {
-         TGLog(TGLOG_REFAC,@"Going to call refreshCoverForSongId.");
-        //[self refreshCoverForSongId:songId];
         [self updatePanelsForSong:songId defaultImage:[SongArt getNoCoverImage]];
     }
-//    else
-//        TGLog(TGLOG_REFAC,@"Didn't call refreshCoverForSongId because the cell image is not the Fetching image.");
 }
 
 - (void)songPoolDidFinishPlayingSong:(id<SongIDProtocol>)songID {
