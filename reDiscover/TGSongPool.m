@@ -109,7 +109,6 @@ static int const kSongPoolStartCapacity = 250;
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(idleTimeEnds) name:@"TGIdleTimeEnds" object:nil];
 */
         //FIXME: Change the delegate to actually passing the artForSong method the required params.
-        [CoverArtArchiveWebFetcher setDelegate:self];
         [SongPool setDelegate:self];
         albumCollection = [[AlbumCollection alloc] init];
         

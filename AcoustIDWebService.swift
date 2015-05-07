@@ -10,8 +10,12 @@ import Cocoa
 
 class AcoustIDWebService: NSObject {
 
+    static let acoustIdAPIKey = "QVFHY3iP"
+    
     class func dataDictForFingerprint(duration: UInt, fingerprint: String) -> NSDictionary? {
-        let path = "http://api.acoustid.org/v2/lookup?client=8XaBELgH&meta=releases&duration=\(duration)&fingerprint=\(fingerprint)"
+
+        let path = "http://api.acoustid.org/v2/lookup?client=\(acoustIdAPIKey)&meta=releases&duration=\(duration)&fingerprint=\(fingerprint)"
+        println(path)
         if let
             acoustIdURL = NSURL(string: path),
             acoustiData = NSData(contentsOfURL: acoustIdURL) where acoustiData.length > 0,
