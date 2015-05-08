@@ -1,0 +1,6 @@
+framework module chromaprint_osx_static {
+  umbrella header "Pods-chromaprint-osx-static-umbrella.h"
+
+  export *
+  module * { export * }
+}

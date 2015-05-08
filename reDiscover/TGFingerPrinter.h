@@ -7,7 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
-#import <chromaprint.h>
+#import "chromaprint.h"
 
 //#import "/Users/teo/Dropbox/usr/local/include/chromaprint.h"
 //#import "/Users/teo/Dropbox/usr/local/include/chromaprint.h"

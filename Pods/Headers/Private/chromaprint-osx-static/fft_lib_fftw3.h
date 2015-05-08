@@ -1,0 +1,1 @@
+../../../chromaprint-osx-static/src/fft_lib_fftw3.h

@@ -1,2 +1,0 @@
-PODS_FFMPEG_OSX_STATIC_LIBRARY_SEARCH_PATHS = "$(PODS_ROOT)/ffmpeg-osx-static/lib" "$(PODS_ROOT)/ffmpeg-osx-static/lib" "$(PODS_ROOT)/ffmpeg-osx-static/lib" "$(PODS_ROOT)/ffmpeg-osx-static/lib" "$(PODS_ROOT)/ffmpeg-osx-static/lib" "$(PODS_ROOT)/ffmpeg-osx-static/lib" "$(PODS_ROOT)/ffmpeg-osx-static/lib"
-PODS_FFMPEG_OSX_STATIC_OTHER_LDFLAGS = -lavcodec -lavdevice -lavfilter -lavformat -lavutil -lswresample -lswscale

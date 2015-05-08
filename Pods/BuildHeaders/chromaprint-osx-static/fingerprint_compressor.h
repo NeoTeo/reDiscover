@@ -1,1 +1,0 @@
-../../chromaprint-osx-static/src/fingerprint_compressor.h

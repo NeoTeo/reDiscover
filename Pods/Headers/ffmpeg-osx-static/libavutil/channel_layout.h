@@ -1,1 +1,0 @@
-../../../ffmpeg-osx-static/include/libavutil/channel_layout.h

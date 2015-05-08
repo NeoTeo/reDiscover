@@ -11,7 +11,7 @@
 #import "UploadedSSData.h"
 
 // Fingerprinter needs to know about chromaprint.
-#import "chromaprint.h"
+//#import "chromaprint.h"
 
 // For songUUID
 #import "TGSongProtocol.h"

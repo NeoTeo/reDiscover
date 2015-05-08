@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		548F3DC769524F62AE69C0C1 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FF4446098666436AB643944F /* libPods.a */; };
+		0903AF1F52096CF9A58651C4 /* Pods.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D0D5D6C8D57F5E3B4457F53C /* Pods.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 		AB01DB04194F499900368693 /* TGStack.m in Sources */ = {isa = PBXBuildFile; fileRef = AB01DB03194F499900368693 /* TGStack.m */; };
 		AB1756261A2E1788003FC9A3 /* reDiscover_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB1756251A2E1788003FC9A3 /* reDiscover_Tests.swift */; };
 		AB1BC13F1976C91E003F02B9 /* ScrollingTextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB1BC13E1976C91E003F02B9 /* ScrollingTextView.swift */; };
@@ -96,6 +96,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		519B18FEE8576990A26C4BDB /* Pods.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.debug.xcconfig; path = "Pods/Target Support Files/Pods/Pods.debug.xcconfig"; sourceTree = "<group>"; };
 		AB01DB03194F499900368693 /* TGStack.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TGStack.m; path = ../TGStack.m; sourceTree = "<group>"; };
 		AB01DB05194F49B800368693 /* TGStack.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = TGStack.h; path = ../TGStack.h; sourceTree = "<group>"; };
 		AB0D052D1889E06400F08566 /* libiconv.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libiconv.dylib; path = usr/lib/libiconv.dylib; sourceTree = SDKROOT; };
@@ -213,8 +214,8 @@
 		ABFC8EB419C1BCE90007ECCB /* uploadedSS.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = uploadedSS.xcdatamodel; sourceTree = "<group>"; };
 		ABFD9DD21AD41B7C00718631 /* TGSongProtocol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TGSongProtocol.h; sourceTree = "<group>"; };
 		ABFD9DD31AD4217700718631 /* SongUUID.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SongUUID.swift; sourceTree = "<group>"; };
-		B512DB84B1174F868791F7EF /* Pods.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.xcconfig; path = Pods/Pods.xcconfig; sourceTree = "<group>"; };
-		FF4446098666436AB643944F /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		B0A41F8D7A62E0163971460D /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.release.xcconfig; path = "Pods/Target Support Files/Pods/Pods.release.xcconfig"; sourceTree = "<group>"; };
+		D0D5D6C8D57F5E3B4457F53C /* Pods.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -235,17 +236,26 @@
 				AB4E078F19B618260052EEC0 /* QTKit.framework in Frameworks */,
 				AB4E078D19B6181E0052EEC0 /* libiconv.dylib in Frameworks */,
 				AB4E078C19B618160052EEC0 /* libz.dylib in Frameworks */,
-				548F3DC769524F62AE69C0C1 /* libPods.a in Frameworks */,
 				AB85BC5C1875AD3B00670905 /* QuartzCore.framework in Frameworks */,
 				AB85BC5A1875AD1500670905 /* CoreMedia.framework in Frameworks */,
 				AB85BC581875ACE200670905 /* AVFoundation.framework in Frameworks */,
 				AB85BBD71875AACF00670905 /* Cocoa.framework in Frameworks */,
+				0903AF1F52096CF9A58651C4 /* Pods.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		A45421905E820B9A3DA9306F /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				519B18FEE8576990A26C4BDB /* Pods.debug.xcconfig */,
+				B0A41F8D7A62E0163971460D /* Pods.release.xcconfig */,
+			);
+			name = Pods;
+			sourceTree = "<group>";
+		};
 		AB1756221A2E1788003FC9A3 /* reDiscover Tests */ = {
 			isa = PBXGroup;
 			children = (
@@ -413,7 +423,7 @@
 				AB1756221A2E1788003FC9A3 /* reDiscover Tests */,
 				AB85BBD51875AACF00670905 /* Frameworks */,
 				AB85BBD41875AACF00670905 /* Products */,
-				B512DB84B1174F868791F7EF /* Pods.xcconfig */,
+				A45421905E820B9A3DA9306F /* Pods */,
 			);
 			sourceTree = "<group>";
 		};
@@ -444,7 +454,7 @@
 				AB85BBD61875AACF00670905 /* Cocoa.framework */,
 				AB85BBF51875AACF00670905 /* XCTest.framework */,
 				AB85BBD81875AACF00670905 /* Other Frameworks */,
-				FF4446098666436AB643944F /* libPods.a */,
+				D0D5D6C8D57F5E3B4457F53C /* Pods.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -538,6 +548,7 @@
 				AB85BBD01875AACF00670905 /* Frameworks */,
 				AB85BBD11875AACF00670905 /* Resources */,
 				4841F6531A6146ABB5CC567B /* Copy Pods Resources */,
+				FC1D6E6D5E8A1EB66D88C071 /* Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -624,7 +635,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Pods-resources.sh\"\n";
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods/Pods-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		61BF372820FC442D98F5DCBA /* Check Pods Manifest.lock */ = {
@@ -640,6 +651,21 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
+			showEnvVarsInLog = 0;
+		};
+		FC1D6E6D5E8A1EB66D88C071 /* Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Embed Pods Frameworks";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods/Pods-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
@@ -872,7 +898,7 @@
 		};
 		AB85BC051875AACF00670905 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = B512DB84B1174F868791F7EF /* Pods.xcconfig */;
+			baseConfigurationReference = 519B18FEE8576990A26C4BDB /* Pods.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
@@ -884,6 +910,11 @@
 					"$(inherited)",
 					"COCOAPODS=1",
 					"HAVE_CONFIG_H=1",
+				);
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					"/Applications/Xcode-beta.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include",
+					"${PODS_ROOT}/ffmpeg-osx-static/**",
 				);
 				INFOPLIST_FILE = "reDiscover/reDiscover-Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
@@ -900,7 +931,7 @@
 		};
 		AB85BC061875AACF00670905 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = B512DB84B1174F868791F7EF /* Pods.xcconfig */;
+			baseConfigurationReference = B0A41F8D7A62E0163971460D /* Pods.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
@@ -908,6 +939,11 @@
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "reDiscover/reDiscover-Prefix.pch";
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					"/Applications/Xcode-beta.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include",
+					"${PODS_ROOT}/ffmpeg-osx-static/**",
+				);
 				INFOPLIST_FILE = "reDiscover/reDiscover-Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
 				LIBRARY_SEARCH_PATHS = "$(inherited)/**";
