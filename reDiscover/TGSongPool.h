@@ -257,8 +257,8 @@
 //MARK: Core Data methods -
 // Core Data methods
 - (void)storeSongData;
-- (NSArray *)fetchMetadataFromLocalStore;
-- (BOOL)loadMetadataIntoSong:(id<TGSong>)aSong;
+//- (NSArray *)fetchMetadataFromLocalStore;
+//- (BOOL)loadMetadataIntoSong:(id<TGSong>)aSong;
 
 // Other protocols' delegate methods that TGSongPool implements
 // TGSongDelegate protocol methods called by TGSong

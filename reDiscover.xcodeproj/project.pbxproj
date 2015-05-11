@@ -69,6 +69,9 @@
 		AB85BC5F1875AD7A00670905 /* TGSongGridScrollView.m in Sources */ = {isa = PBXBuildFile; fileRef = AB85BC5E1875AD7A00670905 /* TGSongGridScrollView.m */; };
 		ABB2B6621ADEB38F004F9F87 /* NSImage+HashId.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABB2B6611ADEB38F004F9F87 /* NSImage+HashId.swift */; };
 		ABB33FF019C72C3800439A5E /* SweetSpotServerIO.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABB33FEF19C72C3800439A5E /* SweetSpotServerIO.swift */; };
+		ABCA1E211B00E988003CFB93 /* SongStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABCA1E201B00E988003CFB93 /* SongStore.swift */; };
+		ABCA1E231B00EAE9003CFB93 /* LocalSongStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABCA1E221B00EAE9003CFB93 /* LocalSongStore.swift */; };
+		ABCA1E251B00FFBA003CFB93 /* URLContentType.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABCA1E241B00FFBA003CFB93 /* URLContentType.swift */; };
 		ABCB68EA18FD57E4009CF277 /* TEOSong.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = ABCB68E818FD57E4009CF277 /* TEOSong.xcdatamodeld */; };
 		ABDBA6871AF0F5A60069CFFB /* AcoustIDWebService.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABDBA6861AF0F5A60069CFFB /* AcoustIDWebService.swift */; };
 		ABE49BB51AE16105008A28B0 /* SongID.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABE49BB41AE16105008A28B0 /* SongID.swift */; };
@@ -199,6 +202,9 @@
 		AB85BC641875B2F600670905 /* Accelerate.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accelerate.framework; path = System/Library/Frameworks/Accelerate.framework; sourceTree = SDKROOT; };
 		ABB2B6611ADEB38F004F9F87 /* NSImage+HashId.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSImage+HashId.swift"; sourceTree = "<group>"; };
 		ABB33FEF19C72C3800439A5E /* SweetSpotServerIO.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SweetSpotServerIO.swift; sourceTree = "<group>"; };
+		ABCA1E201B00E988003CFB93 /* SongStore.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SongStore.swift; sourceTree = "<group>"; };
+		ABCA1E221B00EAE9003CFB93 /* LocalSongStore.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocalSongStore.swift; sourceTree = "<group>"; };
+		ABCA1E241B00FFBA003CFB93 /* URLContentType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = URLContentType.swift; sourceTree = "<group>"; };
 		ABCB68E918FD57E4009CF277 /* TEOSong.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = TEOSong.xcdatamodel; sourceTree = "<group>"; };
 		ABDBA6861AF0F5A60069CFFB /* AcoustIDWebService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AcoustIDWebService.swift; sourceTree = "<group>"; };
 		ABE49BB41AE16105008A28B0 /* SongID.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SongID.swift; sourceTree = "<group>"; };
@@ -333,6 +339,8 @@
 				AB301E7519050C830093B654 /* TEOSongData.m */,
 				AB85BC271875AB5200670905 /* TGSongPool.h */,
 				AB85BC281875AB5200670905 /* TGSongPool.m */,
+				ABCA1E201B00E988003CFB93 /* SongStore.swift */,
+				ABCA1E221B00EAE9003CFB93 /* LocalSongStore.swift */,
 				AB85BC1D1875AB5200670905 /* TGSong.h */,
 				AB85BC1E1875AB5200670905 /* TGSong.m */,
 				ABCB68E818FD57E4009CF277 /* TEOSong.xcdatamodeld */,
@@ -409,6 +417,7 @@
 			children = (
 				ABDBA6861AF0F5A60069CFFB /* AcoustIDWebService.swift */,
 				ABF767441AEE82B4007C7A12 /* LocalFileIO.swift */,
+				ABCA1E241B00FFBA003CFB93 /* URLContentType.swift */,
 				ABE49BBA1AE50FC2008A28B0 /* Album.swift */,
 				ABE49BB41AE16105008A28B0 /* SongID.swift */,
 				ABE49BB61AE50991008A28B0 /* Hasher.swift */,
@@ -693,10 +702,12 @@
 				AB85BC491875AB5200670905 /* TGSongGridViewController.m in Sources */,
 				ABFC8EB519C1BCE90007ECCB /* uploadedSS.xcdatamodeld in Sources */,
 				AB85BC4E1875AB5200670905 /* TGSongTimelineViewController.m in Sources */,
+				ABCA1E231B00EAE9003CFB93 /* LocalSongStore.swift in Sources */,
 				ABE49BBB1AE50FC2008A28B0 /* Album.swift in Sources */,
 				AB85BC5F1875AD7A00670905 /* TGSongGridScrollView.m in Sources */,
 				AB85BC501875AB5200670905 /* TGSongUserData.m in Sources */,
 				ABF767431AEE6D74007C7A12 /* SongPool.swift in Sources */,
+				ABCA1E251B00FFBA003CFB93 /* URLContentType.swift in Sources */,
 				ABCB68EA18FD57E4009CF277 /* TEOSong.xcdatamodeld in Sources */,
 				ABE49BB51AE16105008A28B0 /* SongID.swift in Sources */,
 				ABE49BB91AE50F48008A28B0 /* AlbumCollection.swift in Sources */,
@@ -735,6 +746,7 @@
 				AB5D1DD51A35D714003D07A2 /* NSMutableArray+QueueAdditions.m in Sources */,
 				ABED8E341AB73B6E005B1403 /* CoverArtController.swift in Sources */,
 				ABFD9DD41AD4217700718631 /* SongUUID.swift in Sources */,
+				ABCA1E211B00E988003CFB93 /* SongStore.swift in Sources */,
 				ABB2B6621ADEB38F004F9F87 /* NSImage+HashId.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

@@ -30,4 +30,18 @@ class SongPool : NSObject {
         }
         return nil
     }
+    
+    static func loadFromURL(theURL: NSURL) {
+        if let songURLs = LocalSongStore.songURLsFromURL(theURL) {
+            for songURL in songURLs {
+
+                println("songURL \(songURL)")
+                let songString = songURL.absoluteString!
+                let songId = SongID(string: songString)
+                let songMetaData = SongMetaData(title: nil, album: nil, artist: nil, year: 1071, genre: nil)
+                let newSong = Song(songId: songId, metadata: songMetaData, urlString: songString, sweetSpots: nil, fingerPrint: nil, selectedSS: 0, releases: nil, artId: nil, UUId: nil, RelId: nil)
+            }
+        }
+    }
+    
 }

@@ -7,6 +7,8 @@
 //
 
 import Cocoa
+import Argo
+import Runes
 
 class AcoustIDWebService: NSObject {
 
@@ -15,13 +17,14 @@ class AcoustIDWebService: NSObject {
     class func dataDictForFingerprint(duration: UInt, fingerprint: String) -> NSDictionary? {
 
         let path = "http://api.acoustid.org/v2/lookup?client=\(acoustIdAPIKey)&meta=releases&duration=\(duration)&fingerprint=\(fingerprint)"
-        println(path)
+
         if let
             acoustIdURL = NSURL(string: path),
             acoustiData = NSData(contentsOfURL: acoustIdURL) where acoustiData.length > 0,
-            let acoustiJSON = NSJSONSerialization.JSONObjectWithData(acoustiData, options: .MutableContainers, error: nil) as? NSDictionary {
-                    if let status = acoustiJSON.objectForKey("status") as? NSString where status.isEqualToString("ok"),
-                        let results = acoustiJSON.objectForKey("results") as? NSArray where results.count != 0,
+            let acoustiJSON = NSJSONSerialization.JSONObjectWithData(acoustiData, options: .MutableContainers, error: nil) as? NSDictionary
+        {
+                    if let status = acoustiJSON["status"] as? NSString where status.isEqualToString("ok"),
+                        let results = acoustiJSON["results"] as? NSArray where results.count != 0,
                         let theElement = results.objectAtIndex(0) as? NSDictionary {
                         return theElement
                     }
@@ -38,21 +41,21 @@ class AcoustIDWebService: NSObject {
         var bestRelease: NSDictionary?
         var topScore = 0
         
-        if let releases = dataDict.objectForKey("releases") as? NSArray where releases.count > 0 {
+        if let releases = dataDict["releases"] as? NSArray where releases.count > 0 {
             for release in releases as! [NSDictionary]{
                 var releaseScore = 0
                 //println("Release: \(release)")
-                if let title = release.objectForKey("title") as? String {
+                if let title = release["title"] as? String {
                     if title.lowercaseString == song.metadata?.album.lowercaseString { releaseScore++ }
                 }
                 
                 //FIXME: For now just hardwired to US. Make it check for the user's country or some selected setting.
-                if let country = release.objectForKey("country") as? String {
+                if let country = release["country"] as? String {
                     if country.lowercaseString == "us" { releaseScore++ }
                 }
                 
-                if let date = release.objectForKey("date") as? NSDictionary,
-                    let year = date.objectForKey("year") as? UInt {
+                if let date = release["date"] as? NSDictionary,
+                    let year = date["year"] as? UInt {
                     if year == song.metadata?.year { releaseScore += 1 }
                 }
 
@@ -71,3 +74,4 @@ class AcoustIDWebService: NSObject {
         return bestRelease
     }
 }
+

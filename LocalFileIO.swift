@@ -8,6 +8,7 @@
 
 import Cocoa
 
+
 class LocalFileIO: NSObject {
 
     class func imageURLsAtPath(dirURL: NSURL) -> [NSURL]? {
@@ -19,12 +20,7 @@ class LocalFileIO: NSObject {
             
             for item in dirContents as! [NSURL] {
                 
-                let ext = item.pathExtension
-                let unmanagedFileUTI = UTTypeCreatePreferredIdentifierForTag(kUTTagClassFilenameExtension, ext, nil)
-                let fileUTI = unmanagedFileUTI.takeRetainedValue()
-                
-                // Only add image files.
-                if UTTypeConformsTo(fileUTI, kUTTypeImage) != 0 {
+                if getURLContentType(item) == .Image {
                     imageURLs.append(item)
                 }
             }
@@ -36,5 +32,22 @@ class LocalFileIO: NSObject {
         }
         
         return nil
+    }
+    
+    // Change this to return an enum type instead
+    static func getURLContentType(theURL: NSURL) -> URLContentType {
+        
+        let ext = theURL.pathExtension
+        let unmanagedFileUTI = UTTypeCreatePreferredIdentifierForTag(kUTTagClassFilenameExtension, ext, nil)
+        let fileUTI = unmanagedFileUTI.takeRetainedValue()
+        
+        // Only add image files.
+        if UTTypeConformsTo(fileUTI, kUTTypeImage) != 0 {
+            return .Image
+        }
+        if UTTypeConformsTo(fileUTI, kUTTypeAudio) != 0 {
+            return .Audio
+        }
+        return .Unknown
     }
 }
