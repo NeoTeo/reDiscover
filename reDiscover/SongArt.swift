@@ -1,5 +1,5 @@
 //
-//  CoverArtController.swift
+//  SongArt.swift
 //  reDiscover
 //
 //  Created by Teo on 16/03/15.

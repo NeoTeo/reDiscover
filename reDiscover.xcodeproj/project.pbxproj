@@ -82,7 +82,7 @@
 		ABEC79D21B020E2800CD9F6C /* RealmSwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ABEC79D11B020E2800CD9F6C /* RealmSwift.framework */; };
 		ABEC79D31B020E2800CD9F6C /* RealmSwift.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = ABEC79D11B020E2800CD9F6C /* RealmSwift.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		ABED8E321AB72F4F005B1403 /* SongMetadata.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABED8E311AB72F4F005B1403 /* SongMetadata.swift */; };
-		ABED8E341AB73B6E005B1403 /* CoverArtController.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABED8E331AB73B6E005B1403 /* CoverArtController.swift */; };
+		ABED8E341AB73B6E005B1403 /* SongArt.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABED8E331AB73B6E005B1403 /* SongArt.swift */; };
 		ABF767431AEE6D74007C7A12 /* SongPool.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABF767421AEE6D74007C7A12 /* SongPool.swift */; };
 		ABF767451AEE82B4007C7A12 /* LocalFileIO.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABF767441AEE82B4007C7A12 /* LocalFileIO.swift */; };
 		ABFC8EB219C19C630007ECCB /* uploadedSS.plist in Resources */ = {isa = PBXBuildFile; fileRef = ABFC8EB119C19C630007ECCB /* uploadedSS.plist */; };
@@ -230,7 +230,7 @@
 		ABEC263C1951C6F200A57CE3 /* Main.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Main.storyboard; sourceTree = "<group>"; };
 		ABEC79D11B020E2800CD9F6C /* RealmSwift.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = RealmSwift.framework; sourceTree = "<group>"; };
 		ABED8E311AB72F4F005B1403 /* SongMetadata.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SongMetadata.swift; path = reDiscover/SongMetadata.swift; sourceTree = "<group>"; };
-		ABED8E331AB73B6E005B1403 /* CoverArtController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CoverArtController.swift; path = reDiscover/CoverArtController.swift; sourceTree = "<group>"; };
+		ABED8E331AB73B6E005B1403 /* SongArt.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SongArt.swift; path = reDiscover/SongArt.swift; sourceTree = "<group>"; };
 		ABF767421AEE6D74007C7A12 /* SongPool.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SongPool.swift; sourceTree = "<group>"; };
 		ABF767441AEE82B4007C7A12 /* LocalFileIO.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocalFileIO.swift; sourceTree = "<group>"; };
 		ABFC8EB119C19C630007ECCB /* uploadedSS.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = uploadedSS.plist; sourceTree = "<group>"; };
@@ -412,7 +412,7 @@
 		AB725A3D1AD922BC003E94E6 /* SongArt */ = {
 			isa = PBXGroup;
 			children = (
-				ABED8E331AB73B6E005B1403 /* CoverArtController.swift */,
+				ABED8E331AB73B6E005B1403 /* SongArt.swift */,
 				AB725A391AD91E8C003E94E6 /* SongArtFinder.swift */,
 				AB725A3B1AD92256003E94E6 /* SongArtCache.swift */,
 				AB71279A19407C8E0002B1F8 /* CoverArtArchiveWebFetcher.swift */,
@@ -764,7 +764,7 @@
 				AB4529381A88EAF300A6B15A /* TGSongUIPopupController.swift in Sources */,
 				AB7FFB6319589D1E002D1E63 /* DropView.swift in Sources */,
 				AB5D1DD51A35D714003D07A2 /* NSMutableArray+QueueAdditions.m in Sources */,
-				ABED8E341AB73B6E005B1403 /* CoverArtController.swift in Sources */,
+				ABED8E341AB73B6E005B1403 /* SongArt.swift in Sources */,
 				ABFD9DD41AD4217700718631 /* SongUUID.swift in Sources */,
 				ABCA1E211B00E988003CFB93 /* AudioFileStore.swift in Sources */,
 				ABB2B6621ADEB38F004F9F87 /* NSImage+HashId.swift in Sources */,
