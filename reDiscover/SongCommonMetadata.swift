@@ -1,5 +1,5 @@
 //
-//  SongMetadata.swift
+//  SongCommonMetadata.swift
 //  reDiscover
 //
 //  Created by Teo on 16/03/15.
@@ -8,16 +8,13 @@
 
 import Foundation
 import AVFoundation
-// The problem I'm having with this massive initializer is probably symptomatic of
-// a design problem. It seems to suggest that I have too many disparate concepts
-// globbed together in one class and I should try to reduce and/or split
-// the properties into sub structures that are logically grouped.
-// Eg. is selectedSweetSpot really metadata on the song?
-// Does songReleases belong inside the song?
-// is the fingerPrintStatus not metadata on the fingerprint?
-// We should distinguish between metadata on the song and data that is effectively
-// housekeeping/state of the song instance?
-class SongMetaData : NSObject, NSCopying {
+
+/**
+The SongCommonMetaData holds metadata about a song that is common to all songs such
+as title, artist and so on. This is in contrast to SongRediscoverMetaData which holds
+metadata specific to the reDicover app such as fingerprints, uuid and sweet spots.
+*/
+class SongCommonMetaData : NSObject, NSCopying {
     let title:              String
     let album:              String
     let artist:             String
@@ -34,11 +31,11 @@ class SongMetaData : NSObject, NSCopying {
     }
     
     func copyWithZone(zone: NSZone) -> AnyObject {
-        return SongMetaData(title: title, album: album, artist: artist, year: year, genre: genre)
+        return SongCommonMetaData(title: title, album: album, artist: artist, year: year, genre: genre)
     }
 }
 
-extension SongMetaData {
+extension SongCommonMetaData {
 
     /** 
     This class method will *synchronously* fetch the cover art it finds in the songAsset's
@@ -48,37 +45,19 @@ extension SongMetaData {
     :returns: An array of NSImages or an array of nil if nothing was found.
     */
     static func getCoverArtForSong(song: TGSong?) -> [NSImage?] {
-//        if  let sng = song,
-//            let songAsset = AVURLAsset(URL: NSURL(string: sng.urlString!) , options: nil) {
-//            
-//                let sema = dispatch_semaphore_create(0)
-//                
-//                songAsset.loadValuesAsynchronouslyForKeys(["commonMetadata"]){
-//
-//                    // Now that the metadata is loaded, signal to continue below.
-//                    dispatch_semaphore_signal(sema)
-//                }
-//
-//                // Wait for the load to complete.
-//                dispatch_semaphore_wait(sema, DISPATCH_TIME_FOREVER)
         
-        if let metadata = SongMetaData.commonMetadataForSong(song) {
+        if let metadata = SongCommonMetaData.commonMetadataForSong(song) {
         
                 let artworks = AVMetadataItem.metadataItemsFromArray(metadata, withKey: AVMetadataCommonKeyArtwork, keySpace:AVMetadataKeySpaceCommon) as! [AVMetadataItem]
 
                 var retArt = [NSImage?]()
                 for aw: AVMetadataItem in artworks {
-//                    if aw.keySpace == AVMetadataKeySpaceID3 {
-//                        
-//                    }
 
                     let ima = NSImage(data: aw.dataValue)
                     retArt.append(ima)
                 }
                 return retArt
         }
-//        }
-        
         return [nil]
     }
     
@@ -86,32 +65,17 @@ extension SongMetaData {
         if  let sng = song,
             let songAsset = AVURLAsset(URL: NSURL(string: sng.urlString!) , options: nil) {
                 
-//                let sema = dispatch_semaphore_create(0)
-//                
-//                songAsset.loadValuesAsynchronouslyForKeys(["commonMetadata"]){
-//                    
-//                    // Now that the metadata is loaded, signal to continue below.
-//                    dispatch_semaphore_signal(sema)
-//                }
-//                
-//                // Wait for the load to complete.
-//                dispatch_semaphore_wait(sema, DISPATCH_TIME_FOREVER)
-                
                 return songAsset.commonMetadata
         }
         return nil
     }
     
     static func songWithLoadedMetaData(song: TGSong) -> TGSong {
-        if let rawMetadata = SongMetaData.commonMetadataForSong(song) {
-            
-//            let arts = SongMetaData.extractCoverArt(fromRawMetadata: rawMetadata)
-//            var artId = song.artID as String?
-//            if let art = arts[0] { artId = SongArt.idForImage(art) as String }
+        if let rawMetadata = SongCommonMetaData.commonMetadataForSong(song) {
             
                 return Song(songId: song.songID,
                     //            metadata: SongMetaData.loadMetaData(fromURLString: song.urlString!),
-                    metadata: SongMetaData.extractMetaData(fromRawMetadata: rawMetadata),
+                    metadata: SongCommonMetaData.extractMetaData(fromRawMetadata: rawMetadata),
                     urlString: song.urlString,
                     sweetSpots: song.sweetSpots,
                     fingerPrint: song.fingerPrint,
@@ -124,7 +88,7 @@ extension SongMetaData {
         return song
     }
 
-    static func extractMetaData(fromRawMetadata metadata: [AnyObject]) -> SongMetaData {
+    private static func extractMetaData(fromRawMetadata metadata: [AnyObject]) -> SongCommonMetaData {
         var title: String = "No title"
         var album: String = "No album"
         var genre: String = "No genre"
@@ -142,7 +106,7 @@ extension SongMetaData {
         //FIXME: Beware, this can also be a string value!
         if years.count > 0 { year = (years[0] as! AVMetadataItem).numberValue as! UInt }
         
-        return SongMetaData(title: title, album: album, artist: artist, year: year, genre: genre)
+        return SongCommonMetaData(title: title, album: album, artist: artist, year: year, genre: genre)
     }
     
     static func extractCoverArt(fromRawMetadata metadata: [AnyObject]) -> [NSImage?] {
@@ -161,7 +125,7 @@ extension SongMetaData {
     :params: urlString The song url string.
     :returns: the metadata.
     */
-    static func loadMetaData(fromURLString urlString: String) -> SongMetaData {
+    static func loadMetaData(fromURLString urlString: String) -> SongCommonMetaData {
         
         var title: String = "No title"
         var album: String = "No album"
@@ -183,11 +147,11 @@ extension SongMetaData {
             }
         }
 
-        return SongMetaData(title: title, album: album, artist: artist, year: year, genre: genre)
+        return SongCommonMetaData(title: title, album: album, artist: artist, year: year, genre: genre)
     }
     
     // replaces SongPool requestEmbeddedMetadataForSongID:
-    static func metaDataForSong(song: TGSong) -> SongMetaData {
+    static func metaDataForSong(song: TGSong) -> SongCommonMetaData {
         return song.metadata!
     }
 }

@@ -81,7 +81,7 @@
 		ABEC263D1951C6F200A57CE3 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = ABEC263C1951C6F200A57CE3 /* Main.storyboard */; };
 		ABEC79D21B020E2800CD9F6C /* RealmSwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ABEC79D11B020E2800CD9F6C /* RealmSwift.framework */; };
 		ABEC79D31B020E2800CD9F6C /* RealmSwift.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = ABEC79D11B020E2800CD9F6C /* RealmSwift.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		ABED8E321AB72F4F005B1403 /* SongMetadata.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABED8E311AB72F4F005B1403 /* SongMetadata.swift */; };
+		ABED8E321AB72F4F005B1403 /* SongCommonMetadata.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABED8E311AB72F4F005B1403 /* SongCommonMetadata.swift */; };
 		ABED8E341AB73B6E005B1403 /* SongArt.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABED8E331AB73B6E005B1403 /* SongArt.swift */; };
 		ABF767431AEE6D74007C7A12 /* SongPool.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABF767421AEE6D74007C7A12 /* SongPool.swift */; };
 		ABF767451AEE82B4007C7A12 /* LocalFileIO.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABF767441AEE82B4007C7A12 /* LocalFileIO.swift */; };
@@ -229,7 +229,7 @@
 		ABE49BBA1AE50FC2008A28B0 /* Album.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Album.swift; sourceTree = "<group>"; };
 		ABEC263C1951C6F200A57CE3 /* Main.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Main.storyboard; sourceTree = "<group>"; };
 		ABEC79D11B020E2800CD9F6C /* RealmSwift.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = RealmSwift.framework; sourceTree = "<group>"; };
-		ABED8E311AB72F4F005B1403 /* SongMetadata.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SongMetadata.swift; path = reDiscover/SongMetadata.swift; sourceTree = "<group>"; };
+		ABED8E311AB72F4F005B1403 /* SongCommonMetadata.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SongCommonMetadata.swift; path = reDiscover/SongCommonMetadata.swift; sourceTree = "<group>"; };
 		ABED8E331AB73B6E005B1403 /* SongArt.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SongArt.swift; path = reDiscover/SongArt.swift; sourceTree = "<group>"; };
 		ABF767421AEE6D74007C7A12 /* SongPool.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SongPool.swift; sourceTree = "<group>"; };
 		ABF767441AEE82B4007C7A12 /* LocalFileIO.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocalFileIO.swift; sourceTree = "<group>"; };
@@ -444,7 +444,7 @@
 				AB725A3D1AD922BC003E94E6 /* SongArt */,
 				ABFD9DD21AD41B7C00718631 /* TGSongProtocol.h */,
 				ABFD9DD31AD4217700718631 /* SongUUID.swift */,
-				ABED8E311AB72F4F005B1403 /* SongMetadata.swift */,
+				ABED8E311AB72F4F005B1403 /* SongCommonMetadata.swift */,
 				AB85BBDC1875AACF00670905 /* reDiscover */,
 				AB85BBFA1875AACF00670905 /* reDiscoverTests */,
 				AB1756221A2E1788003FC9A3 /* reDiscover Tests */,
@@ -747,7 +747,7 @@
 				AB638F881ADD1A2100D4C8FA /* TGSong.swift in Sources */,
 				AB85BC401875AB5200670905 /* TGIdleTimer.m in Sources */,
 				AB1BC13F1976C91E003F02B9 /* ScrollingTextView.swift in Sources */,
-				ABED8E321AB72F4F005B1403 /* SongMetadata.swift in Sources */,
+				ABED8E321AB72F4F005B1403 /* SongCommonMetadata.swift in Sources */,
 				ABDBA6871AF0F5A60069CFFB /* AcoustIDWebService.swift in Sources */,
 				AB85BC451875AB5200670905 /* TGPlaylistViewController.m in Sources */,
 				AB725A3A1AD91E8C003E94E6 /* SongArtFinder.swift in Sources */,

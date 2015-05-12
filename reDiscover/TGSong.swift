@@ -17,14 +17,14 @@ import Foundation
     var urlString: String? { get }
     var selectedSweetSpot: Float { get }
     var sweetSpots: [SweetSpot]? { get }
-    var metadata: SongMetaData? { get }
+    var metadata: SongCommonMetaData? { get }
     var artID: String? { get }
     var fingerPrint: String? { get }
     var songReleases: NSData? { get }
     var UUId: String? { get }
     var RelId: String? { get }
     
-    init(songId: SongIDProtocol, metadata: SongMetaData?, urlString: String?, sweetSpots: [SweetSpot]?,
+    init(songId: SongIDProtocol, metadata: SongCommonMetaData?, urlString: String?, sweetSpots: [SweetSpot]?,
         fingerPrint: String?, selectedSS: SweetSpot, releases: NSData?, artId: String?, UUId: String?, RelId: String?)
     
     //func isEqualTo(aSong: TGSong) -> Bool;
@@ -37,14 +37,14 @@ class Song : NSObject,TGSong {
     let urlString: String?
     let selectedSweetSpot: Float
     let sweetSpots: [SweetSpot]?
-    let metadata: SongMetaData?
+    let metadata: SongCommonMetaData?
     let artID: String?
     let fingerPrint: String?
     let songReleases: NSData?
     let UUId: String?
     let RelId: String?
     
-    required init(songId: SongIDProtocol, metadata: SongMetaData?, urlString: String?, sweetSpots: [SweetSpot]?,
+    required init(songId: SongIDProtocol, metadata: SongCommonMetaData?, urlString: String?, sweetSpots: [SweetSpot]?,
         fingerPrint: String?, selectedSS: SweetSpot, releases: NSData?, artId: String?, UUId: String?, RelId: String?) {
     
         self.songID              = songId

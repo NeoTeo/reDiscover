@@ -334,7 +334,7 @@ static int const kSongPoolStartCapacity = 250;
                             
                             TEOSongData* teoData = [self.TEOSongDataDictionary objectForKey:[url absoluteString]];
                             //FIXME: Why does this not crash when teoData is nil?
-                            SongMetaData* metadata = [[SongMetaData alloc] initWithTitle:teoData.title
+                            SongCommonMetaData* metadata = [[SongCommonMetaData alloc] initWithTitle:teoData.title
                                                                                    album:teoData.album
                                                                                   artist:teoData.artist
                                                                                     year:[teoData.year unsignedIntegerValue]
@@ -946,7 +946,7 @@ static int const kSongPoolStartCapacity = 250;
         id<TGSong> __nonnull aSong  = [self songForID:selectedSongId];
 
 //        // Look at the file for metadata
-        aSong = [SongMetaData songWithLoadedMetaData:aSong];
+        aSong = [SongCommonMetaData songWithLoadedMetaData:aSong];
 
         dispatch_sync(songPoolQueue, ^{
             // replace old song with the new song in the songpool.

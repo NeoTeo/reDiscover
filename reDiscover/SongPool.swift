@@ -38,8 +38,8 @@ class SongPool : NSObject {
                 println("songURL \(songURL)")
                 let songString = songURL.absoluteString!
                 let songId = SongID(string: songString)
-                let songMetaData = SongMetaData(title: nil, album: nil, artist: nil, year: 1071, genre: nil)
-                let newSong = Song(songId: songId, metadata: songMetaData, urlString: songString, sweetSpots: nil, fingerPrint: nil, selectedSS: 0, releases: nil, artId: nil, UUId: nil, RelId: nil)
+                let songCommonMetaData = SongCommonMetaData(title: nil, album: nil, artist: nil, year: 1071, genre: nil)
+                let newSong = Song(songId: songId, metadata: songCommonMetaData, urlString: songString, sweetSpots: nil, fingerPrint: nil, selectedSS: 0, releases: nil, artId: nil, UUId: nil, RelId: nil)
             }
         }
     }
