@@ -1,5 +1,5 @@
 //
-//  LocalSongStore.swift
+//  LocalAudioFileStore.swift
 //  reDiscover
 //
 //  Created by Teo on 11/05/15.
@@ -9,7 +9,7 @@
 import Foundation
 
 // Local file system song store.
-class LocalSongStore : NSObject, SongStore {
+class LocalAudioFileStore : NSObject, AudioFileStore {
     
 }
 
@@ -17,7 +17,7 @@ class LocalSongStore : NSObject, SongStore {
 Given an URL the function will return an array with all the urls
 it can find that represent a song.
 */
-extension LocalSongStore {
+extension LocalAudioFileStore {
     
     static func songURLsFromURL(theURL: NSURL) -> [NSURL]? {
         

@@ -333,6 +333,7 @@ static int const kSongPoolStartCapacity = 250;
                             
                             
                             TEOSongData* teoData = [self.TEOSongDataDictionary objectForKey:[url absoluteString]];
+                            //FIXME: Why does this not crash when teoData is nil?
                             SongMetaData* metadata = [[SongMetaData alloc] initWithTitle:teoData.title
                                                                                    album:teoData.album
                                                                                   artist:teoData.artist

@@ -32,7 +32,7 @@ class SongPool : NSObject {
     }
     
     static func loadFromURL(theURL: NSURL) {
-        if let songURLs = LocalSongStore.songURLsFromURL(theURL) {
+        if let songURLs = LocalAudioFileStore.songURLsFromURL(theURL) {
             for songURL in songURLs {
 
                 println("songURL \(songURL)")

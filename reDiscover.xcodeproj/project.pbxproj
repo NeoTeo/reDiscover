@@ -69,8 +69,8 @@
 		AB85BC5F1875AD7A00670905 /* TGSongGridScrollView.m in Sources */ = {isa = PBXBuildFile; fileRef = AB85BC5E1875AD7A00670905 /* TGSongGridScrollView.m */; };
 		ABB2B6621ADEB38F004F9F87 /* NSImage+HashId.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABB2B6611ADEB38F004F9F87 /* NSImage+HashId.swift */; };
 		ABB33FF019C72C3800439A5E /* SweetSpotServerIO.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABB33FEF19C72C3800439A5E /* SweetSpotServerIO.swift */; };
-		ABCA1E211B00E988003CFB93 /* SongStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABCA1E201B00E988003CFB93 /* SongStore.swift */; };
-		ABCA1E231B00EAE9003CFB93 /* LocalSongStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABCA1E221B00EAE9003CFB93 /* LocalSongStore.swift */; };
+		ABCA1E211B00E988003CFB93 /* AudioFileStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABCA1E201B00E988003CFB93 /* AudioFileStore.swift */; };
+		ABCA1E231B00EAE9003CFB93 /* LocalAudioFileStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABCA1E221B00EAE9003CFB93 /* LocalAudioFileStore.swift */; };
 		ABCA1E251B00FFBA003CFB93 /* URLContentType.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABCA1E241B00FFBA003CFB93 /* URLContentType.swift */; };
 		ABCB68EA18FD57E4009CF277 /* TEOSong.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = ABCB68E818FD57E4009CF277 /* TEOSong.xcdatamodeld */; };
 		ABDBA6871AF0F5A60069CFFB /* AcoustIDWebService.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABDBA6861AF0F5A60069CFFB /* AcoustIDWebService.swift */; };
@@ -79,6 +79,8 @@
 		ABE49BB91AE50F48008A28B0 /* AlbumCollection.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABE49BB81AE50F48008A28B0 /* AlbumCollection.swift */; };
 		ABE49BBB1AE50FC2008A28B0 /* Album.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABE49BBA1AE50FC2008A28B0 /* Album.swift */; };
 		ABEC263D1951C6F200A57CE3 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = ABEC263C1951C6F200A57CE3 /* Main.storyboard */; };
+		ABEC79D21B020E2800CD9F6C /* RealmSwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ABEC79D11B020E2800CD9F6C /* RealmSwift.framework */; };
+		ABEC79D31B020E2800CD9F6C /* RealmSwift.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = ABEC79D11B020E2800CD9F6C /* RealmSwift.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		ABED8E321AB72F4F005B1403 /* SongMetadata.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABED8E311AB72F4F005B1403 /* SongMetadata.swift */; };
 		ABED8E341AB73B6E005B1403 /* CoverArtController.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABED8E331AB73B6E005B1403 /* CoverArtController.swift */; };
 		ABF767431AEE6D74007C7A12 /* SongPool.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABF767421AEE6D74007C7A12 /* SongPool.swift */; };
@@ -97,6 +99,20 @@
 			remoteInfo = reDiscover;
 		};
 /* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		ABEC79D41B020E2800CD9F6C /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				ABEC79D31B020E2800CD9F6C /* RealmSwift.framework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		519B18FEE8576990A26C4BDB /* Pods.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.debug.xcconfig; path = "Pods/Target Support Files/Pods/Pods.debug.xcconfig"; sourceTree = "<group>"; };
@@ -202,8 +218,8 @@
 		AB85BC641875B2F600670905 /* Accelerate.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accelerate.framework; path = System/Library/Frameworks/Accelerate.framework; sourceTree = SDKROOT; };
 		ABB2B6611ADEB38F004F9F87 /* NSImage+HashId.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSImage+HashId.swift"; sourceTree = "<group>"; };
 		ABB33FEF19C72C3800439A5E /* SweetSpotServerIO.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SweetSpotServerIO.swift; sourceTree = "<group>"; };
-		ABCA1E201B00E988003CFB93 /* SongStore.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SongStore.swift; sourceTree = "<group>"; };
-		ABCA1E221B00EAE9003CFB93 /* LocalSongStore.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocalSongStore.swift; sourceTree = "<group>"; };
+		ABCA1E201B00E988003CFB93 /* AudioFileStore.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AudioFileStore.swift; sourceTree = "<group>"; };
+		ABCA1E221B00EAE9003CFB93 /* LocalAudioFileStore.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocalAudioFileStore.swift; sourceTree = "<group>"; };
 		ABCA1E241B00FFBA003CFB93 /* URLContentType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = URLContentType.swift; sourceTree = "<group>"; };
 		ABCB68E918FD57E4009CF277 /* TEOSong.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = TEOSong.xcdatamodel; sourceTree = "<group>"; };
 		ABDBA6861AF0F5A60069CFFB /* AcoustIDWebService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AcoustIDWebService.swift; sourceTree = "<group>"; };
@@ -212,6 +228,7 @@
 		ABE49BB81AE50F48008A28B0 /* AlbumCollection.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AlbumCollection.swift; sourceTree = "<group>"; };
 		ABE49BBA1AE50FC2008A28B0 /* Album.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Album.swift; sourceTree = "<group>"; };
 		ABEC263C1951C6F200A57CE3 /* Main.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Main.storyboard; sourceTree = "<group>"; };
+		ABEC79D11B020E2800CD9F6C /* RealmSwift.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = RealmSwift.framework; sourceTree = "<group>"; };
 		ABED8E311AB72F4F005B1403 /* SongMetadata.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SongMetadata.swift; path = reDiscover/SongMetadata.swift; sourceTree = "<group>"; };
 		ABED8E331AB73B6E005B1403 /* CoverArtController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CoverArtController.swift; path = reDiscover/CoverArtController.swift; sourceTree = "<group>"; };
 		ABF767421AEE6D74007C7A12 /* SongPool.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SongPool.swift; sourceTree = "<group>"; };
@@ -238,6 +255,7 @@
 			files = (
 				AB4E079219B61AEC0052EEC0 /* VideoDecodeAcceleration.framework in Frameworks */,
 				AB4E079119B618640052EEC0 /* libbz2.dylib in Frameworks */,
+				ABEC79D21B020E2800CD9F6C /* RealmSwift.framework in Frameworks */,
 				AB4E079019B618360052EEC0 /* libc++.dylib in Frameworks */,
 				AB4E078F19B618260052EEC0 /* QTKit.framework in Frameworks */,
 				AB4E078D19B6181E0052EEC0 /* libiconv.dylib in Frameworks */,
@@ -339,8 +357,8 @@
 				AB301E7519050C830093B654 /* TEOSongData.m */,
 				AB85BC271875AB5200670905 /* TGSongPool.h */,
 				AB85BC281875AB5200670905 /* TGSongPool.m */,
-				ABCA1E201B00E988003CFB93 /* SongStore.swift */,
-				ABCA1E221B00EAE9003CFB93 /* LocalSongStore.swift */,
+				ABCA1E201B00E988003CFB93 /* AudioFileStore.swift */,
+				ABCA1E221B00EAE9003CFB93 /* LocalAudioFileStore.swift */,
 				AB85BC1D1875AB5200670905 /* TGSong.h */,
 				AB85BC1E1875AB5200670905 /* TGSong.m */,
 				ABCB68E818FD57E4009CF277 /* TEOSong.xcdatamodeld */,
@@ -448,6 +466,7 @@
 		AB85BBD51875AACF00670905 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				ABEC79D11B020E2800CD9F6C /* RealmSwift.framework */,
 				AB4E078E19B618260052EEC0 /* QTKit.framework */,
 				AB0D052D1889E06400F08566 /* libiconv.dylib */,
 				AB241FD9188977AB00E8E03F /* libz.dylib */,
@@ -558,6 +577,7 @@
 				AB85BBD11875AACF00670905 /* Resources */,
 				4841F6531A6146ABB5CC567B /* Copy Pods Resources */,
 				FC1D6E6D5E8A1EB66D88C071 /* Embed Pods Frameworks */,
+				ABEC79D41B020E2800CD9F6C /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
@@ -702,7 +722,7 @@
 				AB85BC491875AB5200670905 /* TGSongGridViewController.m in Sources */,
 				ABFC8EB519C1BCE90007ECCB /* uploadedSS.xcdatamodeld in Sources */,
 				AB85BC4E1875AB5200670905 /* TGSongTimelineViewController.m in Sources */,
-				ABCA1E231B00EAE9003CFB93 /* LocalSongStore.swift in Sources */,
+				ABCA1E231B00EAE9003CFB93 /* LocalAudioFileStore.swift in Sources */,
 				ABE49BBB1AE50FC2008A28B0 /* Album.swift in Sources */,
 				AB85BC5F1875AD7A00670905 /* TGSongGridScrollView.m in Sources */,
 				AB85BC501875AB5200670905 /* TGSongUserData.m in Sources */,
@@ -746,7 +766,7 @@
 				AB5D1DD51A35D714003D07A2 /* NSMutableArray+QueueAdditions.m in Sources */,
 				ABED8E341AB73B6E005B1403 /* CoverArtController.swift in Sources */,
 				ABFD9DD41AD4217700718631 /* SongUUID.swift in Sources */,
-				ABCA1E211B00E988003CFB93 /* SongStore.swift in Sources */,
+				ABCA1E211B00E988003CFB93 /* AudioFileStore.swift in Sources */,
 				ABB2B6621ADEB38F004F9F87 /* NSImage+HashId.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -915,7 +935,10 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				COMBINE_HIDPI_IMAGES = YES;
-				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "reDiscover/reDiscover-Prefix.pch";
 				GCC_PREPROCESSOR_DEFINITIONS = (
@@ -948,7 +971,10 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				COMBINE_HIDPI_IMAGES = YES;
-				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "reDiscover/reDiscover-Prefix.pch";
 				HEADER_SEARCH_PATHS = (

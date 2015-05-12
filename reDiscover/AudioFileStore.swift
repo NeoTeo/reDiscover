@@ -1,5 +1,5 @@
 //
-//  SongStore.swift
+//  AudioFileStore.swift
 //  reDiscover
 //
 //  Created by Teo on 11/05/15.
@@ -8,7 +8,7 @@
 
 import Foundation
 
-protocol SongStore {
+protocol AudioFileStore {
     static func songURLsFromURL(theURL: NSURL) -> [NSURL]?;
 }
 
