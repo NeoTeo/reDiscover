@@ -14,6 +14,9 @@ The Song metadata store is where we save the metadata we have fetched, construct
 accepted from the user.
 */
 protocol SongMetaDataStore {
+    
+    var allSongMetaData: [String : SongMetaData] { get }
+    
     static func add(songMetaData: SongMetaData, songStore: SongMetaDataStore) -> SongMetaDataStore
     static func save(songStore: SongMetaDataStore)
     static func load() -> SongMetaDataStore?

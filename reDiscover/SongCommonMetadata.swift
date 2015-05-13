@@ -104,7 +104,12 @@ extension SongCommonMetaData {
         if albums.count > 0 { album = (albums[0] as! AVMetadataItem).value() as! String }
         if artists.count > 0 { artist = (artists[0] as! AVMetadataItem).value() as! String }
         //FIXME: Beware, this can also be a string value!
-        if years.count > 0 { year = (years[0] as! AVMetadataItem).numberValue as! UInt }
+        println("YEARS: \(years)")
+        if years.count > 0 && (years[0] as! AVMetadataItem).key().isKindOfClass(NSNumber) {
+            //year = (years[0] as! AVMetadataItem).value() as! UInt 
+            println("Magic!~~")
+        }
+//        if years.count > 0 { year = (years[0] as! AVMetadataItem).numberValue as! UInt }
         
         return SongCommonMetaData(title: title, album: album, artist: artist, year: year, genre: genre)
     }

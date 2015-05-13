@@ -44,4 +44,20 @@ class SongPool : NSObject {
         }
     }
     
+    static func save(pool: NSDictionary) {
+        //NSFileManager.defaultManager().removeItemAtPath(Realm.defaultPath, error: nil)
+//        let myStore = SongMetaDataStoreLocal(metaData:[theMetaData.generatedMetaData.UUId:theMetaData])
+        let myStore = SongMetaDataStoreLocal(metaData:[:])
+
+        for (key,value) in pool {
+            let song: Song = value as! Song
+            if let cmd = song.metadata {
+
+                let genMD = SongGeneratedMetaData(UUId: song.UUId, URLString: song.urlString!)
+                let theMetaData = SongMetaData(common: cmd, genMetaData: genMD)
+
+                println("I gots: \(theMetaData.commonMetaData.title)")
+            }
+        }
+    }
 }

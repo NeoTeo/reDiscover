@@ -869,6 +869,9 @@ static int const kSongPoolStartCapacity = 250;
 // Go through all songs and store those who have had data added to them.
 // This includes UUID or a user selected sweet spot.
 - (void)storeSongData {
+    // REFAC
+    [SongPool save:songPoolDictionary];
+    
     // TEOSongData test
     [self saveContext:NO];
     

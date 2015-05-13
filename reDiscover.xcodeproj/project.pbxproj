@@ -79,8 +79,6 @@
 		ABE49BB91AE50F48008A28B0 /* AlbumCollection.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABE49BB81AE50F48008A28B0 /* AlbumCollection.swift */; };
 		ABE49BBB1AE50FC2008A28B0 /* Album.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABE49BBA1AE50FC2008A28B0 /* Album.swift */; };
 		ABEC263D1951C6F200A57CE3 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = ABEC263C1951C6F200A57CE3 /* Main.storyboard */; };
-		ABEC79D21B020E2800CD9F6C /* RealmSwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ABEC79D11B020E2800CD9F6C /* RealmSwift.framework */; };
-		ABEC79D31B020E2800CD9F6C /* RealmSwift.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = ABEC79D11B020E2800CD9F6C /* RealmSwift.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		ABEC79D61B02402200CD9F6C /* SongMetaDataStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABEC79D51B02402200CD9F6C /* SongMetaDataStore.swift */; };
 		ABEC79D81B0242E100CD9F6C /* SongMetaData.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABEC79D71B0242E100CD9F6C /* SongMetaData.swift */; };
 		ABEC79DA1B0243BC00CD9F6C /* SongMetaDataStoreLocal.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABEC79D91B0243BC00CD9F6C /* SongMetaDataStoreLocal.swift */; };
@@ -104,20 +102,6 @@
 			remoteInfo = reDiscover;
 		};
 /* End PBXContainerItemProxy section */
-
-/* Begin PBXCopyFilesBuildPhase section */
-		ABEC79D41B020E2800CD9F6C /* Embed Frameworks */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = "";
-			dstSubfolderSpec = 10;
-			files = (
-				ABEC79D31B020E2800CD9F6C /* RealmSwift.framework in Embed Frameworks */,
-			);
-			name = "Embed Frameworks";
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		519B18FEE8576990A26C4BDB /* Pods.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.debug.xcconfig; path = "Pods/Target Support Files/Pods/Pods.debug.xcconfig"; sourceTree = "<group>"; };
@@ -265,7 +249,6 @@
 			files = (
 				AB4E079219B61AEC0052EEC0 /* VideoDecodeAcceleration.framework in Frameworks */,
 				AB4E079119B618640052EEC0 /* libbz2.dylib in Frameworks */,
-				ABEC79D21B020E2800CD9F6C /* RealmSwift.framework in Frameworks */,
 				AB4E079019B618360052EEC0 /* libc++.dylib in Frameworks */,
 				AB4E078F19B618260052EEC0 /* QTKit.framework in Frameworks */,
 				AB4E078D19B6181E0052EEC0 /* libiconv.dylib in Frameworks */,
@@ -592,7 +575,6 @@
 				AB85BBD11875AACF00670905 /* Resources */,
 				4841F6531A6146ABB5CC567B /* Copy Pods Resources */,
 				FC1D6E6D5E8A1EB66D88C071 /* Embed Pods Frameworks */,
-				ABEC79D41B020E2800CD9F6C /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
@@ -841,6 +823,7 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(DEVELOPER_FRAMEWORKS_DIR)",
 					"$(inherited)",
+					"/Users/teo/source/Apple/OSX/rediscover/RealmSwift.framework/**",
 				);
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
@@ -868,6 +851,7 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(DEVELOPER_FRAMEWORKS_DIR)",
 					"$(inherited)",
+					"/Users/teo/source/Apple/OSX/rediscover/RealmSwift.framework/**",
 				);
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				INFOPLIST_FILE = "reDiscover Tests/Info.plist";
@@ -958,6 +942,7 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",
+					"/Users/teo/source/Apple/OSX/rediscover/RealmSwift.framework/**",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "reDiscover/reDiscover-Prefix.pch";
@@ -994,6 +979,7 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",
+					"/Users/teo/source/Apple/OSX/rediscover/RealmSwift.framework/**",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "reDiscover/reDiscover-Prefix.pch";

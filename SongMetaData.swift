@@ -19,5 +19,6 @@ class SongMetaData {
     init(common: SongCommonMetaData, genMetaData: SongGeneratedMetaData) {
         commonMetaData = common
         generatedMetaData = genMetaData
+        
     }
 }

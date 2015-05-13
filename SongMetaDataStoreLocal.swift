@@ -9,6 +9,7 @@
 import Foundation
 
 class SongMetaDataStoreLocal : SongMetaDataStore {
+
     let allSongMetaData: [String : SongMetaData]
     
     init(metaData: [String : SongMetaData]) {
@@ -18,7 +19,11 @@ class SongMetaDataStoreLocal : SongMetaDataStore {
 
 extension SongMetaDataStoreLocal {
     static func add(songMetaData: SongMetaData, songStore: SongMetaDataStore) -> SongMetaDataStore {
-        return SongMetaDataStoreLocal(metaData: [songMetaData.generatedMetaData.UUId : songMetaData])
+        
+        var allSongs = songStore.allSongMetaData
+        allSongs[songMetaData.generatedMetaData.URLString] = songMetaData
+        
+        return SongMetaDataStoreLocal(metaData: allSongs)
     }
     
     static func get(forSong theSong: Song, songStore: SongMetaDataStore) -> SongMetaData? {

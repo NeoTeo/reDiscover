@@ -326,7 +326,7 @@
     } else if ([chars isEqualToString:@"s"]) {
         
         TGLog(TGLOG_ALL,@"Store selected sweet spot and save!");
-        [_currentSongPool storeSweetSpotForSongID:lastRequestedSongID];
+        //[_currentSongPool storeSweetSpotForSongID:lastRequestedSongID];
         [_currentSongPool storeSongData];
     } else if ([chars isEqualToString:@" "]){
         
