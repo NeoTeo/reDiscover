@@ -1,0 +1,5 @@
+Split up SweetSpotServerIO into
+* part that loads and stores from local storage
+* part that uploads and fetches from SS server.
+
+Change Song to use only SongCommonMetaData and SongGeneratedMetaData.

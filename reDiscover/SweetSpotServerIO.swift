@@ -7,7 +7,7 @@
 //
 
 import Cocoa
-
+    //MARK: Move the core data functions to a separate class.
 /**
     The SweetSpotServerIO class handles communication with the sweet spot web server.
 
@@ -100,8 +100,8 @@ class SweetSpotServerIO: NSObject {
                     return
                 }
                 
-                for ss in fetchedArray {
-                    let ssData = ss as! UploadedSSData
+                for ssData in fetchedArray as! [UploadedSSData] {
+                    //let ssData = ss as! UploadedSSData
                     self.uploadedSweetSpots[ssData.songUUID] = ssData
                     println("The ssData songUUID is \(ssData.songUUID) and its sweetspots \(ssData.sweetSpots)")
                 }
@@ -138,6 +138,7 @@ class SweetSpotServerIO: NSObject {
         return false
     }
     
+    //MARK: Below here belongs in the sweetspotserver class
     func uploadSweetSpotsForSongID(songID: SongIDProtocol) -> Bool {
         // First get the song's uuid
         let songUUID = delegate?.UUIDStringForSongID(songID)

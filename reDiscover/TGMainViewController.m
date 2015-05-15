@@ -59,6 +59,7 @@
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(songMetaDataWasUpdated:) name:@"songMetaDataUpdated" object:nil];
     
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(newSongAdded:) name:@"NewSongAdded" object:nil];
     // ^^ From awakeFromNib
 }
 
@@ -519,6 +520,14 @@
 
 -(BOOL)splitView:(NSSplitView *)splitView shouldHideDividerAtIndex:(NSInteger)dividerIndex {
     return YES;
+}
+
+// REFAC
+/**
+ Instead of the songPoolDidLoadDataForSong 
+*/
+- (void)newSongAdded:(id<SongIDProtocol>)songId {
+ TGLog(TGLOG_REFAC,@"newSongAdded with %@",songId);
 }
 
 #pragma mark -

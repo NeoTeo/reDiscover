@@ -31,22 +31,34 @@ class SongPool : NSObject {
         return nil
     }
     
-    static func loadFromURL(theURL: NSURL) {
-        if let songURLs = LocalAudioFileStore.songURLsFromURL(theURL) {
-            for songURL in songURLs {
-
-                println("songURL \(songURL)")
-                let songString = songURL.absoluteString!
-                let songId = SongID(string: songString)
-                let songCommonMetaData = SongCommonMetaData(title: nil, album: nil, artist: nil, year: 1071, genre: nil)
-                let newSong = Song(songId: songId, metadata: songCommonMetaData, urlString: songString, sweetSpots: nil, fingerPrint: nil, selectedSS: 0, releases: nil, artId: nil, UUId: nil, RelId: nil)
-            }
+    /**
+        Make and return a dictionary of songs made from any audio URLs found 
+        from the given URL.
+    */
+    static func songDictionaryFromURL(theURL: NSURL) -> [SongID : Song]? {
+        var allSongs = [SongID: Song]()
+        
+        LocalAudioFileStore.applyAudioURLsToClosure(theURL) { songURL in
+            
+            println("songURL \(songURL)")
+            let songString = songURL.absoluteString!
+            let songId = SongID(string: songString)
+            let songCommonMetaData = SongCommonMetaData(title: nil, album: nil, artist: nil, year: 1071, genre: nil)
+            let newSong = Song(songId: songId, metadata: songCommonMetaData, urlString: songString, sweetSpots: nil, fingerPrint: nil, selectedSS: 0, releases: nil, artId: nil, UUId: nil, RelId: nil)
+            
+            allSongs[songId] = newSong
+            
+            NSNotificationCenter.defaultCenter().postNotificationName("NewSongAdded", object: songId)
         }
+        return allSongs
     }
-    
+
+    /**
+        Traverse the pool of songs and, for each, compare the metadata fields we want to save with the
+        metadata fields of the corresponding core data item. If they differ, update the core data item so
+        that it is saved when we call the associated managed object context's save.
+    */
     static func save(pool: NSDictionary) {
-        //NSFileManager.defaultManager().removeItemAtPath(Realm.defaultPath, error: nil)
-//        let myStore = SongMetaDataStoreLocal(metaData:[theMetaData.generatedMetaData.UUId:theMetaData])
         let myStore = SongMetaDataStoreLocal(metaData:[:])
 
         for (key,value) in pool {

@@ -22,41 +22,40 @@ extension CoreDataStore {
     Only when the root context is saved are the changes committed to the store (by the persistent store coordinator associated with the root context).
     A parent context does *not* pull from its children before it saves, so the children must save before the parent.
     */
-    static func managedObjectContext(name: String) -> NSManagedObjectContext? {
-        if let modelURL = NSBundle.mainBundle().URLForResource(name, withExtension: "momd"),
+    static func managedObjectContext(modelName: String) -> NSManagedObjectContext? {
+        
+        var moc: NSManagedObjectContext?
+        
+        if let modelURL = NSBundle.mainBundle().URLForResource(modelName, withExtension: "momd"),
             let model = NSManagedObjectModel(contentsOfURL: modelURL) {
                 
-            let coordinator = NSPersistentStoreCoordinator(managedObjectModel: model)
-            let privateMOC: NSManagedObjectContext = NSManagedObjectContext(concurrencyType: .PrivateQueueConcurrencyType)
-                
-            privateMOC.persistentStoreCoordinator = coordinator
-            
-            let moc = NSManagedObjectContext(concurrencyType: .PrivateQueueConcurrencyType)
             var error: NSError?
-            let documentDir = NSFileManager.defaultManager().URLForDirectory(NSSearchPathDirectory.DocumentDirectory, inDomain: NSSearchPathDomainMask.UserDomainMask, appropriateForURL: nil, create: true, error: &error)
-            let docPath = documentDir?.URLByAppendingPathComponent("reDiscoverdb_v2.sqlite")
+            moc = NSManagedObjectContext(concurrencyType: .PrivateQueueConcurrencyType)
+            moc!.persistentStoreCoordinator = NSPersistentStoreCoordinator(managedObjectModel: model)
+    
                 
-            moc.persistentStoreCoordinator?.addPersistentStoreWithType(NSSQLiteStoreType,
+            let docPath = NSFileManager.defaultManager().URLForDirectory(NSSearchPathDirectory.DocumentDirectory,
+                inDomain: NSSearchPathDomainMask.UserDomainMask,
+                appropriateForURL: nil,
+                create: true, error: &error)?.URLByAppendingPathComponent("reDiscoverdb_v2.sqlite")
+                
+            moc!.persistentStoreCoordinator?.addPersistentStoreWithType(NSSQLiteStoreType,
                 configuration: nil,
                 URL: docPath,
                 options: nil, error: &error)
                 
-            if error != nil {
-                println("Error in managedObjectContext \(error)")
-                return nil
-            }
+            if error != nil { println("Error in managedObjectContext \(error)") }
             
-            return moc
         }
         
-        return nil
+        return moc
     }
     
-    static func fetchSongMetaData(context: NSManagedObjectContext) -> [String : SongMetaData]? {
+    static func fetchSongsMetaData(context: NSManagedObjectContext) -> [String : SongMetaData]? {
         
         let fetchRequest = NSFetchRequest(entityName: "SongMetaData")
         var error: NSError?
-        var songMetaData: [String : SongMetaData]?
+        var songsMetaData: [String : SongMetaData]?
         
         context.performBlockAndWait {
             let fetchedArray = context.executeFetchRequest(fetchRequest, error: &error)
@@ -64,12 +63,23 @@ extension CoreDataStore {
                 println("Error while fetching SongMetaData: \(error?.localizedDescription)")
                 return
             }
-            songMetaData = [:]
+            songsMetaData = [:]
             for songData in fetchedArray as! [SongMetaData] {
-                songMetaData![songData.generatedMetaData.URLString] = songData
+                songsMetaData![songData.generatedMetaData.URLString] = songData
             }
         }
         
-        return songMetaData
+        return songsMetaData
+    }
+    
+    static func saveContext(context: NSManagedObjectContext) {
+        if context.hasChanges {
+            context.performBlockAndWait {
+                var error: NSError?
+                if context.save(&error) == false {
+                    println("Error saving!")
+                }
+            }
+        }
     }
 }

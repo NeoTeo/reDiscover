@@ -245,7 +245,8 @@ static int const kSongPoolStartCapacity = 250;
 // Traverse the passed in URL, find all music files and load their URLs into a dictionary.
 // returns true if the given url is valid and, if so, will initiate the loading of songs.
 - (BOOL)loadFromURL:(NSURL *)anURL {
-    [SongPool loadFromURL:anURL];
+    //NSDictionary *allSongs =
+    [SongPool songDictionaryFromURL:anURL];
     
     // init status.
     allURLsRequested = NO;
