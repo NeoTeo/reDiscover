@@ -246,7 +246,11 @@ static int const kSongPoolStartCapacity = 250;
 // returns true if the given url is valid and, if so, will initiate the loading of songs.
 - (BOOL)loadFromURL:(NSURL *)anURL {
     //NSDictionary *allSongs =
-    [SongPool songDictionaryFromURL:anURL];
+    dispatch_async(serialDataLoad, ^{
+        [SongPool fillSongPoolWithSongURLsAtURL:anURL];
+
+    });
+    return YES;
     
     // init status.
     allURLsRequested = NO;
@@ -683,7 +687,8 @@ static int const kSongPoolStartCapacity = 250;
 }
 
 -(id<TGSong>)songForID:(id<SongIDProtocol>)songID {
-    return [songPoolDictionary objectForKey:songID];
+    return [SongPool songForSongId:songID];
+//    return [songPoolDictionary objectForKey:songID];
 }
 
 - (dispatch_queue_t)serialQueue {

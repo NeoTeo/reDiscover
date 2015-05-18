@@ -526,8 +526,10 @@
 /**
  Instead of the songPoolDidLoadDataForSong 
 */
-- (void)newSongAdded:(id<SongIDProtocol>)songId {
- TGLog(TGLOG_REFAC,@"newSongAdded with %@",songId);
+- (void)newSongAdded:(NSNotification*)notification {
+// TGLog(TGLOG_REFAC,@"newSongAdded with %@",songId);
+    id<SongIDProtocol> songId = (id<SongIDProtocol>)notification.object;
+    [self songPoolDidLoadSongURLWithID:songId];
 }
 
 #pragma mark -

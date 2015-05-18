@@ -21,6 +21,15 @@ extension LocalAudioFileStore {
     
     /**
         Apply each audio URL found below the given topURL to the given closure.
+    
+        Because the fetching of each url can take a non-trivial amount of time we
+        want to perform the closure as soon as we have anything to work with. This
+        means calling it with each url rather than collecting all the urls first and 
+        then passing them back for something else to apply them to. 
+    (This was tested empirically (times in seconds) on a remote dir with 22977 urls:
+        executionTime for finding urls and calling closure on each = 24.0814030170441
+        executionTime for just finding urls and returning them as array  = 21.6866909861565
+    )
     */
     static func applyAudioURLsToClosure(topURL: NSURL, closure: (NSURL) -> () ) {
         
@@ -68,6 +77,7 @@ extension LocalAudioFileStore {
                     }
                 }
             }
+            println("songURLs size is \(songURLs.count)")
             return songURLs
         }
         
