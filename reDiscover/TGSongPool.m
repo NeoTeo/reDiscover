@@ -252,182 +252,182 @@ static int const kSongPoolStartCapacity = 250;
     });
     return YES;
     
-    // init status.
-    allURLsRequested = NO;
-    allURLsLoaded = NO;
-    errorLoadingSongURLs = NO;
-    __block int requestedOps = 0;
-    __block int completedOps = 0;
-    opQueue = [[NSOperationQueue alloc] init];
-    
-    TGLog(TGLOG_ALL,@"loadFromURL running on the main thread? %@",[NSThread isMainThread]?@"Yep":@"Nope");
-    
-//    NSFileManager *fileManager = [[NSFileManager alloc] init];
-    
-    NSArray *keys = [NSArray arrayWithObject:NSURLIsDirectoryKey];
-    
-//    NSTimeInterval timerStart = [NSDate timeIntervalSinceReferenceDate];
-
-    // At this point, to avoid blocking with a beach ball on big resources/slow access, we drop this part into a concurrent queue.
-    NSOperationQueue *topQueue = [[NSOperationQueue alloc] init];
-    NSBlockOperation *topOp = [NSBlockOperation blockOperationWithBlock:^{
-        
-        // The enumerator does a deep traversal of the given url.
-        NSDirectoryEnumerator *enumerator = [self.sharedFileManager
-                                             enumeratorAtURL:anURL
-                                             includingPropertiesForKeys:keys
-                                             options:0
-                                             errorHandler:^(NSURL *url, NSError *error) {
-                                                 // Handle the error.
-                                                 // Return YES if the enumeration should continue after the error.
-                                                 TGLog(TGLOG_ALL,@"Error getting the directory. %@",error);
-                                                 // Return yes to continue traversing.
-                                                 return YES;
-                                             }];
-        
-        for (NSURL *url in enumerator) {
-            
-            // Increment counter to track number of requested load operations.
-            requestedOps++;
-            
-            // Each block checks a url.
-            NSBlockOperation *theOp = [NSBlockOperation blockOperationWithBlock:^{
-                NSError *error;
-                NSNumber *isDirectory = nil;
-
-                if (! [url getResourceValue:&isDirectory forKey:NSURLIsDirectoryKey error:&error]) {
-                    // handle error
-                    TGLog(TGLOG_ALL,@"An error %@ occurred in the enumeration.",error);
-                    errorLoadingSongURLs = YES;
-                    
-                    // TEO: handle error by making another delegate method that signals failure.
-                    return;
-                }
-                
-                if (! [isDirectory boolValue]) {
-                    // No error and it’s not a directory; do something with the file
-                    
-                    // Check the file extension and deal only with audio files.
-                    CFStringRef fileExtension = (__bridge CFStringRef) [url pathExtension];
-                    CFStringRef fileUTI = UTTypeCreatePreferredIdentifierForTag(kUTTagClassFilenameExtension, fileExtension, NULL);
-                    
-                    if (UTTypeConformsTo(fileUTI, kUTTypeAudio))
-                    {
-                        // Create a song object with the given url. This does not start loading it from disk.
-                        //TGSong *newSong = [[TGSong alloc] init];
-                        
-                        // Set the song pool to be a song's delegate.
-                        //[newSong setDelegate:self];
-                        // Set the song's song pool API in a move away from using delegates for everything... wip
-                        //[newSong setSongPoolAPI:self];
-                        
-                        //CDFIX
-                        // Set the song cover image id to the default (empty).
-                        //newSong.artID = nil;//_defaultCoverArtHashId;
-                        
-                        // The song id is assigned.
-                        //[newSong setSongID:[SongID initWithString:[url absoluteString]]];
-
-                        NSAssert(serialDataLoad != nil, @"WTF serialDataLoad is nil!");
-                        dispatch_async(serialDataLoad, ^{
-                            
-                            // cdfix This should no longer hook up the song to a managed object but instead
-                            // it should copy the data across and let the array go. We do not want to have to access
-                            // the properties through a managed context as that requires us to go through its thread
-                            // which can deadlock/delay on concurrent access.
-                            
-                            
-                            TEOSongData* teoData = [self.TEOSongDataDictionary objectForKey:[url absoluteString]];
-                            //FIXME: Why does this not crash when teoData is nil?
-                            SongCommonMetaData* metadata = [[SongCommonMetaData alloc] initWithTitle:teoData.title
-                                                                                   album:teoData.album
-                                                                                  artist:teoData.artist
-                                                                                    year:[teoData.year unsignedIntegerValue]
-                                                                                   genre:teoData.genre];
-                            
-                            id<SongIDProtocol> songId = [[SongID alloc] initWithString:[url absoluteString]];
-                            
-                            id<TGSong>newSong = [[Song alloc]initWithSongId:songId
-                                                    metadata: metadata
-                                                   urlString: [url absoluteString]
-                                                  sweetSpots: teoData.sweetSpots
-                                                 fingerPrint: teoData.fingerprint
-                                                  selectedSS: [teoData.selectedSweetSpot floatValue]
-                                                    releases: teoData.songReleases
-                                                       artId: @""
-                                                        UUId: nil
-                                                        RelId: nil];
-                            // cdfix
-                            //[self copyData:teoData toSong:newSong forURL:[url absoluteString]];
- 
-                       /*
-                            // Only add the loaded url if it isn't already in the dictionary.
-                            if (!teoData) {
-                                // this needs to happen on the managed object context's own thread
-                                [self.TEOmanagedObjectContext performBlock:^{
-                                    newSong.TEOData = [TEOSongData insertItemWithURLString:[url absoluteString] inManagedObjectContext:self.TEOmanagedObjectContext];
-                                }];
-                                
-                                [[NSNotificationCenter defaultCenter] postNotificationName:@"TGNewSongLoaded" object:newSong];
-                            } else {
-                                // At this point we have found the song in the local store so we hook it up to the song instance for this run.
-                                newSong.TEOData = teoData;
-                            }
-                         */
-                            // Add the song to the songpool.
-                            [songPoolDictionary setObject:newSong forKey:newSong.songID];
-                            
-                            
-                            // Upload any sweetspots that have not already been uploaded.
-                            if (newSong.sweetSpots.count) {
-                                [_sweetSpotServerIO uploadSweetSpotsForSongID:newSong.songID];
-                            }
-                  
-                        });
-                        
-                        // Inform the delegate that another song object has been loaded. This causes a cell in the song matrix to be added.
-                        if ((_delegate != Nil) && [_delegate respondsToSelector:@selector(songPoolDidLoadSongURLWithID:)]) {
-                            [_delegate songPoolDidLoadSongURLWithID:[[SongID alloc] initWithString:[url absoluteString]]];
-                        }
-                    }
-                }
-            }];
-            
-            [theOp setCompletionBlock:^{
-                
-                // Atomically increment the counter to track completed operations.
-                OSAtomicIncrement32(&completedOps);
-                
-                // If we're done requesting new urls and
-                // the number of completed operations is the same as the requested operations then
-                // signal that we're done loading and signal our delegate that we're all done.
-                if (allURLsRequested) {
-                    if ( completedOps == requestedOps) {
-                        // At this point we know how many songs to display.
-                        
-                        // Inform the delegate that we've loaded the all the URLs.
-                        if ([_delegate respondsToSelector:@selector(songPoolDidLoadAllURLs:)]) {
-                                [_delegate songPoolDidLoadAllURLs:loadedURLs];
-                        }
-                        allURLsLoaded = YES;
-                        
-                        
-                        // At this point we start assigning unmapped songs to a position in the grid.
-                    }
-                }
-            }];
-            
-            [opQueue addOperation:theOp];
-        }
-    }];
-
-    [topOp setCompletionBlock:^{
-        allURLsRequested = YES;
-    }];
-
-    [topQueue addOperation:topOp];
-    
-    return YES;
+//    // init status.
+//    allURLsRequested = NO;
+//    allURLsLoaded = NO;
+//    errorLoadingSongURLs = NO;
+//    __block int requestedOps = 0;
+//    __block int completedOps = 0;
+//    opQueue = [[NSOperationQueue alloc] init];
+//    
+//    TGLog(TGLOG_ALL,@"loadFromURL running on the main thread? %@",[NSThread isMainThread]?@"Yep":@"Nope");
+//    
+////    NSFileManager *fileManager = [[NSFileManager alloc] init];
+//    
+//    NSArray *keys = [NSArray arrayWithObject:NSURLIsDirectoryKey];
+//    
+////    NSTimeInterval timerStart = [NSDate timeIntervalSinceReferenceDate];
+//
+//    // At this point, to avoid blocking with a beach ball on big resources/slow access, we drop this part into a concurrent queue.
+//    NSOperationQueue *topQueue = [[NSOperationQueue alloc] init];
+//    NSBlockOperation *topOp = [NSBlockOperation blockOperationWithBlock:^{
+//        
+//        // The enumerator does a deep traversal of the given url.
+//        NSDirectoryEnumerator *enumerator = [self.sharedFileManager
+//                                             enumeratorAtURL:anURL
+//                                             includingPropertiesForKeys:keys
+//                                             options:0
+//                                             errorHandler:^(NSURL *url, NSError *error) {
+//                                                 // Handle the error.
+//                                                 // Return YES if the enumeration should continue after the error.
+//                                                 TGLog(TGLOG_ALL,@"Error getting the directory. %@",error);
+//                                                 // Return yes to continue traversing.
+//                                                 return YES;
+//                                             }];
+//        
+//        for (NSURL *url in enumerator) {
+//            
+//            // Increment counter to track number of requested load operations.
+//            requestedOps++;
+//            
+//            // Each block checks a url.
+//            NSBlockOperation *theOp = [NSBlockOperation blockOperationWithBlock:^{
+//                NSError *error;
+//                NSNumber *isDirectory = nil;
+//
+//                if (! [url getResourceValue:&isDirectory forKey:NSURLIsDirectoryKey error:&error]) {
+//                    // handle error
+//                    TGLog(TGLOG_ALL,@"An error %@ occurred in the enumeration.",error);
+//                    errorLoadingSongURLs = YES;
+//                    
+//                    // TEO: handle error by making another delegate method that signals failure.
+//                    return;
+//                }
+//                
+//                if (! [isDirectory boolValue]) {
+//                    // No error and it’s not a directory; do something with the file
+//                    
+//                    // Check the file extension and deal only with audio files.
+//                    CFStringRef fileExtension = (__bridge CFStringRef) [url pathExtension];
+//                    CFStringRef fileUTI = UTTypeCreatePreferredIdentifierForTag(kUTTagClassFilenameExtension, fileExtension, NULL);
+//                    
+//                    if (UTTypeConformsTo(fileUTI, kUTTypeAudio))
+//                    {
+//                        // Create a song object with the given url. This does not start loading it from disk.
+//                        //TGSong *newSong = [[TGSong alloc] init];
+//                        
+//                        // Set the song pool to be a song's delegate.
+//                        //[newSong setDelegate:self];
+//                        // Set the song's song pool API in a move away from using delegates for everything... wip
+//                        //[newSong setSongPoolAPI:self];
+//                        
+//                        //CDFIX
+//                        // Set the song cover image id to the default (empty).
+//                        //newSong.artID = nil;//_defaultCoverArtHashId;
+//                        
+//                        // The song id is assigned.
+//                        //[newSong setSongID:[SongID initWithString:[url absoluteString]]];
+//
+//                        NSAssert(serialDataLoad != nil, @"WTF serialDataLoad is nil!");
+//                        dispatch_async(serialDataLoad, ^{
+//                            
+//                            // cdfix This should no longer hook up the song to a managed object but instead
+//                            // it should copy the data across and let the array go. We do not want to have to access
+//                            // the properties through a managed context as that requires us to go through its thread
+//                            // which can deadlock/delay on concurrent access.
+//                            
+//                            
+//                            TEOSongData* teoData = [self.TEOSongDataDictionary objectForKey:[url absoluteString]];
+//                            //FIXME: Why does this not crash when teoData is nil?
+//                            SongCommonMetaData* metadata = [[SongCommonMetaData alloc] initWithTitle:teoData.title
+//                                                                                   album:teoData.album
+//                                                                                  artist:teoData.artist
+//                                                                                    year:[teoData.year unsignedIntegerValue]
+//                                                                                   genre:teoData.genre];
+//                            
+//                            id<SongIDProtocol> songId = [[SongID alloc] initWithString:[url absoluteString]];
+//                            
+//                            id<TGSong>newSong = [[Song alloc]initWithSongId:songId
+//                                                    metadata: metadata
+//                                                   urlString: [url absoluteString]
+//                                                  sweetSpots: teoData.sweetSpots
+//                                                 fingerPrint: teoData.fingerprint
+//                                                  selectedSS: [teoData.selectedSweetSpot floatValue]
+//                                                    releases: teoData.songReleases
+//                                                       artId: @""
+//                                                        UUId: nil
+//                                                        RelId: nil];
+//                            // cdfix
+//                            //[self copyData:teoData toSong:newSong forURL:[url absoluteString]];
+// 
+//                       /*
+//                            // Only add the loaded url if it isn't already in the dictionary.
+//                            if (!teoData) {
+//                                // this needs to happen on the managed object context's own thread
+//                                [self.TEOmanagedObjectContext performBlock:^{
+//                                    newSong.TEOData = [TEOSongData insertItemWithURLString:[url absoluteString] inManagedObjectContext:self.TEOmanagedObjectContext];
+//                                }];
+//                                
+//                                [[NSNotificationCenter defaultCenter] postNotificationName:@"TGNewSongLoaded" object:newSong];
+//                            } else {
+//                                // At this point we have found the song in the local store so we hook it up to the song instance for this run.
+//                                newSong.TEOData = teoData;
+//                            }
+//                         */
+//                            // Add the song to the songpool.
+//                            [songPoolDictionary setObject:newSong forKey:newSong.songID];
+//                            
+//                            
+//                            // Upload any sweetspots that have not already been uploaded.
+//                            if (newSong.sweetSpots.count) {
+//                                [_sweetSpotServerIO uploadSweetSpotsForSongID:newSong.songID];
+//                            }
+//                  
+//                        });
+//                        
+//                        // Inform the delegate that another song object has been loaded. This causes a cell in the song matrix to be added.
+//                        if ((_delegate != Nil) && [_delegate respondsToSelector:@selector(songPoolDidLoadSongURLWithID:)]) {
+//                            [_delegate songPoolDidLoadSongURLWithID:[[SongID alloc] initWithString:[url absoluteString]]];
+//                        }
+//                    }
+//                }
+//            }];
+//            
+//            [theOp setCompletionBlock:^{
+//                
+//                // Atomically increment the counter to track completed operations.
+//                OSAtomicIncrement32(&completedOps);
+//                
+//                // If we're done requesting new urls and
+//                // the number of completed operations is the same as the requested operations then
+//                // signal that we're done loading and signal our delegate that we're all done.
+//                if (allURLsRequested) {
+//                    if ( completedOps == requestedOps) {
+//                        // At this point we know how many songs to display.
+//                        
+//                        // Inform the delegate that we've loaded the all the URLs.
+//                        if ([_delegate respondsToSelector:@selector(songPoolDidLoadAllURLs:)]) {
+//                                [_delegate songPoolDidLoadAllURLs:loadedURLs];
+//                        }
+//                        allURLsLoaded = YES;
+//                        
+//                        
+//                        // At this point we start assigning unmapped songs to a position in the grid.
+//                    }
+//                }
+//            }];
+//            
+//            [opQueue addOperation:theOp];
+//        }
+//    }];
+//
+//    [topOp setCompletionBlock:^{
+//        allURLsRequested = YES;
+//    }];
+//
+//    [topQueue addOperation:topOp];
+//    
+//    return YES;
 }
 
 - (NSString*)artIdForSongId:(id<SongIDProtocol>)songId {
@@ -958,8 +958,9 @@ static int const kSongPoolStartCapacity = 250;
         aSong = [SongCommonMetaData songWithLoadedMetaData:aSong];
 
         dispatch_sync(songPoolQueue, ^{
+            
             // replace old song with the new song in the songpool.
-            [songPoolDictionary setObject:aSong forKey:aSong.songID];
+            [SongPool addSong:aSong];
             // Or update the song in question if its current image == fetching image
             [[NSNotificationCenter defaultCenter] postNotificationName:@"songMetaDataUpdated" object:selectedSongId];
             
@@ -1027,8 +1028,7 @@ static int const kSongPoolStartCapacity = 250;
             // into a serial queue (songPoolQueue) running in a separate thread.
             dispatch_sync(songPoolQueue, ^{
                 // replace old song with the new song in the songpool.
-                [songPoolDictionary setObject:aSong forKey:aSong.songID];
-//                TGLog(TGLOG_REFAC, @"all done with: %@",aSong.metadata.title);
+                [SongPool addSong:aSong];
                 // Here we should signal that the song now has cover art.
                 // Or update the song in question if its current image == fetching image
                 [[NSNotificationCenter defaultCenter] postNotificationName:@"songCoverUpdated" object:selectedSongId];

@@ -73,10 +73,11 @@ class SongPool : NSObject {
     }
 
 
-    static func addSong(theSong: Song) {
+//    static func addSong(theSong: Song) {
+static func addSong(theSong: TGSong) {
         if let queue = songPoolAccessQ {
             dispatch_sync(queue) {
-                SongPool.songPool![theSong.songID as! SongID] = theSong
+                SongPool.songPool![theSong.songID as! SongID] = theSong as? Song
                 return
             }
         }
