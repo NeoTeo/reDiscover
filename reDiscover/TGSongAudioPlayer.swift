@@ -19,6 +19,8 @@ class TGSongAudioPlayer: NSObject {
     var prevSongPlayer: AVPlayer?
     var songPlayerItem: AVPlayerItem?
     var currentVolume:Float  = 1.0
+    var playerObserver: AnyObject?
+    let testQ = dispatch_queue_create("playback queue", nil)
     
     var currentPlayTime: Double {
         get {
@@ -31,13 +33,6 @@ class TGSongAudioPlayer: NSObject {
         set(newPlayTime) {
             if newPlayTime >= 0 && newPlayTime < CMTimeGetSeconds(songDuration) {
                 playAtTime(newPlayTime)
-//                currentPlayer?.seekToTime(CMTimeMakeWithSeconds(newPlayTime, 1)) { success in
-//                    if success == true {
-//                        println("Seek to \(newPlayTime) succeeded")
-//                    } else {
-//                        println("Seek to \(newPlayTime) FAILED")
-//                    }
-//                }
             }
         }
     }
@@ -58,6 +53,8 @@ class TGSongAudioPlayer: NSObject {
         get {
             return self.currentPlayer
         }
+        //FIXME: What's to keep the prevSongPlayer to be overwritten before it has a chance
+        // to free its time observer
         set(newPlayer) {
             if currentPlayer != nil {
                 prevSongPlayer = currentPlayer
@@ -65,23 +62,37 @@ class TGSongAudioPlayer: NSObject {
             currentPlayer = newPlayer
         }
     }
-    
+
+    func setSongPlayer(newPlayer: AVPlayer, block: (CMTime) -> ()) {
+        if let prevPlayer = prevSongPlayer where playerObserver != nil {
+            prevPlayer.removeTimeObserver(playerObserver)
+        }
+        
+        if currentPlayer != nil {
+            prevSongPlayer = currentPlayer
+        }
+        currentPlayer = newPlayer
+        
+        currentPlayer?.addPeriodicTimeObserverForInterval(CMTimeMake(10, 100), queue: testQ, usingBlock: block)
+    }
+
     func getPrevSongPlayer()->AVPlayer? {
         return prevSongPlayer
     }
     
     func playSong() {
         
-        if prevSongPlayer != nil {
-            prevSongPlayer!.pause()
-            NSNotificationCenter.defaultCenter().removeObserver(prevSongPlayer!)
+        if let prevPlayer = prevSongPlayer {
+            prevPlayer.pause()
+            NSNotificationCenter.defaultCenter().removeObserver(prevPlayer)
         }
         
-        if songPlayer == nil { return }
-        songPlayer!.volume = currentVolume
+        if let player = songPlayer {
+            player.volume = currentVolume
 
-        if songPlayer!.status == .ReadyToPlay {
-            songPlayer!.play()
+            if player.status == .ReadyToPlay {
+                player.play()
+            }
         }
     }
     
@@ -108,5 +119,9 @@ class TGSongAudioPlayer: NSObject {
         currentVolume = theVolume
     }
     
+    func songDidUpdatePlayheadPosition(position: Double) {
+        // Set the value of a playhead position var that is bound to 
+        // TGTimelineSliderCell's currentPlayheadPositionInPercent
+    }
     
 }

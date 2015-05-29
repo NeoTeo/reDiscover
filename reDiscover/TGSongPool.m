@@ -1107,14 +1107,14 @@ static int const kSongPoolStartCapacity = 250;
     //NUCACHE
     [songAudioCacher performWhenPlayerIsAvailableForSongId:songID callBack:^(AVPlayer* thePlayer){
         
-        [songAudioPlayer setSongPlayer:thePlayer];
-        
-        // Start observing the new player.
-        [self setSongPlaybackObserver:thePlayer];
-        
-        id<TGSong> song = [self songForID:songID];
-        
         if (songID == lastRequestedSongId) {
+            
+            //[songAudioPlayer setSongPlayer:thePlayer];
+            
+            // Start observing the new player.
+            [self setSongPlaybackObserver:thePlayer];
+            
+            id<TGSong> song = [self songForID:songID];
 
             // If there's no start time, check the sweet spot server for one. If one is found set the startTime to it.
             NSNumber* startTime = time;
@@ -1164,7 +1164,7 @@ static int const kSongPoolStartCapacity = 250;
 }
 
 - (void)setSongPlaybackObserver:(AVPlayer*)songPlayer {
-    
+/* REFACTOR
     // Remove existing observer if there is one.
     AVPlayer* prevPlayer = [songAudioPlayer getPrevSongPlayer];
     if (prevPlayer != nil && _playerTimerObserver != nil) {
@@ -1175,7 +1175,7 @@ static int const kSongPoolStartCapacity = 250;
     // Add a periodic observer so we can update the timeline GUI.
     CMTime eachSecond = CMTimeMake(10, 100);
     dispatch_queue_t timelineSerialQueue = playbackQueue;
-    
+
     // Make a weakly retained self and songPlayer for use inside the block to avoid retain cycle.
     __unsafe_unretained typeof(self) weakSelf = self;
     __unsafe_unretained AVPlayer* weakSongPlayer = songPlayer;
@@ -1186,6 +1186,19 @@ static int const kSongPoolStartCapacity = 250;
         CMTime currentPlaybackTime = [weakSongPlayer currentTime];
         [weakSelf songDidUpdatePlayheadPosition:[NSNumber numberWithDouble:CMTimeGetSeconds(currentPlaybackTime)]];
     }];
+ */
+//returnType (^blockName)(parameterTypes) = ^returnType(parameters) {...};
+    
+    // Make a weakly retained self and songPlayer for use inside the block to avoid retain cycle.
+    __unsafe_unretained typeof(self) weakSelf = self;
+    __unsafe_unretained AVPlayer* weakSongPlayer = songPlayer;
+
+    void (^timerObserverBlock)(CMTime) = ^void(CMTime time) {
+        
+        CMTime currentPlaybackTime = [weakSongPlayer currentTime];
+        [weakSelf songDidUpdatePlayheadPosition:[NSNumber numberWithDouble:CMTimeGetSeconds(currentPlaybackTime)]];
+    };
+    [songAudioPlayer setSongPlayer:songPlayer block:timerObserverBlock];
 
 }
 
