@@ -63,8 +63,8 @@
 - (NSNumber *)songDurationForSongID:(id<SongIDProtocol>)songID;
 //- (void)setSongDuration:(NSNumber*)duration forSongId:(id<SongIDProtocol>)songId;
 
-- (id<SongIDProtocol>)lastRequestedSongID;
-- (id<SongIDProtocol>)currentlyPlayingSongID;
+- (id<SongIDProtocol>)lastRequestedSongId;
+- (id<SongIDProtocol>)currentlyPlayingSongId;
 
 - (void)setRequestedPlayheadPosition:(NSNumber *)newPosition;
 //- (void)setRequestedPlayheadPosition:(NSNumber*)newPosition forSongID:(id<SongIDProtocol>)songID;
@@ -163,9 +163,11 @@
     
     NSUInteger songPoolStartCapacity;
     NSMutableDictionary *songPoolDictionary;
-    id<TGSong> currentlyPlayingSong;
-    id<TGSong> lastRequestedSong;
-
+//    id<TGSong> currentlyPlayingSong;
+//    id<TGSong> lastRequestedSong;
+    id<SongIDProtocol> currentlyPlayingSongId;
+    id<SongIDProtocol> lastRequestedSongId;
+    
     int32_t srCounter;
     
     TGFingerPrinter *songFingerPrinter;
@@ -233,6 +235,8 @@
 //MARK: Song data accessor methods. -
 // Async methods
 //- (void)requestEmbeddedMetadataForSongID:(id<SongIDProtocol>)songID withHandler:(void (^)(NSDictionary*))dataHandler;
+-(id<SongIDProtocol>)currentlyPlayingSongId;
+-(id<SongIDProtocol>) lastRequestedSongId;
 
 - (void)storeSweetSpotForSongID:(id<SongIDProtocol>)songID;
 

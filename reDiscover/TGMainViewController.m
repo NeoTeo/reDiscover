@@ -309,7 +309,7 @@
 
 - (void)keyDown:(NSEvent *)theEvent {
     TGLog(TGLOG_ALL,@"Yep, key down in the view controller.");
-    id<SongIDProtocol> lastRequestedSongID = [_currentSongPool lastRequestedSongID];
+    id<SongIDProtocol> lastRequestedSongID = [_currentSongPool lastRequestedSongId];
     
     NSString *chars = [theEvent characters];
     if ([chars isEqualToString:@"["]) {
@@ -379,7 +379,7 @@
 
 
 - (void)songUIPlusButtonWasPressed {
-    [_playlistController addSongToPlaylist:[_currentSongPool lastRequestedSongID]];
+    [_playlistController addSongToPlaylist:[_currentSongPool lastRequestedSongId]];
 }
 
 
@@ -605,7 +605,7 @@
                 art = defImg;
             [_songGridController setCoverImage:art forSongWithID:songId];
         
-        if ([songId isEqual:[_currentSongPool lastRequestedSongID]])
+        if ([songId isEqual:[_currentSongPool lastRequestedSongId]])
         {
             [_songInfoController setSongCoverImage:art];
             [_songInfoController setSong:[_currentSongPool songDataForSongID:songId]];
@@ -730,7 +730,7 @@
 */
 - (void)songMetaDataWasUpdated:(NSNotification*)notification {
     id<SongIDProtocol> songId = notification.object;
-    if ([songId isEqual:[_currentSongPool lastRequestedSongID]])
+    if ([songId isEqual:[_currentSongPool lastRequestedSongId]])
     {
         [_songInfoController setSong:[_currentSongPool songDataForSongID:songId]];
     }
@@ -752,7 +752,7 @@
 - (void)songPoolDidFinishPlayingSong:(id<SongIDProtocol>)songID {
     // If the currently selected song is the same as the one that just finished, see if there is more on the playlist.
     TGLog(TGLOG_ALL,@"song grid controller. Song %@ finished playing.",(NSString*)songID);
-    if (songID == [_currentSongPool lastRequestedSongID]) {
+    if (songID == [_currentSongPool lastRequestedSongId]) {
         id<SongIDProtocol> newSongID = [_playlistController getNextSongIDToPlay];
         if (newSongID == nil) {
             TGLog(TGLOG_ALL,@"No more songs in playlist.");

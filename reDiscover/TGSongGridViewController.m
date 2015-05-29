@@ -230,7 +230,7 @@
     //TODO: This should only be animated if the cover is visible on screen.
     // If we are setting the cover for the currently playing song do a pop animation,
     // otherwise just fade it in.
-    if (songID == [_songPoolAPI lastRequestedSongID]) {
+    if (songID == [_songPoolAPI lastRequestedSongId]) {
         [self coverPushAndFadeAnimationForCell:theCell withImage:theImage];
     }else {
         [self coverFadeInAnimation:theCell withImage:theImage];
@@ -434,7 +434,7 @@ static NSInteger const kUndefinedID =  -1;
 
     // Note which cell is the currently selected so that we can keep it in view after the zooming is done.
 
-    NSInteger theTag = [_songCellMatrix tagForSongWithID:[_songPoolAPI lastRequestedSongID]];
+    NSInteger theTag = [_songCellMatrix tagForSongWithID:[_songPoolAPI lastRequestedSongId]];
     TGGridCell* selectedCell = [_songCellMatrix cellWithTag:theTag];
 //    TGGridCell *selectedCell = [self songIDToCell:[_delegate lastRequestedSongID]];
     
@@ -1017,11 +1017,11 @@ static NSInteger const kUndefinedID =  -1;
 */
 
 - (id<SongIDProtocol>)lastRequestedSong {
-    return [_songPoolAPI lastRequestedSongID];
+    return [_songPoolAPI lastRequestedSongId];
 }
 
 - (id<SongIDProtocol>)currentlyPlayingSongId {
-    return [_songPoolAPI currentlyPlayingSongID];
+    return [_songPoolAPI currentlyPlayingSongId];
 }
 
 - (id<SongIDProtocol>)songIDFromGridColumn:(NSInteger)theCol andRow:(NSInteger)theRow {
@@ -1118,7 +1118,7 @@ static NSInteger const kUndefinedID =  -1;
 - (void)userSelectedSweetSpotMarkerAtIndex:(NSUInteger)ssIndex {
     
     // Ask the song pool for the currently playing song.
-    id<SongIDProtocol> theSongID = [_songPoolAPI currentlyPlayingSongID];
+    id<SongIDProtocol> theSongID = [_songPoolAPI currentlyPlayingSongId];
     // Ask the song pool for the sweet spots for the given song and extract the sweet spot at the given index.
     NSNumber* sweetSpotTime = [[_songPoolAPI sweetSpotsForSongID:theSongID] objectAtIndex:ssIndex];
     

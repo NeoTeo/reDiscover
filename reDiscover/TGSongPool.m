@@ -58,7 +58,7 @@ static int const kSongPoolStartCapacity = 250;
         requestedPlayheadPosition = [NSNumber numberWithDouble:0];
         
         songPoolDictionary = [[NSMutableDictionary alloc] initWithCapacity:kSongPoolStartCapacity];
-        currentlyPlayingSong = NULL;
+        currentlyPlayingSongId = NULL;
         
         /// Make url queues and make them serial so they can be cancelled.
         urlLoadingOpQueue = [[NSOperationQueue alloc] init];
@@ -495,7 +495,7 @@ static int const kSongPoolStartCapacity = 250;
     }
 }
 
-
+/* REFAC - not duplicated yet
 - (void)replaceSweetSpots:(NSArray*)sweetSpots forSongID:(id<SongIDProtocol>)songID {
     id<TGSong> theSong = [self songForID:songID];
     if (theSong == nil) { return; }
@@ -527,7 +527,7 @@ static int const kSongPoolStartCapacity = 250;
     // We should signal that the song's sweet spots have changed.
     [[NSNotificationCenter defaultCenter] postNotificationName:@"SweetSpotsUpdated" object:theSong.songID];
 }
-
+*/
 
 - (NSArray*)sweetSpotsForSongID:(id<SongIDProtocol>)songID {
     id<TGSong> theSong = [self songForID:songID];
@@ -557,6 +557,7 @@ static int const kSongPoolStartCapacity = 250;
     return [self songForID:songID].songReleases;
 }
 
+/*
 - (void)setReleases:(NSData*)releases forSongID:(id<SongIDProtocol>)songID {
     id<TGSong> theSong = [self songForID:songID];
     if (theSong == nil) { return; }
@@ -578,6 +579,7 @@ static int const kSongPoolStartCapacity = 250;
 
 //    [self songForID:songID].songReleases = releases;
 }
+*/
 
 - (NSString *)UUIDStringForSongID:(id<SongIDProtocol>)songID {
     if (![self validSongID:songID]) return nil;
@@ -585,6 +587,7 @@ static int const kSongPoolStartCapacity = 250;
 //    return [self songForID:songID].uuid;
 }
 
+/*
 -(void)setUUIDString:(NSString*)theUUID forSongID:(id<SongIDProtocol>)songID {
     if (![self validSongID:songID]) return;
     
@@ -600,7 +603,7 @@ static int const kSongPoolStartCapacity = 250;
     [self fetchSongSweetSpot:newSong];
 
 }
-
+*/
 - (NSURL *)URLForSongID:(id<SongIDProtocol>)songID {
     if (![self validSongID:songID]) return nil;
     
@@ -666,7 +669,7 @@ static int const kSongPoolStartCapacity = 250;
 - (void)setRequestedPlayheadPosition:(NSNumber *)newPosition {
     
     requestedPlayheadPosition = newPosition;
-    id<TGSong> theSong = [self songForID:[self lastRequestedSongID]];
+    id<TGSong> theSong = [self songForID:lastRequestedSongId];
     
     // Set the current playback time and the currently selected sweet spot to the new position.
     [songAudioPlayer setCurrentPlayTime:[newPosition doubleValue]];
@@ -674,16 +677,20 @@ static int const kSongPoolStartCapacity = 250;
     
     //MARK: REFAC
     id<TGSong> newSong = [SweetSpotControl songWithSelectedSweetSpot:theSong atTime:[newPosition floatValue]];
-    [songPoolDictionary setObject:newSong forKey:newSong.songID];
+    //[songPoolDictionary setObject:newSong forKey:newSong.songID];
+    [SongPool addSong:newSong];
 }
 
 
-- (id<SongIDProtocol>)lastRequestedSongID {
-    return [lastRequestedSong songID];
+// FIXME:
+// lastRequestedSongId and currentlyPlayingSongId should be asking the song player for that info and not
+// keep it in the song pool.
+- (id<SongIDProtocol>)lastRequestedSongId {
+    return lastRequestedSongId;
 }
 
-- (id<SongIDProtocol>)currentlyPlayingSongID {
-    return [currentlyPlayingSong songID];
+- (id<SongIDProtocol>)currentlyPlayingSongId {
+    return currentlyPlayingSongId;
 }
 
 -(id<TGSong>)songForID:(id<SongIDProtocol>)songID {
@@ -862,6 +869,7 @@ static int const kSongPoolStartCapacity = 250;
     }
 }
 
+/* REFAC - not duplicated yet
 - (void)storeSweetSpotForSongID:(id<SongIDProtocol>)songID {
     //TGSong *tmpSong = [self songForID:songID];
     //MARK: REFAC
@@ -870,6 +878,7 @@ static int const kSongPoolStartCapacity = 250;
     tmpSong = [SweetSpotControl songWithAddedSweetSpot:tmpSong withSweetSpot:[SweetSpotControl selectedSweetSpotForSong:tmpSong]];
     [songPoolDictionary setObject:tmpSong forKey:tmpSong.songID];
 }
+*/
 
 // Currently only called manually by pressing the s key.
 // Go through all songs and store those who have had data added to them.
@@ -935,7 +944,8 @@ static int const kSongPoolStartCapacity = 250;
     id<SongIDProtocol> selectedSongId = [cacheContext objectForKey:@"selectedSongId"];
     
     //REFAC - set the lastSelectedSongID here so that the songPoolDidStartFetchingSong knows.
-    lastRequestedSong = [self songForID:selectedSongId];
+//    lastRequestedSong = [self songForID:selectedSongId];
+    lastRequestedSongId = selectedSongId;
     
     // Tell the main view controller that we've started fetching data for the selected song so it can update the UI.
     [_delegate songPoolDidStartFetchingSong:selectedSongId];
@@ -1045,6 +1055,7 @@ static int const kSongPoolStartCapacity = 250;
 - (void)requestSongPlayback:(id<SongIDProtocol>)songID {
     id<TGSong> aSong = [self songForID:songID];
     if (aSong == nil) {
+        TGLog(TGLOG_REFAC, @"requestSongPlayback - no song found.");
         return;
     }
     
@@ -1071,7 +1082,7 @@ static int const kSongPoolStartCapacity = 250;
         return;
     }
     
-    lastRequestedSong = aSong;
+    lastRequestedSongId = songID;
     //TGLog(TGLOG_ALL,@"requestSongPlayback just set lastRequestedSong to %@",lastRequestedSong.songID);
     
     //MARK: COVR
@@ -1089,7 +1100,8 @@ static int const kSongPoolStartCapacity = 250;
         //MARK: REFAC
 //        [aSong makeSweetSpotAtTime:time];
         id<TGSong> newSong = [SweetSpotControl songWithSelectedSweetSpot:aSong atTime:[time floatValue]];
-        [songPoolDictionary setObject:newSong forKey:newSong.songID];
+        //[songPoolDictionary setObject:newSong forKey:newSong.songID];
+        [SongPool addSong:newSong];
     }
 
     //NUCACHE
@@ -1099,14 +1111,12 @@ static int const kSongPoolStartCapacity = 250;
         
         // Start observing the new player.
         [self setSongPlaybackObserver:thePlayer];
-
-        //[songAudioPlayer playSong];
         
         id<TGSong> song = [self songForID:songID];
         
-        if (song == lastRequestedSong) {
-            //TGLog(TGLOG_ALL,@"about to play song which is equal to lastRequestedSong %@",lastRequestedSong.songID);
-            //     If there's no start time, check the sweet spot server for one. If one is found set the startTime to it.
+        if (songID == lastRequestedSongId) {
+
+            // If there's no start time, check the sweet spot server for one. If one is found set the startTime to it.
             NSNumber* startTime = time;
             if (startTime == nil) {
                 // At this point we really ought to make sure we have a song uuid generated from the fingerprint.
@@ -1115,16 +1125,15 @@ static int const kSongPoolStartCapacity = 250;
                     startTime = [NSNumber numberWithDouble:0.0];
                 }
             }
-            //[self playbackSong:song atTime:startTime];
+        
             [songAudioPlayer playAtTime:[startTime floatValue]];
-            currentlyPlayingSong = song;
-                        TGLog(TGLOG_TMP, @"currentSongDuration %f",CMTimeGetSeconds([songAudioPlayer songDuration]));
+            currentlyPlayingSongId = songID;
+        TGLog(TGLOG_TMP, @"currentSongDuration %f",CMTimeGetSeconds([songAudioPlayer songDuration]));
             [self setValue:[NSNumber numberWithFloat:CMTimeGetSeconds([songAudioPlayer songDuration])] forKey:@"currentSongDuration"];
 
             [self setRequestedPlayheadPosition:startTime];
             
         }
-
     }];
     //NUCACHE end
 }
@@ -1148,7 +1157,7 @@ static int const kSongPoolStartCapacity = 250;
 
 - (void)songDidFinishPlayback:(id<TGSong>)song {
     // Pass this on to the delegate (which should be the controller).
-    TGLog(TGLOG_ALL,@"song %lu did finish playback. The last requested song is %@",(unsigned long)[song songID],[lastRequestedSong songID]);
+    TGLog(TGLOG_ALL,@"song %lu did finish playback. The last requested song is %@",(unsigned long)[song songID],lastRequestedSongId);
     if ([[self delegate] respondsToSelector:@selector(songPoolDidFinishPlayingSong:)]) {
         [[self delegate] songPoolDidFinishPlayingSong:[song songID]];
     }

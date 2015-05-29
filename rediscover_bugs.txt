@@ -1,8 +1,17 @@
-#000001	Breaking
+#000003	Functionality
+
+The same album that plays fine on remote HAL fails on local hdd. It fails to play back and gives the error:
+
+WTF! coverImageForSongWithId theCell or theCell.image was nil
+
+Sometimes it does play once but on retur gives the above error.
+
+
+#000002	Breaking
 Adding a nil object to the playlist causes the grid view to stop updating.
 2015-03-09 18:12:03.951 reDiscover[36355:2064595] *** -[__NSPlaceholderDictionary initWithObjects:forKeys:count:]: attempt to insert nil object from objects[1]
 
-#000002 Breaking
+#000001 Breaking
 
 Just moving about on the album Songs from the Labyrinth (only that was loaded).
 Nothing was clicked, no panels shown. Just moving about quickly on grid.
