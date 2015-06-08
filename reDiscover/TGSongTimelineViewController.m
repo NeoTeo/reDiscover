@@ -90,6 +90,21 @@
     [theCell makeMarkersFromSweetSpots:songSweetSpots forSongDuration:songDuration];
 }
 
+/**
+ Toggle the visibility of the timeline popover window at the give rect.
+ @Param theBounds The bounds of the area from which the popover appears.
+ @Param theView The view within which the bounds refer to.
+ */
+- (void)toggleTimelinePopoverRelativeToBounds:(CGRect)theBounds ofView:(NSView *)theView {
+    if ([_songTimelinePopover isShown]) {
+        [_songTimelinePopover close];
+    } else {
+        // Make sure wiew is loaded
+        [self view];
+        
+        [_songTimelinePopover showRelativeToRect:theBounds ofView:theView preferredEdge:CGRectMaxYEdge];
+    }
+}
 
 /**
  Show the timeline popover window.

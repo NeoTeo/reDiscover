@@ -385,9 +385,17 @@
 
 - (void)songUITimelineButtonWasPressed {
     NSPoint mPos = [self.view.window mouseLocationOutsideOfEventStream];
-    NSPoint nowPoint = [self.view convertPoint:mPos fromView:nil];
 
-    [_songGridController lmbDownAtMousePos:nowPoint];
+    // The mPos coordinates are lower left origin. Dimensions are 600x600
+    TGLog(TGLOG_REFAC, @"main view controller coords %@",NSStringFromPoint(mPos));
+
+    //[_songGridController lmbDownAtMousePos:mPos];
+    //REFAC Tmp bodge to avoid going through the grid controller to show the timeline.
+    TGSongTimelineViewController* tmp = [_songGridController songTimelineController];
+    NSSize butDims = NSMakeSize(30, 30);
+    NSRect butFrame = NSMakeRect(mPos.x-butDims.width/2, mPos.y-butDims.height/2, butDims.width, butDims.height);
+
+    [tmp toggleTimelinePopoverRelativeToBounds:butFrame ofView:self.view];
 }
 
 #pragma mark -

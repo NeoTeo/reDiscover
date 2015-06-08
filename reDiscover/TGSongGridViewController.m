@@ -1034,14 +1034,33 @@ static NSInteger const kUndefinedID =  -1;
 }
 
 - (void)lmbDownAtMousePos:(NSPoint)mousePos {
+    
+    // Convertfrom Window view to songGridScrollView coordinates
     NSPoint mouseLoc = [_songGridScrollView convertPoint:mousePos fromView:nil];
+    
+    //REFAC - make a frame that matches the button we just pressed.
+    NSSize butDims = NSMakeSize(30, 30);
+    NSRect butFrame = NSMakeRect(mouseLoc.x-butDims.width/2, mouseLoc.y-butDims.height/2, butDims.width, butDims.height);
+    [self buttonDownInCellFrame:butFrame];
+    return;
+    
+    // mouseLoc coordinates are top left origin. The dimensions are 600x600.
+TGLog(TGLOG_REFAC, @"song grid view coords %@",NSStringFromPoint(mouseLoc));
     NSInteger mouseRow, mouseCol;
+
+    NSView* docView = _songGridScrollView.documentView;
+    TGLog(TGLOG_REFAC, @"document view frame %@",NSStringFromRect(docView.frame));
+    
+    // The documentView is the view that the scrollView scrolls.
+    // Get the row and column of the cell that the mouseLoc points to.
     [_songGridScrollView.documentView getRow:&mouseRow column:&mouseCol forPoint:mouseLoc];
     
+    // Get the cell at the row and col we just got back.
     TGGridCell *currentCell = [_songGridScrollView.documentView cellAtRow:mouseRow column:mouseCol];
     if ([currentCell tag] != -1) {
-        
         NSRect theRect = [_songGridScrollView.documentView coverFrameAtRow:mouseRow column:mouseCol];
+        TGLog(TGLOG_REFAC, @"mouseRow %ld mouseCol %ld",(long)mouseRow,(long)mouseCol);
+        TGLog(TGLOG_REFAC, @"scrolled document view coords %@",NSStringFromPoint(theRect.origin));
         [self buttonDownInCellFrame:theRect];
     }
    
@@ -1074,8 +1093,6 @@ static NSInteger const kUndefinedID =  -1;
 }
 
 - (void)buttonDownInCellFrame:(NSRect)cellFrame {
-//    [self togglePopoverAtCellFrame:cellFrame withDelay:0.0];
-//    return;
     // If a popover is shown, hide it.
     if ([[_songTimelineController songTimelinePopover] isShown]) {
         [[_songTimelineController songTimelinePopover] close];
@@ -1083,11 +1100,13 @@ static NSInteger const kUndefinedID =  -1;
     {
         [_songTimelineController view];
         
-        [_songTimelineController showTimelinePopoverRelativeToBounds:cellFrame ofView:_songCellMatrix];
+//        [_songTimelineController showTimelinePopoverRelativeToBounds:cellFrame ofView:_songCellMatrix];
+                [_songTimelineController showTimelinePopoverRelativeToBounds:cellFrame ofView:_songGridScrollView];
         [[[self view] window] makeFirstResponder:(NSResponder *)_delegate];
     }
 }
 
+/*
 - (void)togglePopoverAtCellFrame:(NSRect)cellFrame withDelay:(double)delayInSeconds {
     
     // If the frame of the currently showing popover is the same as what we want shown, just leave it alone.
@@ -1108,9 +1127,8 @@ static NSInteger const kUndefinedID =  -1;
             }
         });
     }
-    
 }
-
+*/
 // // Delegate methods.
 
 // TGSongTimelineViewControllerDelegate methods:

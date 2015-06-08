@@ -30,7 +30,7 @@
 
 @property NSArray *sweetSpotControls;
 
-
+- (void)toggleTimelinePopoverRelativeToBounds:(CGRect)theBounds ofView:(NSView *)theView;
 - (void)showTimelinePopoverRelativeToBounds:(CGRect)theBounds ofView:(NSView *)theView;
 
 -(void)setCurrentSongID:(id<SongIDProtocol>)songID;//wipEv fromSongPool:(TGSongPool *)theSongPool;

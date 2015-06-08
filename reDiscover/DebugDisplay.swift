@@ -63,7 +63,7 @@ class DebugDisplay: NSViewController {
     }
     
     // Allows me to update from anywhere without needing an instance.
-    class func updateDebugStrings(newString: String) {
+    static func updateDebugStrings(newString: String) {
         debugString = newString
         updatePending = true
     }
