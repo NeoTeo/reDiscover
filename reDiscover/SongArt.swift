@@ -50,8 +50,8 @@ class SongArt : NSObject {
     /**
     Add an image to the art cache
     
-    :param: image The image to add to the cache.
-    :returns: The id of the art.
+    - parameter image: The image to add to the cache.
+    - returns: The id of the art.
     */
     static func addImage(image: NSImage) -> SongArtId {
         // Is there any point to this when SongArt is the only class to have access to the artCache?
@@ -80,9 +80,9 @@ class SongArt : NSObject {
     /**
     Associate a song with an art id.
     
-    :param: song A song we want to associate with an art id.
-    :param: artId the art id.
-    :returns: A new song with the given art id.
+    - parameter song: A song we want to associate with an art id.
+    - parameter artId: the art id.
+    - returns: A new song with the given art id.
     */
     static func songWithArtId(song: TGSong, artId: SongArtId) -> TGSong {
         

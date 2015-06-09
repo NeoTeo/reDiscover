@@ -41,19 +41,18 @@ extension SongCommonMetaData {
     This class method will *synchronously* fetch the cover art it finds in the songAsset's
     metadata.
     
-    :param: song A song or nil
-    :returns: An array of NSImages or an array of nil if nothing was found.
+    - parameter song: A song or nil
+    - returns: An array of NSImages or an array of nil if nothing was found.
     */
     static func getCoverArtForSong(song: TGSong?) -> [NSImage?] {
         
-        if let metadata = SongCommonMetaData.commonMetadataForSong(song) {
-        
-                let artworks = AVMetadataItem.metadataItemsFromArray(metadata, withKey: AVMetadataCommonKeyArtwork, keySpace:AVMetadataKeySpaceCommon) as! [AVMetadataItem]
+        if let metadata = SongCommonMetaData.commonMetadataForSong(song) as? [AVMetadataItem] {
+                let artworks = AVMetadataItem.metadataItemsFromArray(metadata, withKey: AVMetadataCommonKeyArtwork, keySpace:AVMetadataKeySpaceCommon) as [AVMetadataItem]
 
                 var retArt = [NSImage?]()
-                for aw: AVMetadataItem in artworks {
+                for aw: AVMetadataItem in artworks where aw.dataValue != nil {
 
-                    let ima = NSImage(data: aw.dataValue)
+                    let ima = NSImage(data: aw.dataValue!)
                     retArt.append(ima)
                 }
                 return retArt
@@ -62,9 +61,10 @@ extension SongCommonMetaData {
     }
     
     private class func commonMetadataForSong(song: TGSong?) -> [AnyObject]? {
-        if  let sng = song,
-            let songAsset = AVURLAsset(URL: NSURL(string: sng.urlString!) , options: nil) {
+        if  let sng = song where sng.urlString != nil,
+            let url = NSURL(string: sng.urlString!) {
                 
+                let songAsset = AVURLAsset(URL: url , options: nil)
                 return songAsset.commonMetadata
         }
         return nil
@@ -94,33 +94,39 @@ extension SongCommonMetaData {
         var genre: String = "No genre"
         var artist: String = "No artist"
         var year: UInt = 0
+        let metadata = metadata as! [AVMetadataItem]
 
-        let titles = AVMetadataItem.metadataItemsFromArray(metadata, withKey: AVMetadataCommonKeyTitle, keySpace:AVMetadataKeySpaceCommon) as [AnyObject]!
-        let albums = AVMetadataItem.metadataItemsFromArray(metadata, withKey: AVMetadataCommonKeyAlbumName, keySpace:AVMetadataKeySpaceCommon) as [AnyObject]!
-        let artists = AVMetadataItem.metadataItemsFromArray(metadata, withKey: AVMetadataCommonKeyArtist, keySpace:AVMetadataKeySpaceCommon) as [AnyObject]!
-        let years = AVMetadataItem.metadataItemsFromArray(metadata, withKey: AVMetadataCommonKeyCreationDate, keySpace:AVMetadataKeySpaceCommon) as [AnyObject]!
+        let titles = AVMetadataItem.metadataItemsFromArray(metadata, withKey: AVMetadataCommonKeyTitle, keySpace:AVMetadataKeySpaceCommon)
+        let albums = AVMetadataItem.metadataItemsFromArray(metadata, withKey: AVMetadataCommonKeyAlbumName, keySpace:AVMetadataKeySpaceCommon)
+        let artists = AVMetadataItem.metadataItemsFromArray(metadata, withKey: AVMetadataCommonKeyArtist, keySpace:AVMetadataKeySpaceCommon)
+        let years = AVMetadataItem.metadataItemsFromArray(metadata, withKey: AVMetadataCommonKeyCreationDate, keySpace:AVMetadataKeySpaceCommon)
 
-        if titles.count > 0 { title = (titles[0] as! AVMetadataItem).value() as! String }
-        if albums.count > 0 { album = (albums[0] as! AVMetadataItem).value() as! String }
-        if artists.count > 0 { artist = (artists[0] as! AVMetadataItem).value() as! String }
+        if titles.count > 0 { title = titles[0].value as! String }
+        if albums.count > 0 { album = albums[0].value as! String }
+        if artists.count > 0 { artist = artists[0].value as! String }
         //FIXME: Beware, this can also be a string value!
-        println("YEARS: \(years)")
-        if years.count > 0 && (years[0] as! AVMetadataItem).key().isKindOfClass(NSNumber) {
-            //year = (years[0] as! AVMetadataItem).value() as! UInt 
-            println("Magic!~~")
+        print("YEARS: \(years)")
+        if years.count > 0 && years[0].key!.isKindOfClass(NSNumber) {
+            //year = years[0].value() as! UInt
+            print("Magic!~~")
         }
-//        if years.count > 0 { year = (years[0] as! AVMetadataItem).numberValue as! UInt }
+//        if years.count > 0 { year = years[0].numberValue as! UInt }
         
         return SongCommonMetaData(title: title, album: album, artist: artist, year: year, genre: genre)
     }
     
     static func extractCoverArt(fromRawMetadata metadata: [AnyObject]) -> [NSImage?] {
-        let artworks = AVMetadataItem.metadataItemsFromArray(metadata, withKey: AVMetadataCommonKeyArtwork, keySpace:AVMetadataKeySpaceCommon) as! [AVMetadataItem]
+        
+        let metadata = metadata as! [AVMetadataItem]
+        
+        let artworks = AVMetadataItem.metadataItemsFromArray(metadata, withKey: AVMetadataCommonKeyArtwork, keySpace:AVMetadataKeySpaceCommon)
+        
         var retArt = [NSImage?]()
         let aw = artworks[0]
         
-        if let art = NSImage(data: aw.dataValue) {
-                retArt.append(art)
+        if let data = aw.dataValue,
+            let art = NSImage(data: data) {
+            retArt.append(art)
         }
         return retArt
     }
@@ -128,7 +134,7 @@ extension SongCommonMetaData {
     Loads the metadata from the file at the given url.
 
     :params: urlString The song url string.
-    :returns: the metadata.
+    - returns: the metadata.
     */
     static func loadMetaData(fromURLString urlString: String) -> SongCommonMetaData {
         

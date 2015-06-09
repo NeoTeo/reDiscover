@@ -48,14 +48,8 @@ code_sign() {
 
 
 if [[ "$CONFIGURATION" == "Debug" ]]; then
-  install_framework 'Argo.framework'
-  install_framework 'Box.framework'
-  install_framework 'Runes.framework'
   install_framework 'chromaprint_osx_static.framework'
 fi
 if [[ "$CONFIGURATION" == "Release" ]]; then
-  install_framework 'Argo.framework'
-  install_framework 'Box.framework'
-  install_framework 'Runes.framework'
   install_framework 'chromaprint_osx_static.framework'
 fi

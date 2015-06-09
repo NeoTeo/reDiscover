@@ -3,9 +3,8 @@ FRAMEWORK_SEARCH_PATHS = $(inherited) "$PODS_FRAMEWORK_BUILD_PATH"
 GCC_PREPROCESSOR_DEFINITIONS = $(inherited) COCOAPODS=1
 LD_RUNPATH_SEARCH_PATHS = $(inherited) '@executable_path/../Frameworks' '@loader_path/Frameworks'
 LIBRARY_SEARCH_PATHS = "$(PODS_ROOT)/ffmpeg-osx-static/lib" "$(PODS_ROOT)/ffmpeg-osx-static/lib" "$(PODS_ROOT)/ffmpeg-osx-static/lib" "$(PODS_ROOT)/ffmpeg-osx-static/lib" "$(PODS_ROOT)/ffmpeg-osx-static/lib" "$(PODS_ROOT)/ffmpeg-osx-static/lib" "$(PODS_ROOT)/ffmpeg-osx-static/lib"
-OTHER_CFLAGS = $(inherited) -iquote "$PODS_FRAMEWORK_BUILD_PATH/Argo.framework/Headers" -iquote "$PODS_FRAMEWORK_BUILD_PATH/Box.framework/Headers" -iquote "$PODS_FRAMEWORK_BUILD_PATH/Runes.framework/Headers" -iquote "$PODS_FRAMEWORK_BUILD_PATH/chromaprint_osx_static.framework/Headers" -iquote "$PODS_FRAMEWORK_BUILD_PATH/ffmpeg_osx_static.framework/Headers"
-OTHER_LDFLAGS = $(inherited) -ObjC -l"avcodec" -l"avdevice" -l"avfilter" -l"avformat" -l"avutil" -l"swresample" -l"swscale" -framework "Argo" -framework "Box" -framework "Runes" -framework "chromaprint_osx_static"
+OTHER_CFLAGS = $(inherited) -iquote "$PODS_FRAMEWORK_BUILD_PATH/chromaprint_osx_static.framework/Headers" -iquote "$PODS_FRAMEWORK_BUILD_PATH/ffmpeg_osx_static.framework/Headers"
+OTHER_LDFLAGS = $(inherited) -ObjC -l"avcodec" -l"avdevice" -l"avfilter" -l"avformat" -l"avutil" -l"swresample" -l"swscale" -framework "chromaprint_osx_static"
 OTHER_LIBTOOLFLAGS = $(OTHER_LDFLAGS)
-OTHER_SWIFT_FLAGS = $(inherited) "-D" "COCOAPODS"
 PODS_FRAMEWORK_BUILD_PATH = $(BUILD_DIR)/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)/Pods
 PODS_ROOT = ${SRCROOT}/Pods

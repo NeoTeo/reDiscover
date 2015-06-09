@@ -84,7 +84,7 @@ class TGSongAudioCacher : NSObject {
     
     func dumpCacheToLog() {
         for id in songPlayerCache {
-            println(id)
+            print(id)
         }
     }
 
@@ -219,8 +219,12 @@ class TGSongAudioCacheTask : NSObject {
     func performWhenReadyForPlayback(songId: SongIDProtocol, readySongHandler: (AVPlayer)->()) {
         
         // At this point we don't know if the url is for the local file system or streaming.
-        let songURL = self.songPoolAPI?.songURLForSongID(songId)
-        var songAsset: AVURLAsset = AVURLAsset(URL: songURL, options: nil) //options: [AVURLAssetPreferPreciseDurationAndTimingKey:true])
+        guard let songURL = self.songPoolAPI?.songURLForSongID(songId) else {
+            print("No songPool!")
+            return
+        }
+        
+        let songAsset: AVURLAsset = AVURLAsset(URL: songURL, options: nil) //options: [AVURLAssetPreferPreciseDurationAndTimingKey:true])
         
         let thePlayer = AVPlayer()
         
@@ -262,13 +266,13 @@ class TGSongAudioCacheTask : NSObject {
                 thePlayerItem = AVPlayerItem(URL: songURL)
                 
             default:
-                println("ERROR: Cancelled?")
+                print("ERROR: Cancelled?")
                 return
             }
         
             //Make sure the asset's duration value is available before kicking off the song player loading.
             songAsset.loadValuesAsynchronouslyForKeys(["duration"]){
-                println("load async duration")
+                print("load async duration")
                 // Since the loading begins as soon as the player item is associated with the player I have to do this *after* adding the observer to an uninited player.
                 thePlayer.replaceCurrentItemWithPlayerItem(thePlayerItem)
             }
@@ -276,7 +280,7 @@ class TGSongAudioCacheTask : NSObject {
     }
     
     
-    override func observeValueForKeyPath(keyPath: String, ofObject object: AnyObject, change: [NSObject : AnyObject], context: UnsafeMutablePointer<Void>) {
+    override func observeValueForKeyPath(keyPath: String?, ofObject object: AnyObject?, change: [NSObject : AnyObject]?, context: UnsafeMutablePointer<Void>) {
         if context == &myContext {
 
             let playa = object as! AVPlayer

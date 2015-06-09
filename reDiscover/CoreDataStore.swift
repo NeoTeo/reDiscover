@@ -29,22 +29,24 @@ extension CoreDataStore {
         if let modelURL = NSBundle.mainBundle().URLForResource(modelName, withExtension: "momd"),
             let model = NSManagedObjectModel(contentsOfURL: modelURL) {
                 
-            var error: NSError?
             moc = NSManagedObjectContext(concurrencyType: .PrivateQueueConcurrencyType)
             moc!.persistentStoreCoordinator = NSPersistentStoreCoordinator(managedObjectModel: model)
-    
                 
-            let docPath = NSFileManager.defaultManager().URLForDirectory(NSSearchPathDirectory.DocumentDirectory,
+            do {
+            
+            let docPath = try NSFileManager.defaultManager().URLForDirectory(NSSearchPathDirectory.DocumentDirectory,
                 inDomain: NSSearchPathDomainMask.UserDomainMask,
                 appropriateForURL: nil,
-                create: true, error: &error)?.URLByAppendingPathComponent("reDiscoverdb_v2.sqlite")
+                create: true).URLByAppendingPathComponent("reDiscoverdb_v2.sqlite")
                 
-            moc!.persistentStoreCoordinator?.addPersistentStoreWithType(NSSQLiteStoreType,
-                configuration: nil,
-                URL: docPath,
-                options: nil, error: &error)
-                
-            if error != nil { println("Error in managedObjectContext \(error)") }
+            
+                try moc!.persistentStoreCoordinator?.addPersistentStoreWithType(NSSQLiteStoreType,
+                    configuration: nil,
+                    URL: docPath,
+                    options: nil)
+            } catch {
+                print("Error in managedObjectContext \(error)")
+            }
             
         }
         
@@ -58,9 +60,17 @@ extension CoreDataStore {
         var songsMetaData: [String : SongMetaData]?
         
         context.performBlockAndWait {
-            let fetchedArray = context.executeFetchRequest(fetchRequest, error: &error)
+            let fetchedArray: [AnyObject]?
+            do {
+                fetchedArray = try context.executeFetchRequest(fetchRequest)
+            } catch var error1 as NSError {
+                error = error1
+                fetchedArray = nil
+            } catch {
+                fatalError()
+            }
             if error != nil {
-                println("Error while fetching SongMetaData: \(error?.localizedDescription)")
+                print("Error while fetching SongMetaData: \(error?.localizedDescription)")
                 return
             }
             songsMetaData = [:]
@@ -75,9 +85,11 @@ extension CoreDataStore {
     static func saveContext(context: NSManagedObjectContext) {
         if context.hasChanges {
             context.performBlockAndWait {
-                var error: NSError?
-                if context.save(&error) == false {
-                    println("Error saving!")
+                do {
+                    try context.save()
+                    
+                } catch {
+                    print("Error saving!")
                 }
             }
         }

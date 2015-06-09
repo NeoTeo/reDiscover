@@ -995,6 +995,10 @@ static int const kSongPoolStartCapacity = 250;
                 if( acoustIdData != nil) {
 //                    TGLog(TGLOG_REFAC, @"AcoustID data %@",acoustIdData);
                     NSString *songUUID = [SongUUID extractUUIDFromDictionary:acoustIdData];
+                    //FIXME: SongUUID shouldn't return a new song. It should return a UUID and we should have a constructor
+                    // for song that takes just an uuid and returns a new song with all other fields copied and
+                    // added the uuid!
+//                    aSong = [Song songWithChanges:aSong changes:@{@"UUId" : songUUID, @"RelId" : [bestRelease objectForKey:@"id"]}];
                     aSong = [SongUUID songWithNewUUId:aSong newUUId:songUUID newReleaseId:[bestRelease objectForKey:@"id"]];
                 }
             }

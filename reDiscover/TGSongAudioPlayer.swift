@@ -8,10 +8,11 @@
 
 import Cocoa
 import AVFoundation
-extension CMTime {
-    var isValid: Bool { return flags & .Valid != nil }
-    var isIndefinite: Bool { return flags & .Indefinite != nil }
-}
+
+//extension CMTime {
+//    var isValid: Bool { return flags & isValid() != nil }
+//    var isIndefinite: Bool { return flags & isIndefinite != nil }
+//}
 
 class TGSongAudioPlayer: NSObject {
 
@@ -65,7 +66,7 @@ class TGSongAudioPlayer: NSObject {
 
     func setSongPlayer(newPlayer: AVPlayer, block: (CMTime) -> ()) {
         if let prevPlayer = prevSongPlayer where playerObserver != nil {
-            prevPlayer.removeTimeObserver(playerObserver)
+            prevPlayer.removeTimeObserver(playerObserver!)
         }
         
         if currentPlayer != nil {

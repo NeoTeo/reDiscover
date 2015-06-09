@@ -36,9 +36,9 @@ class SweetSpotControl : NSObject {
     /**
     Make a copy of the given song with a sweet spot set to the given time.
     
-    :param: song The song to make a copy of.
-    :param: startTime The time, in seconds, of the sweet spot.
-    :returns: A copy of the given song with an added sweet spot at the given time.
+    - parameter song: The song to make a copy of.
+    - parameter startTime: The time, in seconds, of the sweet spot.
+    - returns: A copy of the given song with an added sweet spot at the given time.
     */
     static func songWithSelectedSweetSpot(song: TGSong, atTime startTime: SweetSpot) -> TGSong {
         return Song(songId: song.songID, metadata: song.metadata, urlString: song.urlString, sweetSpots: song.sweetSpots, fingerPrint: song.fingerPrint, selectedSS: startTime, releases: song.songReleases, artId: song.artID, UUId: song.UUId, RelId: song.RelId)

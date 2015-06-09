@@ -38,14 +38,21 @@ extension LocalAudioFileStore {
             includingPropertiesForKeys: [NSURLIsDirectoryKey],
             options: NSDirectoryEnumerationOptions(),
             errorHandler: { (url: NSURL!, error: NSError!) -> Bool in
-                println("Error reading URL")
+                print("Error reading URL")
                 return true
         }) {
             
             for url in enumerator.allObjects as! [NSURL] {
                 var error: NSError?
                 var isDirectory: AnyObject?
-                let value = url.getResourceValue(&isDirectory, forKey: NSURLIsDirectoryKey, error: &error)
+                let value: Bool
+                do {
+                    try url.getResourceValue(&isDirectory, forKey: NSURLIsDirectoryKey)
+                    value = true
+                } catch var error1 as NSError {
+                    error = error1
+                    value = false
+                }
                 if isDirectory?.boolValue == false {
                     if LocalFileIO.getURLContentType(url) == .Audio {
                         closure(url)
@@ -62,7 +69,7 @@ extension LocalAudioFileStore {
             includingPropertiesForKeys: [NSURLIsDirectoryKey],
             options: NSDirectoryEnumerationOptions(),
             errorHandler: { (url: NSURL!, error: NSError!) -> Bool in
-                println("Error reading URL")
+                print("Error reading URL")
                 return true
         }) {
             
@@ -70,14 +77,21 @@ extension LocalAudioFileStore {
             for url in enumerator.allObjects as! [NSURL] {
                 var error: NSError?
                 var isDirectory: AnyObject?
-                let value = url.getResourceValue(&isDirectory, forKey: NSURLIsDirectoryKey, error: &error)
+                let value: Bool
+                do {
+                    try url.getResourceValue(&isDirectory, forKey: NSURLIsDirectoryKey)
+                    value = true
+                } catch var error1 as NSError {
+                    error = error1
+                    value = false
+                }
                 if isDirectory?.boolValue == false {
                     if LocalFileIO.getURLContentType(url) == .Audio {
                         songURLs.append(url)
                     }
                 }
             }
-            println("songURLs size is \(songURLs.count)")
+            print("songURLs size is \(songURLs.count)")
             return songURLs
         }
         

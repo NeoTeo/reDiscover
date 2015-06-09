@@ -7,953 +7,659 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		010E51420CB55B19CAE8E04B /* fft_lib_vdsp.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D442A269DD22DBB9203710D1 /* fft_lib_vdsp.cpp */; settings = {COMPILER_FLAGS = "-lstdc++ -fno-objc-arc"; }; };
-		0130CA351DB91107A6079179 /* fft_lib_vdsp.h in Headers */ = {isa = PBXBuildFile; fileRef = 3512386546E7815AA57072E9 /* fft_lib_vdsp.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		03833108698701DC10DB4B51 /* audio_processor.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E5F5B0893C9F225DA06197A2 /* audio_processor.cpp */; settings = {COMPILER_FLAGS = "-lstdc++ -fno-objc-arc"; }; };
-		08917DBEF8ED4CD117159F78 /* Optional.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DA4BA4975735EB82127783F /* Optional.swift */; };
-		0BAE3B3D9E8E367E3A58DB35 /* Operators.swift in Sources */ = {isa = PBXBuildFile; fileRef = FFFFA3BD068AACD5E357EEB6 /* Operators.swift */; };
-		166D24962AFC9D5A830E772B /* Pods-Box-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = 95D21089EAD64C576CA45551 /* Pods-Box-dummy.m */; };
-		186569D3204ABBADD73D492B /* debug.h in Headers */ = {isa = PBXBuildFile; fileRef = 8A87A12A65305974308B1306 /* debug.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		1B8A203DB93FE563BD780B32 /* Operators.swift in Sources */ = {isa = PBXBuildFile; fileRef = A275CC4230C365EF4AF653B7 /* Operators.swift */; };
-		1D586BE985A44A14B821DFBA /* Array.swift in Sources */ = {isa = PBXBuildFile; fileRef = 058AA3F62A532173E668D9C3 /* Array.swift */; };
-		1E0A0B803C484C945CAA6354 /* bit_string_writer.h in Headers */ = {isa = PBXBuildFile; fileRef = 1560734540769CF60BC04913 /* bit_string_writer.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		202D04E3DFAC68B8E7EF3295 /* curry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0F97BEA0BCBFB7CC66B1A638 /* curry.swift */; };
-		2077A337B7EBD6FEE4560B01 /* base64.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 569621778582FB850B25477E /* base64.cpp */; settings = {COMPILER_FLAGS = "-lstdc++ -fno-objc-arc"; }; };
-		21AE1FF8651B2D0F94A161FC /* fft_lib_avfft.h in Headers */ = {isa = PBXBuildFile; fileRef = D0874A6005646F558461F603 /* fft_lib_avfft.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		22D2F281F5BC0464FDA2CBC0 /* fft_frame.h in Headers */ = {isa = PBXBuildFile; fileRef = D8CF3CCDD7B173D3BB691001 /* fft_frame.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		26F79BFA0DB6129D154719FA /* config.h in Headers */ = {isa = PBXBuildFile; fileRef = 33AEDCD62EF7D2233D2BAC31 /* config.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		29BC86AF521561304EF10E08 /* Decodable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 684D9459916989A451CAE997 /* Decodable.swift */; };
-		2DEF37C95ED22444D6F27CB5 /* fingerprinter_configuration.h in Headers */ = {isa = PBXBuildFile; fileRef = DF605B8482B09412C8B42207 /* fingerprinter_configuration.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		368336E1C7DD5EBA386F9DF2 /* fft.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B7EF45468672374DEB368BF8 /* fft.cpp */; settings = {COMPILER_FLAGS = "-lstdc++ -fno-objc-arc"; }; };
-		3720D48CC3400E0597898DED /* chroma_normalizer.h in Headers */ = {isa = PBXBuildFile; fileRef = F8C5D542C9A873B7D5559DDE /* chroma_normalizer.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		37D8614499822A520FB25DE8 /* fft_lib.h in Headers */ = {isa = PBXBuildFile; fileRef = 81F4F04A62843FBECAE623CE /* fft_lib.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		3AD9B1ADF80E7096ED1A27AC /* Box.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B932DC7DE3C0410C44671838 /* Box.framework */; };
-		3E501EDECFA0A81EC6C3B15A /* Box.h in Headers */ = {isa = PBXBuildFile; fileRef = 062400F55AEA72AAF427B2B2 /* Box.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		45AC0171936EAE1F42D654D0 /* fingerprint_decompressor.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AE53AF307F593989246C8140 /* fingerprint_decompressor.cpp */; settings = {COMPILER_FLAGS = "-lstdc++ -fno-objc-arc"; }; };
-		48AD3DC6FA1B4187EE5A33E1 /* Decoded.swift in Sources */ = {isa = PBXBuildFile; fileRef = C74BA694674B8CA66E351003 /* Decoded.swift */; };
-		4984663FE5E11413EE8A5D0C /* Pods-Argo-umbrella.h in Headers */ = {isa = PBXBuildFile; fileRef = D1AEA9271BC67474F92E1F10 /* Pods-Argo-umbrella.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		4C991C51067A915E27BCE772 /* fingerprinter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CD76614DD160F732526E2DA5 /* fingerprinter.cpp */; settings = {COMPILER_FLAGS = "-lstdc++ -fno-objc-arc"; }; };
-		4D69CC736DCEBA9D931A7375 /* MutableBox.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE23A57F14FD539745DC9EBE /* MutableBox.swift */; };
-		534AF8A240E39DAA40D456B4 /* Runes.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00692AD34AEA051DA6170317 /* Runes.framework */; };
-		55F3D0B3020ED44A1FCC137E /* image_builder.h in Headers */ = {isa = PBXBuildFile; fileRef = 92336F83757D32E9E4650DB6 /* image_builder.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		602E3151B9B23884EF15871C /* Pods-umbrella.h in Headers */ = {isa = PBXBuildFile; fileRef = 271E35E0999CB49E4B72118A /* Pods-umbrella.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		607F58ECA9AE126409B0DE99 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 75576ED7E25118216A1D60A0 /* Cocoa.framework */; };
-		617770AFE5FA0DA4C5B5D1AA /* bit_string_reader.h in Headers */ = {isa = PBXBuildFile; fileRef = 4125FC2D1BE6B9006D2059CB /* bit_string_reader.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		624EE238D3E3850C2CAFE429 /* integral_image.h in Headers */ = {isa = PBXBuildFile; fileRef = 027897DB4562743C00FB698A /* integral_image.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		66B814400762C423A22B3B5A /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 75576ED7E25118216A1D60A0 /* Cocoa.framework */; };
-		6C7E813C3DB4A469A83F481F /* Accelerate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 560A4EC5A8C600D91FFF60DD /* Accelerate.framework */; };
-		71130B23FA08A479817F2CC6 /* Argo.h in Headers */ = {isa = PBXBuildFile; fileRef = B8EE3880DA79EC9F62DC15D7 /* Argo.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		7627168DC68ABC571A6F4D91 /* feature_vector_consumer.h in Headers */ = {isa = PBXBuildFile; fileRef = 9DA380036063979BC1B97830 /* feature_vector_consumer.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		771D874CCEF1853283FDFF53 /* Pods-Runes-umbrella.h in Headers */ = {isa = PBXBuildFile; fileRef = 3BB549F9ED47F3E598A06EB2 /* Pods-Runes-umbrella.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		7927748460B4BD7D2B2B9000 /* decode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C24DE83FB151514446C8C2A /* decode.swift */; };
-		7A0E97335259E982CF562E07 /* chromaprint.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9745F3589D2FC5515A7F3744 /* chromaprint.cpp */; settings = {COMPILER_FLAGS = "-lstdc++ -fno-objc-arc"; }; };
-		7B50C68F60179DB93490C9F8 /* Pods-Box-umbrella.h in Headers */ = {isa = PBXBuildFile; fileRef = 1CE09A1CFD51B49D0FB35087 /* Pods-Box-umbrella.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		7D30C5401B0BA92D02AD1CFB /* Pods-chromaprint-osx-static-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = E67F804BCDB5A9E01E2A6780 /* Pods-chromaprint-osx-static-dummy.m */; };
-		81DB91F6548C0FC056D9F7C7 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 75576ED7E25118216A1D60A0 /* Cocoa.framework */; };
-		88543D24718463845B7C851D /* image.h in Headers */ = {isa = PBXBuildFile; fileRef = FEF6D736414B4A6B84271B32 /* image.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		89763BEFD1DCE372B5B48B94 /* sequence.swift in Sources */ = {isa = PBXBuildFile; fileRef = 807EA7A1879EBFCD53C79AC9 /* sequence.swift */; };
-		8F21A0F5063EE7EB2E44906E /* fft_frame_consumer.h in Headers */ = {isa = PBXBuildFile; fileRef = DD7B010A8DA3BBFD2A749016 /* fft_frame_consumer.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		973A6D56EA9B2EA658F78DC4 /* chroma.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B1CA56A919F771E3368884E9 /* chroma.cpp */; settings = {COMPILER_FLAGS = "-lstdc++ -fno-objc-arc"; }; };
-		9CB3AF8227C4139B6B1ED4A5 /* fingerprinter.h in Headers */ = {isa = PBXBuildFile; fileRef = 27795D695FB80B599FDCD6C4 /* fingerprinter.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		9D02542AAB9982EA9195DA52 /* spectral_centroid.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FE6D156FA76F7AF506C8B0EA /* spectral_centroid.cpp */; settings = {COMPILER_FLAGS = "-lstdc++ -fno-objc-arc"; }; };
-		A01C1EED369C9B980DFD6A88 /* fft_lib_fftw3.h in Headers */ = {isa = PBXBuildFile; fileRef = EBFCBBA0AD001BC65DD6DA36 /* fft_lib_fftw3.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		A265091971CBE1EA724EED39 /* fingerprinter_configuration.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F0E322939471537E91383605 /* fingerprinter_configuration.cpp */; settings = {COMPILER_FLAGS = "-lstdc++ -fno-objc-arc"; }; };
-		A2CDFAE4021F1D163BA236FA /* BoxType.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5C0C041A3F5284621D61F00 /* BoxType.swift */; };
-		A4DBE2068688057DFEDDE004 /* fingerprint_compressor.h in Headers */ = {isa = PBXBuildFile; fileRef = 5C88C29E359BE1253DF59EAA /* fingerprint_compressor.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		A5C63708101511255AC0349A /* fft_lib_kissfft.h in Headers */ = {isa = PBXBuildFile; fileRef = 5F6D0CB1D4676B9D1A5907CB /* fft_lib_kissfft.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		A9C2DE6F798051B340CECA45 /* lloyds.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DD52C9C064897719E3262762 /* lloyds.cpp */; settings = {COMPILER_FLAGS = "-lstdc++ -fno-objc-arc"; }; };
-		AB7E68FC45EBF82E0A9E63B9 /* chroma_resampler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E683AB25F351C42995F16F07 /* chroma_resampler.cpp */; settings = {COMPILER_FLAGS = "-lstdc++ -fno-objc-arc"; }; };
-		ACDD296C9195800F1B2C0B5C /* chroma.h in Headers */ = {isa = PBXBuildFile; fileRef = FD9F4D682E404E0FC2C7DF60 /* chroma.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		ACE2E9BA12E9D31B24AC05CA /* Pods-chromaprint-osx-static-umbrella.h in Headers */ = {isa = PBXBuildFile; fileRef = 671C76589E3EBE31E2BB1DFD /* Pods-chromaprint-osx-static-umbrella.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		B6E0C6FF27568E49E3C91C1B /* chroma_resampler.h in Headers */ = {isa = PBXBuildFile; fileRef = 966FDFE7ACA6708B66DD29AB /* chroma_resampler.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		B74CA256A43A3E9EDF5BCE43 /* integral_image.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4CC73896BA84E09A170A37F3 /* integral_image.cpp */; settings = {COMPILER_FLAGS = "-lstdc++ -fno-objc-arc"; }; };
-		B78C1D8E1342B8D3E20C63D1 /* filter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4AD957C1A2524D572DF26D00 /* filter.cpp */; settings = {COMPILER_FLAGS = "-lstdc++ -fno-objc-arc"; }; };
-		B9007084077252FF177A9D6D /* flatReduce.swift in Sources */ = {isa = PBXBuildFile; fileRef = 408AFD34F33B8CA21CBBFFAB /* flatReduce.swift */; };
-		B949423AFB939262BE6A37B8 /* chroma_filter.h in Headers */ = {isa = PBXBuildFile; fileRef = 0D2FDC53C260BF6A93FC517F /* chroma_filter.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		BC7FFD33385F53B87C0B599C /* Pods-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = E352727C167DF052B8672627 /* Pods-dummy.m */; };
-		BD39C15575F563E5BE4977E6 /* fingerprint_decompressor.h in Headers */ = {isa = PBXBuildFile; fileRef = 949CD7E4A7F22C9FC8962D84 /* fingerprint_decompressor.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		BD71A4FB28CB3EE201E64966 /* utils.h in Headers */ = {isa = PBXBuildFile; fileRef = 9262ADA32284ECC22D0EF58C /* utils.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		BEBFBA5209807217D099516C /* base64.h in Headers */ = {isa = PBXBuildFile; fileRef = 9E421F2C70A0EB4667CB318F /* base64.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		C04704F311803727406BC47C /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 75576ED7E25118216A1D60A0 /* Cocoa.framework */; };
-		C358159EC978FFE4DD90C424 /* Runes.h in Headers */ = {isa = PBXBuildFile; fileRef = F68DC2CC2216EAE43B4369CD /* Runes.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		C3DA4B1F15B512E843D41466 /* chroma_filter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B71018B9CDBF9A1A0DBFCD40 /* chroma_filter.cpp */; settings = {COMPILER_FLAGS = "-lstdc++ -fno-objc-arc"; }; };
-		C5AA4561842DA7E6B7331C22 /* chromaprint.h in Headers */ = {isa = PBXBuildFile; fileRef = F041260F7FFBDD7608EBD5D4 /* chromaprint.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		C6627B819452CE239E321B46 /* filter_utils.h in Headers */ = {isa = PBXBuildFile; fileRef = 14B7D6965BAD1E92F104E134 /* filter_utils.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		C69C9E458C29CBFF612AE3B1 /* filter.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E90900E7B1612ED33FA6CA3 /* filter.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		C714587C4D1F778F17255503 /* Pods-Argo-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = A3F8284ACB28A1217F0D953A /* Pods-Argo-dummy.m */; };
-		C755EF082428EF50D0D8E5FE /* fingerprint_calculator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D024FCFA80BED350B6C4D45A /* fingerprint_calculator.cpp */; settings = {COMPILER_FLAGS = "-lstdc++ -fno-objc-arc"; }; };
-		C78E867F13D29DB9C9B24AD3 /* StandardTypes.swift in Sources */ = {isa = PBXBuildFile; fileRef = B875B5B659899F1A9F329D97 /* StandardTypes.swift */; };
-		C9957103FA0C1F9678E41B52 /* avcodec.h in Headers */ = {isa = PBXBuildFile; fileRef = E385CFDD9B54FE3E33887BC1 /* avcodec.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		CAEDA047E9B67233895B2EFE /* decoder.h in Headers */ = {isa = PBXBuildFile; fileRef = 6C624F46454C2F35E342F971 /* decoder.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		CCE4978C87D5848E048D364A /* sox_audio_source.h in Headers */ = {isa = PBXBuildFile; fileRef = E6CA4E53BE2603E599E9A4D4 /* sox_audio_source.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		CDD2D99E4A57A699ED59C9D1 /* audio_consumer.h in Headers */ = {isa = PBXBuildFile; fileRef = 5B53840BB12FFFC25D54594E /* audio_consumer.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		D3FA0A8CE737204449BA9FB2 /* image_builder.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0B5C07AE527358C7E8D6E1A5 /* image_builder.cpp */; settings = {COMPILER_FLAGS = "-lstdc++ -fno-objc-arc"; }; };
-		D9F5F93CD37595609B0C2279 /* Box.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07D89DA64C9DC129C298D05F /* Box.swift */; };
-		DBB0C5B2DF3EC8C96B83B714 /* audio_processor.h in Headers */ = {isa = PBXBuildFile; fileRef = 817F5527EF3DB8B284EE67C5 /* audio_processor.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		DC513ABDF48FF3D72BD8C26B /* fingerprint_compressor.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8AA97AE494B487471EB61D30 /* fingerprint_compressor.cpp */; settings = {COMPILER_FLAGS = "-lstdc++ -fno-objc-arc"; }; };
-		DFB70074BCEF6F4C2DFFA0A7 /* dsputil.h in Headers */ = {isa = PBXBuildFile; fileRef = F147EDEB3DAA5BB2EF45F181 /* dsputil.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		E4F1895DE8EBBE2073B3FFF8 /* spectral_centroid.h in Headers */ = {isa = PBXBuildFile; fileRef = 73E30D39BD06463A91D82865 /* spectral_centroid.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		E62E67CCFE7FD54968D02D32 /* silence_remover.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 17BD5230BB40DF3166F1BD25 /* silence_remover.cpp */; settings = {COMPILER_FLAGS = "-lstdc++ -fno-objc-arc"; }; };
-		E73CFF59A85DBA9C7F1EB5F7 /* quantizer.h in Headers */ = {isa = PBXBuildFile; fileRef = 890615C628EB475107654E17 /* quantizer.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		E79E11D462A7C3703AA013D3 /* resample2.c in Sources */ = {isa = PBXBuildFile; fileRef = BC42BD1BC85EACAE838F6C4A /* resample2.c */; settings = {COMPILER_FLAGS = "-lstdc++ -fno-objc-arc"; }; };
-		E92F9F5A89CBC9FF2A0220D5 /* Dictionary.swift in Sources */ = {isa = PBXBuildFile; fileRef = D372AC07C12CE8FB3E3E2443 /* Dictionary.swift */; };
-		ECB16AB4AF2879A25265CD26 /* fft.h in Headers */ = {isa = PBXBuildFile; fileRef = 0D2B226B52C8CF62E4408F8C /* fft.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		ECC548EFFC32770E166FDA9C /* Pods-Runes-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = B8A0CC56A8F50652C6195679 /* Pods-Runes-dummy.m */; };
-		F18BFD933B13F4A2EBCEE95D /* lloyds.h in Headers */ = {isa = PBXBuildFile; fileRef = B76A6C7726FB7C009481A307 /* lloyds.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		F219A5284E8B20322256C6EA /* JSON.swift in Sources */ = {isa = PBXBuildFile; fileRef = 78DBA3340F96D74B3CC3DA65 /* JSON.swift */; };
-		F24D1E52AB2A7096A0C1F948 /* classifier.h in Headers */ = {isa = PBXBuildFile; fileRef = 53CB78490ECA2E541949151B /* classifier.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		F3E03AB358DEFC9DD341F779 /* fingerprint_calculator.h in Headers */ = {isa = PBXBuildFile; fileRef = 6159627D07A5B5782F4D5302 /* fingerprint_calculator.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		F3F7E7C6A2EB82E44C5D35A8 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 75576ED7E25118216A1D60A0 /* Cocoa.framework */; };
-		F690AFB6B2B600FDDCF9B5E8 /* combined_buffer.h in Headers */ = {isa = PBXBuildFile; fileRef = 74F7DE09D006AEEAC4C3C5C8 /* combined_buffer.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		F71A51DC152C4DDF58051B96 /* silence_remover.h in Headers */ = {isa = PBXBuildFile; fileRef = 2491BC4B7E0A499D19C9AA31 /* silence_remover.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		F735795BB0647CA230B0E06E /* spectrum.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BDCFA9569766B16D671AF366 /* spectrum.cpp */; settings = {COMPILER_FLAGS = "-lstdc++ -fno-objc-arc"; }; };
-		FD805402E732002F1F4E7B6C /* moving_average.h in Headers */ = {isa = PBXBuildFile; fileRef = 237B230F5E69F6D094407F4E /* moving_average.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		FF2582F9502D0CBB7E05BD32 /* spectrum.h in Headers */ = {isa = PBXBuildFile; fileRef = 1782CE40B4D8938DE1358CDE /* spectrum.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		09EA6BBAE9546372CE78B023 /* fingerprinter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3C69ECBEFBEE65A8BA92D9C7 /* fingerprinter.cpp */; settings = {COMPILER_FLAGS = "-lstdc++ -fno-objc-arc"; }; };
+		0CE520F1A4F22B6D296947C1 /* fft.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4BA3EFEBF5EFCF9DEF85E3D7 /* fft.cpp */; settings = {COMPILER_FLAGS = "-lstdc++ -fno-objc-arc"; }; };
+		17B1FB81BD787EF8F15944D4 /* fft_frame_consumer.h in Headers */ = {isa = PBXBuildFile; fileRef = C6148482613813A18E01F499 /* fft_frame_consumer.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		18E5479EA0627222648730C0 /* quantizer.h in Headers */ = {isa = PBXBuildFile; fileRef = D913D805E9199A7FD8BEF06F /* quantizer.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		2037E38EDD5A7086D1F44D9E /* base64.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C7596A6CF99FB44260CF66BF /* base64.cpp */; settings = {COMPILER_FLAGS = "-lstdc++ -fno-objc-arc"; }; };
+		212CF403BF5E1EC355B904AD /* fingerprinter_configuration.h in Headers */ = {isa = PBXBuildFile; fileRef = 02746AF0BF25D3BEA3073B7D /* fingerprinter_configuration.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		27654C71410766292B58FBA1 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F8EA44AB8F38AEECDBB0B249 /* Cocoa.framework */; };
+		2AD63F95FFE98AA78E3C7593 /* base64.h in Headers */ = {isa = PBXBuildFile; fileRef = 9365074B7ED285246B60DDBD /* base64.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		2BFE54C93545A43622E8B5EF /* bit_string_reader.h in Headers */ = {isa = PBXBuildFile; fileRef = 85BA1CC74B6ECE91B0BEF34E /* bit_string_reader.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		2D8E9045EE5A0B005A90C5A9 /* filter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 388C407FF9EEB84C837843F0 /* filter.cpp */; settings = {COMPILER_FLAGS = "-lstdc++ -fno-objc-arc"; }; };
+		2FFB50AA75E4CC984D77AA81 /* config.h in Headers */ = {isa = PBXBuildFile; fileRef = 88E832DADDCB5CB644C92492 /* config.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		34F52BC3D8C2AA1111D9BF0C /* Pods-chromaprint-osx-static-umbrella.h in Headers */ = {isa = PBXBuildFile; fileRef = ED26457B039E63833B7374E2 /* Pods-chromaprint-osx-static-umbrella.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		4074CF31346AC0161AB6E22D /* silence_remover.h in Headers */ = {isa = PBXBuildFile; fileRef = 8064FBBFA99F6690A1A5AA8A /* silence_remover.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		4097500F0F768CA72D52CE56 /* Pods-chromaprint-osx-static-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = 39296667EC3301CFB9BA665E /* Pods-chromaprint-osx-static-dummy.m */; };
+		451D25931EA97C2C7C5F29A2 /* sox_audio_source.h in Headers */ = {isa = PBXBuildFile; fileRef = 94448FC751F62F68E5B2CD8D /* sox_audio_source.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		47D17CC35CB24496713BE456 /* chromaprint.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B6A907289C1D2F0F7BF1D6B9 /* chromaprint.cpp */; settings = {COMPILER_FLAGS = "-lstdc++ -fno-objc-arc"; }; };
+		4C975296E43CF41DAEF0DD13 /* audio_processor.h in Headers */ = {isa = PBXBuildFile; fileRef = 0D2ACE0B9CDA6244AC59555E /* audio_processor.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		538D686ABEB91B2C625BB70A /* fingerprint_calculator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5587369F54B5EC3D6B6BF26 /* fingerprint_calculator.cpp */; settings = {COMPILER_FLAGS = "-lstdc++ -fno-objc-arc"; }; };
+		59BA58C52ECF388B4C58065C /* moving_average.h in Headers */ = {isa = PBXBuildFile; fileRef = 02DF1F55557E5A1667F602F1 /* moving_average.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		5AE24B10C79BB0E599871EBA /* fingerprint_decompressor.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BB1300AC4F4F35C3CE2C17FF /* fingerprint_decompressor.cpp */; settings = {COMPILER_FLAGS = "-lstdc++ -fno-objc-arc"; }; };
+		5C066F9C9909176E489F217E /* audio_processor.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 198619F24050AE953B4AAD8C /* audio_processor.cpp */; settings = {COMPILER_FLAGS = "-lstdc++ -fno-objc-arc"; }; };
+		5EA4188C6C28632C7ADF079D /* lloyds.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C9C39BC56F484FDD268102D4 /* lloyds.cpp */; settings = {COMPILER_FLAGS = "-lstdc++ -fno-objc-arc"; }; };
+		605E1B7741F4FD3A77B06186 /* Accelerate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 268656063E5616F116C8E95D /* Accelerate.framework */; };
+		62D085F47F72709BEA13D876 /* combined_buffer.h in Headers */ = {isa = PBXBuildFile; fileRef = A33E61E8948F321CD582E136 /* combined_buffer.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		6677C383415D264AABB3B9DA /* fft_lib_fftw3.h in Headers */ = {isa = PBXBuildFile; fileRef = A231B959296A888E0FF17496 /* fft_lib_fftw3.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		66C03FE07DE9A51DAA85728E /* bit_string_writer.h in Headers */ = {isa = PBXBuildFile; fileRef = D6FAE3F9C12B35DB5B8A788D /* bit_string_writer.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		6B6A205DB3080B4AE1AF537B /* chroma.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7F4A3E2C3361155140766557 /* chroma.cpp */; settings = {COMPILER_FLAGS = "-lstdc++ -fno-objc-arc"; }; };
+		70E427FBE2D822F99E5CCE1B /* image_builder.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D82F84E7669783EFCE82E65F /* image_builder.cpp */; settings = {COMPILER_FLAGS = "-lstdc++ -fno-objc-arc"; }; };
+		710E927864C0B8656F15223B /* fingerprint_calculator.h in Headers */ = {isa = PBXBuildFile; fileRef = D849818524F415150D427304 /* fingerprint_calculator.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		78529112053910DAA8076EA4 /* chromaprint.h in Headers */ = {isa = PBXBuildFile; fileRef = CD41E85748400285671E7E3C /* chromaprint.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		79F1C5786B56D9CA6F91DFAF /* fft.h in Headers */ = {isa = PBXBuildFile; fileRef = DD63F42D630EBAD535909788 /* fft.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		7C7430D76F35A2B2F367B23A /* spectrum.h in Headers */ = {isa = PBXBuildFile; fileRef = E9201C9EC0A2CCBFFC914653 /* spectrum.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		7DE8B08E1F1AD5FB2FC3EE02 /* spectral_centroid.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2E1BAB423E9A143064B1F77C /* spectral_centroid.cpp */; settings = {COMPILER_FLAGS = "-lstdc++ -fno-objc-arc"; }; };
+		824F400DC72E1AF5136E95A4 /* fft_frame.h in Headers */ = {isa = PBXBuildFile; fileRef = B4CAA691F11B249D5AAE227F /* fft_frame.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		84310E14BFAAA2091FF98E96 /* chroma.h in Headers */ = {isa = PBXBuildFile; fileRef = D5E3AC8E907A53E6177480BB /* chroma.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		883F8BA8D3AAC8841387C9FE /* chroma_normalizer.h in Headers */ = {isa = PBXBuildFile; fileRef = 721543C09364B5B38986BD06 /* chroma_normalizer.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		89EE11C12AFF810EBCBD77B9 /* avcodec.h in Headers */ = {isa = PBXBuildFile; fileRef = C53694077DFBD84E1998C3C4 /* avcodec.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		8A636EE12BEBCDCA4B99B74A /* decoder.h in Headers */ = {isa = PBXBuildFile; fileRef = 071A3DE471238707A208C9B6 /* decoder.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		8C1637AEC999C1E0C1FC37C5 /* debug.h in Headers */ = {isa = PBXBuildFile; fileRef = DD1FF246B35224D449D474B3 /* debug.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		8F61D7D869C8B7444694ACD0 /* integral_image.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A837C8F5CEAE5DB3271E4626 /* integral_image.cpp */; settings = {COMPILER_FLAGS = "-lstdc++ -fno-objc-arc"; }; };
+		9C52275192712EED473C753B /* spectrum.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 91143E6082E01ADF5EA3848B /* spectrum.cpp */; settings = {COMPILER_FLAGS = "-lstdc++ -fno-objc-arc"; }; };
+		9D46790CAE1763DB2220A241 /* resample2.c in Sources */ = {isa = PBXBuildFile; fileRef = 0F447FEB3C44C951E772FD1C /* resample2.c */; settings = {COMPILER_FLAGS = "-lstdc++ -fno-objc-arc"; }; };
+		9E7F3A87930B96C2A89F36BA /* filter.h in Headers */ = {isa = PBXBuildFile; fileRef = F9A46AC24B034BEA36E5F709 /* filter.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		A1919F548C548E6A08FDAFED /* fft_lib.h in Headers */ = {isa = PBXBuildFile; fileRef = 0C130A47658D2DCB77BD8FD0 /* fft_lib.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		A37145F9CC0EB86887EAE3A7 /* fingerprint_compressor.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 69312EF8AC10EA1AFF1AE1D6 /* fingerprint_compressor.cpp */; settings = {COMPILER_FLAGS = "-lstdc++ -fno-objc-arc"; }; };
+		A6AACD7FD9230374C383DEC3 /* chroma_resampler.h in Headers */ = {isa = PBXBuildFile; fileRef = 17E03DB09445941D17AE761A /* chroma_resampler.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		A7CE1314E7343C335680097D /* silence_remover.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CCA37FD979CA6241FB55D104 /* silence_remover.cpp */; settings = {COMPILER_FLAGS = "-lstdc++ -fno-objc-arc"; }; };
+		ACFF6CAC5658DA1877B8D731 /* Pods-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = 6E79A58043B4E2659F00D15B /* Pods-dummy.m */; };
+		B068B764832A4A9BFA16A7DE /* fingerprinter.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C5E520D2E5D8062D4F57743 /* fingerprinter.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		B1C937BF11ECC33127F7ED6F /* classifier.h in Headers */ = {isa = PBXBuildFile; fileRef = FB20966D71B62A5A23B36AD0 /* classifier.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		B1F2AA71F7927E9EEE00F82B /* feature_vector_consumer.h in Headers */ = {isa = PBXBuildFile; fileRef = 804DF125B93C00670D6DA414 /* feature_vector_consumer.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		B67ACF70E36A72DCED349E8C /* audio_consumer.h in Headers */ = {isa = PBXBuildFile; fileRef = 6BD02F87C6829E20443B65FF /* audio_consumer.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		B762EB98AB0B8310089D7D33 /* filter_utils.h in Headers */ = {isa = PBXBuildFile; fileRef = 854E6AE9DFAF0D51C3FE802C /* filter_utils.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		BE96FE17180F6D1D5982233F /* fft_lib_kissfft.h in Headers */ = {isa = PBXBuildFile; fileRef = CD027D431E34F7C9FC5CB648 /* fft_lib_kissfft.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		C17236603442A5447F2626CA /* dsputil.h in Headers */ = {isa = PBXBuildFile; fileRef = F92BB945225A951C92866BB4 /* dsputil.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		C2A04CACA90385EE7808EEE3 /* utils.h in Headers */ = {isa = PBXBuildFile; fileRef = A6FDE0E48EE999173CC8B4BD /* utils.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		CB6B3D932C6710D03EA3DAE3 /* image_builder.h in Headers */ = {isa = PBXBuildFile; fileRef = 5DF7C88A315364F6E71FE0EF /* image_builder.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		D0F07B6F681A19F0199B70FC /* integral_image.h in Headers */ = {isa = PBXBuildFile; fileRef = F9350F391A985F770F904CAC /* integral_image.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		E0705835F282AEA10C807520 /* chroma_filter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C33DDF2E5FB04F6808539F2 /* chroma_filter.cpp */; settings = {COMPILER_FLAGS = "-lstdc++ -fno-objc-arc"; }; };
+		E0B97219858006ABDE03BEB8 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F8EA44AB8F38AEECDBB0B249 /* Cocoa.framework */; };
+		E2540E090714E9476C5786B5 /* image.h in Headers */ = {isa = PBXBuildFile; fileRef = 38D96A65D2C2BEC1B8EA115D /* image.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		E2B60C96FBCF24D4368912FF /* fingerprinter_configuration.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 75053A52D21547C188BF348C /* fingerprinter_configuration.cpp */; settings = {COMPILER_FLAGS = "-lstdc++ -fno-objc-arc"; }; };
+		E56AD6A4D7319318CD6760A0 /* Pods-umbrella.h in Headers */ = {isa = PBXBuildFile; fileRef = 4FBA12ACBA1CBA5E99E17FD3 /* Pods-umbrella.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		E6778849FA446E1B5F896023 /* fft_lib_avfft.h in Headers */ = {isa = PBXBuildFile; fileRef = 1FECFA7EA55EB82C021EC2EB /* fft_lib_avfft.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		E9F7460B86DA52C53A687EEF /* fingerprint_compressor.h in Headers */ = {isa = PBXBuildFile; fileRef = BDC09E7500293AFBC38ADEF9 /* fingerprint_compressor.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		EAB77313BC1760D0C3453EFE /* fft_lib_vdsp.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1A267817357A3324EDFA78D1 /* fft_lib_vdsp.cpp */; settings = {COMPILER_FLAGS = "-lstdc++ -fno-objc-arc"; }; };
+		F8A43DDDE060AF5BBC1CCDC6 /* fingerprint_decompressor.h in Headers */ = {isa = PBXBuildFile; fileRef = 6725A6651F3822A7B347CDBA /* fingerprint_decompressor.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		F8DA772BA82C34A3CDC09F29 /* lloyds.h in Headers */ = {isa = PBXBuildFile; fileRef = E726DAA921C8886AFC9A914B /* lloyds.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		FB4D9840A101D3F75294DDAA /* chroma_filter.h in Headers */ = {isa = PBXBuildFile; fileRef = FE5C2FCA9DC8CF756BD1CF00 /* chroma_filter.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		FC20F52B90EEE318C7C1BC1C /* spectral_centroid.h in Headers */ = {isa = PBXBuildFile; fileRef = B665063C9E9ABD266D24FD75 /* spectral_centroid.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		FD2432AB1DE8C6E631C3F36B /* chroma_resampler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = ECB61F5C8458D7BFEB844653 /* chroma_resampler.cpp */; settings = {COMPILER_FLAGS = "-lstdc++ -fno-objc-arc"; }; };
+		FF8AF519B10A72319CDCA0C4 /* fft_lib_vdsp.h in Headers */ = {isa = PBXBuildFile; fileRef = 74A33D6722F6FBCAA788A170 /* fft_lib_vdsp.h */; settings = {ATTRIBUTES = (Public, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		01EDD0C5A85A65FA51B9D80A /* PBXContainerItemProxy */ = {
+		17639530E226F17F698C4FFB /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
-			containerPortal = 31115CB8B511FED6F42ACD17 /* Project object */;
+			containerPortal = 5CAAC5EA8B25D88E90BC9A52 /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = 9BB2613722D443ED11D3A5D9;
-			remoteInfo = "Pods-Runes";
-		};
-		0A4A1CF64B582D5EACEB7152 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 31115CB8B511FED6F42ACD17 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 9BB2613722D443ED11D3A5D9;
-			remoteInfo = "Pods-Runes";
-		};
-		0D58405D62EF9F16E4A7B78B /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 31115CB8B511FED6F42ACD17 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 9E7E7A377E6E1344F8E7E5E9;
+			remoteGlobalIDString = FE196D0D5C51B0D9C0DF828E;
 			remoteInfo = "Pods-chromaprint-osx-static";
-		};
-		2CB3BEBB04DFD223D40802B6 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 31115CB8B511FED6F42ACD17 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 40386F69ED8CE5A7AFBE0EBB;
-			remoteInfo = "Pods-Box";
-		};
-		56C055895BD538AB71316B7A /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 31115CB8B511FED6F42ACD17 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 40386F69ED8CE5A7AFBE0EBB;
-			remoteInfo = "Pods-Box";
-		};
-		77B773B0D7622CBF0D90D633 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 31115CB8B511FED6F42ACD17 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 57240683708E6473ABE39167;
-			remoteInfo = "Pods-Argo";
 		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		00692AD34AEA051DA6170317 /* Runes.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Runes.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		027897DB4562743C00FB698A /* integral_image.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = integral_image.h; path = src/integral_image.h; sourceTree = "<group>"; };
-		03F3B6A51C4BA82F72B9F0C7 /* Pods-chromaprint-osx-static.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = "sourcecode.module-map"; path = "Pods-chromaprint-osx-static.modulemap"; sourceTree = "<group>"; };
-		058AA3F62A532173E668D9C3 /* Array.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = Array.swift; path = Source/Array.swift; sourceTree = "<group>"; };
-		062400F55AEA72AAF427B2B2 /* Box.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = Box.h; path = Box/Box.h; sourceTree = "<group>"; };
-		06B4287F890ADB3426F6702C /* version.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = version.h; path = include/libswresample/version.h; sourceTree = "<group>"; };
-		07D89DA64C9DC129C298D05F /* Box.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = Box.swift; path = Box/Box.swift; sourceTree = "<group>"; };
-		0AF1CCB9FAE1F8AB6BC9CED3 /* version.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = version.h; path = include/libavcodec/version.h; sourceTree = "<group>"; };
-		0B5C07AE527358C7E8D6E1A5 /* image_builder.cpp */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.cpp.cpp; name = image_builder.cpp; path = src/image_builder.cpp; sourceTree = "<group>"; };
-		0C247BF25068680EE2484D5B /* buffersink.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = buffersink.h; path = include/libavfilter/buffersink.h; sourceTree = "<group>"; };
-		0D2B226B52C8CF62E4408F8C /* fft.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = fft.h; path = src/fft.h; sourceTree = "<group>"; };
-		0D2FDC53C260BF6A93FC517F /* chroma_filter.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = chroma_filter.h; path = src/chroma_filter.h; sourceTree = "<group>"; };
-		0E906834F7B93079F8C401D9 /* avutil.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = avutil.h; path = include/libavutil/avutil.h; sourceTree = "<group>"; };
-		0EA6592252242F7C3A7A4259 /* opt.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = opt.h; path = include/libavutil/opt.h; sourceTree = "<group>"; };
-		0F97BEA0BCBFB7CC66B1A638 /* curry.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = curry.swift; path = Argo/Functions/curry.swift; sourceTree = "<group>"; };
-		122AFB83EA853FCB4D953707 /* vdpau.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = vdpau.h; path = include/libavcodec/vdpau.h; sourceTree = "<group>"; };
-		12AE9E0D3B81612CDD09AEE7 /* Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		14B7D6965BAD1E92F104E134 /* filter_utils.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = filter_utils.h; path = src/filter_utils.h; sourceTree = "<group>"; };
-		152B227957C6290532DC37A6 /* old_pix_fmts.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = old_pix_fmts.h; path = include/libavutil/old_pix_fmts.h; sourceTree = "<group>"; };
-		1560734540769CF60BC04913 /* bit_string_writer.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = bit_string_writer.h; path = src/bit_string_writer.h; sourceTree = "<group>"; };
-		1636FF32C36AE1260B135F33 /* timecode.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = timecode.h; path = include/libavutil/timecode.h; sourceTree = "<group>"; };
-		1782CE40B4D8938DE1358CDE /* spectrum.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = spectrum.h; path = src/spectrum.h; sourceTree = "<group>"; };
-		17BD5230BB40DF3166F1BD25 /* silence_remover.cpp */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.cpp.cpp; name = silence_remover.cpp; path = src/silence_remover.cpp; sourceTree = "<group>"; };
-		1BA934512BF4024C5BAAA526 /* old_codec_ids.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = old_codec_ids.h; path = include/libavcodec/old_codec_ids.h; sourceTree = "<group>"; };
-		1CE09A1CFD51B49D0FB35087 /* Pods-Box-umbrella.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "Pods-Box-umbrella.h"; sourceTree = "<group>"; };
-		230FB0A9F8C56F028490FB54 /* dv_profile.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = dv_profile.h; path = include/libavcodec/dv_profile.h; sourceTree = "<group>"; };
-		2359A6BF0DD000AD82C944A8 /* Pods-Runes.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = "sourcecode.module-map"; path = "Pods-Runes.modulemap"; sourceTree = "<group>"; };
-		237B230F5E69F6D094407F4E /* moving_average.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = moving_average.h; path = src/moving_average.h; sourceTree = "<group>"; };
-		2491BC4B7E0A499D19C9AA31 /* silence_remover.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = silence_remover.h; path = src/silence_remover.h; sourceTree = "<group>"; };
-		271E35E0999CB49E4B72118A /* Pods-umbrella.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "Pods-umbrella.h"; sourceTree = "<group>"; };
-		27795D695FB80B599FDCD6C4 /* fingerprinter.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = fingerprinter.h; path = src/fingerprinter.h; sourceTree = "<group>"; };
-		27FCA0B2D22734B3D18B9B1B /* sha.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = sha.h; path = include/libavutil/sha.h; sourceTree = "<group>"; };
-		28E1EC619EEBDC5B1FEEDF62 /* random_seed.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = random_seed.h; path = include/libavutil/random_seed.h; sourceTree = "<group>"; };
-		2939CEFE2309E59A1DF16E08 /* sha512.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = sha512.h; path = include/libavutil/sha512.h; sourceTree = "<group>"; };
-		2D09A645B722CEBD40851BF7 /* mathematics.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = mathematics.h; path = include/libavutil/mathematics.h; sourceTree = "<group>"; };
-		2D3EB75C0DA6C7BEAFD9C3E5 /* md5.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = md5.h; path = include/libavutil/md5.h; sourceTree = "<group>"; };
-		2DA4BA4975735EB82127783F /* Optional.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = Optional.swift; path = Source/Optional.swift; sourceTree = "<group>"; };
-		2DE31291F0A8917B09726F1E /* aes.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = aes.h; path = include/libavutil/aes.h; sourceTree = "<group>"; };
-		330E4C65ECC1B94E320DF07A /* threadmessage.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = threadmessage.h; path = include/libavutil/threadmessage.h; sourceTree = "<group>"; };
-		33AEDCD62EF7D2233D2BAC31 /* config.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = config.h; sourceTree = "<group>"; };
-		3406F6DF0E5F84C74E972D1B /* Pods-chromaprint-osx-static-Private.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-chromaprint-osx-static-Private.xcconfig"; sourceTree = "<group>"; };
-		3512386546E7815AA57072E9 /* fft_lib_vdsp.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = fft_lib_vdsp.h; path = src/fft_lib_vdsp.h; sourceTree = "<group>"; };
-		39A563B4C532948BA9CF3041 /* version.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = version.h; path = include/libavfilter/version.h; sourceTree = "<group>"; };
-		3BB549F9ED47F3E598A06EB2 /* Pods-Runes-umbrella.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "Pods-Runes-umbrella.h"; sourceTree = "<group>"; };
-		3C00D89E9D11F6979EC8CB8E /* libavcodec.a */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = archive.ar; name = libavcodec.a; path = lib/libavcodec.a; sourceTree = "<group>"; };
-		3C5AD58919E14AC0D56F8BB4 /* log.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = log.h; path = include/libavutil/log.h; sourceTree = "<group>"; };
-		3CE641172A16C0EE62AF843B /* version.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = version.h; path = include/libavformat/version.h; sourceTree = "<group>"; };
-		3D16299C39C5034767E135C7 /* asrc_abuffer.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = asrc_abuffer.h; path = include/libavfilter/asrc_abuffer.h; sourceTree = "<group>"; };
-		401403CD006133CFDC80BADA /* Pods.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = Pods.debug.xcconfig; sourceTree = "<group>"; };
-		408AFD34F33B8CA21CBBFFAB /* flatReduce.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = flatReduce.swift; path = Argo/Functions/flatReduce.swift; sourceTree = "<group>"; };
-		4125FC2D1BE6B9006D2059CB /* bit_string_reader.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = bit_string_reader.h; path = src/bit_string_reader.h; sourceTree = "<group>"; };
-		4454971909E3037A1BF3C2FC /* Podfile */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = Podfile; path = ../Podfile; sourceTree = SOURCE_ROOT; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
-		48D2A8522DC9CDCFED49AECA /* avfiltergraph.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = avfiltergraph.h; path = include/libavfilter/avfiltergraph.h; sourceTree = "<group>"; };
-		4AD6F5540095495C2E8EE887 /* swscale.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = swscale.h; path = include/libswscale/swscale.h; sourceTree = "<group>"; };
-		4AD957C1A2524D572DF26D00 /* filter.cpp */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.cpp.cpp; name = filter.cpp; path = src/filter.cpp; sourceTree = "<group>"; };
-		4CC73896BA84E09A170A37F3 /* integral_image.cpp */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.cpp.cpp; name = integral_image.cpp; path = src/integral_image.cpp; sourceTree = "<group>"; };
-		4D086D1A34C6BBDBB57C2506 /* Pods-Box.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = "sourcecode.module-map"; path = "Pods-Box.modulemap"; sourceTree = "<group>"; };
-		514190631D37B00791E1309B /* file.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = file.h; path = include/libavutil/file.h; sourceTree = "<group>"; };
-		51627D197B3827DF6E1BB43F /* xvmc.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = xvmc.h; path = include/libavcodec/xvmc.h; sourceTree = "<group>"; };
-		525F262AD5F1C63A3704AF53 /* downmix_info.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = downmix_info.h; path = include/libavutil/downmix_info.h; sourceTree = "<group>"; };
-		52DB41ABF6E028010DBD8CB4 /* libavutil.a */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = archive.ar; name = libavutil.a; path = lib/libavutil.a; sourceTree = "<group>"; };
-		53CB78490ECA2E541949151B /* classifier.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = classifier.h; path = src/classifier.h; sourceTree = "<group>"; };
-		560A4EC5A8C600D91FFF60DD /* Accelerate.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accelerate.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.10.sdk/System/Library/Frameworks/Accelerate.framework; sourceTree = DEVELOPER_DIR; };
-		569621778582FB850B25477E /* base64.cpp */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.cpp.cpp; name = base64.cpp; path = src/base64.cpp; sourceTree = "<group>"; };
-		58296836796813492C1A5EAE /* eval.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = eval.h; path = include/libavutil/eval.h; sourceTree = "<group>"; };
-		5B53840BB12FFFC25D54594E /* audio_consumer.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = audio_consumer.h; path = src/audio_consumer.h; sourceTree = "<group>"; };
-		5C24DE83FB151514446C8C2A /* decode.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = decode.swift; path = Argo/Functions/decode.swift; sourceTree = "<group>"; };
-		5C2EE5244B2FEA33FF3FE9BC /* attributes.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = attributes.h; path = include/libavutil/attributes.h; sourceTree = "<group>"; };
-		5C88C29E359BE1253DF59EAA /* fingerprint_compressor.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = fingerprint_compressor.h; path = src/fingerprint_compressor.h; sourceTree = "<group>"; };
-		5F6D0CB1D4676B9D1A5907CB /* fft_lib_kissfft.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = fft_lib_kissfft.h; path = src/fft_lib_kissfft.h; sourceTree = "<group>"; };
-		6159627D07A5B5782F4D5302 /* fingerprint_calculator.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = fingerprint_calculator.h; path = src/fingerprint_calculator.h; sourceTree = "<group>"; };
-		62EC403541F6F5A266A3965D /* libavformat.a */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = archive.ar; name = libavformat.a; path = lib/libavformat.a; sourceTree = "<group>"; };
-		6549C64803BA5EF90040629B /* libswresample.a */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = archive.ar; name = libswresample.a; path = lib/libswresample.a; sourceTree = "<group>"; };
-		671C76589E3EBE31E2BB1DFD /* Pods-chromaprint-osx-static-umbrella.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "Pods-chromaprint-osx-static-umbrella.h"; sourceTree = "<group>"; };
-		67A3F9C6F6309273E132D460 /* common.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = common.h; path = include/libavutil/common.h; sourceTree = "<group>"; };
-		684D9459916989A451CAE997 /* Decodable.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = Decodable.swift; path = Argo/Types/Decodable.swift; sourceTree = "<group>"; };
-		6B8FBB7C7FF14651AD732D02 /* Runes.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Runes.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		6C624F46454C2F35E342F971 /* decoder.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = decoder.h; path = src/decoder.h; sourceTree = "<group>"; };
-		70AD2982DF4759AEFEC71B97 /* intreadwrite.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = intreadwrite.h; path = include/libavutil/intreadwrite.h; sourceTree = "<group>"; };
-		72049B061625A15CEA035BC4 /* crc.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = crc.h; path = include/libavutil/crc.h; sourceTree = "<group>"; };
-		73E30D39BD06463A91D82865 /* spectral_centroid.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = spectral_centroid.h; path = src/spectral_centroid.h; sourceTree = "<group>"; };
-		74F7DE09D006AEEAC4C3C5C8 /* combined_buffer.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = combined_buffer.h; path = src/combined_buffer.h; sourceTree = "<group>"; };
-		75576ED7E25118216A1D60A0 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.10.sdk/System/Library/Frameworks/Cocoa.framework; sourceTree = DEVELOPER_DIR; };
-		75CAAAA16B38EA92B449FFD4 /* intfloat.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = intfloat.h; path = include/libavutil/intfloat.h; sourceTree = "<group>"; };
-		7612FA7C2CE32853F2568A5D /* Pods-frameworks.sh */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.script.sh; path = "Pods-frameworks.sh"; sourceTree = "<group>"; };
-		78DBA3340F96D74B3CC3DA65 /* JSON.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = JSON.swift; path = Argo/Types/JSON.swift; sourceTree = "<group>"; };
-		7B643FC101ABBCE2613CE63B /* Pods-acknowledgements.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "Pods-acknowledgements.plist"; sourceTree = "<group>"; };
-		7E90900E7B1612ED33FA6CA3 /* filter.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = filter.h; path = src/filter.h; sourceTree = "<group>"; };
-		7F13980FCAF9A6BDFFACA206 /* Pods.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = "sourcecode.module-map"; path = Pods.modulemap; sourceTree = "<group>"; };
-		805062BB1DAC3E288D52A843 /* avcodec.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = avcodec.h; path = include/libavcodec/avcodec.h; sourceTree = "<group>"; };
-		807DE7BD8800B2D36826704B /* swresample.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = swresample.h; path = include/libswresample/swresample.h; sourceTree = "<group>"; };
-		807EA7A1879EBFCD53C79AC9 /* sequence.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = sequence.swift; path = Argo/Functions/sequence.swift; sourceTree = "<group>"; };
-		817F5527EF3DB8B284EE67C5 /* audio_processor.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = audio_processor.h; path = src/audio_processor.h; sourceTree = "<group>"; };
-		81F4F04A62843FBECAE623CE /* fft_lib.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = fft_lib.h; path = src/fft_lib.h; sourceTree = "<group>"; };
-		82834FAF49F45843649C4DC3 /* avcodec.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = avcodec.h; path = include/libavfilter/avcodec.h; sourceTree = "<group>"; };
-		83B0D475CBF20C4F0A6D9B69 /* Pods-Runes-Private.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-Runes-Private.xcconfig"; sourceTree = "<group>"; };
-		8545A0919D9BB91AEF4C8A81 /* hmac.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = hmac.h; path = include/libavutil/hmac.h; sourceTree = "<group>"; };
-		890615C628EB475107654E17 /* quantizer.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = quantizer.h; path = src/quantizer.h; sourceTree = "<group>"; };
-		89CB5AE701981AE58A934B6F /* Pods-chromaprint-osx-static-prefix.pch */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "Pods-chromaprint-osx-static-prefix.pch"; sourceTree = "<group>"; };
-		8A87A12A65305974308B1306 /* debug.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = debug.h; path = src/debug.h; sourceTree = "<group>"; };
-		8AA97AE494B487471EB61D30 /* fingerprint_compressor.cpp */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.cpp.cpp; name = fingerprint_compressor.cpp; path = src/fingerprint_compressor.cpp; sourceTree = "<group>"; };
-		8EC010A48860207C30F7F3E2 /* dict.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = dict.h; path = include/libavutil/dict.h; sourceTree = "<group>"; };
-		9137378CAFAD7E56E17FA557 /* version.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = version.h; path = include/libavdevice/version.h; sourceTree = "<group>"; };
-		915B9F9816BE865289CCBB97 /* Pods-Runes-prefix.pch */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "Pods-Runes-prefix.pch"; sourceTree = "<group>"; };
-		91A12DBC22C7655580CBB378 /* bswap.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = bswap.h; path = include/libavutil/bswap.h; sourceTree = "<group>"; };
-		92075E254A08438954620CCD /* Pods-resources.sh */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.script.sh; path = "Pods-resources.sh"; sourceTree = "<group>"; };
-		92336F83757D32E9E4650DB6 /* image_builder.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = image_builder.h; path = src/image_builder.h; sourceTree = "<group>"; };
-		9262ADA32284ECC22D0EF58C /* utils.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = utils.h; path = src/utils.h; sourceTree = "<group>"; };
-		92CEC668A25BCA38C4515C2F /* adler32.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = adler32.h; path = include/libavutil/adler32.h; sourceTree = "<group>"; };
-		949CD7E4A7F22C9FC8962D84 /* fingerprint_decompressor.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = fingerprint_decompressor.h; path = src/fingerprint_decompressor.h; sourceTree = "<group>"; };
-		94F22CEBD122B804E70F952B /* Box.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Box.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		95482E09560EE073853D30AF /* intfloat_readwrite.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = intfloat_readwrite.h; path = include/libavutil/intfloat_readwrite.h; sourceTree = "<group>"; };
-		95D21089EAD64C576CA45551 /* Pods-Box-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "Pods-Box-dummy.m"; sourceTree = "<group>"; };
-		966FDFE7ACA6708B66DD29AB /* chroma_resampler.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = chroma_resampler.h; path = src/chroma_resampler.h; sourceTree = "<group>"; };
-		9745F3589D2FC5515A7F3744 /* chromaprint.cpp */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.cpp.cpp; name = chromaprint.cpp; path = src/chromaprint.cpp; sourceTree = "<group>"; };
-		97575B8B52EBD2D98773D025 /* Argo.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Argo.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		9A02A66EA4E1345B488FFBA2 /* buffer.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = buffer.h; path = include/libavutil/buffer.h; sourceTree = "<group>"; };
-		9B9A60A56311D929D054632F /* base64.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = base64.h; path = include/libavutil/base64.h; sourceTree = "<group>"; };
-		9BB1B0344613EDBE9394838F /* parseutils.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = parseutils.h; path = include/libavutil/parseutils.h; sourceTree = "<group>"; };
-		9D3454B1522F84C0DFBAAE93 /* frame.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = frame.h; path = include/libavutil/frame.h; sourceTree = "<group>"; };
-		9D38E01753C21AAAF3C194A2 /* ripemd.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = ripemd.h; path = include/libavutil/ripemd.h; sourceTree = "<group>"; };
-		9DA380036063979BC1B97830 /* feature_vector_consumer.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = feature_vector_consumer.h; path = src/feature_vector_consumer.h; sourceTree = "<group>"; };
-		9DE6E6BC74F3657E2508C0E9 /* macros.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = macros.h; path = include/libavutil/macros.h; sourceTree = "<group>"; };
-		9E421F2C70A0EB4667CB318F /* base64.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = base64.h; path = src/base64.h; sourceTree = "<group>"; };
-		9ECACFCD3AA2FE50EE1E1327 /* pixdesc.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = pixdesc.h; path = include/libavutil/pixdesc.h; sourceTree = "<group>"; };
-		9FAB93743C008743D0AB78C9 /* samplefmt.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = samplefmt.h; path = include/libavutil/samplefmt.h; sourceTree = "<group>"; };
-		A01917C3935C0A70B3D04A27 /* version.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = version.h; path = include/libswscale/version.h; sourceTree = "<group>"; };
-		A1067FDE8C3838FE6E6B7BF0 /* display.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = display.h; path = include/libavutil/display.h; sourceTree = "<group>"; };
-		A2218FF7DDB9B07F1A31DD35 /* Pods-acknowledgements.markdown */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; path = "Pods-acknowledgements.markdown"; sourceTree = "<group>"; };
-		A2331EDAF874A30DC19B90BE /* avfft.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = avfft.h; path = include/libavcodec/avfft.h; sourceTree = "<group>"; };
-		A275CC4230C365EF4AF653B7 /* Operators.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = Operators.swift; path = Source/Operators.swift; sourceTree = "<group>"; };
-		A2DAAE83C3F5A48898E6A4B1 /* pixelutils.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = pixelutils.h; path = include/libavutil/pixelutils.h; sourceTree = "<group>"; };
-		A3D20F451522CABDF2C03862 /* time.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = time.h; path = include/libavutil/time.h; sourceTree = "<group>"; };
-		A3F8284ACB28A1217F0D953A /* Pods-Argo-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "Pods-Argo-dummy.m"; sourceTree = "<group>"; };
-		A619EAF96CA8DCCCB92D57E6 /* dxva2.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = dxva2.h; path = include/libavcodec/dxva2.h; sourceTree = "<group>"; };
-		A6D688D3F8E296449E5FD597 /* Pods-chromaprint-osx-static.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-chromaprint-osx-static.xcconfig"; sourceTree = "<group>"; };
-		A8DFCA2B5C35C05BD946EC3A /* fifo.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = fifo.h; path = include/libavutil/fifo.h; sourceTree = "<group>"; };
-		A9A4BDA19F30B597575DA7DA /* xtea.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = xtea.h; path = include/libavutil/xtea.h; sourceTree = "<group>"; };
-		A9C20D89C06D06FB62848000 /* lfg.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = lfg.h; path = include/libavutil/lfg.h; sourceTree = "<group>"; };
-		AE53AF307F593989246C8140 /* fingerprint_decompressor.cpp */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.cpp.cpp; name = fingerprint_decompressor.cpp; path = src/fingerprint_decompressor.cpp; sourceTree = "<group>"; };
-		AFED892AE818161D0760C069 /* ffversion.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = ffversion.h; path = include/libavutil/ffversion.h; sourceTree = "<group>"; };
-		B1CA56A919F771E3368884E9 /* chroma.cpp */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.cpp.cpp; name = chroma.cpp; path = src/chroma.cpp; sourceTree = "<group>"; };
-		B2745B94EDDCAAB4B1656D9C /* avfilter.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = avfilter.h; path = include/libavfilter/avfilter.h; sourceTree = "<group>"; };
-		B3DF1299E8AF257D3BFF8AEB /* stereo3d.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = stereo3d.h; path = include/libavutil/stereo3d.h; sourceTree = "<group>"; };
-		B40957B43F4AF878CF6F96EB /* hash.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = hash.h; path = include/libavutil/hash.h; sourceTree = "<group>"; };
-		B41C8846813F4E4CB35227A0 /* replaygain.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = replaygain.h; path = include/libavutil/replaygain.h; sourceTree = "<group>"; };
-		B60A36EB0663F501A1F356A7 /* buffersrc.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = buffersrc.h; path = include/libavfilter/buffersrc.h; sourceTree = "<group>"; };
-		B71018B9CDBF9A1A0DBFCD40 /* chroma_filter.cpp */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.cpp.cpp; name = chroma_filter.cpp; path = src/chroma_filter.cpp; sourceTree = "<group>"; };
-		B76A6C7726FB7C009481A307 /* lloyds.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = lloyds.h; path = src/lloyds.h; sourceTree = "<group>"; };
-		B7EF45468672374DEB368BF8 /* fft.cpp */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.cpp.cpp; name = fft.cpp; path = src/fft.cpp; sourceTree = "<group>"; };
-		B875B5B659899F1A9F329D97 /* StandardTypes.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = StandardTypes.swift; path = Argo/Types/StandardTypes.swift; sourceTree = "<group>"; };
-		B8A0CC56A8F50652C6195679 /* Pods-Runes-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "Pods-Runes-dummy.m"; sourceTree = "<group>"; };
-		B8EE3880DA79EC9F62DC15D7 /* Argo.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = Argo.h; path = Argo/Resources/Argo.h; sourceTree = "<group>"; };
-		B932DC7DE3C0410C44671838 /* Box.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Box.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		BAD05B3936E75954295624D9 /* timestamp.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = timestamp.h; path = include/libavutil/timestamp.h; sourceTree = "<group>"; };
-		BC42BD1BC85EACAE838F6C4A /* resample2.c */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.c; name = resample2.c; path = src/avresample/resample2.c; sourceTree = "<group>"; };
-		BDCFA9569766B16D671AF366 /* spectrum.cpp */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.cpp.cpp; name = spectrum.cpp; path = src/spectrum.cpp; sourceTree = "<group>"; };
-		BE61268D2F6F5FB5629A4DBC /* Pods-environment.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "Pods-environment.h"; sourceTree = "<group>"; };
-		C10364F9EA7D98A380D4B454 /* pixfmt.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = pixfmt.h; path = include/libavutil/pixfmt.h; sourceTree = "<group>"; };
-		C2182F3369E1AE719A145BC8 /* avassert.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = avassert.h; path = include/libavutil/avassert.h; sourceTree = "<group>"; };
-		C23C5993C4D2CD1D549E9DBC /* avio.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = avio.h; path = include/libavformat/avio.h; sourceTree = "<group>"; };
-		C2457EA854368EF3BD01F6D9 /* Pods-Box-prefix.pch */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "Pods-Box-prefix.pch"; sourceTree = "<group>"; };
-		C343FDC1F01020FC282A3B25 /* mem.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = mem.h; path = include/libavutil/mem.h; sourceTree = "<group>"; };
-		C3D90BF43978C88E95703979 /* avstring.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = avstring.h; path = include/libavutil/avstring.h; sourceTree = "<group>"; };
-		C5FD4CFDA5B9A05B1E86BAD7 /* murmur3.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = murmur3.h; path = include/libavutil/murmur3.h; sourceTree = "<group>"; };
-		C74BA694674B8CA66E351003 /* Decoded.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = Decoded.swift; path = Argo/Types/Decoded.swift; sourceTree = "<group>"; };
-		C84B95627C7FE047A2E3F1A2 /* Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		CB0540C33C892768CB1FBA0A /* vaapi.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = vaapi.h; path = include/libavcodec/vaapi.h; sourceTree = "<group>"; };
-		CC632EA3D2BB58F9752E91CE /* channel_layout.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = channel_layout.h; path = include/libavutil/channel_layout.h; sourceTree = "<group>"; };
-		CD67C1F6D8562909BBE08374 /* blowfish.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = blowfish.h; path = include/libavutil/blowfish.h; sourceTree = "<group>"; };
-		CD76614DD160F732526E2DA5 /* fingerprinter.cpp */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.cpp.cpp; name = fingerprinter.cpp; path = src/fingerprinter.cpp; sourceTree = "<group>"; };
-		CE85D1C075598BB6789D2344 /* Pods.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		D024FCFA80BED350B6C4D45A /* fingerprint_calculator.cpp */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.cpp.cpp; name = fingerprint_calculator.cpp; path = src/fingerprint_calculator.cpp; sourceTree = "<group>"; };
-		D0874A6005646F558461F603 /* fft_lib_avfft.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = fft_lib_avfft.h; path = src/fft_lib_avfft.h; sourceTree = "<group>"; };
-		D118D9FF645B2BEEBD40EB4D /* motion_vector.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = motion_vector.h; path = include/libavutil/motion_vector.h; sourceTree = "<group>"; };
-		D16E9830115FA1E96C813F0F /* bprint.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = bprint.h; path = include/libavutil/bprint.h; sourceTree = "<group>"; };
-		D19A1F759CECD4BD89F5BA5D /* avdevice.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = avdevice.h; path = include/libavdevice/avdevice.h; sourceTree = "<group>"; };
-		D1AEA9271BC67474F92E1F10 /* Pods-Argo-umbrella.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "Pods-Argo-umbrella.h"; sourceTree = "<group>"; };
-		D372AC07C12CE8FB3E3E2443 /* Dictionary.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = Dictionary.swift; path = Argo/Extensions/Dictionary.swift; sourceTree = "<group>"; };
-		D442A269DD22DBB9203710D1 /* fft_lib_vdsp.cpp */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.cpp.cpp; name = fft_lib_vdsp.cpp; path = src/fft_lib_vdsp.cpp; sourceTree = "<group>"; };
-		D5C0C041A3F5284621D61F00 /* BoxType.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = BoxType.swift; path = Box/BoxType.swift; sourceTree = "<group>"; };
-		D66119CB75593F30C469B1B3 /* version.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = version.h; path = include/libavutil/version.h; sourceTree = "<group>"; };
-		D6F80EABBDD5BF015891B2C9 /* avconfig.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = avconfig.h; path = include/libavutil/avconfig.h; sourceTree = "<group>"; };
-		D8CF3CCDD7B173D3BB691001 /* fft_frame.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = fft_frame.h; path = src/fft_frame.h; sourceTree = "<group>"; };
-		DD52C9C064897719E3262762 /* lloyds.cpp */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.cpp.cpp; name = lloyds.cpp; path = src/lloyds.cpp; sourceTree = "<group>"; };
-		DD7B010A8DA3BBFD2A749016 /* fft_frame_consumer.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = fft_frame_consumer.h; path = src/fft_frame_consumer.h; sourceTree = "<group>"; };
-		DE48CE44B0C2E829F2D417EB /* lzo.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = lzo.h; path = include/libavutil/lzo.h; sourceTree = "<group>"; };
-		DF226423AB464D012818FADE /* Pods-Box.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-Box.xcconfig"; sourceTree = "<group>"; };
-		DF605B8482B09412C8B42207 /* fingerprinter_configuration.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = fingerprinter_configuration.h; path = src/fingerprinter_configuration.h; sourceTree = "<group>"; };
-		DFD13265C1C8907D58E5FA3A /* libavdevice.a */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = archive.ar; name = libavdevice.a; path = lib/libavdevice.a; sourceTree = "<group>"; };
-		E18736400B4B35795DB6F0EB /* audio_fifo.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = audio_fifo.h; path = include/libavutil/audio_fifo.h; sourceTree = "<group>"; };
-		E352727C167DF052B8672627 /* Pods-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "Pods-dummy.m"; sourceTree = "<group>"; };
-		E385CFDD9B54FE3E33887BC1 /* avcodec.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = avcodec.h; path = src/avresample/avcodec.h; sourceTree = "<group>"; };
-		E3E17A7084DAF1F864FC0A35 /* chromaprint_osx_static.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = chromaprint_osx_static.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		E54FB669AAFAEAEDC90CC7C2 /* imgutils.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = imgutils.h; path = include/libavutil/imgutils.h; sourceTree = "<group>"; };
-		E571353BCADE39955ED21A74 /* libavfilter.a */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = archive.ar; name = libavfilter.a; path = lib/libavfilter.a; sourceTree = "<group>"; };
-		E5F5B0893C9F225DA06197A2 /* audio_processor.cpp */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.cpp.cpp; name = audio_processor.cpp; path = src/audio_processor.cpp; sourceTree = "<group>"; };
-		E67F804BCDB5A9E01E2A6780 /* Pods-chromaprint-osx-static-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "Pods-chromaprint-osx-static-dummy.m"; sourceTree = "<group>"; };
-		E683AB25F351C42995F16F07 /* chroma_resampler.cpp */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.cpp.cpp; name = chroma_resampler.cpp; path = src/chroma_resampler.cpp; sourceTree = "<group>"; };
-		E6CA4E53BE2603E599E9A4D4 /* sox_audio_source.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = sox_audio_source.h; path = src/sox_audio_source.h; sourceTree = "<group>"; };
-		E81DBC74EE8D055A55BF88A5 /* Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		EABEA9728C3EAB082247F1FB /* error.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = error.h; path = include/libavutil/error.h; sourceTree = "<group>"; };
-		EBB890514329A5A290EC79E2 /* avformat.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = avformat.h; path = include/libavformat/avformat.h; sourceTree = "<group>"; };
-		EBEB17955B97F38AA5F36759 /* Pods-Argo-prefix.pch */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "Pods-Argo-prefix.pch"; sourceTree = "<group>"; };
-		EBFCBBA0AD001BC65DD6DA36 /* fft_lib_fftw3.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = fft_lib_fftw3.h; path = src/fft_lib_fftw3.h; sourceTree = "<group>"; };
-		EC011FCC23A84A01F5054938 /* Pods-Runes.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-Runes.xcconfig"; sourceTree = "<group>"; };
-		EC104E84D196524A390BE548 /* rational.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = rational.h; path = include/libavutil/rational.h; sourceTree = "<group>"; };
-		ED4E291F345646AC1C794D7A /* Pods-Argo.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-Argo.xcconfig"; sourceTree = "<group>"; };
-		ED695E9DB1C341EB835A1DE4 /* Pods-Argo-Private.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-Argo-Private.xcconfig"; sourceTree = "<group>"; };
-		EE23A57F14FD539745DC9EBE /* MutableBox.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = MutableBox.swift; path = Box/MutableBox.swift; sourceTree = "<group>"; };
-		EFB25BA52392EEE079627374 /* Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		F041260F7FFBDD7608EBD5D4 /* chromaprint.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = chromaprint.h; path = src/chromaprint.h; sourceTree = "<group>"; };
-		F06D56DD13B918B0BCDC52ED /* audioconvert.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = audioconvert.h; path = include/libavutil/audioconvert.h; sourceTree = "<group>"; };
-		F0E322939471537E91383605 /* fingerprinter_configuration.cpp */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.cpp.cpp; name = fingerprinter_configuration.cpp; path = src/fingerprinter_configuration.cpp; sourceTree = "<group>"; };
-		F1163021BF0B9CB7CBB96045 /* Pods-Argo.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = "sourcecode.module-map"; path = "Pods-Argo.modulemap"; sourceTree = "<group>"; };
-		F147EDEB3DAA5BB2EF45F181 /* dsputil.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = dsputil.h; path = src/avresample/dsputil.h; sourceTree = "<group>"; };
-		F68DC2CC2216EAE43B4369CD /* Runes.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = Runes.h; path = Source/Runes.h; sourceTree = "<group>"; };
-		F8C5D542C9A873B7D5559DDE /* chroma_normalizer.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = chroma_normalizer.h; path = src/chroma_normalizer.h; sourceTree = "<group>"; };
-		F907C06FBD50C3936149327A /* Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		F911B465E17E6F654357FA49 /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = Pods.release.xcconfig; sourceTree = "<group>"; };
-		FC69FAD0176801661594C0F3 /* vda.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = vda.h; path = include/libavcodec/vda.h; sourceTree = "<group>"; };
-		FC7FFB55BCAD1714BFFE3A23 /* libswscale.a */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = archive.ar; name = libswscale.a; path = lib/libswscale.a; sourceTree = "<group>"; };
-		FC82A27BBE6A6BE9C8F3223F /* cpu.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = cpu.h; path = include/libavutil/cpu.h; sourceTree = "<group>"; };
-		FD9F4D682E404E0FC2C7DF60 /* chroma.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = chroma.h; path = src/chroma.h; sourceTree = "<group>"; };
-		FE6D156FA76F7AF506C8B0EA /* spectral_centroid.cpp */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.cpp.cpp; name = spectral_centroid.cpp; path = src/spectral_centroid.cpp; sourceTree = "<group>"; };
-		FEF6D736414B4A6B84271B32 /* image.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = image.h; path = src/image.h; sourceTree = "<group>"; };
-		FFD771D7036FAEB3A2F7AA96 /* Pods-Box-Private.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-Box-Private.xcconfig"; sourceTree = "<group>"; };
-		FFFFA3BD068AACD5E357EEB6 /* Operators.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = Operators.swift; path = Argo/Operators/Operators.swift; sourceTree = "<group>"; };
+		01E3D17BEF60A96A1584F79D /* buffer.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = buffer.h; path = include/libavutil/buffer.h; sourceTree = "<group>"; };
+		02746AF0BF25D3BEA3073B7D /* fingerprinter_configuration.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = fingerprinter_configuration.h; path = src/fingerprinter_configuration.h; sourceTree = "<group>"; };
+		02AAF1173DF0FD7894B9D584 /* pixfmt.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = pixfmt.h; path = include/libavutil/pixfmt.h; sourceTree = "<group>"; };
+		02DF1F55557E5A1667F602F1 /* moving_average.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = moving_average.h; path = src/moving_average.h; sourceTree = "<group>"; };
+		03ADCEE020AD9BAA6469B57F /* lfg.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = lfg.h; path = include/libavutil/lfg.h; sourceTree = "<group>"; };
+		053FDA4533464A40E05D1D73 /* Pods-chromaprint-osx-static-Private.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-chromaprint-osx-static-Private.xcconfig"; sourceTree = "<group>"; };
+		071A3DE471238707A208C9B6 /* decoder.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = decoder.h; path = src/decoder.h; sourceTree = "<group>"; };
+		0856D67403E1AEF2BA94E3A5 /* Pods-acknowledgements.markdown */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; path = "Pods-acknowledgements.markdown"; sourceTree = "<group>"; };
+		0C130A47658D2DCB77BD8FD0 /* fft_lib.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = fft_lib.h; path = src/fft_lib.h; sourceTree = "<group>"; };
+		0D2ACE0B9CDA6244AC59555E /* audio_processor.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = audio_processor.h; path = src/audio_processor.h; sourceTree = "<group>"; };
+		0F447FEB3C44C951E772FD1C /* resample2.c */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.c; name = resample2.c; path = src/avresample/resample2.c; sourceTree = "<group>"; };
+		100284B0FEA649699E51C59D /* dxva2.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = dxva2.h; path = include/libavcodec/dxva2.h; sourceTree = "<group>"; };
+		138F93D9E8054719C8604223 /* Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		14A40B2C1CB2152C24D7F705 /* avio.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = avio.h; path = include/libavformat/avio.h; sourceTree = "<group>"; };
+		150892541E02EEF0374A2519 /* channel_layout.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = channel_layout.h; path = include/libavutil/channel_layout.h; sourceTree = "<group>"; };
+		17E03DB09445941D17AE761A /* chroma_resampler.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = chroma_resampler.h; path = src/chroma_resampler.h; sourceTree = "<group>"; };
+		198619F24050AE953B4AAD8C /* audio_processor.cpp */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.cpp.cpp; name = audio_processor.cpp; path = src/audio_processor.cpp; sourceTree = "<group>"; };
+		1A267817357A3324EDFA78D1 /* fft_lib_vdsp.cpp */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.cpp.cpp; name = fft_lib_vdsp.cpp; path = src/fft_lib_vdsp.cpp; sourceTree = "<group>"; };
+		1BF58D3661E0130072BCFF02 /* intreadwrite.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = intreadwrite.h; path = include/libavutil/intreadwrite.h; sourceTree = "<group>"; };
+		1D6C090136EE62A8A26E2CB7 /* Pods-acknowledgements.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "Pods-acknowledgements.plist"; sourceTree = "<group>"; };
+		1F6B84904A9DA74CE8999404 /* Pods.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		1FE350333E12570F5BD4D6C9 /* buffersink.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = buffersink.h; path = include/libavfilter/buffersink.h; sourceTree = "<group>"; };
+		1FECFA7EA55EB82C021EC2EB /* fft_lib_avfft.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = fft_lib_avfft.h; path = src/fft_lib_avfft.h; sourceTree = "<group>"; };
+		20D7C77341D789A2FA484E89 /* Pods-environment.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "Pods-environment.h"; sourceTree = "<group>"; };
+		268656063E5616F116C8E95D /* Accelerate.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accelerate.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.10.sdk/System/Library/Frameworks/Accelerate.framework; sourceTree = DEVELOPER_DIR; };
+		27255A0AE8BCB426D37F4745 /* md5.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = md5.h; path = include/libavutil/md5.h; sourceTree = "<group>"; };
+		2735817CB38F13B78E28329A /* old_codec_ids.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = old_codec_ids.h; path = include/libavcodec/old_codec_ids.h; sourceTree = "<group>"; };
+		27424ED652C7A832B218A471 /* buffersrc.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = buffersrc.h; path = include/libavfilter/buffersrc.h; sourceTree = "<group>"; };
+		27CB4DE6188AB64FF4EB54CF /* threadmessage.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = threadmessage.h; path = include/libavutil/threadmessage.h; sourceTree = "<group>"; };
+		2C02C4153B83AD15C461737D /* chromaprint_osx_static.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = chromaprint_osx_static.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		2D4F1204AC65B6B987F03CB8 /* avfilter.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = avfilter.h; path = include/libavfilter/avfilter.h; sourceTree = "<group>"; };
+		2D6610F211633BA633054056 /* timecode.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = timecode.h; path = include/libavutil/timecode.h; sourceTree = "<group>"; };
+		2D83FCF4291E7D15B13AF69B /* Pods-chromaprint-osx-static.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-chromaprint-osx-static.xcconfig"; sourceTree = "<group>"; };
+		2E1BAB423E9A143064B1F77C /* spectral_centroid.cpp */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.cpp.cpp; name = spectral_centroid.cpp; path = src/spectral_centroid.cpp; sourceTree = "<group>"; };
+		344ABD3C7F6BA797BB74A4F5 /* Pods-resources.sh */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.script.sh; path = "Pods-resources.sh"; sourceTree = "<group>"; };
+		388C407FF9EEB84C837843F0 /* filter.cpp */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.cpp.cpp; name = filter.cpp; path = src/filter.cpp; sourceTree = "<group>"; };
+		38D96A65D2C2BEC1B8EA115D /* image.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = image.h; path = src/image.h; sourceTree = "<group>"; };
+		39296667EC3301CFB9BA665E /* Pods-chromaprint-osx-static-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "Pods-chromaprint-osx-static-dummy.m"; sourceTree = "<group>"; };
+		39EDCBAC9CFF53DED55F4A06 /* aes.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = aes.h; path = include/libavutil/aes.h; sourceTree = "<group>"; };
+		39F6F5993D08D29E6E606A6A /* random_seed.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = random_seed.h; path = include/libavutil/random_seed.h; sourceTree = "<group>"; };
+		3B8BDBD82DF687C7B16B10D8 /* avcodec.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = avcodec.h; path = include/libavcodec/avcodec.h; sourceTree = "<group>"; };
+		3C69ECBEFBEE65A8BA92D9C7 /* fingerprinter.cpp */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.cpp.cpp; name = fingerprinter.cpp; path = src/fingerprinter.cpp; sourceTree = "<group>"; };
+		44DAD91AAF7201086E26B058 /* fifo.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = fifo.h; path = include/libavutil/fifo.h; sourceTree = "<group>"; };
+		4669214C010AA89FDF725ACB /* avassert.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = avassert.h; path = include/libavutil/avassert.h; sourceTree = "<group>"; };
+		4B6CCFF2EB062607DFE2AA9A /* bswap.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = bswap.h; path = include/libavutil/bswap.h; sourceTree = "<group>"; };
+		4BA3EFEBF5EFCF9DEF85E3D7 /* fft.cpp */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.cpp.cpp; name = fft.cpp; path = src/fft.cpp; sourceTree = "<group>"; };
+		4FBA12ACBA1CBA5E99E17FD3 /* Pods-umbrella.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "Pods-umbrella.h"; sourceTree = "<group>"; };
+		50B5176281EC824BC3A647F4 /* libswscale.a */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = archive.ar; name = libswscale.a; path = lib/libswscale.a; sourceTree = "<group>"; };
+		52E90A8FC4EB63C0C7FA54B7 /* motion_vector.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = motion_vector.h; path = include/libavutil/motion_vector.h; sourceTree = "<group>"; };
+		5651CCFE6F5C432E8E92C274 /* Pods.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = "sourcecode.module-map"; path = Pods.modulemap; sourceTree = "<group>"; };
+		589AE736DD94993B61F12A1A /* libavcodec.a */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = archive.ar; name = libavcodec.a; path = lib/libavcodec.a; sourceTree = "<group>"; };
+		5D0BDF5EF7775348AD427551 /* downmix_info.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = downmix_info.h; path = include/libavutil/downmix_info.h; sourceTree = "<group>"; };
+		5DF7C88A315364F6E71FE0EF /* image_builder.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = image_builder.h; path = src/image_builder.h; sourceTree = "<group>"; };
+		5E84CA9F557D09FCD9938872 /* libavformat.a */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = archive.ar; name = libavformat.a; path = lib/libavformat.a; sourceTree = "<group>"; };
+		6017E438687CA37EF954BDDA /* adler32.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = adler32.h; path = include/libavutil/adler32.h; sourceTree = "<group>"; };
+		6237EE605971638C6E435860 /* sha.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = sha.h; path = include/libavutil/sha.h; sourceTree = "<group>"; };
+		6476E66A1A5A47D28EF5118F /* libavutil.a */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = archive.ar; name = libavutil.a; path = lib/libavutil.a; sourceTree = "<group>"; };
+		652ADA8BDA5EBA831EDC6270 /* base64.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = base64.h; path = include/libavutil/base64.h; sourceTree = "<group>"; };
+		6725A6651F3822A7B347CDBA /* fingerprint_decompressor.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = fingerprint_decompressor.h; path = src/fingerprint_decompressor.h; sourceTree = "<group>"; };
+		69312EF8AC10EA1AFF1AE1D6 /* fingerprint_compressor.cpp */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.cpp.cpp; name = fingerprint_compressor.cpp; path = src/fingerprint_compressor.cpp; sourceTree = "<group>"; };
+		69F331907D22921FBB8BC1CD /* swscale.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = swscale.h; path = include/libswscale/swscale.h; sourceTree = "<group>"; };
+		6AC32FBCACE419AE6E9E4102 /* version.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = version.h; path = include/libavformat/version.h; sourceTree = "<group>"; };
+		6BB0F4165D24E5F00795297B /* log.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = log.h; path = include/libavutil/log.h; sourceTree = "<group>"; };
+		6BD02F87C6829E20443B65FF /* audio_consumer.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = audio_consumer.h; path = src/audio_consumer.h; sourceTree = "<group>"; };
+		6E79A58043B4E2659F00D15B /* Pods-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "Pods-dummy.m"; sourceTree = "<group>"; };
+		70146052A2C5340D9A518A3E /* hmac.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = hmac.h; path = include/libavutil/hmac.h; sourceTree = "<group>"; };
+		718B405C632F66529370C697 /* libavdevice.a */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = archive.ar; name = libavdevice.a; path = lib/libavdevice.a; sourceTree = "<group>"; };
+		721543C09364B5B38986BD06 /* chroma_normalizer.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = chroma_normalizer.h; path = src/chroma_normalizer.h; sourceTree = "<group>"; };
+		736E5B7BE51FED88A18C9766 /* ffversion.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = ffversion.h; path = include/libavutil/ffversion.h; sourceTree = "<group>"; };
+		74A33D6722F6FBCAA788A170 /* fft_lib_vdsp.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = fft_lib_vdsp.h; path = src/fft_lib_vdsp.h; sourceTree = "<group>"; };
+		75053A52D21547C188BF348C /* fingerprinter_configuration.cpp */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.cpp.cpp; name = fingerprinter_configuration.cpp; path = src/fingerprinter_configuration.cpp; sourceTree = "<group>"; };
+		75318646093120A044B399A6 /* swresample.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = swresample.h; path = include/libswresample/swresample.h; sourceTree = "<group>"; };
+		77632CDC98FE5C34423F385C /* display.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = display.h; path = include/libavutil/display.h; sourceTree = "<group>"; };
+		777FBBC9210EF5F897057999 /* macros.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = macros.h; path = include/libavutil/macros.h; sourceTree = "<group>"; };
+		77D3F4C45DE69DDABEE5CA7E /* avdevice.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = avdevice.h; path = include/libavdevice/avdevice.h; sourceTree = "<group>"; };
+		7A56FB9B78EC5E8A70116242 /* audio_fifo.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = audio_fifo.h; path = include/libavutil/audio_fifo.h; sourceTree = "<group>"; };
+		7C33DDF2E5FB04F6808539F2 /* chroma_filter.cpp */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.cpp.cpp; name = chroma_filter.cpp; path = src/chroma_filter.cpp; sourceTree = "<group>"; };
+		7C5E520D2E5D8062D4F57743 /* fingerprinter.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = fingerprinter.h; path = src/fingerprinter.h; sourceTree = "<group>"; };
+		7CE272D0FAFAA1834A9F5DE7 /* opt.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = opt.h; path = include/libavutil/opt.h; sourceTree = "<group>"; };
+		7E5A79AF8752C7E28990411F /* xvmc.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = xvmc.h; path = include/libavcodec/xvmc.h; sourceTree = "<group>"; };
+		7F4A3E2C3361155140766557 /* chroma.cpp */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.cpp.cpp; name = chroma.cpp; path = src/chroma.cpp; sourceTree = "<group>"; };
+		804DF125B93C00670D6DA414 /* feature_vector_consumer.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = feature_vector_consumer.h; path = src/feature_vector_consumer.h; sourceTree = "<group>"; };
+		8064FBBFA99F6690A1A5AA8A /* silence_remover.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = silence_remover.h; path = src/silence_remover.h; sourceTree = "<group>"; };
+		854E6AE9DFAF0D51C3FE802C /* filter_utils.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = filter_utils.h; path = src/filter_utils.h; sourceTree = "<group>"; };
+		85BA1CC74B6ECE91B0BEF34E /* bit_string_reader.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = bit_string_reader.h; path = src/bit_string_reader.h; sourceTree = "<group>"; };
+		860B5467F989E43EF6ADB194 /* ripemd.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = ripemd.h; path = include/libavutil/ripemd.h; sourceTree = "<group>"; };
+		868B1AE7ECE5CF24574E9FCE /* file.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = file.h; path = include/libavutil/file.h; sourceTree = "<group>"; };
+		87729B48CB2AB2E38265660C /* avutil.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = avutil.h; path = include/libavutil/avutil.h; sourceTree = "<group>"; };
+		880B9AB3FB20AB01D7F37286 /* murmur3.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = murmur3.h; path = include/libavutil/murmur3.h; sourceTree = "<group>"; };
+		88E832DADDCB5CB644C92492 /* config.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = config.h; sourceTree = "<group>"; };
+		8C442DD1C2B630577EB6C337 /* parseutils.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = parseutils.h; path = include/libavutil/parseutils.h; sourceTree = "<group>"; };
+		8D6D1F70B422593F3DD9EBDD /* Pods-chromaprint-osx-static-prefix.pch */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "Pods-chromaprint-osx-static-prefix.pch"; sourceTree = "<group>"; };
+		8E12993AF230EDE491E3FD7F /* Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		90D34535D5953D1A2A41200A /* Pods-chromaprint-osx-static.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = "sourcecode.module-map"; path = "Pods-chromaprint-osx-static.modulemap"; sourceTree = "<group>"; };
+		91143E6082E01ADF5EA3848B /* spectrum.cpp */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.cpp.cpp; name = spectrum.cpp; path = src/spectrum.cpp; sourceTree = "<group>"; };
+		92E8AD79D5BD074FCA44CD75 /* version.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = version.h; path = include/libavfilter/version.h; sourceTree = "<group>"; };
+		9365074B7ED285246B60DDBD /* base64.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = base64.h; path = src/base64.h; sourceTree = "<group>"; };
+		94448FC751F62F68E5B2CD8D /* sox_audio_source.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = sox_audio_source.h; path = src/sox_audio_source.h; sourceTree = "<group>"; };
+		958F0C92D85BBB9CD9CF50A8 /* intfloat.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = intfloat.h; path = include/libavutil/intfloat.h; sourceTree = "<group>"; };
+		96E42D1EE9C5A37029FCD7F8 /* common.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = common.h; path = include/libavutil/common.h; sourceTree = "<group>"; };
+		9A19228A1C230493EE9D30E5 /* cpu.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = cpu.h; path = include/libavutil/cpu.h; sourceTree = "<group>"; };
+		9D8324FA476FA7FAD74DE71A /* libswresample.a */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = archive.ar; name = libswresample.a; path = lib/libswresample.a; sourceTree = "<group>"; };
+		A1F990C8B871739C05170744 /* vaapi.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = vaapi.h; path = include/libavcodec/vaapi.h; sourceTree = "<group>"; };
+		A231B959296A888E0FF17496 /* fft_lib_fftw3.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = fft_lib_fftw3.h; path = src/fft_lib_fftw3.h; sourceTree = "<group>"; };
+		A33E61E8948F321CD582E136 /* combined_buffer.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = combined_buffer.h; path = src/combined_buffer.h; sourceTree = "<group>"; };
+		A470516A550FA30D816AF7DD /* asrc_abuffer.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = asrc_abuffer.h; path = include/libavfilter/asrc_abuffer.h; sourceTree = "<group>"; };
+		A58FD7476DA24A0CAB12E604 /* hash.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = hash.h; path = include/libavutil/hash.h; sourceTree = "<group>"; };
+		A5F80589E3B7E4C637B56B26 /* xtea.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = xtea.h; path = include/libavutil/xtea.h; sourceTree = "<group>"; };
+		A687FF19FCF6D4C549127E02 /* Pods-frameworks.sh */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.script.sh; path = "Pods-frameworks.sh"; sourceTree = "<group>"; };
+		A6A8CFA70AB8D4861150FA99 /* avfft.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = avfft.h; path = include/libavcodec/avfft.h; sourceTree = "<group>"; };
+		A6FDE0E48EE999173CC8B4BD /* utils.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = utils.h; path = src/utils.h; sourceTree = "<group>"; };
+		A837C8F5CEAE5DB3271E4626 /* integral_image.cpp */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.cpp.cpp; name = integral_image.cpp; path = src/integral_image.cpp; sourceTree = "<group>"; };
+		A98EC99A252BD0F5181C9531 /* pixelutils.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = pixelutils.h; path = include/libavutil/pixelutils.h; sourceTree = "<group>"; };
+		ABF4480309B44836B1891E1B /* timestamp.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = timestamp.h; path = include/libavutil/timestamp.h; sourceTree = "<group>"; };
+		AFE4132CE34A33E20F5E32E2 /* mathematics.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = mathematics.h; path = include/libavutil/mathematics.h; sourceTree = "<group>"; };
+		B1541F6F2A8D0096B8F9BA8B /* crc.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = crc.h; path = include/libavutil/crc.h; sourceTree = "<group>"; };
+		B3C597126271D281AF3FB94E /* old_pix_fmts.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = old_pix_fmts.h; path = include/libavutil/old_pix_fmts.h; sourceTree = "<group>"; };
+		B48782A91B1A55D692B7913B /* avcodec.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = avcodec.h; path = include/libavfilter/avcodec.h; sourceTree = "<group>"; };
+		B4CAA691F11B249D5AAE227F /* fft_frame.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = fft_frame.h; path = src/fft_frame.h; sourceTree = "<group>"; };
+		B665063C9E9ABD266D24FD75 /* spectral_centroid.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = spectral_centroid.h; path = src/spectral_centroid.h; sourceTree = "<group>"; };
+		B6A907289C1D2F0F7BF1D6B9 /* chromaprint.cpp */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.cpp.cpp; name = chromaprint.cpp; path = src/chromaprint.cpp; sourceTree = "<group>"; };
+		B748E6B2308403B89AC58E3A /* avformat.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = avformat.h; path = include/libavformat/avformat.h; sourceTree = "<group>"; };
+		BA0D290930D231BFDC054E5A /* samplefmt.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = samplefmt.h; path = include/libavutil/samplefmt.h; sourceTree = "<group>"; };
+		BB1300AC4F4F35C3CE2C17FF /* fingerprint_decompressor.cpp */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.cpp.cpp; name = fingerprint_decompressor.cpp; path = src/fingerprint_decompressor.cpp; sourceTree = "<group>"; };
+		BBD2DC8340C3344573D50D73 /* Pods.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = Pods.debug.xcconfig; sourceTree = "<group>"; };
+		BDC09E7500293AFBC38ADEF9 /* fingerprint_compressor.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = fingerprint_compressor.h; path = src/fingerprint_compressor.h; sourceTree = "<group>"; };
+		BF02A077B17FEBAA22E1DB65 /* bprint.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = bprint.h; path = include/libavutil/bprint.h; sourceTree = "<group>"; };
+		BFCCBF5A94BB7F62D6F380B7 /* audioconvert.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = audioconvert.h; path = include/libavutil/audioconvert.h; sourceTree = "<group>"; };
+		C23C8D542397582620E1B981 /* error.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = error.h; path = include/libavutil/error.h; sourceTree = "<group>"; };
+		C3E52A3611D0F746FB3FC1A8 /* avstring.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = avstring.h; path = include/libavutil/avstring.h; sourceTree = "<group>"; };
+		C4A5C27434DFBCCA89C726CD /* version.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = version.h; path = include/libavdevice/version.h; sourceTree = "<group>"; };
+		C53694077DFBD84E1998C3C4 /* avcodec.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = avcodec.h; path = src/avresample/avcodec.h; sourceTree = "<group>"; };
+		C6148482613813A18E01F499 /* fft_frame_consumer.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = fft_frame_consumer.h; path = src/fft_frame_consumer.h; sourceTree = "<group>"; };
+		C7596A6CF99FB44260CF66BF /* base64.cpp */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.cpp.cpp; name = base64.cpp; path = src/base64.cpp; sourceTree = "<group>"; };
+		C9C39BC56F484FDD268102D4 /* lloyds.cpp */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.cpp.cpp; name = lloyds.cpp; path = src/lloyds.cpp; sourceTree = "<group>"; };
+		CBE658AC305764A41C60F106 /* version.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = version.h; path = include/libswresample/version.h; sourceTree = "<group>"; };
+		CC6F7C03373EC232E97E1333 /* imgutils.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = imgutils.h; path = include/libavutil/imgutils.h; sourceTree = "<group>"; };
+		CCA37FD979CA6241FB55D104 /* silence_remover.cpp */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.cpp.cpp; name = silence_remover.cpp; path = src/silence_remover.cpp; sourceTree = "<group>"; };
+		CD027D431E34F7C9FC5CB648 /* fft_lib_kissfft.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = fft_lib_kissfft.h; path = src/fft_lib_kissfft.h; sourceTree = "<group>"; };
+		CD41E85748400285671E7E3C /* chromaprint.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = chromaprint.h; path = src/chromaprint.h; sourceTree = "<group>"; };
+		D1566496F7440284014DE063 /* sha512.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = sha512.h; path = include/libavutil/sha512.h; sourceTree = "<group>"; };
+		D48582B966A13991D8A83DFC /* dv_profile.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = dv_profile.h; path = include/libavcodec/dv_profile.h; sourceTree = "<group>"; };
+		D49C67D727EB465C35D087E6 /* libavfilter.a */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = archive.ar; name = libavfilter.a; path = lib/libavfilter.a; sourceTree = "<group>"; };
+		D4A471D69E1506A445409949 /* attributes.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = attributes.h; path = include/libavutil/attributes.h; sourceTree = "<group>"; };
+		D5E3AC8E907A53E6177480BB /* chroma.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = chroma.h; path = src/chroma.h; sourceTree = "<group>"; };
+		D6FAE3F9C12B35DB5B8A788D /* bit_string_writer.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = bit_string_writer.h; path = src/bit_string_writer.h; sourceTree = "<group>"; };
+		D82F84E7669783EFCE82E65F /* image_builder.cpp */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.cpp.cpp; name = image_builder.cpp; path = src/image_builder.cpp; sourceTree = "<group>"; };
+		D849818524F415150D427304 /* fingerprint_calculator.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = fingerprint_calculator.h; path = src/fingerprint_calculator.h; sourceTree = "<group>"; };
+		D8DF0FB02FCB36C5AFE1E8B4 /* replaygain.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = replaygain.h; path = include/libavutil/replaygain.h; sourceTree = "<group>"; };
+		D913D805E9199A7FD8BEF06F /* quantizer.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = quantizer.h; path = src/quantizer.h; sourceTree = "<group>"; };
+		D9C2CE0AC2F9AB06D33DC565 /* time.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = time.h; path = include/libavutil/time.h; sourceTree = "<group>"; };
+		DCFBAB8D1CEB4E470C46372A /* vdpau.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = vdpau.h; path = include/libavcodec/vdpau.h; sourceTree = "<group>"; };
+		DD1FF246B35224D449D474B3 /* debug.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = debug.h; path = src/debug.h; sourceTree = "<group>"; };
+		DD63F42D630EBAD535909788 /* fft.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = fft.h; path = src/fft.h; sourceTree = "<group>"; };
+		E255679A9FC255F595E4B111 /* Podfile */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = Podfile; path = ../Podfile; sourceTree = SOURCE_ROOT; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
+		E3F2E0406E926AC5E89E9D50 /* blowfish.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = blowfish.h; path = include/libavutil/blowfish.h; sourceTree = "<group>"; };
+		E405D851393C1CEC4669CA3C /* pixdesc.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = pixdesc.h; path = include/libavutil/pixdesc.h; sourceTree = "<group>"; };
+		E47EAA1B387A894348003303 /* stereo3d.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = stereo3d.h; path = include/libavutil/stereo3d.h; sourceTree = "<group>"; };
+		E6129423BA02858500896059 /* version.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = version.h; path = include/libswscale/version.h; sourceTree = "<group>"; };
+		E726DAA921C8886AFC9A914B /* lloyds.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = lloyds.h; path = src/lloyds.h; sourceTree = "<group>"; };
+		E8617E44CCFD5A68DA8A9886 /* frame.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = frame.h; path = include/libavutil/frame.h; sourceTree = "<group>"; };
+		E9201C9EC0A2CCBFFC914653 /* spectrum.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = spectrum.h; path = src/spectrum.h; sourceTree = "<group>"; };
+		EA194D9D9FB90B0525B535A5 /* intfloat_readwrite.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = intfloat_readwrite.h; path = include/libavutil/intfloat_readwrite.h; sourceTree = "<group>"; };
+		EA541B8BA741F9C100BDB4AE /* version.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = version.h; path = include/libavutil/version.h; sourceTree = "<group>"; };
+		ECB61F5C8458D7BFEB844653 /* chroma_resampler.cpp */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.cpp.cpp; name = chroma_resampler.cpp; path = src/chroma_resampler.cpp; sourceTree = "<group>"; };
+		ED26457B039E63833B7374E2 /* Pods-chromaprint-osx-static-umbrella.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "Pods-chromaprint-osx-static-umbrella.h"; sourceTree = "<group>"; };
+		EE96F2F3E518A7E3244EF73A /* vda.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = vda.h; path = include/libavcodec/vda.h; sourceTree = "<group>"; };
+		EF49A91ADCEAE9CDD8D6962C /* lzo.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = lzo.h; path = include/libavutil/lzo.h; sourceTree = "<group>"; };
+		F5587369F54B5EC3D6B6BF26 /* fingerprint_calculator.cpp */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.cpp.cpp; name = fingerprint_calculator.cpp; path = src/fingerprint_calculator.cpp; sourceTree = "<group>"; };
+		F8EA44AB8F38AEECDBB0B249 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.10.sdk/System/Library/Frameworks/Cocoa.framework; sourceTree = DEVELOPER_DIR; };
+		F92BB945225A951C92866BB4 /* dsputil.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = dsputil.h; path = src/avresample/dsputil.h; sourceTree = "<group>"; };
+		F9350F391A985F770F904CAC /* integral_image.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = integral_image.h; path = src/integral_image.h; sourceTree = "<group>"; };
+		F9A46AC24B034BEA36E5F709 /* filter.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = filter.h; path = src/filter.h; sourceTree = "<group>"; };
+		FA467EC84E4BF49B254F98CD /* avconfig.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = avconfig.h; path = include/libavutil/avconfig.h; sourceTree = "<group>"; };
+		FABE8A1C6F878187A16FE964 /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = Pods.release.xcconfig; sourceTree = "<group>"; };
+		FB20966D71B62A5A23B36AD0 /* classifier.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = classifier.h; path = src/classifier.h; sourceTree = "<group>"; };
+		FC48518285447A6023C972F4 /* eval.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = eval.h; path = include/libavutil/eval.h; sourceTree = "<group>"; };
+		FE5C2FCA9DC8CF756BD1CF00 /* chroma_filter.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = chroma_filter.h; path = src/chroma_filter.h; sourceTree = "<group>"; };
+		FEC61637B62BDB13BB369947 /* dict.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = dict.h; path = include/libavutil/dict.h; sourceTree = "<group>"; };
+		FEECC48514ADC77843793F37 /* avfiltergraph.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = avfiltergraph.h; path = include/libavfilter/avfiltergraph.h; sourceTree = "<group>"; };
+		FF0109BC0D1F07A935FA7B89 /* version.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = version.h; path = include/libavcodec/version.h; sourceTree = "<group>"; };
+		FF25A4A7B3876E4EC420D3F7 /* rational.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = rational.h; path = include/libavutil/rational.h; sourceTree = "<group>"; };
+		FFE58D0125C750212F7DDF3B /* mem.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = mem.h; path = include/libavutil/mem.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
-		0EC227BE6D52DEAD77356FFF /* Frameworks */ = {
+		6DA16B45AB6C46ECA48B840F /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				C04704F311803727406BC47C /* Cocoa.framework in Frameworks */,
+				27654C71410766292B58FBA1 /* Cocoa.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		4F00EF77B54D21FA91C0E717 /* Frameworks */ = {
+		73731160B0F2847CC9319E60 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				6C7E813C3DB4A469A83F481F /* Accelerate.framework in Frameworks */,
-				607F58ECA9AE126409B0DE99 /* Cocoa.framework in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		6AF68F5E9F232ED0E6A7C150 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				F3F7E7C6A2EB82E44C5D35A8 /* Cocoa.framework in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		89998FA69757253163C81038 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				3AD9B1ADF80E7096ED1A27AC /* Box.framework in Frameworks */,
-				81DB91F6548C0FC056D9F7C7 /* Cocoa.framework in Frameworks */,
-				534AF8A240E39DAA40D456B4 /* Runes.framework in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		C6FEC1503BEF42D83EF3636F /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				66B814400762C423A22B3B5A /* Cocoa.framework in Frameworks */,
+				605E1B7741F4FD3A77B06186 /* Accelerate.framework in Frameworks */,
+				E0B97219858006ABDE03BEB8 /* Cocoa.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		2952CF3165963829A900AA93 /* Support Files */ = {
+		1B2D77EEFF20B8F4BF61CEBC /* Pods */ = {
 			isa = PBXGroup;
 			children = (
-				E81DBC74EE8D055A55BF88A5 /* Info.plist */,
-				F1163021BF0B9CB7CBB96045 /* Pods-Argo.modulemap */,
-				ED4E291F345646AC1C794D7A /* Pods-Argo.xcconfig */,
-				ED695E9DB1C341EB835A1DE4 /* Pods-Argo-Private.xcconfig */,
-				A3F8284ACB28A1217F0D953A /* Pods-Argo-dummy.m */,
-				EBEB17955B97F38AA5F36759 /* Pods-Argo-prefix.pch */,
-				D1AEA9271BC67474F92E1F10 /* Pods-Argo-umbrella.h */,
-			);
-			name = "Support Files";
-			path = "../Target Support Files/Pods-Argo";
-			sourceTree = "<group>";
-		};
-		3BB722CE55E7D44A904DFB24 /* Targets Support Files */ = {
-			isa = PBXGroup;
-			children = (
-				A14226F9C4AAC8261E231EA7 /* Pods */,
-			);
-			name = "Targets Support Files";
-			sourceTree = "<group>";
-		};
-		4D8167C28CD494FBA603F089 /* OS X */ = {
-			isa = PBXGroup;
-			children = (
-				560A4EC5A8C600D91FFF60DD /* Accelerate.framework */,
-				75576ED7E25118216A1D60A0 /* Cocoa.framework */,
-			);
-			name = "OS X";
-			sourceTree = "<group>";
-		};
-		5A35BDE1E6BE476D2AC016E4 /* Runes */ = {
-			isa = PBXGroup;
-			children = (
-				058AA3F62A532173E668D9C3 /* Array.swift */,
-				A275CC4230C365EF4AF653B7 /* Operators.swift */,
-				2DA4BA4975735EB82127783F /* Optional.swift */,
-				F68DC2CC2216EAE43B4369CD /* Runes.h */,
-				F50E19626CFDC20143F15C9C /* Support Files */,
-			);
-			path = Runes;
-			sourceTree = "<group>";
-		};
-		5C6621F29974F38F88532CF9 /* Frameworks */ = {
-			isa = PBXGroup;
-			children = (
-				B932DC7DE3C0410C44671838 /* Box.framework */,
-				00692AD34AEA051DA6170317 /* Runes.framework */,
-				4D8167C28CD494FBA603F089 /* OS X */,
-			);
-			name = Frameworks;
-			sourceTree = "<group>";
-		};
-		615A069155D7F83AE27D2985 /* chromaprint-osx-static */ = {
-			isa = PBXGroup;
-			children = (
-				5B53840BB12FFFC25D54594E /* audio_consumer.h */,
-				E5F5B0893C9F225DA06197A2 /* audio_processor.cpp */,
-				817F5527EF3DB8B284EE67C5 /* audio_processor.h */,
-				E385CFDD9B54FE3E33887BC1 /* avcodec.h */,
-				569621778582FB850B25477E /* base64.cpp */,
-				9E421F2C70A0EB4667CB318F /* base64.h */,
-				4125FC2D1BE6B9006D2059CB /* bit_string_reader.h */,
-				1560734540769CF60BC04913 /* bit_string_writer.h */,
-				B1CA56A919F771E3368884E9 /* chroma.cpp */,
-				FD9F4D682E404E0FC2C7DF60 /* chroma.h */,
-				B71018B9CDBF9A1A0DBFCD40 /* chroma_filter.cpp */,
-				0D2FDC53C260BF6A93FC517F /* chroma_filter.h */,
-				F8C5D542C9A873B7D5559DDE /* chroma_normalizer.h */,
-				E683AB25F351C42995F16F07 /* chroma_resampler.cpp */,
-				966FDFE7ACA6708B66DD29AB /* chroma_resampler.h */,
-				9745F3589D2FC5515A7F3744 /* chromaprint.cpp */,
-				F041260F7FFBDD7608EBD5D4 /* chromaprint.h */,
-				53CB78490ECA2E541949151B /* classifier.h */,
-				74F7DE09D006AEEAC4C3C5C8 /* combined_buffer.h */,
-				33AEDCD62EF7D2233D2BAC31 /* config.h */,
-				8A87A12A65305974308B1306 /* debug.h */,
-				6C624F46454C2F35E342F971 /* decoder.h */,
-				F147EDEB3DAA5BB2EF45F181 /* dsputil.h */,
-				9DA380036063979BC1B97830 /* feature_vector_consumer.h */,
-				B7EF45468672374DEB368BF8 /* fft.cpp */,
-				0D2B226B52C8CF62E4408F8C /* fft.h */,
-				D8CF3CCDD7B173D3BB691001 /* fft_frame.h */,
-				DD7B010A8DA3BBFD2A749016 /* fft_frame_consumer.h */,
-				81F4F04A62843FBECAE623CE /* fft_lib.h */,
-				D0874A6005646F558461F603 /* fft_lib_avfft.h */,
-				EBFCBBA0AD001BC65DD6DA36 /* fft_lib_fftw3.h */,
-				5F6D0CB1D4676B9D1A5907CB /* fft_lib_kissfft.h */,
-				D442A269DD22DBB9203710D1 /* fft_lib_vdsp.cpp */,
-				3512386546E7815AA57072E9 /* fft_lib_vdsp.h */,
-				4AD957C1A2524D572DF26D00 /* filter.cpp */,
-				7E90900E7B1612ED33FA6CA3 /* filter.h */,
-				14B7D6965BAD1E92F104E134 /* filter_utils.h */,
-				D024FCFA80BED350B6C4D45A /* fingerprint_calculator.cpp */,
-				6159627D07A5B5782F4D5302 /* fingerprint_calculator.h */,
-				8AA97AE494B487471EB61D30 /* fingerprint_compressor.cpp */,
-				5C88C29E359BE1253DF59EAA /* fingerprint_compressor.h */,
-				AE53AF307F593989246C8140 /* fingerprint_decompressor.cpp */,
-				949CD7E4A7F22C9FC8962D84 /* fingerprint_decompressor.h */,
-				CD76614DD160F732526E2DA5 /* fingerprinter.cpp */,
-				27795D695FB80B599FDCD6C4 /* fingerprinter.h */,
-				F0E322939471537E91383605 /* fingerprinter_configuration.cpp */,
-				DF605B8482B09412C8B42207 /* fingerprinter_configuration.h */,
-				FEF6D736414B4A6B84271B32 /* image.h */,
-				0B5C07AE527358C7E8D6E1A5 /* image_builder.cpp */,
-				92336F83757D32E9E4650DB6 /* image_builder.h */,
-				4CC73896BA84E09A170A37F3 /* integral_image.cpp */,
-				027897DB4562743C00FB698A /* integral_image.h */,
-				DD52C9C064897719E3262762 /* lloyds.cpp */,
-				B76A6C7726FB7C009481A307 /* lloyds.h */,
-				237B230F5E69F6D094407F4E /* moving_average.h */,
-				890615C628EB475107654E17 /* quantizer.h */,
-				BC42BD1BC85EACAE838F6C4A /* resample2.c */,
-				17BD5230BB40DF3166F1BD25 /* silence_remover.cpp */,
-				2491BC4B7E0A499D19C9AA31 /* silence_remover.h */,
-				E6CA4E53BE2603E599E9A4D4 /* sox_audio_source.h */,
-				FE6D156FA76F7AF506C8B0EA /* spectral_centroid.cpp */,
-				73E30D39BD06463A91D82865 /* spectral_centroid.h */,
-				BDCFA9569766B16D671AF366 /* spectrum.cpp */,
-				1782CE40B4D8938DE1358CDE /* spectrum.h */,
-				9262ADA32284ECC22D0EF58C /* utils.h */,
-				8D2AE8EBC83A2069CD42C2B3 /* Support Files */,
-			);
-			path = "chromaprint-osx-static";
-			sourceTree = "<group>";
-		};
-		6C8CA95F4F3D3A6242352A6C = {
-			isa = PBXGroup;
-			children = (
-				4454971909E3037A1BF3C2FC /* Podfile */,
-				5C6621F29974F38F88532CF9 /* Frameworks */,
-				840766F7A9BE2D23CCE281CC /* Pods */,
-				8B55A3816268F66EBEAFB724 /* Products */,
-				3BB722CE55E7D44A904DFB24 /* Targets Support Files */,
-			);
-			sourceTree = "<group>";
-		};
-		7D27EB1C228616DC8806849F /* Box */ = {
-			isa = PBXGroup;
-			children = (
-				062400F55AEA72AAF427B2B2 /* Box.h */,
-				07D89DA64C9DC129C298D05F /* Box.swift */,
-				D5C0C041A3F5284621D61F00 /* BoxType.swift */,
-				EE23A57F14FD539745DC9EBE /* MutableBox.swift */,
-				E549A2A38BBB87E9D7392D34 /* Support Files */,
-			);
-			path = Box;
-			sourceTree = "<group>";
-		};
-		840766F7A9BE2D23CCE281CC /* Pods */ = {
-			isa = PBXGroup;
-			children = (
-				CED0D725538FF3D94E3B205F /* Argo */,
-				7D27EB1C228616DC8806849F /* Box */,
-				5A35BDE1E6BE476D2AC016E4 /* Runes */,
-				615A069155D7F83AE27D2985 /* chromaprint-osx-static */,
-				A4DCB4F1C2B3731BA6000307 /* ffmpeg-osx-static */,
+				FD05EDB712C206CE338666ED /* chromaprint-osx-static */,
+				DA49C3133780A5323C852327 /* ffmpeg-osx-static */,
 			);
 			name = Pods;
 			sourceTree = "<group>";
 		};
-		8B55A3816268F66EBEAFB724 /* Products */ = {
+		42872F989296378678C5F424 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				97575B8B52EBD2D98773D025 /* Argo.framework */,
-				94F22CEBD122B804E70F952B /* Box.framework */,
-				CE85D1C075598BB6789D2344 /* Pods.framework */,
-				6B8FBB7C7FF14651AD732D02 /* Runes.framework */,
-				E3E17A7084DAF1F864FC0A35 /* chromaprint_osx_static.framework */,
+				DA8495E6AA2F2CCD2CBF400B /* OS X */,
 			);
-			name = Products;
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
-		8D2AE8EBC83A2069CD42C2B3 /* Support Files */ = {
+		5DB49C938C53D93D0C3DC836 /* Targets Support Files */ = {
 			isa = PBXGroup;
 			children = (
-				F907C06FBD50C3936149327A /* Info.plist */,
-				03F3B6A51C4BA82F72B9F0C7 /* Pods-chromaprint-osx-static.modulemap */,
-				A6D688D3F8E296449E5FD597 /* Pods-chromaprint-osx-static.xcconfig */,
-				3406F6DF0E5F84C74E972D1B /* Pods-chromaprint-osx-static-Private.xcconfig */,
-				E67F804BCDB5A9E01E2A6780 /* Pods-chromaprint-osx-static-dummy.m */,
-				89CB5AE701981AE58A934B6F /* Pods-chromaprint-osx-static-prefix.pch */,
-				671C76589E3EBE31E2BB1DFD /* Pods-chromaprint-osx-static-umbrella.h */,
+				BB91DF796210D2740FC0A8FC /* Pods */,
+			);
+			name = "Targets Support Files";
+			sourceTree = "<group>";
+		};
+		8B00DD97CD5D351261BB3BBF /* Support Files */ = {
+			isa = PBXGroup;
+			children = (
+				8E12993AF230EDE491E3FD7F /* Info.plist */,
+				90D34535D5953D1A2A41200A /* Pods-chromaprint-osx-static.modulemap */,
+				2D83FCF4291E7D15B13AF69B /* Pods-chromaprint-osx-static.xcconfig */,
+				053FDA4533464A40E05D1D73 /* Pods-chromaprint-osx-static-Private.xcconfig */,
+				39296667EC3301CFB9BA665E /* Pods-chromaprint-osx-static-dummy.m */,
+				8D6D1F70B422593F3DD9EBDD /* Pods-chromaprint-osx-static-prefix.pch */,
+				ED26457B039E63833B7374E2 /* Pods-chromaprint-osx-static-umbrella.h */,
 			);
 			name = "Support Files";
 			path = "../Target Support Files/Pods-chromaprint-osx-static";
 			sourceTree = "<group>";
 		};
-		A14226F9C4AAC8261E231EA7 /* Pods */ = {
+		A35111B63CDE8538A8C45492 = {
 			isa = PBXGroup;
 			children = (
-				C84B95627C7FE047A2E3F1A2 /* Info.plist */,
-				7F13980FCAF9A6BDFFACA206 /* Pods.modulemap */,
-				A2218FF7DDB9B07F1A31DD35 /* Pods-acknowledgements.markdown */,
-				7B643FC101ABBCE2613CE63B /* Pods-acknowledgements.plist */,
-				E352727C167DF052B8672627 /* Pods-dummy.m */,
-				BE61268D2F6F5FB5629A4DBC /* Pods-environment.h */,
-				7612FA7C2CE32853F2568A5D /* Pods-frameworks.sh */,
-				92075E254A08438954620CCD /* Pods-resources.sh */,
-				271E35E0999CB49E4B72118A /* Pods-umbrella.h */,
-				401403CD006133CFDC80BADA /* Pods.debug.xcconfig */,
-				F911B465E17E6F654357FA49 /* Pods.release.xcconfig */,
+				E255679A9FC255F595E4B111 /* Podfile */,
+				42872F989296378678C5F424 /* Frameworks */,
+				1B2D77EEFF20B8F4BF61CEBC /* Pods */,
+				E103748D4466CAEAD8B6D501 /* Products */,
+				5DB49C938C53D93D0C3DC836 /* Targets Support Files */,
+			);
+			sourceTree = "<group>";
+		};
+		BB1763FD6E5E8BF080CE420C /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				589AE736DD94993B61F12A1A /* libavcodec.a */,
+				718B405C632F66529370C697 /* libavdevice.a */,
+				D49C67D727EB465C35D087E6 /* libavfilter.a */,
+				5E84CA9F557D09FCD9938872 /* libavformat.a */,
+				6476E66A1A5A47D28EF5118F /* libavutil.a */,
+				9D8324FA476FA7FAD74DE71A /* libswresample.a */,
+				50B5176281EC824BC3A647F4 /* libswscale.a */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		BB91DF796210D2740FC0A8FC /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				138F93D9E8054719C8604223 /* Info.plist */,
+				5651CCFE6F5C432E8E92C274 /* Pods.modulemap */,
+				0856D67403E1AEF2BA94E3A5 /* Pods-acknowledgements.markdown */,
+				1D6C090136EE62A8A26E2CB7 /* Pods-acknowledgements.plist */,
+				6E79A58043B4E2659F00D15B /* Pods-dummy.m */,
+				20D7C77341D789A2FA484E89 /* Pods-environment.h */,
+				A687FF19FCF6D4C549127E02 /* Pods-frameworks.sh */,
+				344ABD3C7F6BA797BB74A4F5 /* Pods-resources.sh */,
+				4FBA12ACBA1CBA5E99E17FD3 /* Pods-umbrella.h */,
+				BBD2DC8340C3344573D50D73 /* Pods.debug.xcconfig */,
+				FABE8A1C6F878187A16FE964 /* Pods.release.xcconfig */,
 			);
 			name = Pods;
 			path = "Target Support Files/Pods";
 			sourceTree = "<group>";
 		};
-		A4DCB4F1C2B3731BA6000307 /* ffmpeg-osx-static */ = {
+		DA49C3133780A5323C852327 /* ffmpeg-osx-static */ = {
 			isa = PBXGroup;
 			children = (
-				92CEC668A25BCA38C4515C2F /* adler32.h */,
-				2DE31291F0A8917B09726F1E /* aes.h */,
-				3D16299C39C5034767E135C7 /* asrc_abuffer.h */,
-				5C2EE5244B2FEA33FF3FE9BC /* attributes.h */,
-				E18736400B4B35795DB6F0EB /* audio_fifo.h */,
-				F06D56DD13B918B0BCDC52ED /* audioconvert.h */,
-				C2182F3369E1AE719A145BC8 /* avassert.h */,
-				82834FAF49F45843649C4DC3 /* avcodec.h */,
-				805062BB1DAC3E288D52A843 /* avcodec.h */,
-				D6F80EABBDD5BF015891B2C9 /* avconfig.h */,
-				D19A1F759CECD4BD89F5BA5D /* avdevice.h */,
-				A2331EDAF874A30DC19B90BE /* avfft.h */,
-				B2745B94EDDCAAB4B1656D9C /* avfilter.h */,
-				48D2A8522DC9CDCFED49AECA /* avfiltergraph.h */,
-				EBB890514329A5A290EC79E2 /* avformat.h */,
-				C23C5993C4D2CD1D549E9DBC /* avio.h */,
-				C3D90BF43978C88E95703979 /* avstring.h */,
-				0E906834F7B93079F8C401D9 /* avutil.h */,
-				9B9A60A56311D929D054632F /* base64.h */,
-				CD67C1F6D8562909BBE08374 /* blowfish.h */,
-				D16E9830115FA1E96C813F0F /* bprint.h */,
-				91A12DBC22C7655580CBB378 /* bswap.h */,
-				9A02A66EA4E1345B488FFBA2 /* buffer.h */,
-				0C247BF25068680EE2484D5B /* buffersink.h */,
-				B60A36EB0663F501A1F356A7 /* buffersrc.h */,
-				CC632EA3D2BB58F9752E91CE /* channel_layout.h */,
-				67A3F9C6F6309273E132D460 /* common.h */,
-				FC82A27BBE6A6BE9C8F3223F /* cpu.h */,
-				72049B061625A15CEA035BC4 /* crc.h */,
-				8EC010A48860207C30F7F3E2 /* dict.h */,
-				A1067FDE8C3838FE6E6B7BF0 /* display.h */,
-				525F262AD5F1C63A3704AF53 /* downmix_info.h */,
-				230FB0A9F8C56F028490FB54 /* dv_profile.h */,
-				A619EAF96CA8DCCCB92D57E6 /* dxva2.h */,
-				EABEA9728C3EAB082247F1FB /* error.h */,
-				58296836796813492C1A5EAE /* eval.h */,
-				AFED892AE818161D0760C069 /* ffversion.h */,
-				A8DFCA2B5C35C05BD946EC3A /* fifo.h */,
-				514190631D37B00791E1309B /* file.h */,
-				9D3454B1522F84C0DFBAAE93 /* frame.h */,
-				B40957B43F4AF878CF6F96EB /* hash.h */,
-				8545A0919D9BB91AEF4C8A81 /* hmac.h */,
-				E54FB669AAFAEAEDC90CC7C2 /* imgutils.h */,
-				75CAAAA16B38EA92B449FFD4 /* intfloat.h */,
-				95482E09560EE073853D30AF /* intfloat_readwrite.h */,
-				70AD2982DF4759AEFEC71B97 /* intreadwrite.h */,
-				A9C20D89C06D06FB62848000 /* lfg.h */,
-				3C5AD58919E14AC0D56F8BB4 /* log.h */,
-				DE48CE44B0C2E829F2D417EB /* lzo.h */,
-				9DE6E6BC74F3657E2508C0E9 /* macros.h */,
-				2D09A645B722CEBD40851BF7 /* mathematics.h */,
-				2D3EB75C0DA6C7BEAFD9C3E5 /* md5.h */,
-				C343FDC1F01020FC282A3B25 /* mem.h */,
-				D118D9FF645B2BEEBD40EB4D /* motion_vector.h */,
-				C5FD4CFDA5B9A05B1E86BAD7 /* murmur3.h */,
-				1BA934512BF4024C5BAAA526 /* old_codec_ids.h */,
-				152B227957C6290532DC37A6 /* old_pix_fmts.h */,
-				0EA6592252242F7C3A7A4259 /* opt.h */,
-				9BB1B0344613EDBE9394838F /* parseutils.h */,
-				9ECACFCD3AA2FE50EE1E1327 /* pixdesc.h */,
-				A2DAAE83C3F5A48898E6A4B1 /* pixelutils.h */,
-				C10364F9EA7D98A380D4B454 /* pixfmt.h */,
-				28E1EC619EEBDC5B1FEEDF62 /* random_seed.h */,
-				EC104E84D196524A390BE548 /* rational.h */,
-				B41C8846813F4E4CB35227A0 /* replaygain.h */,
-				9D38E01753C21AAAF3C194A2 /* ripemd.h */,
-				9FAB93743C008743D0AB78C9 /* samplefmt.h */,
-				27FCA0B2D22734B3D18B9B1B /* sha.h */,
-				2939CEFE2309E59A1DF16E08 /* sha512.h */,
-				B3DF1299E8AF257D3BFF8AEB /* stereo3d.h */,
-				807DE7BD8800B2D36826704B /* swresample.h */,
-				4AD6F5540095495C2E8EE887 /* swscale.h */,
-				330E4C65ECC1B94E320DF07A /* threadmessage.h */,
-				A3D20F451522CABDF2C03862 /* time.h */,
-				1636FF32C36AE1260B135F33 /* timecode.h */,
-				BAD05B3936E75954295624D9 /* timestamp.h */,
-				CB0540C33C892768CB1FBA0A /* vaapi.h */,
-				FC69FAD0176801661594C0F3 /* vda.h */,
-				122AFB83EA853FCB4D953707 /* vdpau.h */,
-				3CE641172A16C0EE62AF843B /* version.h */,
-				0AF1CCB9FAE1F8AB6BC9CED3 /* version.h */,
-				A01917C3935C0A70B3D04A27 /* version.h */,
-				D66119CB75593F30C469B1B3 /* version.h */,
-				39A563B4C532948BA9CF3041 /* version.h */,
-				06B4287F890ADB3426F6702C /* version.h */,
-				9137378CAFAD7E56E17FA557 /* version.h */,
-				A9A4BDA19F30B597575DA7DA /* xtea.h */,
-				51627D197B3827DF6E1BB43F /* xvmc.h */,
-				FC30323C4E84CE90B61600AD /* Frameworks */,
+				6017E438687CA37EF954BDDA /* adler32.h */,
+				39EDCBAC9CFF53DED55F4A06 /* aes.h */,
+				A470516A550FA30D816AF7DD /* asrc_abuffer.h */,
+				D4A471D69E1506A445409949 /* attributes.h */,
+				7A56FB9B78EC5E8A70116242 /* audio_fifo.h */,
+				BFCCBF5A94BB7F62D6F380B7 /* audioconvert.h */,
+				4669214C010AA89FDF725ACB /* avassert.h */,
+				B48782A91B1A55D692B7913B /* avcodec.h */,
+				3B8BDBD82DF687C7B16B10D8 /* avcodec.h */,
+				FA467EC84E4BF49B254F98CD /* avconfig.h */,
+				77D3F4C45DE69DDABEE5CA7E /* avdevice.h */,
+				A6A8CFA70AB8D4861150FA99 /* avfft.h */,
+				2D4F1204AC65B6B987F03CB8 /* avfilter.h */,
+				FEECC48514ADC77843793F37 /* avfiltergraph.h */,
+				B748E6B2308403B89AC58E3A /* avformat.h */,
+				14A40B2C1CB2152C24D7F705 /* avio.h */,
+				C3E52A3611D0F746FB3FC1A8 /* avstring.h */,
+				87729B48CB2AB2E38265660C /* avutil.h */,
+				652ADA8BDA5EBA831EDC6270 /* base64.h */,
+				E3F2E0406E926AC5E89E9D50 /* blowfish.h */,
+				BF02A077B17FEBAA22E1DB65 /* bprint.h */,
+				4B6CCFF2EB062607DFE2AA9A /* bswap.h */,
+				01E3D17BEF60A96A1584F79D /* buffer.h */,
+				1FE350333E12570F5BD4D6C9 /* buffersink.h */,
+				27424ED652C7A832B218A471 /* buffersrc.h */,
+				150892541E02EEF0374A2519 /* channel_layout.h */,
+				96E42D1EE9C5A37029FCD7F8 /* common.h */,
+				9A19228A1C230493EE9D30E5 /* cpu.h */,
+				B1541F6F2A8D0096B8F9BA8B /* crc.h */,
+				FEC61637B62BDB13BB369947 /* dict.h */,
+				77632CDC98FE5C34423F385C /* display.h */,
+				5D0BDF5EF7775348AD427551 /* downmix_info.h */,
+				D48582B966A13991D8A83DFC /* dv_profile.h */,
+				100284B0FEA649699E51C59D /* dxva2.h */,
+				C23C8D542397582620E1B981 /* error.h */,
+				FC48518285447A6023C972F4 /* eval.h */,
+				736E5B7BE51FED88A18C9766 /* ffversion.h */,
+				44DAD91AAF7201086E26B058 /* fifo.h */,
+				868B1AE7ECE5CF24574E9FCE /* file.h */,
+				E8617E44CCFD5A68DA8A9886 /* frame.h */,
+				A58FD7476DA24A0CAB12E604 /* hash.h */,
+				70146052A2C5340D9A518A3E /* hmac.h */,
+				CC6F7C03373EC232E97E1333 /* imgutils.h */,
+				958F0C92D85BBB9CD9CF50A8 /* intfloat.h */,
+				EA194D9D9FB90B0525B535A5 /* intfloat_readwrite.h */,
+				1BF58D3661E0130072BCFF02 /* intreadwrite.h */,
+				03ADCEE020AD9BAA6469B57F /* lfg.h */,
+				6BB0F4165D24E5F00795297B /* log.h */,
+				EF49A91ADCEAE9CDD8D6962C /* lzo.h */,
+				777FBBC9210EF5F897057999 /* macros.h */,
+				AFE4132CE34A33E20F5E32E2 /* mathematics.h */,
+				27255A0AE8BCB426D37F4745 /* md5.h */,
+				FFE58D0125C750212F7DDF3B /* mem.h */,
+				52E90A8FC4EB63C0C7FA54B7 /* motion_vector.h */,
+				880B9AB3FB20AB01D7F37286 /* murmur3.h */,
+				2735817CB38F13B78E28329A /* old_codec_ids.h */,
+				B3C597126271D281AF3FB94E /* old_pix_fmts.h */,
+				7CE272D0FAFAA1834A9F5DE7 /* opt.h */,
+				8C442DD1C2B630577EB6C337 /* parseutils.h */,
+				E405D851393C1CEC4669CA3C /* pixdesc.h */,
+				A98EC99A252BD0F5181C9531 /* pixelutils.h */,
+				02AAF1173DF0FD7894B9D584 /* pixfmt.h */,
+				39F6F5993D08D29E6E606A6A /* random_seed.h */,
+				FF25A4A7B3876E4EC420D3F7 /* rational.h */,
+				D8DF0FB02FCB36C5AFE1E8B4 /* replaygain.h */,
+				860B5467F989E43EF6ADB194 /* ripemd.h */,
+				BA0D290930D231BFDC054E5A /* samplefmt.h */,
+				6237EE605971638C6E435860 /* sha.h */,
+				D1566496F7440284014DE063 /* sha512.h */,
+				E47EAA1B387A894348003303 /* stereo3d.h */,
+				75318646093120A044B399A6 /* swresample.h */,
+				69F331907D22921FBB8BC1CD /* swscale.h */,
+				27CB4DE6188AB64FF4EB54CF /* threadmessage.h */,
+				D9C2CE0AC2F9AB06D33DC565 /* time.h */,
+				2D6610F211633BA633054056 /* timecode.h */,
+				ABF4480309B44836B1891E1B /* timestamp.h */,
+				A1F990C8B871739C05170744 /* vaapi.h */,
+				EE96F2F3E518A7E3244EF73A /* vda.h */,
+				DCFBAB8D1CEB4E470C46372A /* vdpau.h */,
+				6AC32FBCACE419AE6E9E4102 /* version.h */,
+				FF0109BC0D1F07A935FA7B89 /* version.h */,
+				E6129423BA02858500896059 /* version.h */,
+				EA541B8BA741F9C100BDB4AE /* version.h */,
+				92E8AD79D5BD074FCA44CD75 /* version.h */,
+				CBE658AC305764A41C60F106 /* version.h */,
+				C4A5C27434DFBCCA89C726CD /* version.h */,
+				A5F80589E3B7E4C637B56B26 /* xtea.h */,
+				7E5A79AF8752C7E28990411F /* xvmc.h */,
+				BB1763FD6E5E8BF080CE420C /* Frameworks */,
 			);
 			path = "ffmpeg-osx-static";
 			sourceTree = "<group>";
 		};
-		CED0D725538FF3D94E3B205F /* Argo */ = {
+		DA8495E6AA2F2CCD2CBF400B /* OS X */ = {
 			isa = PBXGroup;
 			children = (
-				B8EE3880DA79EC9F62DC15D7 /* Argo.h */,
-				684D9459916989A451CAE997 /* Decodable.swift */,
-				C74BA694674B8CA66E351003 /* Decoded.swift */,
-				D372AC07C12CE8FB3E3E2443 /* Dictionary.swift */,
-				78DBA3340F96D74B3CC3DA65 /* JSON.swift */,
-				FFFFA3BD068AACD5E357EEB6 /* Operators.swift */,
-				B875B5B659899F1A9F329D97 /* StandardTypes.swift */,
-				0F97BEA0BCBFB7CC66B1A638 /* curry.swift */,
-				5C24DE83FB151514446C8C2A /* decode.swift */,
-				408AFD34F33B8CA21CBBFFAB /* flatReduce.swift */,
-				807EA7A1879EBFCD53C79AC9 /* sequence.swift */,
-				2952CF3165963829A900AA93 /* Support Files */,
+				268656063E5616F116C8E95D /* Accelerate.framework */,
+				F8EA44AB8F38AEECDBB0B249 /* Cocoa.framework */,
 			);
-			path = Argo;
+			name = "OS X";
 			sourceTree = "<group>";
 		};
-		E549A2A38BBB87E9D7392D34 /* Support Files */ = {
+		E103748D4466CAEAD8B6D501 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				EFB25BA52392EEE079627374 /* Info.plist */,
-				4D086D1A34C6BBDBB57C2506 /* Pods-Box.modulemap */,
-				DF226423AB464D012818FADE /* Pods-Box.xcconfig */,
-				FFD771D7036FAEB3A2F7AA96 /* Pods-Box-Private.xcconfig */,
-				95D21089EAD64C576CA45551 /* Pods-Box-dummy.m */,
-				C2457EA854368EF3BD01F6D9 /* Pods-Box-prefix.pch */,
-				1CE09A1CFD51B49D0FB35087 /* Pods-Box-umbrella.h */,
+				1F6B84904A9DA74CE8999404 /* Pods.framework */,
+				2C02C4153B83AD15C461737D /* chromaprint_osx_static.framework */,
 			);
-			name = "Support Files";
-			path = "../Target Support Files/Pods-Box";
+			name = Products;
 			sourceTree = "<group>";
 		};
-		F50E19626CFDC20143F15C9C /* Support Files */ = {
+		FD05EDB712C206CE338666ED /* chromaprint-osx-static */ = {
 			isa = PBXGroup;
 			children = (
-				12AE9E0D3B81612CDD09AEE7 /* Info.plist */,
-				2359A6BF0DD000AD82C944A8 /* Pods-Runes.modulemap */,
-				EC011FCC23A84A01F5054938 /* Pods-Runes.xcconfig */,
-				83B0D475CBF20C4F0A6D9B69 /* Pods-Runes-Private.xcconfig */,
-				B8A0CC56A8F50652C6195679 /* Pods-Runes-dummy.m */,
-				915B9F9816BE865289CCBB97 /* Pods-Runes-prefix.pch */,
-				3BB549F9ED47F3E598A06EB2 /* Pods-Runes-umbrella.h */,
+				6BD02F87C6829E20443B65FF /* audio_consumer.h */,
+				198619F24050AE953B4AAD8C /* audio_processor.cpp */,
+				0D2ACE0B9CDA6244AC59555E /* audio_processor.h */,
+				C53694077DFBD84E1998C3C4 /* avcodec.h */,
+				C7596A6CF99FB44260CF66BF /* base64.cpp */,
+				9365074B7ED285246B60DDBD /* base64.h */,
+				85BA1CC74B6ECE91B0BEF34E /* bit_string_reader.h */,
+				D6FAE3F9C12B35DB5B8A788D /* bit_string_writer.h */,
+				7F4A3E2C3361155140766557 /* chroma.cpp */,
+				D5E3AC8E907A53E6177480BB /* chroma.h */,
+				7C33DDF2E5FB04F6808539F2 /* chroma_filter.cpp */,
+				FE5C2FCA9DC8CF756BD1CF00 /* chroma_filter.h */,
+				721543C09364B5B38986BD06 /* chroma_normalizer.h */,
+				ECB61F5C8458D7BFEB844653 /* chroma_resampler.cpp */,
+				17E03DB09445941D17AE761A /* chroma_resampler.h */,
+				B6A907289C1D2F0F7BF1D6B9 /* chromaprint.cpp */,
+				CD41E85748400285671E7E3C /* chromaprint.h */,
+				FB20966D71B62A5A23B36AD0 /* classifier.h */,
+				A33E61E8948F321CD582E136 /* combined_buffer.h */,
+				88E832DADDCB5CB644C92492 /* config.h */,
+				DD1FF246B35224D449D474B3 /* debug.h */,
+				071A3DE471238707A208C9B6 /* decoder.h */,
+				F92BB945225A951C92866BB4 /* dsputil.h */,
+				804DF125B93C00670D6DA414 /* feature_vector_consumer.h */,
+				4BA3EFEBF5EFCF9DEF85E3D7 /* fft.cpp */,
+				DD63F42D630EBAD535909788 /* fft.h */,
+				B4CAA691F11B249D5AAE227F /* fft_frame.h */,
+				C6148482613813A18E01F499 /* fft_frame_consumer.h */,
+				0C130A47658D2DCB77BD8FD0 /* fft_lib.h */,
+				1FECFA7EA55EB82C021EC2EB /* fft_lib_avfft.h */,
+				A231B959296A888E0FF17496 /* fft_lib_fftw3.h */,
+				CD027D431E34F7C9FC5CB648 /* fft_lib_kissfft.h */,
+				1A267817357A3324EDFA78D1 /* fft_lib_vdsp.cpp */,
+				74A33D6722F6FBCAA788A170 /* fft_lib_vdsp.h */,
+				388C407FF9EEB84C837843F0 /* filter.cpp */,
+				F9A46AC24B034BEA36E5F709 /* filter.h */,
+				854E6AE9DFAF0D51C3FE802C /* filter_utils.h */,
+				F5587369F54B5EC3D6B6BF26 /* fingerprint_calculator.cpp */,
+				D849818524F415150D427304 /* fingerprint_calculator.h */,
+				69312EF8AC10EA1AFF1AE1D6 /* fingerprint_compressor.cpp */,
+				BDC09E7500293AFBC38ADEF9 /* fingerprint_compressor.h */,
+				BB1300AC4F4F35C3CE2C17FF /* fingerprint_decompressor.cpp */,
+				6725A6651F3822A7B347CDBA /* fingerprint_decompressor.h */,
+				3C69ECBEFBEE65A8BA92D9C7 /* fingerprinter.cpp */,
+				7C5E520D2E5D8062D4F57743 /* fingerprinter.h */,
+				75053A52D21547C188BF348C /* fingerprinter_configuration.cpp */,
+				02746AF0BF25D3BEA3073B7D /* fingerprinter_configuration.h */,
+				38D96A65D2C2BEC1B8EA115D /* image.h */,
+				D82F84E7669783EFCE82E65F /* image_builder.cpp */,
+				5DF7C88A315364F6E71FE0EF /* image_builder.h */,
+				A837C8F5CEAE5DB3271E4626 /* integral_image.cpp */,
+				F9350F391A985F770F904CAC /* integral_image.h */,
+				C9C39BC56F484FDD268102D4 /* lloyds.cpp */,
+				E726DAA921C8886AFC9A914B /* lloyds.h */,
+				02DF1F55557E5A1667F602F1 /* moving_average.h */,
+				D913D805E9199A7FD8BEF06F /* quantizer.h */,
+				0F447FEB3C44C951E772FD1C /* resample2.c */,
+				CCA37FD979CA6241FB55D104 /* silence_remover.cpp */,
+				8064FBBFA99F6690A1A5AA8A /* silence_remover.h */,
+				94448FC751F62F68E5B2CD8D /* sox_audio_source.h */,
+				2E1BAB423E9A143064B1F77C /* spectral_centroid.cpp */,
+				B665063C9E9ABD266D24FD75 /* spectral_centroid.h */,
+				91143E6082E01ADF5EA3848B /* spectrum.cpp */,
+				E9201C9EC0A2CCBFFC914653 /* spectrum.h */,
+				A6FDE0E48EE999173CC8B4BD /* utils.h */,
+				8B00DD97CD5D351261BB3BBF /* Support Files */,
 			);
-			name = "Support Files";
-			path = "../Target Support Files/Pods-Runes";
-			sourceTree = "<group>";
-		};
-		FC30323C4E84CE90B61600AD /* Frameworks */ = {
-			isa = PBXGroup;
-			children = (
-				3C00D89E9D11F6979EC8CB8E /* libavcodec.a */,
-				DFD13265C1C8907D58E5FA3A /* libavdevice.a */,
-				E571353BCADE39955ED21A74 /* libavfilter.a */,
-				62EC403541F6F5A266A3965D /* libavformat.a */,
-				52DB41ABF6E028010DBD8CB4 /* libavutil.a */,
-				6549C64803BA5EF90040629B /* libswresample.a */,
-				FC7FFB55BCAD1714BFFE3A23 /* libswscale.a */,
-			);
-			name = Frameworks;
+			path = "chromaprint-osx-static";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
 
 /* Begin PBXHeadersBuildPhase section */
-		09D330E4264062FEDF687BF0 /* Headers */ = {
+		BD04D0C02AA0FA1B63B95DD1 /* Headers */ = {
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				ACE2E9BA12E9D31B24AC05CA /* Pods-chromaprint-osx-static-umbrella.h in Headers */,
-				CDD2D99E4A57A699ED59C9D1 /* audio_consumer.h in Headers */,
-				DBB0C5B2DF3EC8C96B83B714 /* audio_processor.h in Headers */,
-				C9957103FA0C1F9678E41B52 /* avcodec.h in Headers */,
-				BEBFBA5209807217D099516C /* base64.h in Headers */,
-				617770AFE5FA0DA4C5B5D1AA /* bit_string_reader.h in Headers */,
-				1E0A0B803C484C945CAA6354 /* bit_string_writer.h in Headers */,
-				ACDD296C9195800F1B2C0B5C /* chroma.h in Headers */,
-				B949423AFB939262BE6A37B8 /* chroma_filter.h in Headers */,
-				3720D48CC3400E0597898DED /* chroma_normalizer.h in Headers */,
-				B6E0C6FF27568E49E3C91C1B /* chroma_resampler.h in Headers */,
-				C5AA4561842DA7E6B7331C22 /* chromaprint.h in Headers */,
-				F24D1E52AB2A7096A0C1F948 /* classifier.h in Headers */,
-				F690AFB6B2B600FDDCF9B5E8 /* combined_buffer.h in Headers */,
-				26F79BFA0DB6129D154719FA /* config.h in Headers */,
-				186569D3204ABBADD73D492B /* debug.h in Headers */,
-				CAEDA047E9B67233895B2EFE /* decoder.h in Headers */,
-				DFB70074BCEF6F4C2DFFA0A7 /* dsputil.h in Headers */,
-				7627168DC68ABC571A6F4D91 /* feature_vector_consumer.h in Headers */,
-				ECB16AB4AF2879A25265CD26 /* fft.h in Headers */,
-				22D2F281F5BC0464FDA2CBC0 /* fft_frame.h in Headers */,
-				8F21A0F5063EE7EB2E44906E /* fft_frame_consumer.h in Headers */,
-				37D8614499822A520FB25DE8 /* fft_lib.h in Headers */,
-				21AE1FF8651B2D0F94A161FC /* fft_lib_avfft.h in Headers */,
-				A01C1EED369C9B980DFD6A88 /* fft_lib_fftw3.h in Headers */,
-				A5C63708101511255AC0349A /* fft_lib_kissfft.h in Headers */,
-				0130CA351DB91107A6079179 /* fft_lib_vdsp.h in Headers */,
-				C69C9E458C29CBFF612AE3B1 /* filter.h in Headers */,
-				C6627B819452CE239E321B46 /* filter_utils.h in Headers */,
-				F3E03AB358DEFC9DD341F779 /* fingerprint_calculator.h in Headers */,
-				A4DBE2068688057DFEDDE004 /* fingerprint_compressor.h in Headers */,
-				BD39C15575F563E5BE4977E6 /* fingerprint_decompressor.h in Headers */,
-				9CB3AF8227C4139B6B1ED4A5 /* fingerprinter.h in Headers */,
-				2DEF37C95ED22444D6F27CB5 /* fingerprinter_configuration.h in Headers */,
-				88543D24718463845B7C851D /* image.h in Headers */,
-				55F3D0B3020ED44A1FCC137E /* image_builder.h in Headers */,
-				624EE238D3E3850C2CAFE429 /* integral_image.h in Headers */,
-				F18BFD933B13F4A2EBCEE95D /* lloyds.h in Headers */,
-				FD805402E732002F1F4E7B6C /* moving_average.h in Headers */,
-				E73CFF59A85DBA9C7F1EB5F7 /* quantizer.h in Headers */,
-				F71A51DC152C4DDF58051B96 /* silence_remover.h in Headers */,
-				CCE4978C87D5848E048D364A /* sox_audio_source.h in Headers */,
-				E4F1895DE8EBBE2073B3FFF8 /* spectral_centroid.h in Headers */,
-				FF2582F9502D0CBB7E05BD32 /* spectrum.h in Headers */,
-				BD71A4FB28CB3EE201E64966 /* utils.h in Headers */,
+				34F52BC3D8C2AA1111D9BF0C /* Pods-chromaprint-osx-static-umbrella.h in Headers */,
+				B67ACF70E36A72DCED349E8C /* audio_consumer.h in Headers */,
+				4C975296E43CF41DAEF0DD13 /* audio_processor.h in Headers */,
+				89EE11C12AFF810EBCBD77B9 /* avcodec.h in Headers */,
+				2AD63F95FFE98AA78E3C7593 /* base64.h in Headers */,
+				2BFE54C93545A43622E8B5EF /* bit_string_reader.h in Headers */,
+				66C03FE07DE9A51DAA85728E /* bit_string_writer.h in Headers */,
+				84310E14BFAAA2091FF98E96 /* chroma.h in Headers */,
+				FB4D9840A101D3F75294DDAA /* chroma_filter.h in Headers */,
+				883F8BA8D3AAC8841387C9FE /* chroma_normalizer.h in Headers */,
+				A6AACD7FD9230374C383DEC3 /* chroma_resampler.h in Headers */,
+				78529112053910DAA8076EA4 /* chromaprint.h in Headers */,
+				B1C937BF11ECC33127F7ED6F /* classifier.h in Headers */,
+				62D085F47F72709BEA13D876 /* combined_buffer.h in Headers */,
+				2FFB50AA75E4CC984D77AA81 /* config.h in Headers */,
+				8C1637AEC999C1E0C1FC37C5 /* debug.h in Headers */,
+				8A636EE12BEBCDCA4B99B74A /* decoder.h in Headers */,
+				C17236603442A5447F2626CA /* dsputil.h in Headers */,
+				B1F2AA71F7927E9EEE00F82B /* feature_vector_consumer.h in Headers */,
+				79F1C5786B56D9CA6F91DFAF /* fft.h in Headers */,
+				824F400DC72E1AF5136E95A4 /* fft_frame.h in Headers */,
+				17B1FB81BD787EF8F15944D4 /* fft_frame_consumer.h in Headers */,
+				A1919F548C548E6A08FDAFED /* fft_lib.h in Headers */,
+				E6778849FA446E1B5F896023 /* fft_lib_avfft.h in Headers */,
+				6677C383415D264AABB3B9DA /* fft_lib_fftw3.h in Headers */,
+				BE96FE17180F6D1D5982233F /* fft_lib_kissfft.h in Headers */,
+				FF8AF519B10A72319CDCA0C4 /* fft_lib_vdsp.h in Headers */,
+				9E7F3A87930B96C2A89F36BA /* filter.h in Headers */,
+				B762EB98AB0B8310089D7D33 /* filter_utils.h in Headers */,
+				710E927864C0B8656F15223B /* fingerprint_calculator.h in Headers */,
+				E9F7460B86DA52C53A687EEF /* fingerprint_compressor.h in Headers */,
+				F8A43DDDE060AF5BBC1CCDC6 /* fingerprint_decompressor.h in Headers */,
+				B068B764832A4A9BFA16A7DE /* fingerprinter.h in Headers */,
+				212CF403BF5E1EC355B904AD /* fingerprinter_configuration.h in Headers */,
+				E2540E090714E9476C5786B5 /* image.h in Headers */,
+				CB6B3D932C6710D03EA3DAE3 /* image_builder.h in Headers */,
+				D0F07B6F681A19F0199B70FC /* integral_image.h in Headers */,
+				F8DA772BA82C34A3CDC09F29 /* lloyds.h in Headers */,
+				59BA58C52ECF388B4C58065C /* moving_average.h in Headers */,
+				18E5479EA0627222648730C0 /* quantizer.h in Headers */,
+				4074CF31346AC0161AB6E22D /* silence_remover.h in Headers */,
+				451D25931EA97C2C7C5F29A2 /* sox_audio_source.h in Headers */,
+				FC20F52B90EEE318C7C1BC1C /* spectral_centroid.h in Headers */,
+				7C7430D76F35A2B2F367B23A /* spectrum.h in Headers */,
+				C2A04CACA90385EE7808EEE3 /* utils.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		1D6347F3B850E9A3684DE2F8 /* Headers */ = {
+		E0D5112D6A0B9BCB72FA125F /* Headers */ = {
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				771D874CCEF1853283FDFF53 /* Pods-Runes-umbrella.h in Headers */,
-				C358159EC978FFE4DD90C424 /* Runes.h in Headers */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		D26C545930E93C641539FC43 /* Headers */ = {
-			isa = PBXHeadersBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				602E3151B9B23884EF15871C /* Pods-umbrella.h in Headers */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		EDFF3B3B28FF61E01BAA8AF5 /* Headers */ = {
-			isa = PBXHeadersBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				71130B23FA08A479817F2CC6 /* Argo.h in Headers */,
-				4984663FE5E11413EE8A5D0C /* Pods-Argo-umbrella.h in Headers */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		F52D52BB428DA9A634F1B331 /* Headers */ = {
-			isa = PBXHeadersBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				3E501EDECFA0A81EC6C3B15A /* Box.h in Headers */,
-				7B50C68F60179DB93490C9F8 /* Pods-Box-umbrella.h in Headers */,
+				E56AD6A4D7319318CD6760A0 /* Pods-umbrella.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXHeadersBuildPhase section */
 
 /* Begin PBXNativeTarget section */
-		40386F69ED8CE5A7AFBE0EBB /* Pods-Box */ = {
+		94D4AD416FA9E4FAA30BC321 /* Pods */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 7DDF2660094E92CCFF734170 /* Build configuration list for PBXNativeTarget "Pods-Box" */;
+			buildConfigurationList = B0145C067D58FD5A8ADB1ACF /* Build configuration list for PBXNativeTarget "Pods" */;
 			buildPhases = (
-				8BFCD53C6F9D1A85E7D85233 /* Sources */,
-				6AF68F5E9F232ED0E6A7C150 /* Frameworks */,
-				F52D52BB428DA9A634F1B331 /* Headers */,
+				7CC9B4CC7517D83399A8CB15 /* Sources */,
+				6DA16B45AB6C46ECA48B840F /* Frameworks */,
+				E0D5112D6A0B9BCB72FA125F /* Headers */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				EFC87E95D4A4F9734A1A1E87 /* PBXTargetDependency */,
 			);
-			name = "Pods-Box";
-			productName = "Pods-Box";
-			productReference = 94F22CEBD122B804E70F952B /* Box.framework */;
+			name = Pods;
+			productName = Pods;
+			productReference = 1F6B84904A9DA74CE8999404 /* Pods.framework */;
 			productType = "com.apple.product-type.framework";
 		};
-		57240683708E6473ABE39167 /* Pods-Argo */ = {
+		FE196D0D5C51B0D9C0DF828E /* Pods-chromaprint-osx-static */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 2F571604CFA82058ECBA2158 /* Build configuration list for PBXNativeTarget "Pods-Argo" */;
+			buildConfigurationList = DB8610D1FBDEC7EA71D55D86 /* Build configuration list for PBXNativeTarget "Pods-chromaprint-osx-static" */;
 			buildPhases = (
-				661EEC54BBB7781F27D220EF /* Sources */,
-				89998FA69757253163C81038 /* Frameworks */,
-				EDFF3B3B28FF61E01BAA8AF5 /* Headers */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				9E86ACB2806BA862A18AF2B4 /* PBXTargetDependency */,
-				07797564254E8924C7F85FC0 /* PBXTargetDependency */,
-			);
-			name = "Pods-Argo";
-			productName = "Pods-Argo";
-			productReference = 97575B8B52EBD2D98773D025 /* Argo.framework */;
-			productType = "com.apple.product-type.framework";
-		};
-		9BB2613722D443ED11D3A5D9 /* Pods-Runes */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 0A6BF4AD732A4A92A06B396E /* Build configuration list for PBXNativeTarget "Pods-Runes" */;
-			buildPhases = (
-				3A54E282A154953C5BA181BE /* Sources */,
-				C6FEC1503BEF42D83EF3636F /* Frameworks */,
-				1D6347F3B850E9A3684DE2F8 /* Headers */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-			);
-			name = "Pods-Runes";
-			productName = "Pods-Runes";
-			productReference = 6B8FBB7C7FF14651AD732D02 /* Runes.framework */;
-			productType = "com.apple.product-type.framework";
-		};
-		9E7E7A377E6E1344F8E7E5E9 /* Pods-chromaprint-osx-static */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = FEFF9BA58D945696A17ACA7E /* Build configuration list for PBXNativeTarget "Pods-chromaprint-osx-static" */;
-			buildPhases = (
-				4BD6A87553DE96D51912055C /* Sources */,
-				4F00EF77B54D21FA91C0E717 /* Frameworks */,
-				09D330E4264062FEDF687BF0 /* Headers */,
+				2CD418DF0C9E6EE32AF04947 /* Sources */,
+				73731160B0F2847CC9319E60 /* Frameworks */,
+				BD04D0C02AA0FA1B63B95DD1 /* Headers */,
 			);
 			buildRules = (
 			);
@@ -961,208 +667,86 @@
 			);
 			name = "Pods-chromaprint-osx-static";
 			productName = "Pods-chromaprint-osx-static";
-			productReference = E3E17A7084DAF1F864FC0A35 /* chromaprint_osx_static.framework */;
-			productType = "com.apple.product-type.framework";
-		};
-		F1C41ADF96B5E79B7AA9C3DD /* Pods */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 2ECE7FAACE9E23BBA6DFC197 /* Build configuration list for PBXNativeTarget "Pods" */;
-			buildPhases = (
-				0CC145083E9D6E5B621FC886 /* Sources */,
-				0EC227BE6D52DEAD77356FFF /* Frameworks */,
-				D26C545930E93C641539FC43 /* Headers */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				651BB8A4AF3A44AF1907DF3D /* PBXTargetDependency */,
-				DE17AE0BAEEB17173B0CDD89 /* PBXTargetDependency */,
-				212775ACD9F7C2D86594DE95 /* PBXTargetDependency */,
-				FB8FF3F613FDF886051499A8 /* PBXTargetDependency */,
-			);
-			name = Pods;
-			productName = Pods;
-			productReference = CE85D1C075598BB6789D2344 /* Pods.framework */;
+			productReference = 2C02C4153B83AD15C461737D /* chromaprint_osx_static.framework */;
 			productType = "com.apple.product-type.framework";
 		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
-		31115CB8B511FED6F42ACD17 /* Project object */ = {
+		5CAAC5EA8B25D88E90BC9A52 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
 				LastUpgradeCheck = 0640;
 			};
-			buildConfigurationList = 82C1608A3F946F29EC5BA396 /* Build configuration list for PBXProject "Pods" */;
+			buildConfigurationList = 16ED9F478DD52790376271B5 /* Build configuration list for PBXProject "Pods" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
 			knownRegions = (
 				en,
 			);
-			mainGroup = 6C8CA95F4F3D3A6242352A6C;
-			productRefGroup = 8B55A3816268F66EBEAFB724 /* Products */;
+			mainGroup = A35111B63CDE8538A8C45492;
+			productRefGroup = E103748D4466CAEAD8B6D501 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				F1C41ADF96B5E79B7AA9C3DD /* Pods */,
-				57240683708E6473ABE39167 /* Pods-Argo */,
-				40386F69ED8CE5A7AFBE0EBB /* Pods-Box */,
-				9BB2613722D443ED11D3A5D9 /* Pods-Runes */,
-				9E7E7A377E6E1344F8E7E5E9 /* Pods-chromaprint-osx-static */,
+				94D4AD416FA9E4FAA30BC321 /* Pods */,
+				FE196D0D5C51B0D9C0DF828E /* Pods-chromaprint-osx-static */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXSourcesBuildPhase section */
-		0CC145083E9D6E5B621FC886 /* Sources */ = {
+		2CD418DF0C9E6EE32AF04947 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				BC7FFD33385F53B87C0B599C /* Pods-dummy.m in Sources */,
+				4097500F0F768CA72D52CE56 /* Pods-chromaprint-osx-static-dummy.m in Sources */,
+				5C066F9C9909176E489F217E /* audio_processor.cpp in Sources */,
+				2037E38EDD5A7086D1F44D9E /* base64.cpp in Sources */,
+				6B6A205DB3080B4AE1AF537B /* chroma.cpp in Sources */,
+				E0705835F282AEA10C807520 /* chroma_filter.cpp in Sources */,
+				FD2432AB1DE8C6E631C3F36B /* chroma_resampler.cpp in Sources */,
+				47D17CC35CB24496713BE456 /* chromaprint.cpp in Sources */,
+				0CE520F1A4F22B6D296947C1 /* fft.cpp in Sources */,
+				EAB77313BC1760D0C3453EFE /* fft_lib_vdsp.cpp in Sources */,
+				2D8E9045EE5A0B005A90C5A9 /* filter.cpp in Sources */,
+				538D686ABEB91B2C625BB70A /* fingerprint_calculator.cpp in Sources */,
+				A37145F9CC0EB86887EAE3A7 /* fingerprint_compressor.cpp in Sources */,
+				5AE24B10C79BB0E599871EBA /* fingerprint_decompressor.cpp in Sources */,
+				09EA6BBAE9546372CE78B023 /* fingerprinter.cpp in Sources */,
+				E2B60C96FBCF24D4368912FF /* fingerprinter_configuration.cpp in Sources */,
+				70E427FBE2D822F99E5CCE1B /* image_builder.cpp in Sources */,
+				8F61D7D869C8B7444694ACD0 /* integral_image.cpp in Sources */,
+				5EA4188C6C28632C7ADF079D /* lloyds.cpp in Sources */,
+				9D46790CAE1763DB2220A241 /* resample2.c in Sources */,
+				A7CE1314E7343C335680097D /* silence_remover.cpp in Sources */,
+				7DE8B08E1F1AD5FB2FC3EE02 /* spectral_centroid.cpp in Sources */,
+				9C52275192712EED473C753B /* spectrum.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		3A54E282A154953C5BA181BE /* Sources */ = {
+		7CC9B4CC7517D83399A8CB15 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				1D586BE985A44A14B821DFBA /* Array.swift in Sources */,
-				1B8A203DB93FE563BD780B32 /* Operators.swift in Sources */,
-				08917DBEF8ED4CD117159F78 /* Optional.swift in Sources */,
-				ECC548EFFC32770E166FDA9C /* Pods-Runes-dummy.m in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		4BD6A87553DE96D51912055C /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				7D30C5401B0BA92D02AD1CFB /* Pods-chromaprint-osx-static-dummy.m in Sources */,
-				03833108698701DC10DB4B51 /* audio_processor.cpp in Sources */,
-				2077A337B7EBD6FEE4560B01 /* base64.cpp in Sources */,
-				973A6D56EA9B2EA658F78DC4 /* chroma.cpp in Sources */,
-				C3DA4B1F15B512E843D41466 /* chroma_filter.cpp in Sources */,
-				AB7E68FC45EBF82E0A9E63B9 /* chroma_resampler.cpp in Sources */,
-				7A0E97335259E982CF562E07 /* chromaprint.cpp in Sources */,
-				368336E1C7DD5EBA386F9DF2 /* fft.cpp in Sources */,
-				010E51420CB55B19CAE8E04B /* fft_lib_vdsp.cpp in Sources */,
-				B78C1D8E1342B8D3E20C63D1 /* filter.cpp in Sources */,
-				C755EF082428EF50D0D8E5FE /* fingerprint_calculator.cpp in Sources */,
-				DC513ABDF48FF3D72BD8C26B /* fingerprint_compressor.cpp in Sources */,
-				45AC0171936EAE1F42D654D0 /* fingerprint_decompressor.cpp in Sources */,
-				4C991C51067A915E27BCE772 /* fingerprinter.cpp in Sources */,
-				A265091971CBE1EA724EED39 /* fingerprinter_configuration.cpp in Sources */,
-				D3FA0A8CE737204449BA9FB2 /* image_builder.cpp in Sources */,
-				B74CA256A43A3E9EDF5BCE43 /* integral_image.cpp in Sources */,
-				A9C2DE6F798051B340CECA45 /* lloyds.cpp in Sources */,
-				E79E11D462A7C3703AA013D3 /* resample2.c in Sources */,
-				E62E67CCFE7FD54968D02D32 /* silence_remover.cpp in Sources */,
-				9D02542AAB9982EA9195DA52 /* spectral_centroid.cpp in Sources */,
-				F735795BB0647CA230B0E06E /* spectrum.cpp in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		661EEC54BBB7781F27D220EF /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				29BC86AF521561304EF10E08 /* Decodable.swift in Sources */,
-				48AD3DC6FA1B4187EE5A33E1 /* Decoded.swift in Sources */,
-				E92F9F5A89CBC9FF2A0220D5 /* Dictionary.swift in Sources */,
-				F219A5284E8B20322256C6EA /* JSON.swift in Sources */,
-				0BAE3B3D9E8E367E3A58DB35 /* Operators.swift in Sources */,
-				C714587C4D1F778F17255503 /* Pods-Argo-dummy.m in Sources */,
-				C78E867F13D29DB9C9B24AD3 /* StandardTypes.swift in Sources */,
-				202D04E3DFAC68B8E7EF3295 /* curry.swift in Sources */,
-				7927748460B4BD7D2B2B9000 /* decode.swift in Sources */,
-				B9007084077252FF177A9D6D /* flatReduce.swift in Sources */,
-				89763BEFD1DCE372B5B48B94 /* sequence.swift in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		8BFCD53C6F9D1A85E7D85233 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				D9F5F93CD37595609B0C2279 /* Box.swift in Sources */,
-				A2CDFAE4021F1D163BA236FA /* BoxType.swift in Sources */,
-				4D69CC736DCEBA9D931A7375 /* MutableBox.swift in Sources */,
-				166D24962AFC9D5A830E772B /* Pods-Box-dummy.m in Sources */,
+				ACFF6CAC5658DA1877B8D731 /* Pods-dummy.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		07797564254E8924C7F85FC0 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			name = "Pods-Runes";
-			target = 9BB2613722D443ED11D3A5D9 /* Pods-Runes */;
-			targetProxy = 01EDD0C5A85A65FA51B9D80A /* PBXContainerItemProxy */;
-		};
-		212775ACD9F7C2D86594DE95 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			name = "Pods-Runes";
-			target = 9BB2613722D443ED11D3A5D9 /* Pods-Runes */;
-			targetProxy = 0A4A1CF64B582D5EACEB7152 /* PBXContainerItemProxy */;
-		};
-		651BB8A4AF3A44AF1907DF3D /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			name = "Pods-Argo";
-			target = 57240683708E6473ABE39167 /* Pods-Argo */;
-			targetProxy = 77B773B0D7622CBF0D90D633 /* PBXContainerItemProxy */;
-		};
-		9E86ACB2806BA862A18AF2B4 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			name = "Pods-Box";
-			target = 40386F69ED8CE5A7AFBE0EBB /* Pods-Box */;
-			targetProxy = 2CB3BEBB04DFD223D40802B6 /* PBXContainerItemProxy */;
-		};
-		DE17AE0BAEEB17173B0CDD89 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			name = "Pods-Box";
-			target = 40386F69ED8CE5A7AFBE0EBB /* Pods-Box */;
-			targetProxy = 56C055895BD538AB71316B7A /* PBXContainerItemProxy */;
-		};
-		FB8FF3F613FDF886051499A8 /* PBXTargetDependency */ = {
+		EFC87E95D4A4F9734A1A1E87 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			name = "Pods-chromaprint-osx-static";
-			target = 9E7E7A377E6E1344F8E7E5E9 /* Pods-chromaprint-osx-static */;
-			targetProxy = 0D58405D62EF9F16E4A7B78B /* PBXContainerItemProxy */;
+			target = FE196D0D5C51B0D9C0DF828E /* Pods-chromaprint-osx-static */;
+			targetProxy = 17639530E226F17F698C4FFB /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
-		0C33BE18D19C62B00BE856CE /* Release */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = 83B0D475CBF20C4F0A6D9B69 /* Pods-Runes-Private.xcconfig */;
-			buildSettings = {
-				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 1;
-				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				DEFINES_MODULE = YES;
-				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 1;
-				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				FRAMEWORK_VERSION = A;
-				GCC_PREFIX_HEADER = "Target Support Files/Pods-Runes/Pods-Runes-prefix.pch";
-				INFOPLIST_FILE = "Target Support Files/Pods-Runes/Info.plist";
-				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks";
-				MACOSX_DEPLOYMENT_TARGET = 10.10;
-				MODULEMAP_FILE = "Target Support Files/Pods-Runes/Pods-Runes.modulemap";
-				MTL_ENABLE_DEBUG_INFO = NO;
-				PRODUCT_NAME = Runes;
-				SDKROOT = macosx;
-				SKIP_INSTALL = YES;
-				VERSIONING_SYSTEM = "apple-generic";
-				VERSION_INFO_PREFIX = "";
-			};
-			name = Release;
-		};
-		290644945A8D7A48AB457251 /* Release */ = {
+		17FA85A47624C51A3B3D288B /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -1196,9 +780,69 @@
 			};
 			name = Release;
 		};
-		3A38482CA27C4F6D09A8E9F4 /* Debug */ = {
+		4C915108CF0E4609BFBD94FE /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = ED695E9DB1C341EB835A1DE4 /* Pods-Argo-Private.xcconfig */;
+			baseConfigurationReference = FABE8A1C6F878187A16FE964 /* Pods.release.xcconfig */;
+			buildSettings = {
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				FRAMEWORK_VERSION = A;
+				INFOPLIST_FILE = "Target Support Files/Pods/Info.plist";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks";
+				MACOSX_DEPLOYMENT_TARGET = 10.10;
+				MODULEMAP_FILE = "Target Support Files/Pods/Pods.modulemap";
+				MTL_ENABLE_DEBUG_INFO = NO;
+				OTHER_LDFLAGS = "";
+				OTHER_LIBTOOLFLAGS = "";
+				PODS_ROOT = "$(SRCROOT)";
+				PRODUCT_NAME = Pods;
+				SDKROOT = macosx;
+				SKIP_INSTALL = YES;
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Release;
+		};
+		68D125CAB4EB2252800EA736 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 053FDA4533464A40E05D1D73 /* Pods-chromaprint-osx-static-Private.xcconfig */;
+			buildSettings = {
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				FRAMEWORK_VERSION = A;
+				GCC_PREFIX_HEADER = "Target Support Files/Pods-chromaprint-osx-static/Pods-chromaprint-osx-static-prefix.pch";
+				HEADER_SEARCH_PATHS = "";
+				INFOPLIST_FILE = "Target Support Files/Pods-chromaprint-osx-static/Info.plist";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks";
+				MACOSX_DEPLOYMENT_TARGET = 10.10;
+				MODULEMAP_FILE = "Target Support Files/Pods-chromaprint-osx-static/Pods-chromaprint-osx-static.modulemap";
+				MTL_ENABLE_DEBUG_INFO = NO;
+				PRODUCT_NAME = chromaprint_osx_static;
+				SDKROOT = macosx;
+				SKIP_INSTALL = YES;
+				USER_HEADER_SEARCH_PATHS = "${PODS_ROOT}/Headers ${PODS_ROOT}/BuildHeaders";
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Release;
+		};
+		AFE647133B2A1AC4E3873738 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 053FDA4533464A40E05D1D73 /* Pods-chromaprint-osx-static-Private.xcconfig */;
 			buildSettings = {
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
@@ -1208,23 +852,53 @@
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				FRAMEWORK_VERSION = A;
-				GCC_PREFIX_HEADER = "Target Support Files/Pods-Argo/Pods-Argo-prefix.pch";
-				INFOPLIST_FILE = "Target Support Files/Pods-Argo/Info.plist";
+				GCC_PREFIX_HEADER = "Target Support Files/Pods-chromaprint-osx-static/Pods-chromaprint-osx-static-prefix.pch";
+				HEADER_SEARCH_PATHS = "";
+				INFOPLIST_FILE = "Target Support Files/Pods-chromaprint-osx-static/Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 10.10;
-				MODULEMAP_FILE = "Target Support Files/Pods-Argo/Pods-Argo.modulemap";
+				MODULEMAP_FILE = "Target Support Files/Pods-chromaprint-osx-static/Pods-chromaprint-osx-static.modulemap";
 				MTL_ENABLE_DEBUG_INFO = YES;
-				PRODUCT_NAME = Argo;
+				PRODUCT_NAME = chromaprint_osx_static;
 				SDKROOT = macosx;
 				SKIP_INSTALL = YES;
-				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				USER_HEADER_SEARCH_PATHS = "${PODS_ROOT}/Headers ${PODS_ROOT}/BuildHeaders";
 				VERSIONING_SYSTEM = "apple-generic";
 				VERSION_INFO_PREFIX = "";
 			};
 			name = Debug;
 		};
-		631712B882450102D9A2E83E /* Debug */ = {
+		D480AE3A1CD141154D28F115 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = BBD2DC8340C3344573D50D73 /* Pods.debug.xcconfig */;
+			buildSettings = {
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				FRAMEWORK_VERSION = A;
+				INFOPLIST_FILE = "Target Support Files/Pods/Info.plist";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks";
+				MACOSX_DEPLOYMENT_TARGET = 10.10;
+				MODULEMAP_FILE = "Target Support Files/Pods/Pods.modulemap";
+				MTL_ENABLE_DEBUG_INFO = YES;
+				OTHER_LDFLAGS = "";
+				OTHER_LIBTOOLFLAGS = "";
+				PODS_ROOT = "$(SRCROOT)";
+				PRODUCT_NAME = Pods;
+				SDKROOT = macosx;
+				SKIP_INSTALL = YES;
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Debug;
+		};
+		E29D064ED6D04F53DEA897BA /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -1263,295 +937,37 @@
 			};
 			name = Debug;
 		};
-		763FD448E50EA04DF7D2C990 /* Release */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = 3406F6DF0E5F84C74E972D1B /* Pods-chromaprint-osx-static-Private.xcconfig */;
-			buildSettings = {
-				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 1;
-				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				DEFINES_MODULE = YES;
-				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 1;
-				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				FRAMEWORK_VERSION = A;
-				GCC_PREFIX_HEADER = "Target Support Files/Pods-chromaprint-osx-static/Pods-chromaprint-osx-static-prefix.pch";
-				HEADER_SEARCH_PATHS = "";
-				INFOPLIST_FILE = "Target Support Files/Pods-chromaprint-osx-static/Info.plist";
-				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks";
-				MACOSX_DEPLOYMENT_TARGET = 10.10;
-				MODULEMAP_FILE = "Target Support Files/Pods-chromaprint-osx-static/Pods-chromaprint-osx-static.modulemap";
-				MTL_ENABLE_DEBUG_INFO = NO;
-				PRODUCT_NAME = chromaprint_osx_static;
-				SDKROOT = macosx;
-				SKIP_INSTALL = YES;
-				USER_HEADER_SEARCH_PATHS = "${PODS_ROOT}/Headers";
-				VERSIONING_SYSTEM = "apple-generic";
-				VERSION_INFO_PREFIX = "";
-			};
-			name = Release;
-		};
-		8FFE06A7E7EE543B7F42EF42 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = 3406F6DF0E5F84C74E972D1B /* Pods-chromaprint-osx-static-Private.xcconfig */;
-			buildSettings = {
-				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 1;
-				DEFINES_MODULE = YES;
-				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 1;
-				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				FRAMEWORK_VERSION = A;
-				GCC_PREFIX_HEADER = "Target Support Files/Pods-chromaprint-osx-static/Pods-chromaprint-osx-static-prefix.pch";
-				HEADER_SEARCH_PATHS = "";
-				INFOPLIST_FILE = "Target Support Files/Pods-chromaprint-osx-static/Info.plist";
-				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks";
-				MACOSX_DEPLOYMENT_TARGET = 10.10;
-				MODULEMAP_FILE = "Target Support Files/Pods-chromaprint-osx-static/Pods-chromaprint-osx-static.modulemap";
-				MTL_ENABLE_DEBUG_INFO = YES;
-				PRODUCT_NAME = chromaprint_osx_static;
-				SDKROOT = macosx;
-				SKIP_INSTALL = YES;
-				USER_HEADER_SEARCH_PATHS = "${PODS_ROOT}/Headers";
-				VERSIONING_SYSTEM = "apple-generic";
-				VERSION_INFO_PREFIX = "";
-			};
-			name = Debug;
-		};
-		B24C62F203EC9EC69BA37778 /* Release */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = ED695E9DB1C341EB835A1DE4 /* Pods-Argo-Private.xcconfig */;
-			buildSettings = {
-				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 1;
-				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				DEFINES_MODULE = YES;
-				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 1;
-				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				FRAMEWORK_VERSION = A;
-				GCC_PREFIX_HEADER = "Target Support Files/Pods-Argo/Pods-Argo-prefix.pch";
-				INFOPLIST_FILE = "Target Support Files/Pods-Argo/Info.plist";
-				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks";
-				MACOSX_DEPLOYMENT_TARGET = 10.10;
-				MODULEMAP_FILE = "Target Support Files/Pods-Argo/Pods-Argo.modulemap";
-				MTL_ENABLE_DEBUG_INFO = NO;
-				PRODUCT_NAME = Argo;
-				SDKROOT = macosx;
-				SKIP_INSTALL = YES;
-				VERSIONING_SYSTEM = "apple-generic";
-				VERSION_INFO_PREFIX = "";
-			};
-			name = Release;
-		};
-		B261991C41062BB163BC06B9 /* Release */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = F911B465E17E6F654357FA49 /* Pods.release.xcconfig */;
-			buildSettings = {
-				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 1;
-				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				DEFINES_MODULE = YES;
-				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 1;
-				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				FRAMEWORK_VERSION = A;
-				INFOPLIST_FILE = "Target Support Files/Pods/Info.plist";
-				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks";
-				MACOSX_DEPLOYMENT_TARGET = 10.10;
-				MODULEMAP_FILE = "Target Support Files/Pods/Pods.modulemap";
-				MTL_ENABLE_DEBUG_INFO = NO;
-				OTHER_LDFLAGS = "";
-				OTHER_LIBTOOLFLAGS = "";
-				PODS_ROOT = "$(SRCROOT)";
-				PRODUCT_NAME = Pods;
-				SDKROOT = macosx;
-				SKIP_INSTALL = YES;
-				VERSIONING_SYSTEM = "apple-generic";
-				VERSION_INFO_PREFIX = "";
-			};
-			name = Release;
-		};
-		BB02FC8C664E41010CFE93F9 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = FFD771D7036FAEB3A2F7AA96 /* Pods-Box-Private.xcconfig */;
-			buildSettings = {
-				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 1;
-				DEFINES_MODULE = YES;
-				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 1;
-				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				FRAMEWORK_VERSION = A;
-				GCC_PREFIX_HEADER = "Target Support Files/Pods-Box/Pods-Box-prefix.pch";
-				INFOPLIST_FILE = "Target Support Files/Pods-Box/Info.plist";
-				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks";
-				MACOSX_DEPLOYMENT_TARGET = 10.10;
-				MODULEMAP_FILE = "Target Support Files/Pods-Box/Pods-Box.modulemap";
-				MTL_ENABLE_DEBUG_INFO = YES;
-				PRODUCT_NAME = Box;
-				SDKROOT = macosx;
-				SKIP_INSTALL = YES;
-				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
-				VERSIONING_SYSTEM = "apple-generic";
-				VERSION_INFO_PREFIX = "";
-			};
-			name = Debug;
-		};
-		C2A5D7A0BCF9E77EE9A4201C /* Debug */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = 401403CD006133CFDC80BADA /* Pods.debug.xcconfig */;
-			buildSettings = {
-				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 1;
-				DEFINES_MODULE = YES;
-				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 1;
-				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				FRAMEWORK_VERSION = A;
-				INFOPLIST_FILE = "Target Support Files/Pods/Info.plist";
-				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks";
-				MACOSX_DEPLOYMENT_TARGET = 10.10;
-				MODULEMAP_FILE = "Target Support Files/Pods/Pods.modulemap";
-				MTL_ENABLE_DEBUG_INFO = YES;
-				OTHER_LDFLAGS = "";
-				OTHER_LIBTOOLFLAGS = "";
-				PODS_ROOT = "$(SRCROOT)";
-				PRODUCT_NAME = Pods;
-				SDKROOT = macosx;
-				SKIP_INSTALL = YES;
-				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
-				VERSIONING_SYSTEM = "apple-generic";
-				VERSION_INFO_PREFIX = "";
-			};
-			name = Debug;
-		};
-		D06CCED98EA643A800D70744 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = 83B0D475CBF20C4F0A6D9B69 /* Pods-Runes-Private.xcconfig */;
-			buildSettings = {
-				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 1;
-				DEFINES_MODULE = YES;
-				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 1;
-				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				FRAMEWORK_VERSION = A;
-				GCC_PREFIX_HEADER = "Target Support Files/Pods-Runes/Pods-Runes-prefix.pch";
-				INFOPLIST_FILE = "Target Support Files/Pods-Runes/Info.plist";
-				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks";
-				MACOSX_DEPLOYMENT_TARGET = 10.10;
-				MODULEMAP_FILE = "Target Support Files/Pods-Runes/Pods-Runes.modulemap";
-				MTL_ENABLE_DEBUG_INFO = YES;
-				PRODUCT_NAME = Runes;
-				SDKROOT = macosx;
-				SKIP_INSTALL = YES;
-				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
-				VERSIONING_SYSTEM = "apple-generic";
-				VERSION_INFO_PREFIX = "";
-			};
-			name = Debug;
-		};
-		D483CDD76D478260FC8102B4 /* Release */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = FFD771D7036FAEB3A2F7AA96 /* Pods-Box-Private.xcconfig */;
-			buildSettings = {
-				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 1;
-				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				DEFINES_MODULE = YES;
-				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 1;
-				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				FRAMEWORK_VERSION = A;
-				GCC_PREFIX_HEADER = "Target Support Files/Pods-Box/Pods-Box-prefix.pch";
-				INFOPLIST_FILE = "Target Support Files/Pods-Box/Info.plist";
-				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks";
-				MACOSX_DEPLOYMENT_TARGET = 10.10;
-				MODULEMAP_FILE = "Target Support Files/Pods-Box/Pods-Box.modulemap";
-				MTL_ENABLE_DEBUG_INFO = NO;
-				PRODUCT_NAME = Box;
-				SDKROOT = macosx;
-				SKIP_INSTALL = YES;
-				VERSIONING_SYSTEM = "apple-generic";
-				VERSION_INFO_PREFIX = "";
-			};
-			name = Release;
-		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		0A6BF4AD732A4A92A06B396E /* Build configuration list for PBXNativeTarget "Pods-Runes" */ = {
+		16ED9F478DD52790376271B5 /* Build configuration list for PBXProject "Pods" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				D06CCED98EA643A800D70744 /* Debug */,
-				0C33BE18D19C62B00BE856CE /* Release */,
+				E29D064ED6D04F53DEA897BA /* Debug */,
+				17FA85A47624C51A3B3D288B /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		2ECE7FAACE9E23BBA6DFC197 /* Build configuration list for PBXNativeTarget "Pods" */ = {
+		B0145C067D58FD5A8ADB1ACF /* Build configuration list for PBXNativeTarget "Pods" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				C2A5D7A0BCF9E77EE9A4201C /* Debug */,
-				B261991C41062BB163BC06B9 /* Release */,
+				D480AE3A1CD141154D28F115 /* Debug */,
+				4C915108CF0E4609BFBD94FE /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		2F571604CFA82058ECBA2158 /* Build configuration list for PBXNativeTarget "Pods-Argo" */ = {
+		DB8610D1FBDEC7EA71D55D86 /* Build configuration list for PBXNativeTarget "Pods-chromaprint-osx-static" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				3A38482CA27C4F6D09A8E9F4 /* Debug */,
-				B24C62F203EC9EC69BA37778 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		7DDF2660094E92CCFF734170 /* Build configuration list for PBXNativeTarget "Pods-Box" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				BB02FC8C664E41010CFE93F9 /* Debug */,
-				D483CDD76D478260FC8102B4 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		82C1608A3F946F29EC5BA396 /* Build configuration list for PBXProject "Pods" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				631712B882450102D9A2E83E /* Debug */,
-				290644945A8D7A48AB457251 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		FEFF9BA58D945696A17ACA7E /* Build configuration list for PBXNativeTarget "Pods-chromaprint-osx-static" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				8FFE06A7E7EE543B7F42EF42 /* Debug */,
-				763FD448E50EA04DF7D2C990 /* Release */,
+				AFE647133B2A1AC4E3873738 /* Debug */,
+				68D125CAB4EB2252800EA736 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
-	rootObject = 31115CB8B511FED6F42ACD17 /* Project object */;
+	rootObject = 5CAAC5EA8B25D88E90BC9A52 /* Project object */;
 }

@@ -7,8 +7,6 @@
 //
 
 import Cocoa
-import Argo
-import Runes
 
 class AcoustIDWebService: NSObject {
 
@@ -20,14 +18,18 @@ class AcoustIDWebService: NSObject {
 
         if let
             acoustIdURL = NSURL(string: path),
-            acoustiData = NSData(contentsOfURL: acoustIdURL) where acoustiData.length > 0,
-            let acoustiJSON = NSJSONSerialization.JSONObjectWithData(acoustiData, options: .MutableContainers, error: nil) as? NSDictionary
-        {
-                    if let status = acoustiJSON["status"] as? NSString where status.isEqualToString("ok"),
+            acoustiData = NSData(contentsOfURL: acoustIdURL) where acoustiData.length > 0 {
+                do {
+                    if let acoustiJSON = try NSJSONSerialization.JSONObjectWithData(acoustiData, options: .MutableContainers) as? NSDictionary,
+                        let status = acoustiJSON["status"] as? NSString where status.isEqualToString("ok"),
                         let results = acoustiJSON["results"] as? NSArray where results.count != 0,
                         let theElement = results.objectAtIndex(0) as? NSDictionary {
                         return theElement
                     }
+                } catch {
+                    print("oh arse")
+                    return nil
+                }
                 }
         
         return nil

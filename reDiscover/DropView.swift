@@ -13,7 +13,7 @@ protocol DropViewDelegate {
     func dropViewDidReceiveURL(theURL: NSURL);
 }
 
-class DropView : NSView, NSDraggingDestination {
+class DropView : NSView {//, NSDraggingDestination {
     
     var delegate: DropViewDelegate?
     

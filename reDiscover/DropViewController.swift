@@ -35,13 +35,13 @@ class DropViewController : NSViewController, DropViewDelegate {
     }
    
     override func prepareForSegue(segue: NSStoryboardSegue, sender: AnyObject!) {
-        println("Drop View Controller preparing for segue")
+        print("Drop View Controller preparing for segue")
 
 //        let mainVC = segue.destinationController as MainViewController
         let mainVC = segue.destinationController as! TGMainViewController
 
         if droppedURL == nil {
-            println("Error: no song pool")
+            print("Error: no song pool")
             return
         }
         mainVC.theURL = droppedURL

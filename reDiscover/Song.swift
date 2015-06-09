@@ -44,3 +44,48 @@ class Song : NSObject,TGSong {
     //        println("copy")
     //    }
 }
+
+extension Song {
+
+    static func songWithChanges(theSong: TGSong, changes: [String : AnyObject]) -> Song {
+        var songId = theSong.songID
+        var metadata = theSong.metadata
+        var urlString = theSong.urlString
+        var sweetspots = theSong.sweetSpots
+        var fingerprint = theSong.fingerPrint
+        var selectedSS = theSong.selectedSweetSpot
+        var releases = theSong.songReleases
+        var artId = theSong.artID
+        var uuid = theSong.UUId
+        var relid = theSong.RelId
+        
+        for (change, obj) in changes {
+            switch change {
+            case "songId":
+                songId = obj as! SongIDProtocol
+            case "metadata":
+                metadata = obj as? SongCommonMetaData
+            case "urlString":
+                urlString = obj as? String
+            case "sweetSpots":
+                sweetspots = obj as? [SweetSpot]
+            case "fingerPrint":
+                fingerprint = obj as? String
+            case "selectedSS":
+                selectedSS = obj as! SweetSpot
+            case "releases":
+                releases = obj as? NSData
+            case "artId":
+                artId = obj as? String
+            case "UUId":
+                uuid = obj as? String
+            case "RelId":
+                relid = obj as? String
+            default:
+                print("Unknown value in songWithChanges")
+            }
+        }
+        
+        return Song(songId: songId, metadata: metadata, urlString: urlString, sweetSpots: sweetspots, fingerPrint: fingerprint, selectedSS: selectedSS, releases: releases, artId: artId, UUId: uuid, RelId: relid)
+    }
+}

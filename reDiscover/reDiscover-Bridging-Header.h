@@ -19,3 +19,6 @@
 //#import "NSImage+TGHashId.h"
 
 #import <CommonCrypto/CommonCrypto.h>
+
+// Used by TimelinePopover
+#import "TGTimelineSliderCell.h"

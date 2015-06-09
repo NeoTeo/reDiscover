@@ -18,7 +18,7 @@ extension NSImage {
             
             CC_MD5(imageData.bytes, dataLen, result)
             
-            var hash = NSMutableString()
+            let hash = NSMutableString()
             for i in 0..<digestLen {
                 hash.appendFormat("%02x", result[i])
             }

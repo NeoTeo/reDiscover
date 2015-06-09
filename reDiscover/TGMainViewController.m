@@ -390,6 +390,7 @@
     TGLog(TGLOG_REFAC, @"main view controller coords %@",NSStringFromPoint(mPos));
 
     //[_songGridController lmbDownAtMousePos:mPos];
+    //FIXME:
     //REFAC Tmp bodge to avoid going through the grid controller to show the timeline.
     TGSongTimelineViewController* tmp = [_songGridController songTimelineController];
     NSSize butDims = NSMakeSize(30, 30);

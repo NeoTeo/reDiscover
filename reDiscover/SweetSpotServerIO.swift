@@ -56,12 +56,17 @@ class SweetSpotServerIO: NSObject {
             uploadedSweetSpotsMOC = NSManagedObjectContext(concurrencyType: .MainQueueConcurrencyType)
             uploadedSweetSpotsMOC?.persistentStoreCoordinator = NSPersistentStoreCoordinator(managedObjectModel: mom)
             
-            // Build the URL where to store the data.
-            let documentsDirectory = NSFileManager.defaultManager().URLForDirectory(.DocumentDirectory, inDomain: .UserDomainMask, appropriateForURL: nil, create: true, error: &error)?.URLByAppendingPathComponent("uploadedSS.xml")
+            do {
+                // Build the URL where to store the data.
+                let documentsDirectory = try NSFileManager.defaultManager().URLForDirectory(.DocumentDirectory, inDomain: .UserDomainMask, appropriateForURL: nil, create: true).URLByAppendingPathComponent("uploadedSS.xml")
 
-            uploadedSweetSpotsMOC?.persistentStoreCoordinator?.addPersistentStoreWithType(NSXMLStoreType,configuration: nil,URL: documentsDirectory, options: nil, error: &error)
+
+                try uploadedSweetSpotsMOC?.persistentStoreCoordinator?.addPersistentStoreWithType(NSXMLStoreType,configuration: nil,URL: documentsDirectory, options: nil)
+            } catch let error1 as NSError {
+                error = error1
+            }
             if error != nil {
-                println("SweetSpotServerIO init error: \(error)")
+                print("SweetSpotServerIO init error: \(error)")
             }
         }
     }
@@ -94,19 +99,24 @@ class SweetSpotServerIO: NSObject {
 */
   
         uploadedSweetSpotsMOC?.performBlockAndWait(){
-            if let fetchedArray = self.uploadedSweetSpotsMOC?.executeFetchRequest(fetchRequest, error: &error) {
+            do {
+                let fetchedArray = try self.uploadedSweetSpotsMOC?.executeFetchRequest(fetchRequest)
                 if error != nil {
-                    println(error?.localizedDescription ?? "Unknown error.")
+                    print(error?.localizedDescription ?? "Unknown error.")
                     return
                 }
                 
                 for ssData in fetchedArray as! [UploadedSSData] {
                     //let ssData = ss as! UploadedSSData
                     self.uploadedSweetSpots[ssData.songUUID] = ssData
-                    println("The ssData songUUID is \(ssData.songUUID) and its sweetspots \(ssData.sweetSpots)")
+                    print("The ssData songUUID is \(ssData.songUUID) and its sweetspots \(ssData.sweetSpots)")
                 }
                 
-                println("initUploadedSweetSpots done. Loaded \(self.uploadedSweetSpots.count)")
+                print("initUploadedSweetSpots done. Loaded \(self.uploadedSweetSpots.count)")
+            } catch var error1 as NSError {
+                error = error1
+            } catch {
+                fatalError()
             }
         }
   
@@ -115,14 +125,14 @@ class SweetSpotServerIO: NSObject {
     
     func storeUploadedSweetSpotsDictionary() {
         if uploadedSweetSpotsMOC == nil {
-            println("ERROR: uploaded sweet spots managed object context is nil.")
+            print("ERROR: uploaded sweet spots managed object context is nil.")
             return
         }
         
         if uploadedSweetSpotsMOC!.hasChanges {
             uploadedSweetSpotsMOC!.performBlockAndWait() {
                 var error: NSError?
-                assert(self.uploadedSweetSpotsMOC!.save(&error), "Error saving uploaded sweet spots MOC. \(error)")
+                //assert(self.uploadedSweetSpotsMOC!.save(), "Error saving uploaded sweet spots MOC. \(error)")
             }
         }
     }
@@ -143,55 +153,54 @@ class SweetSpotServerIO: NSObject {
         // First get the song's uuid
         let songUUID = delegate?.UUIDStringForSongID(songID)
         if songUUID == nil {
-            println("uploadSweetSpotsForSongID ERROR: song has no UUID")
+            print("uploadSweetSpotsForSongID ERROR: song has no UUID")
             return false
         }
         if let sweetSpots = delegate?.sweetSpotsForSongID(songID) as NSArray? {
             for sweetSpot in sweetSpots {
                 if sweetSpotHasBeenUploaded(sweetSpot as! Double, theSongID: songID) {
-                    println("Has been uploaded")
+                    print("Has been uploaded")
                     continue
                 }
 
                 let requestIDURL = NSURL(string: "http://\(hostNameAndPort)/submit?songUUID=\(songUUID!.utf8)&songSweetSpot=\(sweetSpot as! Double)")
                 if requestIDURL == nil { return false }
                 
-                println("this is a sweetSpot upload url \(requestIDURL!)")
+                print("this is a sweetSpot upload url \(requestIDURL!)")
                 
                 let requestData = NSData(contentsOfURL: requestIDURL!)
                 if requestData == nil {
-                    println("ERROR: No data returned from SweetSpotServer.")
+                    print("ERROR: No data returned from SweetSpotServer.")
                     return false
                 }
-                
-                let requestJSON = NSJSONSerialization.JSONObjectWithData(requestData!, options: NSJSONReadingOptions.MutableContainers , error: nil) as! NSDictionary?
-                
-                if requestJSON == nil {
-                    println("Error serializing JSON data.")
-                    return false
-                }
-                
-                if let status = requestJSON!.objectForKey("status") as! String? {
-                    if (status == "ok") != nil {
-                        println("Upload to SweetSpotServer returned OK")
-                        
-                        var uploadedSS = uploadedSweetSpots[songUUID!]
-                        if uploadedSS == nil {
-                            // The song has no existing sweetspots so we create a new set with the sweet spot.
-                            uploadedSS = UploadedSSData.insertItemWithSongUUIDString(songUUID!, inManagedObjectContext: uploadedSweetSpotsMOC) as UploadedSSData
-                            uploadedSS?.sweetSpots = NSArray(object: sweetSpot) as! [AnyObject]
-                        } else {
-                            // The song already has a set of sweetspots so we need to add to it.
-//                            var existingSS = uploadedSS!.sweetSpots.mutableCopy() as NSMutableArray
-                            var existingSS = NSMutableArray(array: uploadedSS!.sweetSpots)
-                            existingSS.addObject(sweetSpot)
-                            uploadedSS!.sweetSpots = existingSS.copy() as! NSArray as! [AnyObject]
+                do {
+                    let requestJSON = try NSJSONSerialization.JSONObjectWithData(requestData!, options: NSJSONReadingOptions.MutableContainers ) as! NSDictionary
+                    
+                    if let status = requestJSON.objectForKey("status") as! String? {
+                        if (status == "ok") != nil {
+                            print("Upload to SweetSpotServer returned OK")
+                            
+                            var uploadedSS = uploadedSweetSpots[songUUID!]
+                            if uploadedSS == nil {
+                                // The song has no existing sweetspots so we create a new set with the sweet spot.
+                                uploadedSS = UploadedSSData.insertItemWithSongUUIDString(songUUID!, inManagedObjectContext: uploadedSweetSpotsMOC) as UploadedSSData
+                                uploadedSS?.sweetSpots = NSArray(object: sweetSpot) as [AnyObject]
+                            } else {
+                                // The song already has a set of sweetspots so we need to add to it.
+    //                            var existingSS = uploadedSS!.sweetSpots.mutableCopy() as NSMutableArray
+                                var existingSS = NSMutableArray(array: uploadedSS!.sweetSpots)
+                                existingSS.addObject(sweetSpot)
+                                uploadedSS!.sweetSpots = existingSS.copy() as! NSArray as [AnyObject]
+                            }
+                            
+                            // Add the new data to the dictionary
+                            uploadedSweetSpots[songUUID!] = uploadedSS!
+                            
                         }
-                        
-                        // Add the new data to the dictionary
-                        uploadedSweetSpots[songUUID!] = uploadedSS!
-                        
                     }
+                } catch {
+                    print("oh arses")
+                    return false
                 }
                 
             }
@@ -206,7 +215,7 @@ class SweetSpotServerIO: NSObject {
     func requestSweetSpotsForSongID(songID: SongIDProtocol) -> NSArray? {
         let songUUID = delegate?.UUIDStringForSongID(songID)
         if songUUID == nil {
-            println("uploadSweetSpotsForSongID ERROR: song has no UUID")
+            print("uploadSweetSpotsForSongID ERROR: song has no UUID")
             return nil
         }
         
@@ -214,51 +223,49 @@ class SweetSpotServerIO: NSObject {
         if theURL == nil { return nil }
         
         let theRequest = NSURLRequest(URL: theURL!)
-        
         NSURLConnection.sendAsynchronousRequest(theRequest, queue: opQueue!, completionHandler: {
-                (response: NSURLResponse!, data: NSData!, error: NSError!) -> Void in
+                (response: NSURLResponse?, data: NSData?, error: NSError?) -> Void in
             if data != nil {
-                
-                let requestJSON = NSJSONSerialization.JSONObjectWithData(data!, options: NSJSONReadingOptions.MutableContainers , error: nil) as! NSDictionary?
-                
-                if requestJSON == nil {
-                    println("Error serializing JSON data.")
-                    return
-                }
-                
-                if let status = requestJSON!.objectForKey("status") as! String? {
-                    if (status == "ok") == nil { return }
-                        
-                    let result: AnyObject? = requestJSON!.objectForKey("result")
-                    if result == nil { return }
+                do {
+                    let requestJSON = try NSJSONSerialization.JSONObjectWithData(data!, options: NSJSONReadingOptions.MutableContainers ) as! NSDictionary
                     
-                    // if result == nil || result! is NSDictionary) == false { return }
-                    // Use the line above to avoid the line below.
-                    if result! is NSDictionary {
-                        let resultDict = result as! NSDictionary
-                        let serverSweetSpots = resultDict["sweetspots"] as! NSArray
-                        if serverSweetSpots.count > 0 {
-                            println("the serverSweetSpots has \(serverSweetSpots.count) elements")
-                            println("the song id is \(songID )")
+                    if let status = requestJSON.objectForKey("status") as! String? {
+                        if (status == "ok") == nil { return }
                             
-                            // If the song already has sweet spots add the server's sweet spots to them.
-                            if let songSS = self.delegate?.sweetSpotsForSongID(songID) {
-                                let mutableSS = NSMutableArray(array: songSS)
-                            
-                                for ss in serverSweetSpots {
-                                    mutableSS.addObject(ss)
-                                }
-                            
-                                self.delegate?.replaceSweetSpots(mutableSS as NSArray as! [AnyObject], forSongID: songID)
+                        let result: AnyObject? = requestJSON.objectForKey("result")
+                        if result == nil { return }
+                        
+                        // if result == nil || result! is NSDictionary) == false { return }
+                        // Use the line above to avoid the line below.
+                        if result! is NSDictionary {
+                            let resultDict = result as! NSDictionary
+                            let serverSweetSpots = resultDict["sweetspots"] as! NSArray
+                            if serverSweetSpots.count > 0 {
+                                print("the serverSweetSpots has \(serverSweetSpots.count) elements")
+                                print("the song id is \(songID )")
                                 
-                            } else {
-                                self.delegate?.replaceSweetSpots(serverSweetSpots as! [AnyObject], forSongID: songID)
+                                // If the song already has sweet spots add the server's sweet spots to them.
+                                if let songSS = self.delegate?.sweetSpotsForSongID(songID) {
+                                    let mutableSS = NSMutableArray(array: songSS)
+                                
+                                    for ss in serverSweetSpots {
+                                        mutableSS.addObject(ss)
+                                    }
+                                
+                                    self.delegate?.replaceSweetSpots(mutableSS as NSArray as! [AnyObject], forSongID: songID)
+                                    
+                                } else {
+                                    self.delegate?.replaceSweetSpots(serverSweetSpots as! [AnyObject], forSongID: songID)
+                                }
+                                
+                                // Set the first sweet spot to be the active one.
+    //                            self.delegate?.setActiveSweetSpotIndex(0, forSongID: songID)
                             }
-                            
-                            // Set the first sweet spot to be the active one.
-//                            self.delegate?.setActiveSweetSpotIndex(0, forSongID: songID)
                         }
                     }
+                } catch {
+                    print("JSONSerialization failed \(error)")
+                    return
                 }
             }
         })

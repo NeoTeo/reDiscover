@@ -49,7 +49,7 @@ different ways:
                 
             var words = ["scan","album","art","cover","front","fold"]
                 
-            if let albumName = dirURL.filePathURL?.absoluteString?.lastPathComponent.stringByRemovingPercentEncoding {
+            if let albumName = dirURL.filePathURL?.absoluteString.lastPathComponent.stringByRemovingPercentEncoding {
                 words.append(albumName)
             }
             
@@ -70,16 +70,21 @@ different ways:
         // Construct a parens wrapped "|" delimited string from the matchWords.
         // This gives "Expression too complex" error. Perhaps a later version of Swift?...
         //var rex = matchWords.reduce("(") { $0 == "(" ? $0 + $1 : $0 + "|" + $1 } + ")"
-        var rex = matchWords.reduce("(") { (current, new) in
+        let rex = matchWords.reduce("(") { (current, new) in
             if current == "("   { return current + new }
             else                { return current + "|" + new }
         } + ")"
         
         // Return a lambda that returns true if its input matches any of the matchWords.
         return { url in
-            if let word = url.filePathURL?.absoluteString?.lastPathComponent.stringByRemovingPercentEncoding {
-                let regEx = NSRegularExpression(pattern: rex, options: .CaseInsensitive, error: nil)
-                let matchRange = regEx?.rangeOfFirstMatchInString(word, options: .ReportCompletion, range: NSMakeRange(0, count(word)))
+            if let word = url.filePathURL?.absoluteString.lastPathComponent.stringByRemovingPercentEncoding {
+                let regEx: NSRegularExpression?
+                do {
+                    regEx = try NSRegularExpression(pattern: rex, options: .CaseInsensitive)
+                } catch _ {
+                    regEx = nil
+                }
+                let matchRange = regEx?.rangeOfFirstMatchInString(word, options: .ReportCompletion, range: NSMakeRange(0, word.characters.count))
                 
                 return matchRange?.location != NSNotFound
             }

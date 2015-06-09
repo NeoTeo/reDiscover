@@ -21,6 +21,6 @@ class TGAppDelegate: NSObject, NSApplicationDelegate {
     }
     
     func applicationDidBecomeActive(notification: NSNotification) {
-        println("Active application!")
+        print("Active application!")
     }
 }

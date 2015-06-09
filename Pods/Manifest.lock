@@ -1,22 +1,13 @@
 PODS:
-  - Argo (1.0.1):
-    - Box (~> 1.2)
-    - Runes (~> 1.2)
-  - Box (1.2.0)
   - chromaprint-osx-static (1.0)
   - ffmpeg-osx-static (1.0)
-  - Runes (1.2.2)
 
 DEPENDENCIES:
-  - Argo
   - chromaprint-osx-static (= 1.0)
   - ffmpeg-osx-static (= 1.0)
 
 SPEC CHECKSUMS:
-  Argo: 0adbc4433ad29e202875355610d1a03a74928155
-  Box: 3345df1dee5c8cd639a663e368427c51f931d095
   chromaprint-osx-static: 6fcbea4b7a7a0585a639cbe1dae147d7e5fd4f63
   ffmpeg-osx-static: 63ae5a75728589a6eeff44583fd68182f1bb7f6a
-  Runes: 90c9bba2be981c3777ac490aea0fc0c1acff0f97
 
-COCOAPODS: 0.37.1
+COCOAPODS: 0.37.2

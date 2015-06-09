@@ -43,7 +43,7 @@ extension Album {
         if let aId = Album.albumIdForSong(song) {
             return Album(albumId: aId, songIds: oldAlbum.songIds.setByAddingObject(song.songID))
         }
-        println("Album.albumWithAddedSong returned the old album without changes.")
+        print("Album.albumWithAddedSong returned the old album without changes.")
         return oldAlbum
     }
 }

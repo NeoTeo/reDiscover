@@ -16,7 +16,7 @@ struct SongArtCache {
     
     
     init() {
-        var defaultCache = HashToImageDict()
+        let defaultCache = HashToImageDict()
         coverArtById = defaultCache
     }
     

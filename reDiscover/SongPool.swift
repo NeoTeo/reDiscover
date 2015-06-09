@@ -50,7 +50,7 @@ class SongPool : NSObject {
             
             //MARK: At this point we want to check if our core data store has info on the song.
             //println("songURL \(songURL)")
-            let songString = songURL.absoluteString!
+            let songString = songURL.absoluteString
             let songId = SongID(string: songString)
             let songCommonMetaData = SongCommonMetaData(title: nil, album: nil, artist: nil, year: 1071, genre: nil)
             let newSong = Song(songId: songId, metadata: songCommonMetaData, urlString: songString, sweetSpots: nil, fingerPrint: nil, selectedSS: 0, releases: nil, artId: nil, UUId: nil, RelId: nil)
@@ -100,7 +100,7 @@ static func addSong(theSong: TGSong) {
                 let genMD = SongGeneratedMetaData(UUId: song.UUId, URLString: song.urlString!)
                 let theMetaData = SongMetaData(common: cmd, genMetaData: genMD)
 
-                println("I gots: \(theMetaData.commonMetaData.title)")
+                print("I gots: \(theMetaData.commonMetaData.title)")
             }
         }
     }

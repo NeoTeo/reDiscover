@@ -185,30 +185,6 @@
     return frontLayer;
 }
 
-//- (CALayer*)makeLayerWithImage:(NSImage*)theImage atRect:(CGRect)cellRect {
-//    
-//    CALayer* frontLayer = [CALayer layer];
-//    [frontLayer setContents:theImage];
-//    [frontLayer setBounds:CGRectMake(0, 0, cellRect.size.width, cellRect.size.height)];
-//    [frontLayer setAnchorPoint:CGPointMake(0.5, 0.5)];
-//    CGPoint aPoint = CGPointMake(CGRectGetMidX(cellRect), CGRectGetMidY(cellRect));
-//    [frontLayer setPosition:aPoint];
-//    
-//    return frontLayer;
-//}
-
-/*
-- (void)loadGenreToColourMap {
-        NSString *errorDesc = nil;
-        NSPropertyListFormat format;
-        NSString *plistPath = [[NSBundle mainBundle] pathForResource:@"GenreColours" ofType:@"plist"];
-        
-        // This loads the contents into the plistXML field
-        NSData *plistXML = [[NSFileManager defaultManager] contentsAtPath:plistPath];
-        // And convert the static property list into property list objects
-        _genreToColourDictionary = (NSDictionary *)[NSPropertyListSerialization propertyListFromData:plistXML mutabilityOption:NSPropertyListMutableContainersAndLeaves format:&format errorDescription:&errorDesc];
-}
-*/
 
 //FIX:
 // MARK: This can never work! Is it even called?
@@ -550,14 +526,6 @@ static NSInteger const kUndefinedID =  -1;
     }
 }
 
-//- (void)zoomAnimation:(NSView *)theView {
-//    
-//}
-//
-//
-//- (void)coverPushAnimation:(TGGridCell *)theCell withImage:(NSImage *)theImage {
-//    
-//}
 
 - (void)coverFadeInAnimation:(TGGridCell *)theCell withImage:(NSImage *)theImage {
     
@@ -642,379 +610,6 @@ static NSInteger const kUndefinedID =  -1;
 //    });
 }
 
-//// Test for cover flip animation.
-//- (void)coverFlipAnimationForCell:(TGGridCell *)theCell withImage:(NSImage *)theImage {
-//    
-//    NSInteger row, col;
-//    [_songCellMatrix getRow:&row column:&col ofCell:theCell];
-//    CGRect cellRect = [_songCellMatrix coverFrameAtRow:row column:col];
-//    
-//    NSImageView *frontView = [[NSImageView alloc] initWithFrame:cellRect];
-//    [frontView setImage:[theCell image]];
-//    [frontView setWantsLayer:YES];
-//    [frontView setCanDrawSubviewsIntoLayer:YES];
-//    [frontView setLayerContentsRedrawPolicy:NSViewLayerContentsRedrawOnSetNeedsDisplay];
-//    
-//    // Breaks if not done on main thread.
-//    [[[self songGridScrollView] documentView] addSubview:frontView];
-//    
-//    // We want the animation to occur from the center of the view layer.
-//    // The layer's anchor point is defined in unit points (0 to 1) and should default to its center at (0.5,0.5) but doesn't.
-//    // The layer position coordinates are relative to the anchorpoint of the layer in the coordinates of its superview.
-//    
-//    /*
-//    +Super view+––––––––––+
-//    |                     |
-//    |       +Layer+–+     |
-//    |       |       |     |
-//    +––––––––-–>*   |     |
-//    | x pos |   ^   |     |
-//    |       +–––+–––+     |
-//    |           |         |
-//    |           |y pos    |
-//    |           |         |
-//    +–––––––––––+–––––––-–+
-//    */
-//    
-//    [frontView.layer setAnchorPoint:CGPointMake(0.5, 0.5)];
-//    
-//    CGPoint center = CGPointMake(CGRectGetMidX(frontView.frame), CGRectGetMidY(frontView.frame));
-//    
-//    // Disable implicit animations whilst we set the visible view's initial position.
-//    [CATransaction begin];
-//    [CATransaction setValue:(id)kCFBooleanTrue forKey:kCATransactionDisableActions];
-// 
-//    // The layer's position is relative to the anchor point.
-//    // Since we've moved the layer's anchor point to the middle of its bounds it should be set to the center to avoid moving.
-//    [frontView.layer setPosition:center];
-//    
-//    [CATransaction commit];
-//    
-//    theCell.image = nil;
-//    
-//    
-//    // Set up the back side of the cover.
-//    NSImageView *backView= [[NSImageView alloc] initWithFrame:cellRect];
-//    [backView setImage:theImage];
-//    [backView setWantsLayer:YES];
-//    [backView setCanDrawSubviewsIntoLayer:YES];
-//    [backView setHidden:YES];
-//    
-//    [[[self songGridScrollView] documentView] addSubview:backView];
-//    
-//    // We want the animation to occur from the center of the view.
-//    [backView.layer setAnchorPoint:CGPointMake(0.5, 0.5)];
-//    center = CGPointMake(CGRectGetMidX(backView.frame), CGRectGetMidY(backView.frame));
-//    [backView.layer setPosition:center];
-//    
-//    // Do this as the first thing.
-//    CATransform3D perspectiveTransform = CATransform3DIdentity;
-//    perspectiveTransform.m34 = 1.0/-500;
-//    backView.layer.transform = perspectiveTransform;
-//    
-//    // Set the backview layer's transform to the position we want to end at *after* the animation is done and the presentation layer removed.
-//    // This flips the layer on the y axis (upside down)
-//    backView.layer.transform = CATransform3DScale(backView.layer.transform, 1, -1, 1);
-//    
-//    // Rotate it pi radians so the back is facing the projection plane. It should look right way up.
-//    backView.layer.transform = CATransform3DRotate(backView.layer.transform, M_PI, 1, 0, 0);
-//    
-//    
-//    NSMutableArray *sinVals = [[NSMutableArray alloc]initWithCapacity:10];
-//    
-//    int count = 12;
-//    CGFloat frac = M_PI/count;
-//    for (int i=0; i<count; i++) {
-//        [sinVals addObject:[NSNumber numberWithFloat:-i*frac]];
-//    }
-//    
-//    NSArray *frontVals = [sinVals subarrayWithRange:NSMakeRange(0, count/2+1)];
-//    [NSAnimationContext runAnimationGroup:^(NSAnimationContext *context){
-//        
-//        if (frontView.layer == nil) {
-//            return ;
-//        }
-//        
-//        
-//        CATransform3D tranny = CATransform3DIdentity;
-//        tranny.m34 = 1.0/-500;//eyePosition;
-//        
-//        // Apply the transform to the view layer.
-//        frontView.layer.transform = tranny;
-//        
-//        CAKeyframeAnimation *flipAnimation = [CAKeyframeAnimation animationWithKeyPath:@"transform.rotation.x"];
-//        
-//        flipAnimation.values = frontVals;
-//        
-//        flipAnimation.duration = 2;
-//        flipAnimation.removedOnCompletion = YES;
-//        
-//        // Ensure that the model layer is in the same final state as the presentation layer to avoid glitching.
-//        // This needs to happen before the animation is added so that the implicit animation is overridden by the explicit one.
-//        frontView.layer.transform = CATransform3DRotate(tranny, M_PI_2, 1.0f, 0.0f, 0.0f);
-//        
-//        // Add the explicit animation.
-//        [frontView.layer addAnimation:flipAnimation forKey:@"flip"];
-//        
-//    }completionHandler:^{
-//        
-//        [frontView removeFromSuperviewWithoutNeedingDisplay];
-//        
-//        [NSAnimationContext runAnimationGroup:^(NSAnimationContext *context){
-//            
-//            if (backView.layer == nil) {
-//                return ;
-//            }
-//            
-//            // We are about to see the back view so make sure it's not hidden.
-//            [backView setHidden:NO];
-//            
-////            NSArray *backVals = [sinVals subarrayWithRange:NSMakeRange(count/2, count/2)];
-//            
-//            // reverse the front vals so the front layer can tip back and reveal itself.
-//            NSMutableArray *testVals = [NSMutableArray arrayWithCapacity:[frontVals count]];
-//            NSEnumerator *enumerator = [frontVals reverseObjectEnumerator];
-//            for (id element in enumerator) {
-//                [testVals addObject:element];
-//            }
-//            
-//            CAKeyframeAnimation *flopAnimation = [CAKeyframeAnimation animationWithKeyPath:@"transform.rotation.x"];
-//            
-//            flopAnimation.values = testVals;
-//            
-//            flopAnimation.duration = 2;
-//            
-//            [backView.layer addAnimation:flopAnimation forKey:@"flop"];
-//            
-//        } completionHandler:^{
-//            
-//            [backView removeFromSuperviewWithoutNeedingDisplay];
-//            
-//            // Remove newURLImage without needing display because we have to call setNeedsDisplay on the whole matrix anyway.
-//            [theCell setImage:theImage];
-//            
-//            [_songCellMatrix setNeedsDisplay];
-//            
-//        }];
-//    }];
-//}
-
-
-//- (void)flipAnimation:(NSView *)theView {
-//    
-//    if (theView.layer != nil) {
-//        
-//        CATransform3D tranny = CATransform3DIdentity;
-//        tranny.m34 = 1.0/-500;//eyePosition;
-////        perspective = CATransform3DRotate(perspective, 45.0f * M_PI / 180.0f, 0, 1, 0);
-//        
-//        // Apply the transform to the view layer.
-//        theView.layer.transform = tranny;
-//        
-//        CGPoint center = CGPointMake(CGRectGetMidX(theView.frame), CGRectGetMidY(theView.frame));
-//        [theView.layer setPosition:center];
-//        
-//        // We want the animation to occur from the center of the view.
-//        [theView.layer setAnchorPoint:CGPointMake(0.5, 0.5)];
-//        
-//        CAKeyframeAnimation *flipAnimation = [CAKeyframeAnimation animationWithKeyPath:@"transform.rotation.x"];
-//        
-//        NSMutableArray *sinVals = [[NSMutableArray alloc]initWithCapacity:10];
-//        
-//        CGFloat frac = M_PI*2/10;
-//        for (int i=0; i<10; i++) {
-//            [sinVals addObject:[NSNumber numberWithFloat:-i*frac]];
-//        }
-//        flipAnimation.values = sinVals;
-//        // Set the keyframes for the flip animation.
-////        flipAnimation.values = [NSArray arrayWithObjects:
-////                                  [NSNumber numberWithFloat:0.1],
-////                                  [NSNumber numberWithFloat:1.5],
-////                                  [NSNumber numberWithFloat:0.95],
-////                                  [NSNumber numberWithFloat:1.0], nil];
-//        
-//        flipAnimation.duration = 1;//0.25;
-//        flipAnimation.removedOnCompletion = YES;
-//        
-//        [theView.layer addAnimation:flipAnimation forKey:@"flip"];
-//        
-//    }
-//}
-
-//- (void)flipAnimationFrom:(NSView *)frontView toView:(NSView *)backView {
-//    
-//        NSMutableArray *sinVals = [[NSMutableArray alloc]initWithCapacity:10];
-//    
-//    int count = 12;
-//        CGFloat frac = M_PI/count;
-//        for (int i=0; i<count; i++) {
-//            [sinVals addObject:[NSNumber numberWithFloat:-i*frac]];
-//        }
-//    
-//    
-//    [NSAnimationContext runAnimationGroup:^(NSAnimationContext *context){
-//        if (frontView.layer != nil) {
-//            
-//            NSArray *frontVals = [sinVals subarrayWithRange:NSMakeRange(0, count/2)];
-//            
-//            CATransform3D tranny = CATransform3DIdentity;
-//            tranny.m34 = 1.0/-500;//eyePosition;
-//            //        perspective = CATransform3DRotate(perspective, 45.0f * M_PI / 180.0f, 0, 1, 0);
-//            
-//            // Apply the transform to the view layer.
-//            frontView.layer.transform = tranny;
-//            
-//            CGPoint center = CGPointMake(CGRectGetMidX(frontView.frame), CGRectGetMidY(frontView.frame));
-//            [frontView.layer setPosition:center];
-//            
-//            // We want the animation to occur from the center of the view.
-//            [frontView.layer setAnchorPoint:CGPointMake(0.5, 0.5)];
-//            
-//            CAKeyframeAnimation *flipAnimation = [CAKeyframeAnimation animationWithKeyPath:@"transform.rotation.x"];
-//            
-//            flipAnimation.values = frontVals;
-//            
-//            flipAnimation.duration = 5;//0.25;
-//            flipAnimation.removedOnCompletion = YES;
-//            
-//            [frontView.layer addAnimation:flipAnimation forKey:@"flip"];
-//        }
-//        
-//    }completionHandler:^{
-//        NSLog(@"flip completion handler");
-//        if (backView.layer != nil) {
-//            
-//            [backView setHidden:NO];
-//            NSArray *backVals = [sinVals subarrayWithRange:NSMakeRange(count/2, count/2)];
-//            CATransform3D tranny = CATransform3DIdentity;
-//            tranny.m34 = 1.0/-500;//eyePosition;
-//            //        perspective = CATransform3DRotate(perspective, 45.0f * M_PI / 180.0f, 0, 1, 0);
-//            
-//            // Apply the transform to the view layer.
-//            backView.layer.transform = tranny;
-//            
-//            CGPoint center = CGPointMake(CGRectGetMidX(backView.frame), CGRectGetMidY(backView.frame));
-//            [backView.layer setPosition:center];
-//            
-//            // We want the animation to occur from the center of the view.
-//            [backView.layer setAnchorPoint:CGPointMake(0.5, 0.5)];
-//            
-//            CAKeyframeAnimation *flipAnimation = [CAKeyframeAnimation animationWithKeyPath:@"transform.rotation.x"];
-//            
-//            flipAnimation.values = backVals;
-//            
-//            flipAnimation.duration = 5;//0.25;
-//            flipAnimation.removedOnCompletion = YES;
-//            
-//            [backView.layer addAnimation:flipAnimation forKey:@"flip"];
-//        }
-//    }];
-//    
-//}
-
-
-//- (void)bouncyPopAnimation:(NSView *)theView {
-//    
-//    if (theView.layer != nil) {
-//        
-//        CGPoint center = CGPointMake(CGRectGetMidX(theView.frame), CGRectGetMidY(theView.frame));
-//        [theView.layer setPosition:center];
-//        
-//        // We want the animation to occur from the center of the view.
-//        [theView.layer setAnchorPoint:CGPointMake(0.5, 0.5)];
-//        
-//        CAKeyframeAnimation *bounceAnimation = [CAKeyframeAnimation animationWithKeyPath:@"transform.scale"];
-//        
-//        // Set the keyframes for the pop animation.
-//        bounceAnimation.values = [NSArray arrayWithObjects:
-//                                  [NSNumber numberWithFloat:0.1],
-//                                  [NSNumber numberWithFloat:1.5],
-//                                  [NSNumber numberWithFloat:0.95],
-//                                  [NSNumber numberWithFloat:1.0], nil];
-//        
-//        bounceAnimation.duration = 0.25;
-//        bounceAnimation.removedOnCompletion = YES;
-//        
-//        [theView.layer addAnimation:bounceAnimation forKey:@"bounce"];
-//        
-//    }
-//}
-
-//- (void)test:(NSView *)aView {
-//    
-//    CABasicAnimation *a = [CABasicAnimation animationWithKeyPath:@"transform.rotation.z"];
-//    a.fromValue = [NSNumber numberWithFloat:0];
-//    a.toValue = [NSNumber numberWithFloat:-M_PI*2];
-//    
-//    a.duration = 1.8; // seconds
-//    a.repeatCount = HUGE_VAL;
-//    [aView.layer addAnimation:a forKey:nil];
-//}
-/*
-// Build a list of song ids to pass to the song pool so it can cache them.
-// Internally the cache is a set to which we can add and perform other set operations on (such as differences)
-- (NSArray *)buildCacheArrayWithStrategy:(CacheStrategy)cacheStrategy
-                            forRow:(NSInteger)theRow
-                         andColumn:(NSInteger)theColumn
-                    andSpeedVector:(NSPoint)speedVector {
-    
-    // First we need to decide on a caching strategy.
-    // For now we will simply do a no-brains area caching of two songs in every direction from the current cursor position.
-
-    // Make sure we have an inited cache.
-    
-    NSMutableSet* wantedCache = [[NSMutableSet alloc] initWithCapacity:25];
-    
-    
-    NSInteger radius = 2;
-    NSInteger maxRows = [_songCellMatrix numberOfRows];
-    NSInteger maxCols = [_songCellMatrix numberOfColumns];
-    
-    for (NSInteger matrixRows=theRow-radius; matrixRows<=theRow+radius; matrixRows++) {
-        for (NSInteger matrixCols=theColumn-radius; matrixCols<=theColumn+radius; matrixCols++) {
-            if ((matrixRows >= 0) && (matrixRows <maxRows)) {
-                if((matrixCols >=0) && (matrixCols < maxCols)) {
-                    
-                    // skip if this is the selected cell (which is already cached or requested).
-                    if ((matrixRows == theRow) && (matrixCols == theColumn))
-                        continue;
-                    
-                    NSAssert([[_songCellMatrix cells] count] > 0, @"shit no cells");
-                    TGGridCell *theCell = [_songCellMatrix cellAtRow:matrixRows column:matrixCols];
-                    
-                    // Skip if invalid cell.
-                    if (theCell == nil) {
-                        continue;
-                    }
-                    
-                    id songID = [self cellToSongID:theCell];
-                    if (songID != nil) {
-                        [wantedCache addObject:songID];
-                    }
-                }
-            }
-        }
-    }
-    // Remove from the wanted cache what's already cached.
-    [wantedCache minusSet:songIDCache];
-    
-    // Remove from the existing cache what is not in the wanted cache.
-    [songIDCache intersectSet:wantedCache];
-    
-    // now the existing cache becomes the stale cache
-    NSSet* staleCache = songIDCache;
-    [_delegate clearSongCache:[staleCache allObjects]];
-    
-    // Now load the wantedCache
-    [_delegate loadSongCache:[wantedCache allObjects]];
-
-    songIDCache = wantedCache;
-    
-//    NSLog(@"I'm thinking %@",cellIndexArray);
-    // Then we build a list of song ids.
-    return [songIDCache allObjects];
-}
-*/
 
 - (id<SongIDProtocol>)lastRequestedSong {
     return [_songPoolAPI lastRequestedSongId];
@@ -1033,16 +628,11 @@ static NSInteger const kUndefinedID =  -1;
     NSLog(@"songgridcontroller keydown");
 }
 
+/*
 - (void)lmbDownAtMousePos:(NSPoint)mousePos {
     
     // Convertfrom Window view to songGridScrollView coordinates
     NSPoint mouseLoc = [_songGridScrollView convertPoint:mousePos fromView:nil];
-    
-    //REFAC - make a frame that matches the button we just pressed.
-    NSSize butDims = NSMakeSize(30, 30);
-    NSRect butFrame = NSMakeRect(mouseLoc.x-butDims.width/2, mouseLoc.y-butDims.height/2, butDims.width, butDims.height);
-    [self buttonDownInCellFrame:butFrame];
-    return;
     
     // mouseLoc coordinates are top left origin. The dimensions are 600x600.
 TGLog(TGLOG_REFAC, @"song grid view coords %@",NSStringFromPoint(mouseLoc));
@@ -1065,6 +655,7 @@ TGLog(TGLOG_REFAC, @"song grid view coords %@",NSStringFromPoint(mouseLoc));
     }
    
 }
+*/
 
 -(NSRect)cellFrameAtMousePos:(NSPoint)mousePos {
     NSPoint mouseLoc = mousePos;//[_songGridScrollView convertPoint:mousePos fromView:nil];
@@ -1092,6 +683,7 @@ TGLog(TGLOG_REFAC, @"song grid view coords %@",NSStringFromPoint(mouseLoc));
     return centerPoint;
 }
 
+/*
 - (void)buttonDownInCellFrame:(NSRect)cellFrame {
     // If a popover is shown, hide it.
     if ([[_songTimelineController songTimelinePopover] isShown]) {
@@ -1105,7 +697,7 @@ TGLog(TGLOG_REFAC, @"song grid view coords %@",NSStringFromPoint(mouseLoc));
         [[[self view] window] makeFirstResponder:(NSResponder *)_delegate];
     }
 }
-
+*/
 /*
 - (void)togglePopoverAtCellFrame:(NSRect)cellFrame withDelay:(double)delayInSeconds {
     
