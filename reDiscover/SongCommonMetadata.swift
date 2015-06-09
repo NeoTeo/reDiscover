@@ -107,8 +107,11 @@ extension SongCommonMetaData {
         //FIXME: Beware, this can also be a string value!
         print("YEARS: \(years)")
         if years.count > 0 && years[0].key!.isKindOfClass(NSNumber) {
-            //year = years[0].value() as! UInt
-            print("Magic!~~")
+            if let num = years[0].numberValue {
+                //year = years[0].numberValue?.unsignedIntegerValue as! UInt
+                year = num.unsignedLongValue
+                print("Magic!~~ \(year)")
+            }
         }
 //        if years.count > 0 { year = years[0].numberValue as! UInt }
         
@@ -145,7 +148,7 @@ extension SongCommonMetaData {
         var year: UInt = 0
         
         if let songURL = NSURL(string: urlString) {
-            let pathString = songURL.path
+            //let pathString = songURL.path
             
             if let metadata = MDItemCreateWithURL(kCFAllocatorDefault, songURL) {
                 if let artists = MDItemCopyAttribute(metadata,kMDItemAuthors) as? NSArray {

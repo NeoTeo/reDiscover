@@ -39,7 +39,7 @@
 #pragma clang assume_nonnull begin
 - (void)requestFingerPrintForSong:(id<SongIDProtocol>)songID withHandler:(void (^)(NSString*))fingerprintHandler;
 - (void)requestUUIDForSongID:(id<SongIDProtocol>)songID withDuration:(int)duration andFingerPrint:(char*)theFingerprint;
-- (NSInteger)decodeAudioFile:(NSURL *)fileURL forContext:(ChromaprintContext *)theContext ofLength:(NSInteger)maxLength andDuration:(int *)duration;
+- (NSInteger)decodeAudioFile:(NSURL *)fileURL forContext:(ChromaprintContext __nonnull * __nonnull)theContext ofLength:(NSInteger)maxLength andDuration:(int *)duration;
 
 
 @property id<TGFingerPrinterDelegate> delegate;

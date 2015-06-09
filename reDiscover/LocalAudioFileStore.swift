@@ -43,20 +43,19 @@ extension LocalAudioFileStore {
         }) {
             
             for url in enumerator.allObjects as! [NSURL] {
-                var error: NSError?
+
                 var isDirectory: AnyObject?
-                let value: Bool
                 do {
                     try url.getResourceValue(&isDirectory, forKey: NSURLIsDirectoryKey)
-                    value = true
-                } catch var error1 as NSError {
-                    error = error1
-                    value = false
-                }
-                if isDirectory?.boolValue == false {
-                    if LocalFileIO.getURLContentType(url) == .Audio {
-                        closure(url)
+                    
+                    if isDirectory?.boolValue == false {
+                        if LocalFileIO.getURLContentType(url) == .Audio {
+                            closure(url)
+                        }
                     }
+
+                } catch {
+                    print("Error! \(error)")
                 }
             }
         }
@@ -75,20 +74,18 @@ extension LocalAudioFileStore {
             
             var songURLs = [NSURL]()
             for url in enumerator.allObjects as! [NSURL] {
-                var error: NSError?
                 var isDirectory: AnyObject?
-                let value: Bool
+
                 do {
                     try url.getResourceValue(&isDirectory, forKey: NSURLIsDirectoryKey)
-                    value = true
-                } catch var error1 as NSError {
-                    error = error1
-                    value = false
-                }
-                if isDirectory?.boolValue == false {
-                    if LocalFileIO.getURLContentType(url) == .Audio {
-                        songURLs.append(url)
+                    if isDirectory?.boolValue == false {
+                        if LocalFileIO.getURLContentType(url) == .Audio {
+                            songURLs.append(url)
+                        }
                     }
+
+                } catch {
+                    print("Error! \(error)")
                 }
             }
             print("songURLs size is \(songURLs.count)")

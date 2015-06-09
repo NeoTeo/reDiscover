@@ -56,22 +56,14 @@ extension CoreDataStore {
     static func fetchSongsMetaData(context: NSManagedObjectContext) -> [String : SongMetaData]? {
         
         let fetchRequest = NSFetchRequest(entityName: "SongMetaData")
-        var error: NSError?
         var songsMetaData: [String : SongMetaData]?
         
         context.performBlockAndWait {
             let fetchedArray: [AnyObject]?
             do {
                 fetchedArray = try context.executeFetchRequest(fetchRequest)
-            } catch var error1 as NSError {
-                error = error1
-                fetchedArray = nil
             } catch {
-                fatalError()
-            }
-            if error != nil {
-                print("Error while fetching SongMetaData: \(error?.localizedDescription)")
-                return
+                fatalError("Error while fetching SongMetaData: \(error)")
             }
             songsMetaData = [:]
             for songData in fetchedArray as! [SongMetaData] {

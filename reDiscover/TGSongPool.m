@@ -495,6 +495,7 @@ static int const kSongPoolStartCapacity = 250;
     }
 }
 
+//FIXME:
 /* REFAC - not duplicated yet
 - (void)replaceSweetSpots:(NSArray*)sweetSpots forSongID:(id<SongIDProtocol>)songID {
     id<TGSong> theSong = [self songForID:songID];

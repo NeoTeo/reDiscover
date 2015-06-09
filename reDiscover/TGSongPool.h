@@ -238,10 +238,10 @@
 -(id<SongIDProtocol>)currentlyPlayingSongId;
 -(id<SongIDProtocol>) lastRequestedSongId;
 
-- (void)storeSweetSpotForSongID:(id<SongIDProtocol>)songID;
+//- (void)storeSweetSpotForSongID:(id<SongIDProtocol>)songID;
 
 // UUID accessors.
--(void)setUUIDString:(NSString*)theUUID forSongID:(id<SongIDProtocol>)songID;
+//-(void)setUUIDString:(NSString*)theUUID forSongID:(id<SongIDProtocol>)songID;
 - (NSString *)UUIDStringForSongID:(id<SongIDProtocol>)songID;
 
 // URL accessors.
@@ -249,7 +249,7 @@
 
 // Releases accessors TEO switch to use NSArray/NSSet in the managedobject same as the sweetspots
 - (NSData*)releasesForSongID:(id<SongIDProtocol>)songID;
-- (void)setReleases:(NSData*)releases forSongID:(id<SongIDProtocol>)songID;
+//- (void)setReleases:(NSData*)releases forSongID:(id<SongIDProtocol>)songID;
 
 - (NSString*)albumForSongID:(id<SongIDProtocol>)songID;
 - (NSString*)artIdForSongId:(id<SongIDProtocol>)songId;

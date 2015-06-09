@@ -73,7 +73,7 @@ class SweetSpotServerIO: NSObject {
     
     
     func initUploadedSweetSpots() {
-        var error: NSError?
+
         let fetchRequest = NSFetchRequest(entityName: "UploadedSSData")
 //MARK: Enable this when the wipwip work is done
         /*
@@ -101,10 +101,6 @@ class SweetSpotServerIO: NSObject {
         uploadedSweetSpotsMOC?.performBlockAndWait(){
             do {
                 let fetchedArray = try self.uploadedSweetSpotsMOC?.executeFetchRequest(fetchRequest)
-                if error != nil {
-                    print(error?.localizedDescription ?? "Unknown error.")
-                    return
-                }
                 
                 for ssData in fetchedArray as! [UploadedSSData] {
                     //let ssData = ss as! UploadedSSData
@@ -113,10 +109,8 @@ class SweetSpotServerIO: NSObject {
                 }
                 
                 print("initUploadedSweetSpots done. Loaded \(self.uploadedSweetSpots.count)")
-            } catch var error1 as NSError {
-                error = error1
             } catch {
-                fatalError()
+                fatalError("Failed to upload SweetSpots \(error)")
             }
         }
   
@@ -131,8 +125,13 @@ class SweetSpotServerIO: NSObject {
         
         if uploadedSweetSpotsMOC!.hasChanges {
             uploadedSweetSpotsMOC!.performBlockAndWait() {
-                var error: NSError?
+//                var error: NSError?
                 //assert(self.uploadedSweetSpotsMOC!.save(), "Error saving uploaded sweet spots MOC. \(error)")
+                do {
+                    try self.uploadedSweetSpotsMOC!.save()
+                } catch {
+                    fatalError("Error saving uploaded sweet spots MOC. \(error)")
+                }
             }
         }
     }
@@ -188,7 +187,7 @@ class SweetSpotServerIO: NSObject {
                             } else {
                                 // The song already has a set of sweetspots so we need to add to it.
     //                            var existingSS = uploadedSS!.sweetSpots.mutableCopy() as NSMutableArray
-                                var existingSS = NSMutableArray(array: uploadedSS!.sweetSpots)
+                                let existingSS = NSMutableArray(array: uploadedSS!.sweetSpots)
                                 existingSS.addObject(sweetSpot)
                                 uploadedSS!.sweetSpots = existingSS.copy() as! NSArray as [AnyObject]
                             }
@@ -251,11 +250,13 @@ class SweetSpotServerIO: NSObject {
                                     for ss in serverSweetSpots {
                                         mutableSS.addObject(ss)
                                     }
-                                
-                                    self.delegate?.replaceSweetSpots(mutableSS as NSArray as! [AnyObject], forSongID: songID)
+                                    
+                                    self.delegate?.replaceSweetSpots(mutableSS as [AnyObject], forSongID: songID)
+                 
+//                                    self.delegate?.replaceSweetSpots(mutableSS as NSArray as! [AnyObject], forSongID: songID)
                                     
                                 } else {
-                                    self.delegate?.replaceSweetSpots(serverSweetSpots as! [AnyObject], forSongID: songID)
+                                    self.delegate?.replaceSweetSpots(serverSweetSpots as [AnyObject], forSongID: songID)
                                 }
                                 
                                 // Set the first sweet spot to be the active one.

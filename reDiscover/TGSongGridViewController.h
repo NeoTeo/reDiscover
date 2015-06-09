@@ -80,7 +80,7 @@
 @property NSProgressIndicator *pgIndicator;
 
 
-- (void)lmbDownAtMousePos:(NSPoint)mousePos;
+//- (void)lmbDownAtMousePos:(NSPoint)mousePos;
 -(NSRect)cellFrameAtMousePos:(NSPoint)mousePos;
 -(NSPoint)centerOfCellAtMousePos:(NSPoint)mousePos;
 

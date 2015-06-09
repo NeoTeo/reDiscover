@@ -11,7 +11,7 @@ import Foundation
 class Hasher {
     
     class func hashFromString(inString: String) -> String {
-        let str = inString.cStringUsingEncoding(NSUTF8StringEncoding)
+        //let str = inString.cStringUsingEncoding(NSUTF8StringEncoding)
         let strLen = CUnsignedInt(inString.lengthOfBytesUsingEncoding(NSUTF8StringEncoding))
         let digestLen = Int(CC_MD5_DIGEST_LENGTH)
         

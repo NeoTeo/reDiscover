@@ -346,7 +346,7 @@ static NSInteger const kUndefinedID =  -1;
     NSAssert([[_songCellMatrix cells] count] > songSerialNumber, @"Eeek. songID is bigger than the song cell matrix");
     
     // Find the existing cell for this serial number.
-    TGGridCell *existingCell = [[_songCellMatrix cells] objectAtIndex:songSerialNumber];
+    TGGridCell *existingCell = (TGGridCell*)[[_songCellMatrix cells] objectAtIndex:songSerialNumber];
 
     // Increment serial number ready for the next call.
     songSerialNumber++;

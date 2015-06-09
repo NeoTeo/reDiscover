@@ -34,7 +34,7 @@ different ways:
             return art
         }
 
-        if let UUId = song.UUId,
+        if let _ = song.UUId,
             let art = CoverArtArchiveWebFetcher.artForSong(song) {
                 return art
         }

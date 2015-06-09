@@ -90,10 +90,11 @@ static func addSong(theSong: TGSong) {
         metadata fields of the corresponding core data item. If they differ, update the core data item so
         that it is saved when we call the associated managed object context's save.
     */
+    
     static func save(pool: NSDictionary) {
-        let myStore = SongMetaDataStoreLocal(metaData:[:])
+//        let myStore = SongMetaDataStoreLocal(metaData:[:])
 
-        for (key,value) in pool {
+        for (_,value) in pool {
             let song: Song = value as! Song
             if let cmd = song.metadata {
 

@@ -102,7 +102,7 @@
         // Make sure wiew is loaded
         [self view];
         
-        [_songTimelinePopover showRelativeToRect:theBounds ofView:theView preferredEdge:CGRectMaxYEdge];
+        [_songTimelinePopover showRelativeToRect:theBounds ofView:theView preferredEdge:NSRectEdgeMaxY];
     }
 }
 
@@ -120,6 +120,6 @@
     int offset = 13;
     NSRect newRect = NSMakeRect(theBounds.origin.x, theBounds.origin.y+offset, theBounds.size.width, theBounds.size.height-offset);
     
-    [_songTimelinePopover showRelativeToRect:newRect ofView:theView preferredEdge:CGRectMinYEdge];
+    [_songTimelinePopover showRelativeToRect:newRect ofView:theView preferredEdge:NSRectEdgeMinY];
 }
 @end
