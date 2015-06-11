@@ -47,7 +47,7 @@ class Song : NSObject,TGSong {
 
 extension Song {
 
-    static func songWithChanges(theSong: TGSong, changes: [String : AnyObject]) -> Song {
+    static func songWithChanges(theSong: TGSong, changes: [String : AnyObject]) -> TGSong {
         var songId = theSong.songID
         var metadata = theSong.metadata
         var urlString = theSong.urlString

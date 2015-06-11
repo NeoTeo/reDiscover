@@ -9,7 +9,6 @@
 #import <AVFoundation/AVFoundation.h>
 
 #import "TGSongPool.h"
-#import "TGSong.h"
 #import "TGSongGridViewController.h"
 #import "TGMainViewController.h"
 
@@ -24,7 +23,7 @@
 #import "rediscover-swift.h"
 
 // The private interface declaration overrides the public one to declare conformity to the Delegate protocols.
-@interface TGSongPool () <TGSongDelegate,TGFingerPrinterDelegate,SongPoolAccessProtocol>
+@interface TGSongPool () <TGFingerPrinterDelegate,SongPoolAccessProtocol>
 @end
 
 // constant definitions
