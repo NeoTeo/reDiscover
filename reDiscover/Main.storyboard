@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="7515.2" systemVersion="14D72i" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" initialViewController="1rG-hg-cjj">
+<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="8121.17" systemVersion="15A178w" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" initialViewController="1rG-hg-cjj">
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="7515.2"/>
+        <deployment identifier="macosx"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="8121.17"/>
     </dependencies>
     <scenes>
         <!--Window Controller-->
@@ -16,6 +17,7 @@
                         <view key="contentView" id="kQk-9C-O5w">
                             <rect key="frame" x="0.0" y="0.0" width="300" height="300"/>
                             <autoresizingMask key="autoresizingMask"/>
+                            <animations/>
                         </view>
                     </window>
                     <connections>
@@ -35,6 +37,7 @@
                         <subviews>
                             <imageView horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="P5B-U5-u4f">
                                 <rect key="frame" x="21" y="21" width="259" height="259"/>
+                                <animations/>
                                 <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" image="DropArrow" id="9UV-0o-FxX"/>
                                 <connections>
                                     <segue destination="cJE-xo-Vn6" kind="show" identifier="oldStyleSegue" id="s56-iv-DYh"/>
@@ -45,6 +48,7 @@
                             <constraint firstAttribute="centerX" secondItem="P5B-U5-u4f" secondAttribute="centerX" id="Qhe-4w-OMf"/>
                             <constraint firstAttribute="centerY" secondItem="P5B-U5-u4f" secondAttribute="centerY" id="YVu-ri-d2C"/>
                         </constraints>
+                        <animations/>
                         <connections>
                             <outlet property="dropArrowImageView" destination="P5B-U5-u4f" id="11R-nO-fYb"/>
                         </connections>
@@ -61,6 +65,7 @@
                     <view key="view" id="r1l-oJ-ZPn">
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask"/>
+                        <animations/>
                     </view>
                 </viewController>
                 <customObject id="eJj-ng-8uK" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>

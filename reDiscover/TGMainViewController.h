@@ -15,6 +15,7 @@
 @class TGPlaylistViewController;
 @class TGSongInfoViewController;
 @class TGSongUIPopupController;
+@class TGCoverDisplayViewController;
 
 //@class TGSongUIViewController;
 //@class TGSongTimelineViewController;
@@ -23,6 +24,7 @@
 
 @protocol TGSongPoolDelegate;
 @protocol SongIDProtocol;
+@protocol CoverDisplayViewController;
 
 @protocol TGMainViewControllerDelegate <TGSongPoolDelegate>
 - (void)userSelectedSongID:(id<SongIDProtocol>)songID withContext:(NSDictionary*)theContext;
@@ -51,6 +53,9 @@
 @property NSObjectController *myObjectController;
 
 // The three parts of the split view
+//TODO: see if we can do this with protocols, once it works.
+//@property id<CoverDisplayViewController> coverDisplayController;
+@property TGCoverDisplayViewController *coverDisplayController;
 @property TGPlaylistViewController *playlistController;
 @property TGSongGridViewController *songGridController;
 @property TGSongInfoViewController *songInfoController;

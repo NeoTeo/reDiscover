@@ -39,6 +39,7 @@
     id transformer = [[TGTimelineTransformer alloc] init];
     [NSValueTransformer setValueTransformer:transformer forName:@"TimelineTransformer"];
     
+    _coverDisplayController = [[TGCoverDisplayViewController alloc] initWithNibName:@"CoverDisplayView" bundle:nil];
     _songGridController = [[TGSongGridViewController alloc] initWithNibName:@"TGSongGridView" bundle:nil];
     _playlistController = [[TGPlaylistViewController alloc] initWithNibName:@"TGPlaylistView" bundle:nil];
     _songInfoController = [[TGSongInfoViewController alloc] initWithNibName:@"TGSongInfoView" bundle:nil];
@@ -154,7 +155,9 @@
     
     // Add the views to the splitview.
     [theSplitView addSubview:[_playlistController view]];
-    [theSplitView addSubview:[_songGridController view]];
+    //MARK: COLL
+//    [theSplitView addSubview:[_songGridController view]];
+    [theSplitView addSubview:[_coverDisplayController view]];
     [theSplitView addSubview:[_songInfoController view]];
 
     // Add constraints to the split view.
@@ -190,7 +193,9 @@
 - (void)addConstraintsTo:(NSSplitView *)theSplitView {
     
     NSView *mainView = [self view];
-    NSView *songView = [_songGridController view];
+    //MARK: COLL
+    //NSView *songView = [_songGridController view];
+    NSView* songView = [_coverDisplayController view];
     
     NSDictionary *viewDictionary = @{ @"mainView":mainView,
                                       @"splitView":theSplitView,
@@ -593,6 +598,9 @@
 // This does not guarantee that any of its data is loaded yet, in fact it's very unlikely.
 - (void)songPoolDidLoadSongURLWithID:(id<SongIDProtocol>)songID {
     
+    //MARK: COLL
+    // Here we need to tell the CoverDisplayController that we are adding more covers.
+    return;
     // We have to make sure we execute on the main thread since much of the AppKit stuff isn't thread safe.
     // addMatrixCell2 has many classes that need to run on the main thread or are otherwise thread-unsafe;
     // (see the "Thread Safety Summary" chapter of Apple's "Threading Programming Guide", in particular on NSCell, NSResponder, NSImage and NSView).

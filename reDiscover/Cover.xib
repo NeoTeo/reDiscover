@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="8121.17" systemVersion="15A178w" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
+    <dependencies>
+        <deployment identifier="macosx"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="8121.17"/>
+    </dependencies>
+    <objects>
+        <customObject id="-2" userLabel="File's Owner"/>
+        <customObject id="-1" userLabel="First Responder" customClass="FirstResponder"/>
+        <customObject id="-3" userLabel="Application" customClass="NSObject"/>
+        <customView id="c22-O7-iKe">
+            <rect key="frame" x="0.0" y="0.0" width="150" height="150"/>
+            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+            <subviews>
+                <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="5fV-Eh-ktg">
+                    <rect key="frame" x="57" y="131" width="37" height="17"/>
+                    <animations/>
+                    <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Label" id="vq8-p2-8yj">
+                        <font key="font" metaFont="system"/>
+                        <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                        <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                    </textFieldCell>
+                </textField>
+                <imageView horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="nsD-La-YiA" customClass="CoverImageView" customModule="reDiscover" customModuleProvider="target">
+                    <rect key="frame" x="20" y="20" width="110" height="110"/>
+                    <animations/>
+                    <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" id="06w-fv-u9k"/>
+                </imageView>
+            </subviews>
+            <constraints>
+                <constraint firstAttribute="bottom" secondItem="nsD-La-YiA" secondAttribute="bottom" constant="20" symbolic="YES" id="4zw-z9-n5A"/>
+                <constraint firstItem="5fV-Eh-ktg" firstAttribute="top" secondItem="c22-O7-iKe" secondAttribute="top" constant="2" id="Pps-rh-LMG"/>
+                <constraint firstItem="5fV-Eh-ktg" firstAttribute="centerX" secondItem="c22-O7-iKe" secondAttribute="centerX" id="ZT6-LD-d4c"/>
+                <constraint firstItem="nsD-La-YiA" firstAttribute="centerX" secondItem="5fV-Eh-ktg" secondAttribute="centerX" id="aGF-bs-zzt"/>
+                <constraint firstItem="nsD-La-YiA" firstAttribute="top" secondItem="c22-O7-iKe" secondAttribute="top" constant="20" symbolic="YES" id="i2s-zZ-f5p"/>
+                <constraint firstItem="nsD-La-YiA" firstAttribute="leading" secondItem="c22-O7-iKe" secondAttribute="leading" constant="20" symbolic="YES" id="rZ1-Qn-VbJ"/>
+            </constraints>
+            <animations/>
+        </customView>
+        <userDefaultsController representsSharedInstance="YES" id="qyT-AL-zGK"/>
+        <customObject id="dw1-3Z-xb2" customClass="TGCollectionCover" customModule="reDiscover" customModuleProvider="target">
+            <connections>
+                <outlet property="CoverLabel" destination="5fV-Eh-ktg" id="2AA-o3-82F"/>
+                <outlet property="imageView" destination="nsD-La-YiA" id="WXW-JT-gef"/>
+                <outlet property="sourceItemView" destination="nsD-La-YiA" id="iad-gv-2Aa"/>
+                <outlet property="textField" destination="5fV-Eh-ktg" id="Yty-rv-EHS"/>
+                <outlet property="view" destination="c22-O7-iKe" id="Q5g-WL-opc"/>
+            </connections>
+        </customObject>
+    </objects>
+</document>
