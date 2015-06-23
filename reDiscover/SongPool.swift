@@ -10,7 +10,7 @@ import Foundation
 
 typealias SongDictionary = [SongID: Song]
 
-class SongPool : NSObject {
+final class SongPool : NSObject {
     
     private static var songPool: SongDictionary?
     static var delegate: SongPoolAccessProtocol?
@@ -36,6 +36,10 @@ class SongPool : NSObject {
 //        return nil
     }
     
+    static func songCount() -> Int {
+        guard let count = songPool?.count else { return 0 }
+        return count
+    }
 
     /**
         Make and return a dictionary of songs made from any audio URLs found 
@@ -74,7 +78,7 @@ class SongPool : NSObject {
 
 
 //    static func addSong(theSong: Song) {
-static func addSong(theSong: TGSong) {
+    static func addSong(theSong: TGSong) {
         if let queue = songPoolAccessQ {
             dispatch_sync(queue) {
                 SongPool.songPool![theSong.songID as! SongID] = theSong as? Song

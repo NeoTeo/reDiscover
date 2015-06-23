@@ -14,7 +14,7 @@ typealias VoidVoidClosure = ()->()
 typealias PlayerToVoidClosure = [AVPlayer:VoidVoidClosure]
 
 
-class TGSongAudioCacher : NSObject {
+final class TGSongAudioCacher : NSObject {
     typealias PlayerRequestBlock = (AVPlayer)->()
 
     struct SongIdToPlayerRequestBlock {
@@ -112,6 +112,7 @@ class TGSongAudioCacheTask : NSObject {
     }
     
     func cacheWithContext(theContext: NSDictionary) -> HashToPlayerDictionary {
+        //FIXME: WTF is this?!
         let condLock = NSConditionLock(condition: 42)
         
         /* By virtue of the locking of this thread until the cache is done, there are never any players left in the loadingPlayers.
@@ -239,6 +240,7 @@ class TGSongAudioCacheTask : NSObject {
         
         // store the completionHandler for this player so it can be called on successful load.
         // locking access because it may be accessed async'ly by the observeValueForKeyPath observing a status change.
+        //FIXME: Find a non locking solution (like a queue)
         self.loadingPlayersLock.lock()
         self.loadingPlayers[thePlayer] = aClosure
         self.loadingPlayersLock.unlock()

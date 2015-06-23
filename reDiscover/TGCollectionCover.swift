@@ -8,6 +8,11 @@
 
 import Cocoa
 
+/*
+An NSCollectionViewItem that visually represents a CoverImage in an
+NSCollectionView.  A TGCollectionCover's "representedObject" property points to its
+CoverImage.
+*/
 class TGCollectionCover: NSCollectionViewItem {
 
     @IBOutlet weak var CoverLabel: NSTextField!

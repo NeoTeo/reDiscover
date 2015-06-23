@@ -544,6 +544,8 @@
 // TGLog(TGLOG_REFAC,@"newSongAdded with %@",songId);
     id<SongIDProtocol> songId = (id<SongIDProtocol>)notification.object;
     [self songPoolDidLoadSongURLWithID:songId];
+    //REFAC
+    [_coverDisplayController.view setNeedsDisplay:YES];
 }
 
 #pragma mark -

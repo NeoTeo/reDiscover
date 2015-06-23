@@ -67,6 +67,7 @@
 		AB85BC5A1875AD1500670905 /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AB85BC591875AD1500670905 /* CoreMedia.framework */; };
 		AB85BC5C1875AD3B00670905 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AB85BC5B1875AD3B00670905 /* QuartzCore.framework */; };
 		AB85BC5F1875AD7A00670905 /* TGSongGridScrollView.m in Sources */ = {isa = PBXBuildFile; fileRef = AB85BC5E1875AD7A00670905 /* TGSongGridScrollView.m */; };
+		ABAF47821B38590600F13528 /* CoverImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABAF47811B38590600F13528 /* CoverImage.swift */; };
 		ABB2B6621ADEB38F004F9F87 /* NSImage+HashId.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABB2B6611ADEB38F004F9F87 /* NSImage+HashId.swift */; };
 		ABB33FF019C72C3800439A5E /* SweetSpotServerIO.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABB33FEF19C72C3800439A5E /* SweetSpotServerIO.swift */; };
 		ABB592E31B2EC63700B57CC5 /* CoverDisplayViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABB592E21B2EC63700B57CC5 /* CoverDisplayViewController.swift */; };
@@ -194,6 +195,7 @@
 		AB85BC5E1875AD7A00670905 /* TGSongGridScrollView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TGSongGridScrollView.m; sourceTree = "<group>"; };
 		AB85BC621875B2E000670905 /* libc++.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libc++.dylib"; path = "usr/lib/libc++.dylib"; sourceTree = SDKROOT; };
 		AB85BC641875B2F600670905 /* Accelerate.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accelerate.framework; path = System/Library/Frameworks/Accelerate.framework; sourceTree = SDKROOT; };
+		ABAF47811B38590600F13528 /* CoverImage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CoverImage.swift; sourceTree = "<group>"; };
 		ABB2B6611ADEB38F004F9F87 /* NSImage+HashId.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSImage+HashId.swift"; sourceTree = "<group>"; };
 		ABB33FEF19C72C3800439A5E /* SweetSpotServerIO.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SweetSpotServerIO.swift; sourceTree = "<group>"; };
 		ABB592E21B2EC63700B57CC5 /* CoverDisplayViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CoverDisplayViewController.swift; sourceTree = "<group>"; };
@@ -276,6 +278,7 @@
 				ABB592E21B2EC63700B57CC5 /* CoverDisplayViewController.swift */,
 				ABB592E91B2ED19C00B57CC5 /* TGCollectionCover.swift */,
 				AB095A7A1B2F12CD009201A2 /* CoverImageView.swift */,
+				ABAF47811B38590600F13528 /* CoverImage.swift */,
 				ABE49BB81AE50F48008A28B0 /* AlbumCollection.swift */,
 				AB85BC161875AB5200670905 /* TGMainViewController.h */,
 				AB85BC171875AB5200670905 /* TGMainViewController.m */,
@@ -688,6 +691,7 @@
 				AB85BC4B1875AB5200670905 /* TGSongInfoViewController.m in Sources */,
 				AB725A3C1AD92256003E94E6 /* SongArtCache.swift in Sources */,
 				AB85BC3E1875AB5200670905 /* TGFingerPrinter.m in Sources */,
+				ABAF47821B38590600F13528 /* CoverImage.swift in Sources */,
 				AB4529661A895B4100A6B15A /* TGAppDelegate.swift in Sources */,
 				AB85BC471875AB5200670905 /* TGSongCellMatrix.m in Sources */,
 				AB85BC3F1875AB5200670905 /* TGGridCell.m in Sources */,

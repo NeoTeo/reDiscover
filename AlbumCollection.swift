@@ -7,7 +7,7 @@
 //
 
 import Foundation
-class AlbumCollection : NSObject {
+final class AlbumCollection : NSObject {
     let albumCache: [AlbumId : Album]
     
     override init() {
