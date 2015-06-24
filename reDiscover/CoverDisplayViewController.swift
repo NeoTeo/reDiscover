@@ -31,7 +31,8 @@ public class TGCoverDisplayViewController: NSViewController, CoverDisplayViewCon
     
     
     public override func awakeFromNib() {
-     
+
+        coverCollectionView.selectable = true
         // Watch for changes to the CollectionView's selection, just so we can update our status display.
         coverCollectionView.addObserver(self, forKeyPath:"selectionIndexPaths" , options: .New, context: nil)
 
@@ -53,18 +54,33 @@ public class TGCoverDisplayViewController: NSViewController, CoverDisplayViewCon
 //    if (object == imageCollectionView && [keyPath isEqual:selectionIndexPathsKey]) {
     public override func observeValueForKeyPath(keyPath: String?, ofObject object: AnyObject?, change: [NSObject : AnyObject]?, context: UnsafeMutablePointer<Void>) {
         if (object === coverCollectionView) && (keyPath == "selectionIndexPaths") {
-            print("Bada Bingo")
+            print("selected index paths \(coverCollectionView.selectionIndexPaths)")
+            
         } else {
             print("Bada Boom")
         }
     }
     
     public override func mouseMoved(theEvent: NSEvent) {
-        print("Mouse moved \(theEvent.locationInWindow)")
+        
+        // Convert the mouse pointer coordinates to the coverCollectionView coordinates. 
+        // This does takes scrolling into consideration.
+        let loc = coverCollectionView.convertPoint(theEvent.locationInWindow, fromView: nil)
+        
+        if let idxPath = coverCollectionView.indexPathForItemAtPoint(loc) {
+            print("The index is \(idxPath)")
+//            let paths: Set<NSIndexPath> = [idxPath]
+//            coverCollectionView.selectItemsAtIndexPaths(paths, scrollPosition: .None)
+            if let item = coverCollectionView.itemAtIndex(idxPath.item) as? TGCollectionCover {
+                item.view.layer?.cornerRadius = 80
+                item.CoverLabel.stringValue = "Arse"
+            }
+        }
+
     }
     
     func boundsChanged(theEvent: NSEvent) {
-        print("movage \(coverCollectionView.selectionIndexPaths)")
+        print("Scrollage")
     }
     
      func updateSongs(notification: NSNotification) {
