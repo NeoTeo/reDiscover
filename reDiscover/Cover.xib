@@ -9,11 +9,11 @@
         <customObject id="-1" userLabel="First Responder" customClass="FirstResponder"/>
         <customObject id="-3" userLabel="Application" customClass="NSObject"/>
         <customView id="c22-O7-iKe">
-            <rect key="frame" x="0.0" y="0.0" width="150" height="150"/>
+            <rect key="frame" x="0.0" y="0.0" width="120" height="120"/>
             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
             <subviews>
                 <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="5fV-Eh-ktg">
-                    <rect key="frame" x="57" y="131" width="37" height="17"/>
+                    <rect key="frame" x="42" y="90" width="37" height="17"/>
                     <animations/>
                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Label" id="vq8-p2-8yj">
                         <font key="font" metaFont="system"/>
@@ -22,7 +22,7 @@
                     </textFieldCell>
                 </textField>
                 <imageView horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="nsD-La-YiA" customClass="CoverImageView" customModule="reDiscover" customModuleProvider="target">
-                    <rect key="frame" x="20" y="20" width="110" height="110"/>
+                    <rect key="frame" x="0.0" y="0.0" width="120" height="120"/>
                     <animations/>
                     <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" id="06w-fv-u9k"/>
                     <connections>
@@ -31,12 +31,12 @@
                 </imageView>
             </subviews>
             <constraints>
-                <constraint firstAttribute="bottom" secondItem="nsD-La-YiA" secondAttribute="bottom" constant="20" symbolic="YES" id="4zw-z9-n5A"/>
-                <constraint firstItem="5fV-Eh-ktg" firstAttribute="top" secondItem="c22-O7-iKe" secondAttribute="top" constant="2" id="Pps-rh-LMG"/>
+                <constraint firstAttribute="bottom" secondItem="nsD-La-YiA" secondAttribute="bottom" id="4zw-z9-n5A"/>
+                <constraint firstItem="5fV-Eh-ktg" firstAttribute="top" secondItem="c22-O7-iKe" secondAttribute="top" constant="13" id="Pps-rh-LMG"/>
                 <constraint firstItem="5fV-Eh-ktg" firstAttribute="centerX" secondItem="c22-O7-iKe" secondAttribute="centerX" id="ZT6-LD-d4c"/>
                 <constraint firstItem="nsD-La-YiA" firstAttribute="centerX" secondItem="5fV-Eh-ktg" secondAttribute="centerX" id="aGF-bs-zzt"/>
-                <constraint firstItem="nsD-La-YiA" firstAttribute="top" secondItem="c22-O7-iKe" secondAttribute="top" constant="20" symbolic="YES" id="i2s-zZ-f5p"/>
-                <constraint firstItem="nsD-La-YiA" firstAttribute="leading" secondItem="c22-O7-iKe" secondAttribute="leading" constant="20" symbolic="YES" id="rZ1-Qn-VbJ"/>
+                <constraint firstItem="nsD-La-YiA" firstAttribute="top" secondItem="c22-O7-iKe" secondAttribute="top" id="i2s-zZ-f5p"/>
+                <constraint firstItem="nsD-La-YiA" firstAttribute="leading" secondItem="c22-O7-iKe" secondAttribute="leading" id="rZ1-Qn-VbJ"/>
             </constraints>
             <animations/>
         </customView>

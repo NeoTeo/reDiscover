@@ -35,7 +35,8 @@ final class TGSongAudioCacher : NSObject {
         cachingOpQueue.maxConcurrentOperationCount = 1
     }
 
-    func cacheWithContext(theContext: NSDictionary) {
+    //func cacheWithContext(theContext: NSDictionary) {
+    func cacheWithContext(theContext: SongSelectionContext) {
         // To make this as responsive as possible we cancel any previous ops and put the operation in an op queue.
         
         cachingOpQueue.cancelAllOperations()
@@ -111,7 +112,8 @@ class TGSongAudioCacheTask : NSObject {
         songPoolAPI = theAPI
     }
     
-    func cacheWithContext(theContext: NSDictionary) -> HashToPlayerDictionary {
+//    func cacheWithContext(theContext: NSDictionary) -> HashToPlayerDictionary {
+    func cacheWithContext(theContext: SongSelectionContext) -> HashToPlayerDictionary {
         //FIXME: WTF is this?!
         let condLock = NSConditionLock(condition: 42)
         
@@ -144,8 +146,9 @@ class TGSongAudioCacheTask : NSObject {
     }
     
     
-    func newCacheFromCache(oldCache: HashToPlayerDictionary, withContext context: NSDictionary, operationBlock: NSBlockOperation?, completionHandler: (HashToPlayerDictionary)->()) {
-        
+//    func newCacheFromCache(oldCache: HashToPlayerDictionary, withContext context: NSDictionary, operationBlock: NSBlockOperation?, completionHandler: (HashToPlayerDictionary)->()) {
+    func newCacheFromCache(oldCache: HashToPlayerDictionary, withContext context: SongSelectionContext, operationBlock: NSBlockOperation?, completionHandler: (HashToPlayerDictionary)->()) {
+    
         var wantedCacheCount    = 0
         let newCacheLock        = NSLock()
         
@@ -189,11 +192,11 @@ class TGSongAudioCacheTask : NSObject {
         }
     }
 
-    func generateWantedSongIds(theContext: NSDictionary, operationBlock: NSBlockOperation?, idHandler: (SongIDProtocol)->()) -> Int {
+//    func generateWantedSongIds(theContext: NSDictionary, operationBlock: NSBlockOperation?, idHandler: (SongIDProtocol)->()) -> Int {
+    func generateWantedSongIds(theContext: SongSelectionContext, operationBlock: NSBlockOperation?, idHandler: (SongIDProtocol)->()) -> Int {
         
-        let selectedSongId  = theContext["selectedSongId"] as! SongIDProtocol
-        let selectionPos    = theContext["pos"]!.pointValue as NSPoint
-        let gridDims        = theContext["gridDims"]!.pointValue as NSPoint
+        let selectionPos    = theContext.selectionPos
+        let gridDims        = theContext.gridDimensions
         let radius          = 2
         
         var wantedCacheCount = 0

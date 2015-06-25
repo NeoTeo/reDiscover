@@ -43,15 +43,8 @@ public class TGCoverDisplayViewController: NSViewController, CoverDisplayViewCon
         let trackingArea = NSTrackingArea(rect: trackingRect, options: [.MouseEnteredAndExited, .MouseMoved, .ActiveInKeyWindow], owner: self, userInfo: nil)
         coverCollectionView.addTrackingArea(trackingArea)
     }
-//    - (void)newSongAdded:(NSNotification*)notification {
-//    // TGLog(TGLOG_REFAC,@"newSongAdded with %@",songId);
-//    id<SongIDProtocol> songId = (id<SongIDProtocol>)notification.object;
-//    [self songPoolDidLoadSongURLWithID:songId];
-//    //REFAC
-//    [_coverDisplayController.view setNeedsDisplay:YES];
-//    }
-//    - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
-//    if (object == imageCollectionView && [keyPath isEqual:selectionIndexPathsKey]) {
+
+    
     public override func observeValueForKeyPath(keyPath: String?, ofObject object: AnyObject?, change: [NSObject : AnyObject]?, context: UnsafeMutablePointer<Void>) {
         if (object === coverCollectionView) && (keyPath == "selectionIndexPaths") {
             print("selected index paths \(coverCollectionView.selectionIndexPaths)")
@@ -72,13 +65,45 @@ public class TGCoverDisplayViewController: NSViewController, CoverDisplayViewCon
 //            let paths: Set<NSIndexPath> = [idxPath]
 //            coverCollectionView.selectItemsAtIndexPaths(paths, scrollPosition: .None)
             if let item = coverCollectionView.itemAtIndex(idxPath.item) as? TGCollectionCover {
-                item.view.layer?.cornerRadius = 80
+                
+                // At this point we don't know yet if the cover has been uncovered.
+                let songId = mappedSongIds[idxPath.item]
+                // Not yet uncovered. So we pick a random song from the unmapped songs.
+                if songId == nil {
+                    // get r!andom songId from unmapped and add it to the mapped
+                    let unmappedCount = UInt32(unmappedSongIdArray.count)
+                    let randIdx = arc4random_uniform(unmappedCount)
+                    
+                    let songId: SongIDProtocol = unmappedSongIdArray[Int(randIdx)]
+                    // So now that we have an id to go with an item we want:
+                    // 1) package the song id and some context in a dictionary
+                    // 2) to signal it.
+                    // For now we bodge it
+                    let dims = NSMakePoint(CGFloat(coverCollectionView.maxNumberOfColumns), CGFloat(coverCollectionView.maxNumberOfRows))
+//                    let context: [String : NSValue] = [
+//                        "spd" : NSValue(point: NSMakePoint(1, 1)),
+//                        "selectedSongId" : NSValue(nonretainedObject: songId),
+//                        "gridDims" : NSValue(point: dims),
+//                        "pos" : NSValue(point: NSMakePoint(1, 1))]
+                    let context = TGSongSelectionContext(selectedSongId: songId, speedVector: NSMakePoint(1, 1), selectionPos: loc, gridDimensions: dims)
+
+                    NSNotificationCenter.defaultCenter().postNotificationName("userSelectedSong", object: context)
+
+                    let image = SongArt.artForSong(SongPool.songForSongId(songId)!)
+                    if image != nil {
+                        unmappedSongIdArray.removeAtIndex(Int(randIdx))
+                        mappedSongIds[idxPath.item] = songId
+                        item.representedObject = CoverImage(image: image)
+                    }
+                }
+                item.view.layer?.cornerRadius = 8
                 item.CoverLabel.stringValue = "Arse"
             }
         }
 
     }
     
+
     func boundsChanged(theEvent: NSEvent) {
         print("Scrollage")
     }
@@ -118,18 +143,7 @@ public class TGCoverDisplayViewController: NSViewController, CoverDisplayViewCon
         if let songId = mappedSongIds[indexPath.item] where indexPath.item < mappedSongIds.count {
             image = SongArt.artForSong(SongPool.songForSongId(songId)!)
         } else {
-            // get r!andom songId from unmapped and add it to the mapped
-            let unmappedCount = UInt32(unmappedSongIdArray.count)
-            let randIdx = arc4random_uniform(unmappedCount)
-            
-            let songId = unmappedSongIdArray[Int(randIdx)]
-            image = SongArt.artForSong(SongPool.songForSongId(songId)!)
-            if image != nil {
-                unmappedSongIdArray.removeAtIndex(Int(randIdx))
-                mappedSongIds[indexPath.item] = songId
-            } else {
-              image = NSImage(named: "fetchingArt")
-            }
+            image = NSImage(named: "songImage")
         }
         let item = collectionView.makeItemWithIdentifier("Cover", forIndexPath: indexPath)
 //        let image = NSImage(named: "fetchingArt")

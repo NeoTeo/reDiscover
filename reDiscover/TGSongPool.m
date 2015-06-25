@@ -937,12 +937,12 @@ static int const kSongPoolStartCapacity = 250;
  This method is called with a cache context that defines the position and speed of the selection and
  is used to determine the optimal caching strategy.
  */
-- (void)cacheWithContext:(NSDictionary*)cacheContext {
-
+//- (void)cacheWithContext:(NSDictionary*)cacheContext {
+- (void)cacheWithContext:(id<SongSelectionContext>)cacheContext {
 
     [songAudioCacher cacheWithContext:cacheContext];
-    id<SongIDProtocol> selectedSongId = [cacheContext objectForKey:@"selectedSongId"];
-    
+
+    id<SongIDProtocol> selectedSongId = cacheContext.selectedSongId;
     //REFAC - set the lastSelectedSongID here so that the songPoolDidStartFetchingSong knows.
 //    lastRequestedSong = [self songForID:selectedSongId];
     lastRequestedSongId = selectedSongId;

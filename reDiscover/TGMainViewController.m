@@ -61,6 +61,9 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(songMetaDataWasUpdated:) name:@"songMetaDataUpdated" object:nil];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(newSongAdded:) name:@"NewSongAdded" object:nil];
+    
+    // REFAC
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(userSelectedSongInContext:) name:@"userSelectedSong" object:nil];
     // ^^ From awakeFromNib
 }
 
@@ -622,7 +625,8 @@
             NSImage *art = [SongArt artForSong:[_currentSongPool songForID:songId]];
             if (art == nil)
                 art = defImg;
-            [_songGridController setCoverImage:art forSongWithID:songId];
+            // REFAC commented out
+            //[_songGridController setCoverImage:art forSongWithID:songId];
         
         if ([songId isEqual:[_currentSongPool lastRequestedSongId]])
         {
@@ -762,7 +766,8 @@
     // REFAC NSImage* songImage = [_songGridController coverImageForSongWithId:songId];
     //NSImage *songImage = [SongArt artForSong:[_currentSongPool songForID:songId]];
     id<TGSong> theSong = [_currentSongPool songForID:songId];
-    if ([theSong.artID isEqualToString:[_songGridController coverImageForSongWithId:songId].hashId] == false)
+    // REFAC commented out
+    //if ([theSong.artID isEqualToString:[_songGridController coverImageForSongWithId:songId].hashId] == false)
     {
         [self updatePanelsForSong:songId defaultImage:[SongArt getNoCoverImage]];
     }
@@ -790,6 +795,30 @@
     }
 }
 
+- (void)userSelectedSongInContext:(NSNotification*)notification {
+
+    id<SongSelectionContext> theContext = (id<SongSelectionContext>)notification.object;
+    id<SongIDProtocol> songId = theContext.selectedSongId;
+    
+    NSPoint speedVector = theContext.speedVector;
+    if (fabs(speedVector.y) > 2) {
+        TGLog(TGLOG_ALL,@">>>>>>>>>>>>>>>>>>>>>");
+        TGLog(TGLOG_ALL,@"Speed cutoff enabled.");//wipwip
+        TGLog(TGLOG_ALL,@"<<<<<<<<<<<<<<<<<<<<<");
+        return;
+    }
+    
+    
+    [_currentSongPool cacheWithContext:theContext];
+    //id<SongIDProtocol> songId = [theContext objectForKey:@"selectedSongId"];
+    [_currentSongPool requestSongPlayback:songId];
+    
+    // reset the idle timer
+    [_idleTimer startIdleTimer];
+    
+}
+
+/*
 - (void)userSelectedSongID:(id<SongIDProtocol>)songID withContext:(NSDictionary *)theContext {
     
     if (theContext != nil) {
@@ -811,7 +840,7 @@
     // reset the idle timer
     [_idleTimer startIdleTimer];
 }
-
+*/
 //- (id)songIDFromGridColumn:(NSInteger)theCol andRow:(NSInteger)theRow {
 //    return [_songGridController songIDFromGridColumn:theCol andRow:theRow];
 //}

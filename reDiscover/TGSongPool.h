@@ -33,7 +33,7 @@
 @protocol SongGridAccessProtocol;
 @protocol TGMainViewControllerDelegate;
 @protocol TGSong;
-
+@protocol SongSelectionContext;
 /**
    A SongID must conform to the SongIDProtocol.
    Currently there's not much point to the SongIDProtocol other than decoupling.
@@ -74,7 +74,8 @@
 - (void)replaceSweetSpots:(NSArray*)sweetSpots forSongID:(id<SongIDProtocol>)songID;
 - (void)setActiveSweetSpotIndex:(int)ssIndex forSongID:(id<SongIDProtocol>)songID;
 
-- (void)cacheWithContext:(NSDictionary*)cacheContext;
+//- (void)cacheWithContext:(NSDictionary*)cacheContext;
+- (void)cacheWithContext:(id<SongSelectionContext>)cacheContext;
 //- (void)newCacheFromCache:(NSMutableSet*)oldCache withContext:(NSDictionary*)cacheContext andHandler:(void (^)(NSMutableSet*))newCacheHandler;
 
 - (NSManagedObjectContext*)TEOSongDataMOC;
