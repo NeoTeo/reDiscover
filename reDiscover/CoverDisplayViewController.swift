@@ -76,15 +76,10 @@ public class TGCoverDisplayViewController: NSViewController, CoverDisplayViewCon
                     
                     let songId: SongIDProtocol = unmappedSongIdArray[Int(randIdx)]
                     // So now that we have an id to go with an item we want:
-                    // 1) package the song id and some context in a dictionary
-                    // 2) to signal it.
-                    // For now we bodge it
+                    // 1) Package the context in a data structure.
+                    // 2) post notification with the context.
+                    //FIXME: For now we bodge the speed vector.
                     let dims = NSMakePoint(CGFloat(coverCollectionView.maxNumberOfColumns), CGFloat(coverCollectionView.maxNumberOfRows))
-//                    let context: [String : NSValue] = [
-//                        "spd" : NSValue(point: NSMakePoint(1, 1)),
-//                        "selectedSongId" : NSValue(nonretainedObject: songId),
-//                        "gridDims" : NSValue(point: dims),
-//                        "pos" : NSValue(point: NSMakePoint(1, 1))]
                     let context = TGSongSelectionContext(selectedSongId: songId, speedVector: NSMakePoint(1, 1), selectionPos: loc, gridDimensions: dims)
 
                     NSNotificationCenter.defaultCenter().postNotificationName("userSelectedSong", object: context)
@@ -95,9 +90,11 @@ public class TGCoverDisplayViewController: NSViewController, CoverDisplayViewCon
                         mappedSongIds[idxPath.item] = songId
                         item.representedObject = CoverImage(image: image)
                     }
+                    
+                    item.view.layer?.cornerRadius = 8
+                    item.CoverLabel.stringValue = "Arse"
+                    //coverCollectionView.reloadData()
                 }
-                item.view.layer?.cornerRadius = 8
-                item.CoverLabel.stringValue = "Arse"
             }
         }
 
@@ -123,7 +120,7 @@ public class TGCoverDisplayViewController: NSViewController, CoverDisplayViewCon
     }
     
     func updateCovers(notification: NSNotification) {
-        coverCollectionView.reloadData()
+        //coverCollectionView.reloadData()
         print("Cover update")
     }
     //MARK: NSCollectionViewDataSource methods
@@ -132,6 +129,7 @@ public class TGCoverDisplayViewController: NSViewController, CoverDisplayViewCon
 //    }
     
     public func collectionView(collectionView: NSCollectionView, numberOfItemsInSection section: Int) -> Int {
+        print("song count: \(songCount)")
         return songCount
     }
     
@@ -142,9 +140,13 @@ public class TGCoverDisplayViewController: NSViewController, CoverDisplayViewCon
         // Find the referenced image and connect it to the item
         if let songId = mappedSongIds[indexPath.item] where indexPath.item < mappedSongIds.count {
             image = SongArt.artForSong(SongPool.songForSongId(songId)!)
-        } else {
+        }
+        
+        if image == nil {
+            print("image was nil")
             image = NSImage(named: "songImage")
         }
+        
         let item = collectionView.makeItemWithIdentifier("Cover", forIndexPath: indexPath)
 //        let image = NSImage(named: "fetchingArt")
         let obj = CoverImage(image: image)

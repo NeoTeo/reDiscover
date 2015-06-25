@@ -103,14 +103,19 @@
 
     [self.view.window makeFirstResponder:self];
 
-    NSAssert(_theURL != nil, @"There is no URL to load from.");
-
-    [self setSongPool:[[TGSongPool alloc] init]];
-    [_currentSongPool loadFromURL:_theURL];
+//    NSAssert(_theURL != nil, @"There is no URL to load from.");
+//
+//    [self setSongPool:[[TGSongPool alloc] init]];
+//    [_currentSongPool loadFromURL:_theURL];
 }
 
 
 -(void)viewDidAppear {
+    NSAssert(_theURL != nil, @"There is no URL to load from.");
+    
+    [self setSongPool:[[TGSongPool alloc] init]];
+    [_currentSongPool loadFromURL:_theURL];
+
     [self.view addSubview:_songUIController.view];
     
     // Add debug view overlay
