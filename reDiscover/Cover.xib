@@ -12,6 +12,14 @@
             <rect key="frame" x="0.0" y="0.0" width="120" height="120"/>
             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
             <subviews>
+                <imageView horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="nsD-La-YiA" customClass="CoverImageView" customModule="reDiscover" customModuleProvider="target">
+                    <rect key="frame" x="0.0" y="0.0" width="120" height="120"/>
+                    <animations/>
+                    <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" id="06w-fv-u9k"/>
+                    <connections>
+                        <binding destination="dw1-3Z-xb2" name="value" keyPath="representedObject.previewImage" id="cfi-Zn-nPT"/>
+                    </connections>
+                </imageView>
                 <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="5fV-Eh-ktg">
                     <rect key="frame" x="42" y="90" width="37" height="17"/>
                     <animations/>
@@ -21,14 +29,6 @@
                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                     </textFieldCell>
                 </textField>
-                <imageView horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="nsD-La-YiA" customClass="CoverImageView" customModule="reDiscover" customModuleProvider="target">
-                    <rect key="frame" x="0.0" y="0.0" width="120" height="120"/>
-                    <animations/>
-                    <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" id="06w-fv-u9k"/>
-                    <connections>
-                        <binding destination="dw1-3Z-xb2" name="value" keyPath="representedObject.previewImage" id="cfi-Zn-nPT"/>
-                    </connections>
-                </imageView>
             </subviews>
             <constraints>
                 <constraint firstAttribute="bottom" secondItem="nsD-La-YiA" secondAttribute="bottom" id="4zw-z9-n5A"/>

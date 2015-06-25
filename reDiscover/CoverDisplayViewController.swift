@@ -67,11 +67,12 @@ public class TGCoverDisplayViewController: NSViewController, CoverDisplayViewCon
         
         currentIdxPath = idxPath
         print("The index is \(idxPath)")
-
+        
         if let item = coverCollectionView.itemAtIndex(idxPath.item) as? TGCollectionCover {
             print("the item is \(item)")
             // At this point we don't know yet if the cover has been uncovered.
-            let songId = mappedSongIds[idxPath.item]
+            var songId = mappedSongIds[idxPath.item]
+
             // Not yet uncovered. So we pick a random song from the unmapped songs.
             if songId == nil {
                 print("unCover!")
@@ -79,27 +80,32 @@ public class TGCoverDisplayViewController: NSViewController, CoverDisplayViewCon
                 let unmappedCount = UInt32(unmappedSongIdArray.count)
                 let randIdx = arc4random_uniform(unmappedCount)
                 
-                let songId: SongIDProtocol = unmappedSongIdArray[Int(randIdx)]
-                // So now that we have an id to go with an item we want:
-                // 1) Package the context in a data structure.
-                // 2) post notification with the context.
-                //FIXME: For now we bodge the speed vector.
-                let dims = NSMakePoint(CGFloat(coverCollectionView.maxNumberOfColumns), CGFloat(coverCollectionView.maxNumberOfRows))
-                let context = TGSongSelectionContext(selectedSongId: songId, speedVector: NSMakePoint(1, 1), selectionPos: loc, gridDimensions: dims)
-
-                NSNotificationCenter.defaultCenter().postNotificationName("userSelectedSong", object: context)
-
-                let image = SongArt.artForSong(SongPool.songForSongId(songId)!)
-                if image != nil {
-                    unmappedSongIdArray.removeAtIndex(Int(randIdx))
-                    mappedSongIds[idxPath.item] = songId
-                    item.representedObject = CoverImage(image: image)
-                }
-                
-                item.view.layer?.cornerRadius = 8
-                item.CoverLabel.stringValue = "Uncovered"
-                //coverCollectionView.reloadData()
+                songId = unmappedSongIdArray.removeAtIndex(Int(randIdx))
             }
+            
+            // So now that we have an id to go with an item we want:
+            // 1) Package the context in a data structure.
+            // 2) post notification with the context.
+            //FIXME: For now we bodge the speed vector.
+            let dims = NSMakePoint(CGFloat(coverCollectionView.maxNumberOfColumns), CGFloat(coverCollectionView.maxNumberOfRows))
+            let context = TGSongSelectionContext(selectedSongId: songId!, speedVector: NSMakePoint(1, 1), selectionPos: loc, gridDimensions: dims)
+
+            NSNotificationCenter.defaultCenter().postNotificationName("userSelectedSong", object: context)
+            
+            let image = SongArt.artForSong(SongPool.songForSongId(songId!)!)
+            if image != nil {
+                item.representedObject = CoverImage(image: image)
+            }
+            
+            mappedSongIds[idxPath.item] = songId
+            
+            item.view.layer?.cornerRadius = 8
+            item.CoverLabel.stringValue = "Uncovered"
+            
+            let tmpSong = SongPool.songForSongId(songId!)!
+            print("Title: \(tmpSong.metadata?.title) for songId : \(songId)")
+                
+            
         }
     }
     
@@ -113,18 +119,43 @@ public class TGCoverDisplayViewController: NSViewController, CoverDisplayViewCon
             // Internally (from methods) it's ok to mutate the array.
             // How can we know if the songIDProtocol object is value or reference type?
             // And so how can we know if the unmappedSongIdArray is value or reference based?
+            //FIXME:
             unmappedSongIdArray.append(songId)
-            // defensive copying - bah
 
-            print("Added song with id: \(songId)")
+            // The next empty index is the same as the songCount (number of songs in collection).
+            let newIndexPath = NSIndexPath(forItem: songCount, inSection: 0)
             songCount++
-            coverCollectionView.reloadData()
+            
+            // insertItemsAtIndexPaths wants a set, so we make a set.
+            let indexPaths: Set<NSIndexPath> = [newIndexPath]
+            
+            // collection view flips if we do this off the main queue, so The Dude abides.
+            dispatch_async(dispatch_get_main_queue()){
+                self.coverCollectionView.insertItemsAtIndexPaths(indexPaths)
+            }
         }
     }
     
     func updateCovers(notification: NSNotification) {
-        //coverCollectionView.reloadData()
         print("Cover update")
+      // We should call the cover animation from here.
+        
+        // How to get from songId to indexPath
+//        if let songId = notification.object as? SongIDProtocol {
+//            for var idx = 0 ; idx < mappedSongIds.count ; idx++ {
+//                if let mappedId: SongIDProtocol = mappedSongIds[idx] {
+//                    if mappedId.isEqual(songId) {
+//                        let newIndexPath = NSIndexPath(forItem: idx, inSection: 0)
+//                        let iPaths: Set<NSIndexPath> = [newIndexPath]
+//                        print("reloading at \(newIndexPath)")
+//                        dispatch_async(dispatch_get_main_queue()){
+//                            self.coverCollectionView.reloadItemsAtIndexPaths(iPaths)
+//                        }
+//                        return
+//                    }
+//                }
+//            }
+//        }
     }
     //MARK: NSCollectionViewDataSource methods
 //    public func numberOfSectionsInCollectionView(collectionView: NSCollectionView) -> Int {
@@ -158,8 +189,8 @@ public class TGCoverDisplayViewController: NSViewController, CoverDisplayViewCon
         return item
     }
     
-    public func collectionView(collectionView: NSCollectionView, viewForSupplementaryElementOfKind kind: String, atIndexPath indexPath: NSIndexPath) -> NSView {
-        return NSView()
-    }
+//    public func collectionView(collectionView: NSCollectionView, viewForSupplementaryElementOfKind kind: String, atIndexPath indexPath: NSIndexPath) -> NSView {
+//        return NSView()
+//    }
     
 }
