@@ -28,7 +28,7 @@ public class TGCoverDisplayViewController: NSViewController, CoverDisplayViewCon
     private var mappedSongIds: [Int:SongIDProtocol] = [:]
     private var songCount = 0
     
-    
+    private var currentIdxPath: NSIndexPath?
     
     public override func awakeFromNib() {
 
@@ -41,7 +41,8 @@ public class TGCoverDisplayViewController: NSViewController, CoverDisplayViewCon
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "boundsChanged:", name: NSScrollViewDidLiveScrollNotification, object: nil)
         let trackingRect = NSMakeRect(0, 0, self.view.frame.width, self.view.frame.height)
         let trackingArea = NSTrackingArea(rect: trackingRect, options: [.MouseEnteredAndExited, .MouseMoved, .ActiveInKeyWindow], owner: self, userInfo: nil)
-        coverCollectionView.addTrackingArea(trackingArea)
+        //coverCollectionView.addTrackingArea(trackingArea)
+        self.view.addTrackingArea(trackingArea)
     }
 
     
@@ -59,45 +60,47 @@ public class TGCoverDisplayViewController: NSViewController, CoverDisplayViewCon
         // Convert the mouse pointer coordinates to the coverCollectionView coordinates. 
         // This does takes scrolling into consideration.
         let loc = coverCollectionView.convertPoint(theEvent.locationInWindow, fromView: nil)
+
+        guard let idxPath = coverCollectionView.indexPathForItemAtPoint(loc) where idxPath != currentIdxPath else {
+            return
+        }
         
-        if let idxPath = coverCollectionView.indexPathForItemAtPoint(loc) {
-            print("The index is \(idxPath)")
-//            let paths: Set<NSIndexPath> = [idxPath]
-//            coverCollectionView.selectItemsAtIndexPaths(paths, scrollPosition: .None)
-            if let item = coverCollectionView.itemAtIndex(idxPath.item) as? TGCollectionCover {
+        currentIdxPath = idxPath
+        print("The index is \(idxPath)")
+
+        if let item = coverCollectionView.itemAtIndex(idxPath.item) as? TGCollectionCover {
+            print("the item is \(item)")
+            // At this point we don't know yet if the cover has been uncovered.
+            let songId = mappedSongIds[idxPath.item]
+            // Not yet uncovered. So we pick a random song from the unmapped songs.
+            if songId == nil {
+                print("unCover!")
+                // get r!andom songId from unmapped and add it to the mapped
+                let unmappedCount = UInt32(unmappedSongIdArray.count)
+                let randIdx = arc4random_uniform(unmappedCount)
                 
-                // At this point we don't know yet if the cover has been uncovered.
-                let songId = mappedSongIds[idxPath.item]
-                // Not yet uncovered. So we pick a random song from the unmapped songs.
-                if songId == nil {
-                    // get r!andom songId from unmapped and add it to the mapped
-                    let unmappedCount = UInt32(unmappedSongIdArray.count)
-                    let randIdx = arc4random_uniform(unmappedCount)
-                    
-                    let songId: SongIDProtocol = unmappedSongIdArray[Int(randIdx)]
-                    // So now that we have an id to go with an item we want:
-                    // 1) Package the context in a data structure.
-                    // 2) post notification with the context.
-                    //FIXME: For now we bodge the speed vector.
-                    let dims = NSMakePoint(CGFloat(coverCollectionView.maxNumberOfColumns), CGFloat(coverCollectionView.maxNumberOfRows))
-                    let context = TGSongSelectionContext(selectedSongId: songId, speedVector: NSMakePoint(1, 1), selectionPos: loc, gridDimensions: dims)
+                let songId: SongIDProtocol = unmappedSongIdArray[Int(randIdx)]
+                // So now that we have an id to go with an item we want:
+                // 1) Package the context in a data structure.
+                // 2) post notification with the context.
+                //FIXME: For now we bodge the speed vector.
+                let dims = NSMakePoint(CGFloat(coverCollectionView.maxNumberOfColumns), CGFloat(coverCollectionView.maxNumberOfRows))
+                let context = TGSongSelectionContext(selectedSongId: songId, speedVector: NSMakePoint(1, 1), selectionPos: loc, gridDimensions: dims)
 
-                    NSNotificationCenter.defaultCenter().postNotificationName("userSelectedSong", object: context)
+                NSNotificationCenter.defaultCenter().postNotificationName("userSelectedSong", object: context)
 
-                    let image = SongArt.artForSong(SongPool.songForSongId(songId)!)
-                    if image != nil {
-                        unmappedSongIdArray.removeAtIndex(Int(randIdx))
-                        mappedSongIds[idxPath.item] = songId
-                        item.representedObject = CoverImage(image: image)
-                    }
-                    
-                    item.view.layer?.cornerRadius = 8
-                    item.CoverLabel.stringValue = "Arse"
-                    //coverCollectionView.reloadData()
+                let image = SongArt.artForSong(SongPool.songForSongId(songId)!)
+                if image != nil {
+                    unmappedSongIdArray.removeAtIndex(Int(randIdx))
+                    mappedSongIds[idxPath.item] = songId
+                    item.representedObject = CoverImage(image: image)
                 }
+                
+                item.view.layer?.cornerRadius = 8
+                item.CoverLabel.stringValue = "Uncovered"
+                //coverCollectionView.reloadData()
             }
         }
-
     }
     
 
