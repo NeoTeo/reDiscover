@@ -8,11 +8,18 @@
 
 import Cocoa
 
+//: I can't figure out how to make a protocol that both requires the methods I'm
+// declaring and the methods of NSCollectionViewItem so there's little point in 
+// using a protocol at all here - so I'm commenting it out until if figure out how.
+//protocol CollectionCover  {
+//    var CoverLabel: NSTextField! { get set }
+//}
 /*
 An NSCollectionViewItem that visually represents a CoverImage in an
 NSCollectionView.  A TGCollectionCover's "representedObject" property points to its
 CoverImage.
 */
+//class TGCollectionCover: NSCollectionViewItem, CollectionCover {
 class TGCollectionCover: NSCollectionViewItem {
 
     @IBOutlet weak var CoverLabel: NSTextField!

@@ -68,6 +68,7 @@
 		AB85BC5A1875AD1500670905 /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AB85BC591875AD1500670905 /* CoreMedia.framework */; };
 		AB85BC5C1875AD3B00670905 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AB85BC5B1875AD3B00670905 /* QuartzCore.framework */; };
 		AB85BC5F1875AD7A00670905 /* TGSongGridScrollView.m in Sources */ = {isa = PBXBuildFile; fileRef = AB85BC5E1875AD7A00670905 /* TGSongGridScrollView.m */; };
+		AB9479D61B419FF2004B7C82 /* Dictionary+Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB9479D51B419FF2004B7C82 /* Dictionary+Utils.swift */; };
 		ABAF47821B38590600F13528 /* CoverImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABAF47811B38590600F13528 /* CoverImage.swift */; };
 		ABB2B6621ADEB38F004F9F87 /* NSImage+HashId.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABB2B6611ADEB38F004F9F87 /* NSImage+HashId.swift */; };
 		ABB33FF019C72C3800439A5E /* SweetSpotServerIO.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABB33FEF19C72C3800439A5E /* SweetSpotServerIO.swift */; };
@@ -197,6 +198,7 @@
 		AB85BC5E1875AD7A00670905 /* TGSongGridScrollView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TGSongGridScrollView.m; sourceTree = "<group>"; };
 		AB85BC621875B2E000670905 /* libc++.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libc++.dylib"; path = "usr/lib/libc++.dylib"; sourceTree = SDKROOT; };
 		AB85BC641875B2F600670905 /* Accelerate.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accelerate.framework; path = System/Library/Frameworks/Accelerate.framework; sourceTree = SDKROOT; };
+		AB9479D51B419FF2004B7C82 /* Dictionary+Utils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Dictionary+Utils.swift"; sourceTree = "<group>"; };
 		ABAF47811B38590600F13528 /* CoverImage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CoverImage.swift; sourceTree = "<group>"; };
 		ABB2B6611ADEB38F004F9F87 /* NSImage+HashId.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSImage+HashId.swift"; sourceTree = "<group>"; };
 		ABB33FEF19C72C3800439A5E /* SweetSpotServerIO.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SweetSpotServerIO.swift; sourceTree = "<group>"; };
@@ -400,6 +402,7 @@
 		AB85BBCA1875AACF00670905 = {
 			isa = PBXGroup;
 			children = (
+				AB9479D51B419FF2004B7C82 /* Dictionary+Utils.swift */,
 				ABB592E61B2ECCA700B57CC5 /* GUI */,
 				ABDBA6861AF0F5A60069CFFB /* AcoustIDWebService.swift */,
 				ABF767441AEE82B4007C7A12 /* LocalFileIO.swift */,
@@ -708,6 +711,7 @@
 				ABFD9DD41AD4217700718631 /* SongUUID.swift in Sources */,
 				ABCA1E211B00E988003CFB93 /* AudioFileStore.swift in Sources */,
 				ABB2B6621ADEB38F004F9F87 /* NSImage+HashId.swift in Sources */,
+				AB9479D61B419FF2004B7C82 /* Dictionary+Utils.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
