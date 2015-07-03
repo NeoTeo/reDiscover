@@ -771,8 +771,9 @@
 //    TGLog(TGLOG_REFAC,@"SONG COVER UPDATED NOTIFICATION FOR %@",songId);
     // REFAC NSImage* songImage = [_songGridController coverImageForSongWithId:songId];
     //NSImage *songImage = [SongArt artForSong:[_currentSongPool songForID:songId]];
-    id<TGSong> theSong = [_currentSongPool songForID:songId];
+    
     // REFAC commented out
+    //id<TGSong> theSong = [_currentSongPool songForID:songId];
     //if ([theSong.artID isEqualToString:[_songGridController coverImageForSongWithId:songId].hashId] == false)
     {
         [self updatePanelsForSong:songId defaultImage:[SongArt getNoCoverImage]];
@@ -847,8 +848,10 @@
     [_idleTimer startIdleTimer];
 }
 */
-//- (id)songIDFromGridColumn:(NSInteger)theCol andRow:(NSInteger)theRow {
-//    return [_songGridController songIDFromGridColumn:theCol andRow:theRow];
-//}
+// REFAC
+- (id)songIdFromGridPos:(NSPoint) pos {
+
+    return [_coverDisplayController songIdFromGridPos:pos];
+}
 
 @end

@@ -8,8 +8,12 @@
 
 import Foundation
 
+
 @objc
 public protocol CoverDisplayViewController {
+    
+    //: Return a song id given a column, row coordinate position
+     func songIdFromGridPos(gridPos: NSPoint) -> SongIDProtocol?
     
 }
 
@@ -77,6 +81,7 @@ public class TGCoverDisplayViewController: NSViewController, CoverDisplayViewCon
                 let randIdx = arc4random_uniform(unmappedCount)
                 
                 songId = unmappedSongIdArray.removeAtIndex(Int(randIdx))
+                mappedSongIds[idxPath.item] = songId
             }
             
 //            if let song = SongPool.songForSongId(songId!),
@@ -84,29 +89,38 @@ public class TGCoverDisplayViewController: NSViewController, CoverDisplayViewCon
 //                item.representedObject = CoverImage(image: image)
 //            }
             
-            mappedSongIds[idxPath.item] = songId
-            
-            postNotificationOfSelection(songId!, atLocation: loc)
+            postNotificationOfSelection(songId!, atIndex: idxPath.item)
             
 //            item.view.layer?.cornerRadius = 8
-            item.CoverLabel.stringValue = "Insta?"
+            item.CoverLabel.stringValue = "mouse over"
             
 //            let tmpSong = SongPool.songForSongId(songId!)!
 //            print("Title: \(tmpSong.metadata?.title) for songId : \(songId)")
         }
     }
     
-    func postNotificationOfSelection(songId: SongIDProtocol, atLocation loc: NSPoint) {
+    
+    func postNotificationOfSelection(songId: SongIDProtocol, atIndex idx: Int) {
         // 1) Package the context in a data structure.
         // 2) post notification with the context.
-        //FIXME: For now we bodge the speed vector.
+        //FIXME: For now we bodge the speed vector. And the dims.
+        
+        let (cols, rows) = (coverCollectionView.collectionViewLayout as! NSCollectionViewFlowLayout).colsAndRowsFromLayout()
 
-        let dims = NSMakePoint(CGFloat(coverCollectionView.maxNumberOfColumns), CGFloat(coverCollectionView.maxNumberOfRows))
+        let y = Int(floor(CGFloat(idx / cols)))
+        let x = Int(floor(CGFloat(idx - (cols * y))))
+        let loc = NSMakePoint(CGFloat(x), CGFloat(y))
+        
+        print("cols \(cols) and rows \(rows), x \(x) and y \(y)")
+        
+        //let dims = NSMakePoint(CGFloat(coverCollectionView.maxNumberOfColumns), CGFloat(coverCollectionView.maxNumberOfRows))
+        let dims = NSMakePoint(CGFloat(cols), CGFloat(rows))
         let context = TGSongSelectionContext(selectedSongId: songId, speedVector: NSMakePoint(1, 1), selectionPos: loc, gridDimensions: dims)
         
         NSNotificationCenter.defaultCenter().postNotificationName("userSelectedSong", object: context)
         
     }
+    
     
     func coverAndIdxAtLocation(location: NSPoint) -> (TGCollectionCover, NSIndexPath)? {
         
@@ -117,7 +131,20 @@ public class TGCoverDisplayViewController: NSViewController, CoverDisplayViewCon
         return nil
     }
     
+    //: Return the songId found at the position in the grid. Nil if not found.
+    public func songIdFromGridPos(gridPos: NSPoint) -> SongIDProtocol? {
+        
+        return mappedSongIds[indexFromGridPos(gridPos)]
+    }
 
+    // Convert from a column and row coordinate point to a flat index.
+    func indexFromGridPos(gridPos: NSPoint) -> Int {
+        
+        let (cols, _) = (coverCollectionView.collectionViewLayout as! NSCollectionViewFlowLayout).colsAndRowsFromLayout()
+        
+        return Int(gridPos.y) * cols + Int(gridPos.x)
+    }
+    
     func boundsChanged(theEvent: NSEvent) {
         print("Scrollage")
     }
@@ -144,6 +171,7 @@ public class TGCoverDisplayViewController: NSViewController, CoverDisplayViewCon
         }
     }
     
+    
     func updateCovers(notification: NSNotification) {
         print("Cover update")
       // We should call the cover animation from here.
@@ -168,15 +196,13 @@ public class TGCoverDisplayViewController: NSViewController, CoverDisplayViewCon
 //    }
     
     public func collectionView(collectionView: NSCollectionView, numberOfItemsInSection section: Int) -> Int {
-        print("song count: \(songCount)")
         return songCount
     }
     
     public func collectionView(collectionView: NSCollectionView, itemForRepresentedObjectAtIndexPath indexPath: NSIndexPath) -> NSCollectionViewItem {
-        
+        print("returning item for index \(indexPath)")
         let item = collectionView.makeItemWithIdentifier("Cover", forIndexPath: indexPath) as! TGCollectionCover
         item.CoverLabel.stringValue = "covered"
-        
         var image: NSImage?
         // If the indexpath is not associated with a song, pick a random unassigned
         // song and associate them, then return the item.
@@ -184,7 +210,9 @@ public class TGCoverDisplayViewController: NSViewController, CoverDisplayViewCon
         if let songId = mappedSongIds[indexPath.item] {
             image = SongArt.artForSong(SongPool.songForSongId(songId)!)
             item.CoverLabel.stringValue = "mapped & uncovered"
-            item.view.layer?.cornerRadius = 8
+//            item.view.layer?.cornerRadius = 8
+        } else {
+            item.CoverLabel.stringValue = "covered"
         }
         
         if image == nil {
@@ -194,9 +222,10 @@ public class TGCoverDisplayViewController: NSViewController, CoverDisplayViewCon
         
 
 //        let image = NSImage(named: "fetchingArt")
-        let obj = CoverImage(image: image)
+        print("the image is \(image)")
+        let obj = CoverImage(image: image!)
         item.representedObject = obj
-
+        item.view.layer?.cornerRadius = 8
         return item
     }
     
@@ -204,4 +233,20 @@ public class TGCoverDisplayViewController: NSViewController, CoverDisplayViewCon
 //        return NSView()
 //    }
     
+}
+
+//: Extend the flow layout to provide column and row coordinates of its layout.
+extension NSCollectionViewFlowLayout {
+    
+    func colsAndRowsFromLayout() -> (Int, Int) {
+        let contSize = collectionViewContentSize()
+        let iSpacing = minimumInteritemSpacing
+        let lSpacing = minimumLineSpacing
+        let inset = sectionInset
+        
+        let cols = Int(ceil((contSize.width - (inset.left + inset.right)) / (itemSize.width+iSpacing)))
+        let rows = Int(ceil((contSize.height - (inset.top + inset.bottom)) / (itemSize.height+lSpacing)))
+        return (cols, rows)
+    }
+
 }

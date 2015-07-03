@@ -707,8 +707,9 @@ static int const kSongPoolStartCapacity = 250;
 }
 
 - (id<SongIDProtocol>)songIdFromGridPos:(NSPoint)gridPosition {
-
-    return [_songGridAccessAPI songIDFromGridColumn:gridPosition.x andRow:gridPosition.y];
+    //REFAC
+    return [_delegate songIdFromGridPos:gridPosition];
+    //return [_songGridAccessAPI songIDFromGridColumn:gridPosition.x andRow:gridPosition.y];
 }
 
 #pragma mark -

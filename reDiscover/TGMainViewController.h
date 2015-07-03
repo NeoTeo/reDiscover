@@ -30,6 +30,7 @@
 - (void)userSelectedSongID:(id<SongIDProtocol>)songID withContext:(NSDictionary*)theContext;
 - (void)setDebugCachedFlagsForSongIDArray:(NSArray*)songIDs toValue:(BOOL)value;
 -(BOOL)isUIShowing;
+- (id)songIdFromGridPos:(NSPoint) pos;
 @end
 
 @interface TGMainViewController : NSViewController //<TGMainViewControllerDelegate>

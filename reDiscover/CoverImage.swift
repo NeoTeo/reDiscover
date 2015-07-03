@@ -13,7 +13,7 @@ final class CoverImage : NSObject {
     // through Obj-c's runtime so this can be KVO bound.
     dynamic let previewImage: NSImage?
     
-    init(image: NSImage? = nil) {
+    init(image: NSImage) {
         previewImage = image
     }
 }

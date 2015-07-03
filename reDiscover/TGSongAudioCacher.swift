@@ -43,7 +43,7 @@ final class TGSongAudioCacher : NSObject {
         
         let operationBlock = NSBlockOperation()
         
-        operationBlock.addExecutionBlock(){ [unowned operationBlock] in
+        operationBlock.addExecutionBlock(){// [unowned operationBlock] in
             let cacheTask = TGSongAudioCacheTask(songPoolAPI: self.songPoolAPI)
             self.songPlayerCache = cacheTask.cacheWithContext(theContext)
             
