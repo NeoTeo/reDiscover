@@ -29,27 +29,5 @@ class TGCollectionCover: NSCollectionViewItem {
         // Do view setup here.
     }
 
-    // NSCollectionViewItems are not subclasses of NSView
-//    override func acceptsFirstMouse() -> Bool {
-//        return false
-//    }
-    
-//    override func mouseDown(theEvent: NSEvent) {
-//        print("Tits")
-//        NSResponder.printResponderChain(self)
-//    }
-    
 }
 
-extension NSResponder {
-    static func printResponderChain(responder: NSResponder?) {
-        guard let r = responder else {
-            print("End of chain.")
-            return
-        }
-        print( r )
-        printResponderChain(r.nextResponder)
-        
-    }
-
-}

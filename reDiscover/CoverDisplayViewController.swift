@@ -17,12 +17,13 @@ public protocol CoverDisplayViewController {
     
 }
 
-// Override the NSCollectionView's mouseDown so it isn't swallowed by the default implementation.
-extension NSCollectionView {
-    override public func mouseDown(theEvent: NSEvent) {
-        self.nextResponder?.mouseDown(theEvent)
-    }
-}
+// Decided to let this handle the mouse down after all.
+//// Override the NSCollectionView's mouseDown so it isn't swallowed by the default implementation.
+//extension NSCollectionView {
+//    override public func mouseDown(theEvent: NSEvent) {
+//        self.nextResponder?.mouseDown(theEvent)
+//    }
+//}
 
 /*:
 The way we randomize the songs for display is/was:
@@ -40,22 +41,28 @@ public class TGCoverDisplayViewController: NSViewController, CoverDisplayViewCon
     private var songCount = 0
     
     private var currentIdxPath: NSIndexPath?
+    private var songUIController: TGSongUIPopupController?
     
     public override func awakeFromNib() {
 
         coverCollectionView.selectable = true
         // Watch for changes to the CollectionView's selection, just so we can update our status display.
-//        coverCollectionView.addObserver(self, forKeyPath:"selectionIndexPaths" , options: .New, context: nil)
+        coverCollectionView.addObserver(self, forKeyPath:"selectionIndexPaths" , options: .New, context: nil)
 
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "updateSongs:", name: "NewSongAdded", object: nil)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "updateCovers:", name: "songCoverUpdated", object: nil)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "boundsChanged:", name: NSScrollViewDidLiveScrollNotification, object: nil)
+        
         let trackingRect = NSMakeRect(0, 0, self.view.frame.width, self.view.frame.height)
         let trackingArea = NSTrackingArea(rect: trackingRect, options: [.MouseEnteredAndExited, .MouseMoved, .ActiveInKeyWindow], owner: self, userInfo: nil)
-        //coverCollectionView.addTrackingArea(trackingArea)
+        
         self.view.addTrackingArea(trackingArea)
         
-        print("the TGCoverDisplayViewController view is \(self.view)")
+        // Load the UIPopup if it hasn't already been.
+        if songUIController == nil {
+            songUIController = TGSongUIPopupController(nibName: "TGSongUIPopupController", bundle: nil)
+            self.view.addSubview(songUIController!.view)
+        }
     }
 
     //: Called when mouse down on covers (if we've added an observer for seletionIndexPaths).
@@ -63,16 +70,21 @@ public class TGCoverDisplayViewController: NSViewController, CoverDisplayViewCon
         if (object === coverCollectionView) && (keyPath == "selectionIndexPaths") {
             print("selected index paths \(coverCollectionView.selectionIndexPaths)")
             
+            if let idxPath = coverCollectionView.selectionIndexPaths.first {
+                let itemFrame = coverCollectionView.frameForItemAtIndex(idxPath.item)
+                let newPos = self.view.convertPoint(itemFrame.origin, fromView: coverCollectionView)
+                // Turn the position into lower left rather than upper left
+                let newFrame = CGRectMake(newPos.x, newPos.y-itemFrame.size.height, itemFrame.size.width, itemFrame.size.height)
+                print("old frame \(itemFrame), new frame \(newFrame)")
+                songUIController!.showInside(!songUIController!.isUIActive(), frame: newFrame)
+            }
         } else {
             print("Bada Boom")
         }
     }
     
-//    override public func mouseDown(theEvent: NSEvent) {
-//        print("balls")
-//        NSResponder.printResponderChain(self)
-//    }
-
+    /*: Uncover covered song covers that the mouse moves over.
+    */
     public override func mouseMoved(theEvent: NSEvent) {
         
         // Convert the mouse pointer coordinates to the coverCollectionView coordinates. 
@@ -84,32 +96,26 @@ public class TGCoverDisplayViewController: NSViewController, CoverDisplayViewCon
             currentIdxPath = idxPath
             print("The item and index is \(item) \(idxPath)")
             
-            // At this point we don't know yet if the cover has been uncovered.
+            //: At this point we don't know yet if the cover has been uncovered.
+            //: If a songId is found in the mappedSongIds it means it has already been uncovered.
             var songId = mappedSongIds[idxPath.item]
 
             // Not yet uncovered. So we pick a random song from the unmapped songs.
             if songId == nil {
                 print("unCover!")
-                // get random songId from unmapped and add it to the mapped
+                // remove a random songId from unmapped and add it to the mapped
                 let unmappedCount = UInt32(unmappedSongIdArray.count)
                 let randIdx = arc4random_uniform(unmappedCount)
                 
                 songId = unmappedSongIdArray.removeAtIndex(Int(randIdx))
                 mappedSongIds[idxPath.item] = songId
             }
-            
-//            if let song = SongPool.songForSongId(songId!),
-//                let image = SongArt.artForSong(song) {
-//                item.representedObject = CoverImage(image: image)
-//            }
-            
+
+            // Let anyone interested know the user has selected songId
             postNotificationOfSelection(songId!, atIndex: idxPath.item)
             
-//            item.view.layer?.cornerRadius = 8
             item.CoverLabel.stringValue = "mouse over"
-            
-//            let tmpSong = SongPool.songForSongId(songId!)!
-//            print("Title: \(tmpSong.metadata?.title) for songId : \(songId)")
+            // At this point we should probably initiate a cover animation.
         }
     }
     
@@ -117,17 +123,18 @@ public class TGCoverDisplayViewController: NSViewController, CoverDisplayViewCon
     func postNotificationOfSelection(songId: SongIDProtocol, atIndex idx: Int) {
         // 1) Package the context in a data structure.
         // 2) post notification with the context.
-        //FIXME: For now we bodge the speed vector. And the dims.
+        //FIXME: For now we bodge the speed vector.
         
+        // Get the dimensions in rows and columns of the current cover collection layout.
         let (cols, rows) = (coverCollectionView.collectionViewLayout as! NSCollectionViewFlowLayout).colsAndRowsFromLayout()
 
+        // Compute the column and row location of the given index.
         let y = Int(floor(CGFloat(idx / cols)))
         let x = Int(floor(CGFloat(idx - (cols * y))))
         let loc = NSMakePoint(CGFloat(x), CGFloat(y))
         
         print("cols \(cols) and rows \(rows), x \(x) and y \(y)")
         
-        //let dims = NSMakePoint(CGFloat(coverCollectionView.maxNumberOfColumns), CGFloat(coverCollectionView.maxNumberOfRows))
         let dims = NSMakePoint(CGFloat(cols), CGFloat(rows))
         let context = TGSongSelectionContext(selectedSongId: songId, speedVector: NSMakePoint(1, 1), selectionPos: loc, gridDimensions: dims)
         
@@ -163,7 +170,12 @@ public class TGCoverDisplayViewController: NSViewController, CoverDisplayViewCon
         print("Scrollage")
     }
     
-     func updateSongs(notification: NSNotification) {
+    /*: 
+        Called when a new song with songId is added.
+        Adds the new songId to the unmapped songs and inserts it into the coverCollectionView
+        as a covered album cover so the user can see the collection grow as songs are loaded.
+    */
+    func updateSongs(notification: NSNotification) {
         if let songId = notification.object as? SongIDProtocol {
             // Internally (from methods) it's ok to mutate the array.
             // How can we know if the songIDProtocol object is value or reference type?
@@ -186,11 +198,19 @@ public class TGCoverDisplayViewController: NSViewController, CoverDisplayViewCon
     }
     
     
+    /**:
+        Called when a song with songId has loaded its cover art.
+    */
     func updateCovers(notification: NSNotification) {
         print("Cover update")
-      // We should call the cover animation from here.
+      // We should call the cover fade-in animation from here.
         
-        // How to get from songId to indexPath
+        // Not sure this is the best way – O(n), but for now it works.
+        // Traverse all the mapped songs dictionary looking for a match with songId.
+        // If a match is found we reload only the item at the given index.
+        // For the default nine item grid it is probably just as fast to just reload all 
+        // the visible items, but it doesn't scale well if we decided to allow arbitrary
+        // sizes of grids.
         if let songId = notification.object as? SongIDProtocol {
             let mappedSongIdArray = mappedSongIds.filter { $1.isEqual(songId) }.map { return $0.0 }
             if mappedSongIdArray.count == 1 {
@@ -204,6 +224,7 @@ public class TGCoverDisplayViewController: NSViewController, CoverDisplayViewCon
             }
         }
     }
+    
     //MARK: NSCollectionViewDataSource methods
 //    public func numberOfSectionsInCollectionView(collectionView: NSCollectionView) -> Int {
 //        return 1
@@ -216,7 +237,7 @@ public class TGCoverDisplayViewController: NSViewController, CoverDisplayViewCon
     public func collectionView(collectionView: NSCollectionView, itemForRepresentedObjectAtIndexPath indexPath: NSIndexPath) -> NSCollectionViewItem {
         print("returning item for index \(indexPath)")
         let item = collectionView.makeItemWithIdentifier("Cover", forIndexPath: indexPath) as! TGCollectionCover
-        item.CoverLabel.stringValue = "covered"
+
         var image: NSImage?
         // If the indexpath is not associated with a song, pick a random unassigned
         // song and associate them, then return the item.
@@ -247,20 +268,4 @@ public class TGCoverDisplayViewController: NSViewController, CoverDisplayViewCon
 //        return NSView()
 //    }
     
-}
-
-//: Extend the flow layout to provide column and row coordinates of its layout.
-extension NSCollectionViewFlowLayout {
-    
-    func colsAndRowsFromLayout() -> (Int, Int) {
-        let contSize = collectionViewContentSize()
-        let iSpacing = minimumInteritemSpacing
-        let lSpacing = minimumLineSpacing
-        let inset = sectionInset
-        
-        let cols = Int(ceil((contSize.width - (inset.left + inset.right)) / (itemSize.width+iSpacing)))
-        let rows = Int(ceil((contSize.height - (inset.top + inset.bottom)) / (itemSize.height+lSpacing)))
-        return (cols, rows)
-    }
-
 }

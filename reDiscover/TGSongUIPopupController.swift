@@ -61,6 +61,10 @@ class TGSongUIPopupController: NSViewController {
         // Do view setup here.
     }
     
+    func showInside(state: Bool, frame: NSRect) {
+        currentUIPosition = frame.origin
+        view.hidden = !state
+    }
     
     func showUI(state: Bool) {
         view.hidden = !state

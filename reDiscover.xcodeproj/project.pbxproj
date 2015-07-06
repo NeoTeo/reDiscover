@@ -76,6 +76,8 @@
 		ABB592E51B2ECB1D00B57CC5 /* CoverDisplayView.xib in Resources */ = {isa = PBXBuildFile; fileRef = ABB592E41B2ECB1D00B57CC5 /* CoverDisplayView.xib */; };
 		ABB592E81B2ED0A400B57CC5 /* Cover.xib in Resources */ = {isa = PBXBuildFile; fileRef = ABB592E71B2ED0A400B57CC5 /* Cover.xib */; };
 		ABB592EA1B2ED19C00B57CC5 /* TGCollectionCover.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABB592E91B2ED19C00B57CC5 /* TGCollectionCover.swift */; };
+		ABBFC0E41B4AA55F00323C6D /* NSResponder+printResponderChain.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABBFC0E31B4AA55F00323C6D /* NSResponder+printResponderChain.swift */; };
+		ABBFC0E61B4AA5BC00323C6D /* NSCollectionViewFlowLayout+colsAndRows.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABBFC0E51B4AA5BC00323C6D /* NSCollectionViewFlowLayout+colsAndRows.swift */; };
 		ABCA1E211B00E988003CFB93 /* AudioFileStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABCA1E201B00E988003CFB93 /* AudioFileStore.swift */; };
 		ABCA1E231B00EAE9003CFB93 /* LocalAudioFileStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABCA1E221B00EAE9003CFB93 /* LocalAudioFileStore.swift */; };
 		ABCA1E251B00FFBA003CFB93 /* URLContentType.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABCA1E241B00FFBA003CFB93 /* URLContentType.swift */; };
@@ -206,6 +208,8 @@
 		ABB592E41B2ECB1D00B57CC5 /* CoverDisplayView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = CoverDisplayView.xib; sourceTree = "<group>"; };
 		ABB592E71B2ED0A400B57CC5 /* Cover.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = Cover.xib; sourceTree = "<group>"; };
 		ABB592E91B2ED19C00B57CC5 /* TGCollectionCover.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TGCollectionCover.swift; sourceTree = "<group>"; };
+		ABBFC0E31B4AA55F00323C6D /* NSResponder+printResponderChain.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSResponder+printResponderChain.swift"; sourceTree = "<group>"; };
+		ABBFC0E51B4AA5BC00323C6D /* NSCollectionViewFlowLayout+colsAndRows.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSCollectionViewFlowLayout+colsAndRows.swift"; sourceTree = "<group>"; };
 		ABCA1E201B00E988003CFB93 /* AudioFileStore.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AudioFileStore.swift; sourceTree = "<group>"; };
 		ABCA1E221B00EAE9003CFB93 /* LocalAudioFileStore.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocalAudioFileStore.swift; sourceTree = "<group>"; };
 		ABCA1E241B00FFBA003CFB93 /* URLContentType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = URLContentType.swift; sourceTree = "<group>"; };
@@ -308,6 +312,8 @@
 		AB3E974C187BFD8700BECC09 /* Common */ = {
 			isa = PBXGroup;
 			children = (
+				ABBFC0E31B4AA55F00323C6D /* NSResponder+printResponderChain.swift */,
+				ABBFC0E51B4AA5BC00323C6D /* NSCollectionViewFlowLayout+colsAndRows.swift */,
 				AB638F871ADD1A2100D4C8FA /* TGSong.swift */,
 				ABEC79DD1B025C6700CD9F6C /* Song.swift */,
 				AB7358EF1A63D6D300E08D5A /* TGSongAudioPlayer.swift */,
@@ -676,6 +682,7 @@
 				AB7FFB6119589BF2002D1E63 /* DropViewController.swift in Sources */,
 				AB3991EB1AEA8B9F00381CAC /* DebugDisplay.swift in Sources */,
 				AB301E7619050C830093B654 /* TEOSongData.m in Sources */,
+				ABBFC0E41B4AA55F00323C6D /* NSResponder+printResponderChain.swift in Sources */,
 				ABEC79DA1B0243BC00CD9F6C /* SongMetaDataStoreLocal.swift in Sources */,
 				AB85BC511875AB5200670905 /* TGSweetSpotControl.m in Sources */,
 				AB3E9752187C20D600BECC09 /* TGPlaylistCellView.m in Sources */,
@@ -688,6 +695,7 @@
 				AB85BC401875AB5200670905 /* TGIdleTimer.m in Sources */,
 				AB1BC13F1976C91E003F02B9 /* ScrollingTextView.swift in Sources */,
 				ABED8E321AB72F4F005B1403 /* SongCommonMetadata.swift in Sources */,
+				ABBFC0E61B4AA5BC00323C6D /* NSCollectionViewFlowLayout+colsAndRows.swift in Sources */,
 				ABDBA6871AF0F5A60069CFFB /* AcoustIDWebService.swift in Sources */,
 				ABEC79D61B02402200CD9F6C /* SongMetaDataStore.swift in Sources */,
 				AB85BC451875AB5200670905 /* TGPlaylistViewController.m in Sources */,

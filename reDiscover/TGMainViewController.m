@@ -44,14 +44,17 @@
     _playlistController = [[TGPlaylistViewController alloc] initWithNibName:@"TGPlaylistView" bundle:nil];
     _songInfoController = [[TGSongInfoViewController alloc] initWithNibName:@"TGSongInfoView" bundle:nil];
     
-    _songUIController = [[TGSongUIPopupController alloc] initWithNibName:@"TGSongUIPopupController" bundle:nil];
-    _songUIController.delegate = self;
+    // REFAC
+//    _songUIController = [[TGSongUIPopupController alloc] initWithNibName:@"TGSongUIPopupController" bundle:nil];
+//    _songUIController.delegate = self;
     
     _debugDisplay = [[DebugDisplay alloc] initWithNibName:@"DebugDisplay" bundle:nil];
     [_debugDisplay setUiPosition:NSMakePoint(10, self.view.frame.size.height-150)];
     [_debugDisplay showUI:NO];
+    
+    // REFAC
     // Start it off hidden.
-    [_songUIController.view setHidden:YES];
+//    [_songUIController.view setHidden:YES];
     
     fetchingImage = [NSImage imageNamed:@"fetchingArt"];
     defaultImage = [NSImage imageNamed:@"songImage"];
@@ -67,7 +70,8 @@
     // ^^ From awakeFromNib
 }
 
-
+//REFAC - Let the coverDisplayViewController handle the mouseDown and showing of cover UI
+/*
 -(void)mouseDown:(NSEvent *)theEvent {
 #define UI_MOUSE_RELATIVE
     // Here we should show the song ui
@@ -76,6 +80,7 @@
     NSPoint localPoint = [theEvent locationInWindow];
     localPoint.x -= 75;
     localPoint.y -= 75;
+    TGLog(TGLOG_REFAC, @"local point %@",NSStringFromPoint(localPoint));
 #else
     // Convert from window coordinates to song grid view controller coordinates. This is
     // the middle pane in the split view which is unaffected by window resizing (when panes are shown/hidden).
@@ -98,7 +103,7 @@
 -(BOOL)isUIShowing {
     return [_songUIController isUIActive];;
 }
-
+*/
 -(void)viewWillAppear {
 
     }
@@ -110,7 +115,8 @@
         [self setSongPool:[[TGSongPool alloc] init]];
         [_currentSongPool loadFromURL:_theURL];
 
-        [self.view addSubview:_songUIController.view];
+        //REFAC
+        //[self.view addSubview:_songUIController.view];
         
         // Add debug view overlay
         [self.view addSubview:_debugDisplay.view];
