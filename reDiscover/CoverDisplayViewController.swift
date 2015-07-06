@@ -17,6 +17,13 @@ public protocol CoverDisplayViewController {
     
 }
 
+// Override the NSCollectionView's mouseDown so it isn't swallowed by the default implementation.
+extension NSCollectionView {
+    override public func mouseDown(theEvent: NSEvent) {
+        self.nextResponder?.mouseDown(theEvent)
+    }
+}
+
 /*:
 The way we randomize the songs for display is/was:
 Upon loading of each song by the song pool we add it to an array of unmapped items.
@@ -38,7 +45,7 @@ public class TGCoverDisplayViewController: NSViewController, CoverDisplayViewCon
 
         coverCollectionView.selectable = true
         // Watch for changes to the CollectionView's selection, just so we can update our status display.
-        coverCollectionView.addObserver(self, forKeyPath:"selectionIndexPaths" , options: .New, context: nil)
+//        coverCollectionView.addObserver(self, forKeyPath:"selectionIndexPaths" , options: .New, context: nil)
 
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "updateSongs:", name: "NewSongAdded", object: nil)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "updateCovers:", name: "songCoverUpdated", object: nil)
@@ -47,9 +54,11 @@ public class TGCoverDisplayViewController: NSViewController, CoverDisplayViewCon
         let trackingArea = NSTrackingArea(rect: trackingRect, options: [.MouseEnteredAndExited, .MouseMoved, .ActiveInKeyWindow], owner: self, userInfo: nil)
         //coverCollectionView.addTrackingArea(trackingArea)
         self.view.addTrackingArea(trackingArea)
+        
+        print("the TGCoverDisplayViewController view is \(self.view)")
     }
 
-    
+    //: Called when mouse down on covers (if we've added an observer for seletionIndexPaths).
     public override func observeValueForKeyPath(keyPath: String?, ofObject object: AnyObject?, change: [NSObject : AnyObject]?, context: UnsafeMutablePointer<Void>) {
         if (object === coverCollectionView) && (keyPath == "selectionIndexPaths") {
             print("selected index paths \(coverCollectionView.selectionIndexPaths)")
@@ -59,6 +68,11 @@ public class TGCoverDisplayViewController: NSViewController, CoverDisplayViewCon
         }
     }
     
+//    override public func mouseDown(theEvent: NSEvent) {
+//        print("balls")
+//        NSResponder.printResponderChain(self)
+//    }
+
     public override func mouseMoved(theEvent: NSEvent) {
         
         // Convert the mouse pointer coordinates to the coverCollectionView coordinates. 

@@ -60,7 +60,7 @@
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(songMetaDataWasUpdated:) name:@"songMetaDataUpdated" object:nil];
     
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(newSongAdded:) name:@"NewSongAdded" object:nil];
+//    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(newSongAdded:) name:@"NewSongAdded" object:nil];
     
     // REFAC
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(userSelectedSongInContext:) name:@"userSelectedSong" object:nil];
@@ -101,13 +101,7 @@
 
 -(void)viewWillAppear {
 
-    [self.view.window makeFirstResponder:self];
-
-//    NSAssert(_theURL != nil, @"There is no URL to load from.");
-//
-//    [self setSongPool:[[TGSongPool alloc] init]];
-//    [_currentSongPool loadFromURL:_theURL];
-}
+    }
 
 
 -(void)viewDidAppear {
@@ -120,6 +114,19 @@
         
         // Add debug view overlay
         [self.view addSubview:_debugDisplay.view];
+
+        [self.view.window makeFirstResponder:self];
+
+        NSResponder* ffr = self.view.window.firstResponder;
+        TGLog(TGLOG_REFAC, @"AFJSDKFASGJASKLDGJAKSGDJ %@",ffr);
+
+        if ([self.view.window canBecomeKeyWindow] == YES) {
+            TGLog(TGLOG_REFAC, @"can become key window");
+        }
+        if ([self.view.window canBecomeMainWindow] == YES) {
+            TGLog(TGLOG_REFAC, @"can become main window");
+        }
+            TGLog(TGLOG_REFAC, @"The window %@",self.view.window);
     }
 }
 
@@ -381,6 +388,7 @@
     }
 }
 
+
 #pragma mark SongUIViewControllerDelegate methods
 - (void)songUIInfoButtonWasPressed {
     
@@ -545,18 +553,6 @@
     return YES;
 }
 
-// REFAC
-/**
- Instead of the songPoolDidLoadDataForSong 
-*/
-- (void)newSongAdded:(NSNotification*)notification {
-// TGLog(TGLOG_REFAC,@"newSongAdded with %@",songId);
-    id<SongIDProtocol> songId = (id<SongIDProtocol>)notification.object;
-    [self songPoolDidLoadSongURLWithID:songId];
-    //REFAC
-    [_coverDisplayController.view setNeedsDisplay:YES];
-}
-
 #pragma mark -
 #pragma mark SongPoolDelegate methods
 // SongPoolDelegate methods
@@ -610,7 +606,7 @@
 - (void)songPoolDidLoadSongURLWithID:(id<SongIDProtocol>)songID {
     
     //MARK: COLL
-    // Here we need to tell the CoverDisplayController that we are adding more covers.
+    // The CoverDisplayController that we are adding more covers.
     return;
     // We have to make sure we execute on the main thread since much of the AppKit stuff isn't thread safe.
     // addMatrixCell2 has many classes that need to run on the main thread or are otherwise thread-unsafe;
