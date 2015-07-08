@@ -34,7 +34,7 @@ that particular index path will result in the same item.
 */
 public class TGCoverDisplayViewController: NSViewController, CoverDisplayViewController, NSCollectionViewDataSource, NSCollectionViewDelegate, NSCollectionViewDelegateFlowLayout {
     
-    @IBOutlet weak var coverCollectionView: NSCollectionView!
+    @IBOutlet weak var coverCollectionView: CoverCollectionView!
     
     private var unmappedSongIdArray: [SongIDProtocol] = []
     private var mappedSongIds: [Int:SongIDProtocol] = [:]
@@ -45,10 +45,10 @@ public class TGCoverDisplayViewController: NSViewController, CoverDisplayViewCon
     
     public override func awakeFromNib() {
 
-        coverCollectionView.selectable = true
+//        coverCollectionView.selectable = true
         // Watch for changes to the CollectionView's selection, just so we can update our status display.
-        coverCollectionView.addObserver(self, forKeyPath:"selectionIndexPaths" , options: .New, context: nil)
-
+//        coverCollectionView.addObserver(self, forKeyPath:"selectionIndexPaths" , options: .New, context: nil)
+        
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "updateSongs:", name: "NewSongAdded", object: nil)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "updateCovers:", name: "songCoverUpdated", object: nil)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "boundsChanged:", name: NSScrollViewDidLiveScrollNotification, object: nil)
@@ -65,24 +65,29 @@ public class TGCoverDisplayViewController: NSViewController, CoverDisplayViewCon
         }
     }
 
+
     //: Called when mouse down on covers (if we've added an observer for seletionIndexPaths).
-    public override func observeValueForKeyPath(keyPath: String?, ofObject object: AnyObject?, change: [NSObject : AnyObject]?, context: UnsafeMutablePointer<Void>) {
-        if (object === coverCollectionView) && (keyPath == "selectionIndexPaths") {
-            print("selected index paths \(coverCollectionView.selectionIndexPaths)")
-            
-            if let idxPath = coverCollectionView.selectionIndexPaths.first {
-                let itemFrame = coverCollectionView.frameForItemAtIndex(idxPath.item)
-                let newPos = self.view.convertPoint(itemFrame.origin, fromView: coverCollectionView)
-                // Turn the position into lower left rather than upper left
-                let newFrame = CGRectMake(newPos.x, newPos.y-itemFrame.size.height, itemFrame.size.width, itemFrame.size.height)
-                print("old frame \(itemFrame), new frame \(newFrame)")
-                songUIController!.showInside(!songUIController!.isUIActive(), frame: newFrame)
-            }
-        } else {
-            print("Bada Boom")
+//    public override func observeValueForKeyPath(keyPath: String?, ofObject object: AnyObject?, change: [NSObject : AnyObject]?, context: UnsafeMutablePointer<Void>) {
+//        
+//        if (object === coverCollectionView) && (keyPath == "selectionIndexPaths") {
+//        } else {
+//            print("Bada Boom")
+//        }
+//    }
+    
+    override public func mouseDown(theEvent: NSEvent) {
+        let location = coverCollectionView.convertPoint(theEvent.locationInWindow, fromView: nil)
+        if let idxPath = coverCollectionView.indexPathForItemAtPoint(location) {
+            print("mouseDown gives index \(idxPath.item)")
+            let itemFrame = coverCollectionView.frameForItemAtIndex(idxPath.item)
+            let newPos = self.view.convertPoint(itemFrame.origin, fromView: coverCollectionView)
+            // Turn the position into lower left rather than upper left
+            let newFrame = CGRectMake(newPos.x, newPos.y-itemFrame.size.height, itemFrame.size.width, itemFrame.size.height)
+            print("old frame \(itemFrame), new frame \(newFrame)")
+            songUIController!.showInside(!songUIController!.isUIActive(), frame: newFrame)
         }
     }
-    
+
     /*: Uncover covered song covers that the mouse moves over.
     */
     public override func mouseMoved(theEvent: NSEvent) {

@@ -24,7 +24,7 @@
                         <rect key="frame" x="1" y="1" width="598" height="598"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <collectionView id="vVO-ng-Gas">
+                            <collectionView id="vVO-ng-Gas" customClass="CoverCollectionView" customModule="reDiscover" customModuleProvider="target">
                                 <rect key="frame" x="0.0" y="0.0" width="598" height="598"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                 <animations/>
