@@ -15,6 +15,15 @@ final class SongPool : NSObject {
     private static var songPool: SongDictionary?
     static var delegate: SongPoolAccessProtocol?
     private static var songPoolAccessQ: dispatch_queue_t?
+
+    
+    static func durationForSongId(songId: SongID) -> NSNumber {
+        return delegate!.songDurationForSongID(songId)
+    }
+    
+    static func sweetSpotsForSongId(songId: SongID) -> NSArray {
+        return delegate!.sweetSpotsForSongID(songId)
+    }
     
     // Until we've switched TGSongPool over to this class we'll use it as a delegate.
     // In this case we request the song for the given id and return a copy of it.
@@ -35,7 +44,7 @@ final class SongPool : NSObject {
 //        }
 //        return nil
     }
-    
+
     static func songCount() -> Int {
         guard let count = songPool?.count else { return 0 }
         return count

@@ -21,5 +21,13 @@ extension NSCollectionViewFlowLayout {
         let rows = Int(ceil((contSize.height - (inset.top + inset.bottom)) / (itemSize.height+lSpacing)))
         return (cols, rows)
     }
-    
+ 
+    // Convert from a column and row coordinate point to a flat index.
+    func indexFromGridPos(gridPos: NSPoint) -> Int {
+
+        let (cols, _) = colsAndRowsFromLayout()
+        
+        return Int(gridPos.y) * cols + Int(gridPos.x)
+    }
+
 }

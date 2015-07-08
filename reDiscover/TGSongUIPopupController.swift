@@ -30,7 +30,6 @@ class TGSongUIPopupController: NSViewController {
     var dimensions: NSSize = NSSize(width: 150, height: 150)
     
     @IBAction func timelineAction(sender: AnyObject) {
-        print("Go timeline")
         delegate?.songUITimelineButtonWasPressed()
     }
     

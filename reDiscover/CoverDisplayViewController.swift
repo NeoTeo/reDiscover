@@ -32,7 +32,7 @@ As a new item is requested by the collection view we pick an unmapped song at
 random and associate it the requested index path so that any subsequent requests for
 that particular index path will result in the same item.
 */
-public class TGCoverDisplayViewController: NSViewController, CoverDisplayViewController, NSCollectionViewDataSource, NSCollectionViewDelegate, NSCollectionViewDelegateFlowLayout {
+public class TGCoverDisplayViewController: NSViewController, CoverDisplayViewController, NSCollectionViewDataSource, NSCollectionViewDelegate, NSCollectionViewDelegateFlowLayout, TGSongUIPopupProtocol, TGSongTimelineViewControllerDelegate {
     
     @IBOutlet weak var coverCollectionView: CoverCollectionView!
     
@@ -42,7 +42,8 @@ public class TGCoverDisplayViewController: NSViewController, CoverDisplayViewCon
     
     private var currentIdxPath: NSIndexPath?
     private var songUIController: TGSongUIPopupController?
-    
+//    private var songTimelineController: SongTimelinePopover?
+    private var songTimelineController: TGSongTimelineViewController?
     public override func awakeFromNib() {
 
 //        coverCollectionView.selectable = true
@@ -58,14 +59,37 @@ public class TGCoverDisplayViewController: NSViewController, CoverDisplayViewCon
         
         self.view.addTrackingArea(trackingArea)
         
+        // Make sure the UI Controller is initialized.
+        initializeUIController()
+        
+        initializeTimelinePopover()
+    }
+
+    func initializeTimelinePopover() {
+        songTimelineController = TGSongTimelineViewController(nibName: "TGSongTimelineView", bundle: nil)
+        songTimelineController?.delegate = self
+        
+        // make sure timeline controller's views are loaded
+        songTimelineController?.view
+    }
+
+    func initializeUIController() {
+        
         // Load the UIPopup if it hasn't already been.
         if songUIController == nil {
             songUIController = TGSongUIPopupController(nibName: "TGSongUIPopupController", bundle: nil)
+            
+            // let the UI controller know we will handle button presses.
+            songUIController?.delegate = self
+            
+            // Initiall the UI is invisible
+            songUIController?.showUI(false)
+            
+            // Add it to the view hierarchy.
             self.view.addSubview(songUIController!.view)
         }
+        
     }
-
-
     //: Called when mouse down on covers (if we've added an observer for seletionIndexPaths).
 //    public override func observeValueForKeyPath(keyPath: String?, ofObject object: AnyObject?, change: [NSObject : AnyObject]?, context: UnsafeMutablePointer<Void>) {
 //        
@@ -160,21 +184,14 @@ public class TGCoverDisplayViewController: NSViewController, CoverDisplayViewCon
     //: Return the songId found at the position in the grid. Nil if not found.
     public func songIdFromGridPos(gridPos: NSPoint) -> SongIDProtocol? {
         
-        return mappedSongIds[indexFromGridPos(gridPos)]
-    }
-
-    // Convert from a column and row coordinate point to a flat index.
-    func indexFromGridPos(gridPos: NSPoint) -> Int {
-        
-        let (cols, _) = (coverCollectionView.collectionViewLayout as! NSCollectionViewFlowLayout).colsAndRowsFromLayout()
-        
-        return Int(gridPos.y) * cols + Int(gridPos.x)
+        // Ask the flow layout for an index given a grid position.
+        let index = (coverCollectionView.collectionViewLayout as! NSCollectionViewFlowLayout).indexFromGridPos(gridPos)
+        return mappedSongIds[index]
     }
     
     func boundsChanged(theEvent: NSEvent) {
         print("Scrollage")
     }
-    
     /*: 
         Called when a new song with songId is added.
         Adds the new songId to the unmapped songs and inserts it into the coverCollectionView
@@ -229,7 +246,43 @@ public class TGCoverDisplayViewController: NSViewController, CoverDisplayViewCon
             }
         }
     }
+
+    //MARK: TGSongTimelineViewControllerProtocol methods
+    public func userCreatedNewSweetSpot(sender: AnyObject!) {
+        print("user created new sweet spot")
+    }
     
+    public func userSelectedExistingSweetSpot(sender: AnyObject!) {
+        print("user selected existing sweet spot")
+    }
+    
+    public func userSelectedSweetSpotMarkerAtIndex(ssIndex: UInt) {
+        print("user selectted sweet spot marker at index")
+    }
+    
+    //MARK: TGSongUIPopupProtocol methods
+    func songUITimelineButtonWasPressed() {
+        
+        // The button's coords are relative to its's view so we need to convert.
+        let bDims = songUIController!.timelineButton.frame
+        let location = self.view.convertPoint(bDims.origin, fromView: songUIController!.view)
+        // <ake a new frame.
+        let popupBounds = NSMakeRect(location.x, location.y, bDims.width, bDims.height)
+
+        songTimelineController?.toggleTimelinePopoverRelativeToBounds(popupBounds, ofView: self.view)
+    }
+    
+    func songUIPlusButtonWasPressed() {
+        print("Go plus")
+    }
+    
+    func songUIGearButtonWasPressed() {
+        print("Go gear")
+    }
+    
+    func songUIInfoButtonWasPressed() {
+        print("Go info")
+    }
     //MARK: NSCollectionViewDataSource methods
 //    public func numberOfSectionsInCollectionView(collectionView: NSCollectionView) -> Int {
 //        return 1
