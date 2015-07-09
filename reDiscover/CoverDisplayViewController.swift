@@ -45,7 +45,7 @@ TGSongTimelineViewControllerDelegate {
     private var currentIdxPath: NSIndexPath?
     private var songUIController: TGSongUIPopupController?
 //    private var songTimelineController: SongTimelinePopover?
-    private var songTimelineController: TGSongTimelineViewController?
+    public var songTimelineController: TGSongTimelineViewController?
     public override func awakeFromNib() {
 
 //        coverCollectionView.selectable = true
@@ -101,27 +101,23 @@ TGSongTimelineViewControllerDelegate {
 //            print("Bada Boom")
 //        }
 //    }
-    override public func rightMouseDown(theEvent: NSEvent) {
-        let location = coverCollectionView.convertPoint(theEvent.locationInWindow, fromView: nil)
-        if let idxPath = coverCollectionView.indexPathForItemAtPoint(location) {
-            let iPaths: Set<NSIndexPath> = [idxPath]
-            print("reloading at \(idxPath)")
-            dispatch_async(dispatch_get_main_queue()){
-                self.coverCollectionView.reloadItemsAtIndexPaths(iPaths)
-            }
-
-        }
-    }
     
     override public func mouseDown(theEvent: NSEvent) {
+
+        // Show the UI for the item that was clicked.
+        
+        // Get the location of the mouse event and convert it to the collection view coordinates.
         let location = coverCollectionView.convertPoint(theEvent.locationInWindow, fromView: nil)
+        
+        // The the index from the location
         if let idxPath = coverCollectionView.indexPathForItemAtPoint(location) {
-            print("mouseDown gives index \(idxPath.item)")
+
+            // Get the frame of the item use it to make a new frame in the collection view coordinates
             let itemFrame = coverCollectionView.frameForItemAtIndex(idxPath.item)
             let newPos = self.view.convertPoint(itemFrame.origin, fromView: coverCollectionView)
-            // Turn the position into lower left rather than upper left
             let newFrame = CGRectMake(newPos.x, newPos.y-itemFrame.size.height, itemFrame.size.width, itemFrame.size.height)
-            print("old frame \(itemFrame), new frame \(newFrame)")
+
+            // Show the UI inside the frame we've created.
             songUIController!.showInside(!songUIController!.isUIActive(), frame: newFrame)
         }
     }

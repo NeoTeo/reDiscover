@@ -317,14 +317,24 @@
                                      withKeyPath:@"playheadPos"
                                          options:@{NSValueTransformerNameBindingOption: @"TimelineTransformer"}];
     
+//    // Bind the timeline nsslider (timelineBar) to observe the requestedPlayheadPosition of the currently playing song via the objectcontroller using the TimelineTransformer.
+//    [_songGridController.songTimelineController.timelineBar bind:@"value"
+//                                                        toObject:_myObjectController
+//                                                     withKeyPath:@"selection.requestedPlayheadPosition"
+//                                                         options:@{NSValueTransformerNameBindingOption: @"TimelineTransformer"}];
+//    
+//    // Bind the selection's (the songpool) playheadPos with the timeline bar cell's currentPlayheadPositionInPercent so we can animate the bar.
+//    [_songGridController.songTimelineController.timelineBar.cell bind:@"currentPlayheadPositionInPercent"
+//                                                             toObject:_myObjectController withKeyPath:@"selection.playheadPos"
+//                                                              options:@{NSValueTransformerNameBindingOption: @"TimelineTransformer"}];
     // Bind the timeline nsslider (timelineBar) to observe the requestedPlayheadPosition of the currently playing song via the objectcontroller using the TimelineTransformer.
-    [_songGridController.songTimelineController.timelineBar bind:@"value"
+    [_coverDisplayController.songTimelineController.timelineBar bind:@"value"
                                                         toObject:_myObjectController
                                                      withKeyPath:@"selection.requestedPlayheadPosition"
                                                          options:@{NSValueTransformerNameBindingOption: @"TimelineTransformer"}];
     
     // Bind the selection's (the songpool) playheadPos with the timeline bar cell's currentPlayheadPositionInPercent so we can animate the bar.
-    [_songGridController.songTimelineController.timelineBar.cell bind:@"currentPlayheadPositionInPercent"
+    [_coverDisplayController.songTimelineController.timelineBar.cell bind:@"currentPlayheadPositionInPercent"
                                                              toObject:_myObjectController withKeyPath:@"selection.playheadPos"
                                                               options:@{NSValueTransformerNameBindingOption: @"TimelineTransformer"}];
     
