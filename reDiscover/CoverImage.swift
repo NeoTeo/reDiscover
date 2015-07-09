@@ -14,6 +14,6 @@ final class CoverImage : NSObject {
     dynamic let previewImage: NSImage?
     
     init(image: NSImage) {
-        previewImage = image
+        previewImage = image.copy() as? NSImage
     }
 }

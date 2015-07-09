@@ -8,11 +8,13 @@
 
 import Foundation
 
-protocol TimelinePopover {
-    
+protocol TimelinePopoverDelegateProtocol {
+    //unc userCreatedNewSweetSpot
 }
 
-class SongTimelinePopover : NSViewController, TimelinePopover {
+class SongTimelinePopover : NSViewController, TimelinePopoverDelegateProtocol {
+    
+    var delegate: TimelinePopoverDelegateProtocol?
     
     @IBOutlet var thePopover: NSPopover?
     @IBOutlet var timelineBar: NSSlider?

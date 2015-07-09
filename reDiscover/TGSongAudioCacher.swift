@@ -284,7 +284,27 @@ class TGSongAudioCacheTask : NSObject {
         }
     }
     
-    
+    override func observeValueForKeyPath(keyPath: String?, ofObject object: AnyObject?, change: [String : AnyObject]?, context: UnsafeMutablePointer<Void>) {
+        if context == &myContext {
+            
+            let playa = object as! AVPlayer
+            
+            // call the closure that corresponds to this player
+            //FIXME: Don't actually believe loadingPlayers can be accessed concurrently.
+            // Both this and the closure executed by loadValuesAsynchronouslyForKeys are on the same thread,
+            // so they shouldn't be concurrent. Try to remove and test.
+            self.loadingPlayersLock.lock() // lock it because performWhenReadyForPlayback may be adding to loadingPlayers in a different thread.
+            let completionHandler = self.loadingPlayers.removeValueForKey(playa) as VoidVoidClosure?
+            self.loadingPlayersLock.unlock()
+            completionHandler?()
+            
+        } else {
+            // Observer with different context. Passing to super.
+            //super.observeValueForKeyPath(keyPath, ofObject: object, change: change, context: context)
+        }
+
+    }
+    /*
     override func observeValueForKeyPath(keyPath: String?, ofObject object: AnyObject?, change: [NSObject : AnyObject]?, context: UnsafeMutablePointer<Void>) {
         if context == &myContext {
 
@@ -304,4 +324,5 @@ class TGSongAudioCacheTask : NSObject {
             super.observeValueForKeyPath(keyPath, ofObject: object, change: change, context: context)
         }
     }
+    */
 }

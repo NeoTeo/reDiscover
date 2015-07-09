@@ -32,7 +32,9 @@ As a new item is requested by the collection view we pick an unmapped song at
 random and associate it the requested index path so that any subsequent requests for
 that particular index path will result in the same item.
 */
-public class TGCoverDisplayViewController: NSViewController, CoverDisplayViewController, NSCollectionViewDataSource, NSCollectionViewDelegate, NSCollectionViewDelegateFlowLayout, TGSongUIPopupProtocol, TGSongTimelineViewControllerDelegate {
+public class TGCoverDisplayViewController: NSViewController, CoverDisplayViewController, NSCollectionViewDataSource, NSCollectionViewDelegate, NSCollectionViewDelegateFlowLayout, TGSongUIPopupProtocol,
+//TimelinePopoverDelegateProtocol { 
+TGSongTimelineViewControllerDelegate {
     
     @IBOutlet weak var coverCollectionView: CoverCollectionView!
     
@@ -67,7 +69,8 @@ public class TGCoverDisplayViewController: NSViewController, CoverDisplayViewCon
 
     func initializeTimelinePopover() {
         songTimelineController = TGSongTimelineViewController(nibName: "TGSongTimelineView", bundle: nil)
-        songTimelineController?.delegate = self
+//        songTimelineController = SongTimelinePopover(nibName: "TGSongTimelineView", bundle: nil)
+        songTimelineController!.delegate = self
         
         // make sure timeline controller's views are loaded
         songTimelineController?.view
@@ -98,6 +101,17 @@ public class TGCoverDisplayViewController: NSViewController, CoverDisplayViewCon
 //            print("Bada Boom")
 //        }
 //    }
+    override public func rightMouseDown(theEvent: NSEvent) {
+        let location = coverCollectionView.convertPoint(theEvent.locationInWindow, fromView: nil)
+        if let idxPath = coverCollectionView.indexPathForItemAtPoint(location) {
+            let iPaths: Set<NSIndexPath> = [idxPath]
+            print("reloading at \(idxPath)")
+            dispatch_async(dispatch_get_main_queue()){
+                self.coverCollectionView.reloadItemsAtIndexPaths(iPaths)
+            }
+
+        }
+    }
     
     override public func mouseDown(theEvent: NSEvent) {
         let location = coverCollectionView.convertPoint(theEvent.locationInWindow, fromView: nil)
@@ -124,7 +138,7 @@ public class TGCoverDisplayViewController: NSViewController, CoverDisplayViewCon
             // Store it so I can bail out above (Do I really need this?)
             currentIdxPath = idxPath
             print("The item and index is \(item) \(idxPath)")
-            
+
             //: At this point we don't know yet if the cover has been uncovered.
             //: If a songId is found in the mappedSongIds it means it has already been uncovered.
             var songId = mappedSongIds[idxPath.item]
@@ -143,7 +157,7 @@ public class TGCoverDisplayViewController: NSViewController, CoverDisplayViewCon
             // Let anyone interested know the user has selected songId
             postNotificationOfSelection(songId!, atIndex: idxPath.item)
             
-            item.CoverLabel.stringValue = "mouse over"
+            item.CoverLabel.stringValue = "fetching art..."
             // At this point we should probably initiate a cover animation.
         }
     }
@@ -190,7 +204,7 @@ public class TGCoverDisplayViewController: NSViewController, CoverDisplayViewCon
     }
     
     func boundsChanged(theEvent: NSEvent) {
-        print("Scrollage")
+        //print("Scrollage")
     }
     /*: 
         Called when a new song with songId is added.
@@ -226,7 +240,7 @@ public class TGCoverDisplayViewController: NSViewController, CoverDisplayViewCon
     func updateCovers(notification: NSNotification) {
         print("Cover update")
       // We should call the cover fade-in animation from here.
-        
+/* This is not working in b3
         // Not sure this is the best way – O(n), but for now it works.
         // Traverse all the mapped songs dictionary looking for a match with songId.
         // If a match is found we reload only the item at the given index.
@@ -244,6 +258,10 @@ public class TGCoverDisplayViewController: NSViewController, CoverDisplayViewCon
                     self.coverCollectionView.reloadItemsAtIndexPaths(iPaths)
                 }
             }
+        }
+*/
+        dispatch_async(dispatch_get_main_queue()){
+            self.coverCollectionView.reloadData()
         }
     }
 
@@ -293,32 +311,36 @@ public class TGCoverDisplayViewController: NSViewController, CoverDisplayViewCon
     }
     
     public func collectionView(collectionView: NSCollectionView, itemForRepresentedObjectAtIndexPath indexPath: NSIndexPath) -> NSCollectionViewItem {
-        print("returning item for index \(indexPath)")
-        let item = collectionView.makeItemWithIdentifier("Cover", forIndexPath: indexPath) as! TGCollectionCover
 
+        let item = collectionView.makeItemWithIdentifier("Cover", forIndexPath: indexPath) as! TGCollectionCover
+        item.CoverLabel.stringValue = ""
+        
+        
         var image: NSImage?
         // If the indexpath is not associated with a song, pick a random unassigned
         // song and associate them, then return the item.
         // Find the referenced image and connect it to the item
+
         if let songId = mappedSongIds[indexPath.item] {
+            
             image = SongArt.artForSong(SongPool.songForSongId(songId)!)
-            item.CoverLabel.stringValue = "mapped & uncovered"
-//            item.view.layer?.cornerRadius = 8
-        } else {
-            item.CoverLabel.stringValue = "covered"
+            
+            // If we couldn't find any art set the image to no cover rather than the back cover.
+            if image == nil {
+                image = NSImage(named: "noCover")
+            }
         }
         
         if image == nil {
-            print("image was nil")
+            // Set the image to a back cover.
             image = NSImage(named: "songImage")
         }
         
-
-//        let image = NSImage(named: "fetchingArt")
-        print("the image is \(image)")
         let obj = CoverImage(image: image!)
+        
         item.representedObject = obj
-        item.view.layer?.cornerRadius = 8
+        item.view.layer?.cornerRadius = 4
+
         return item
     }
     
