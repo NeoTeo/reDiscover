@@ -35,10 +35,38 @@ extension TGSplitViewController {
         
         theSongPool = TGSongPool()
         theSongPool!.loadFromURL(theURL)
+        
+        registerNotifications()
+        connectControllers()
     }
     
-    func setupNotifications() {
+    func setupBindings() {
+        let transformer = NSValueTransformer(forName: "TimelineTransformer")
+        transformer?.bind("maxDuration", toObject: theSongPool!, withKeyPath: "currentSongDuration", options: nil)
         
+        
+    }
+    
+    func registerTransformer() {
+        NSValueTransformer.setValueTransformer(TGTimelineTransformer(), forName: "TimelineTransformer")
+    }
+    
+    func registerNotifications() {
+        
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "songCoverWasUpdated:", name: "songCoverUpdated", object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "songMetaDataWasUpdated:", name: "songMetaDataUpdated", object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "userSelectedSongInContext:", name: "userSelectedSong", object: nil)
+    }
+    
+    // Make sure dependent controllers can access each other
+    //FIXME: Find better way for this
+    func connectControllers() {
+        let plistCtrlr = playlistSplitViewItem.viewController as! TGPlaylistViewController
+        plistCtrlr.songPoolAPI = theSongPool
+//        plistCtrlr.delegate = self
+        
+        //let infoCtrlr = playlistSplitViewItem.viewController as! TGSongInfoViewController
+
     }
     
     public override func keyDown(theEvent: NSEvent) {
@@ -59,6 +87,32 @@ extension TGSplitViewController {
         }
     }
     
+    func userSelectedSongInContext(notification: NSNotification) {
+        let theContext = notification.object as! SongSelectionContext
+        let songId = theContext.selectedSongId
+        let speedVector = theContext.speedVector
+        
+        if fabs(speedVector.y) > 2 {
+            print("Speed cutoff enabled")
+            return
+        }
+        
+        theSongPool?.cacheWithContext(theContext)
+        theSongPool?.requestSongPlayback(songId)
+    }
+    
+    //FIXME:
+    // This notification should be caught by the info view itself!
+    func songMetaDataWasUpdated(notification: NSNotification) {
+        let songId = notification.object as! SongID
+        if songId.isEqual(theSongPool?.lastRequestedSongId()) {
+            print("song info update")
+        }
+    }
+    
+    func songCoverWasUpdated(notification: NSNotification) {
+        print("song cover update")
+    }
 }
 
 extension NSView {
