@@ -42,7 +42,21 @@ extension TGSplitViewController {
     }
     
     public override func keyDown(theEvent: NSEvent) {
-        print("Key down works")
+
+        let string = theEvent.characters!
+        // Could also use interpretKeyEvents
+        for character in string.characters {
+            switch character {
+            case "[":
+                print("Left panel")
+                playlistSplitViewItem.animator().collapsed = !playlistSplitViewItem.collapsed
+            case "]":
+                print("Right panel")
+                songInfoSVI.animator().collapsed = !songInfoSVI.collapsed
+            default:
+                break
+            }
+        }
     }
     
 }
