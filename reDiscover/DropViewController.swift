@@ -38,13 +38,16 @@ class DropViewController : NSViewController, DropViewDelegate {
         print("Drop View Controller preparing for segue")
 
 //        let mainVC = segue.destinationController as MainViewController
-        let mainVC = segue.destinationController as! TGMainViewController
-
+//        let mainVC = segue.destinationController as! TGMainViewController
+      let splitViewCtrlr = segue.destinationController as! TGSplitViewController
+        
         if droppedURL == nil {
             print("Error: no song pool")
             return
         }
-        mainVC.theURL = droppedURL
+        
+        //REFAC better way of passing the url?
+        splitViewCtrlr.theURL = droppedURL
 
     }
     
@@ -52,8 +55,8 @@ class DropViewController : NSViewController, DropViewDelegate {
         if validateURL(theURL) {
             droppedURL = theURL
 
-            performSegueWithIdentifier("oldStyleSegue", sender: self)
-            
+//            performSegueWithIdentifier("oldStyleSegue", sender: self)
+            performSegueWithIdentifier("segueToSplitView", sender: self)            
             // We need to do this again because the app is deactivated when the user clicks a folder
             // in Finder to drag onto here.
             NSApp.activateIgnoringOtherApps(true)

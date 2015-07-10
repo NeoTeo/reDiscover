@@ -122,17 +122,6 @@
         [self.view addSubview:_debugDisplay.view];
 
         [self.view.window makeFirstResponder:self];
-
-        NSResponder* ffr = self.view.window.firstResponder;
-        TGLog(TGLOG_REFAC, @"AFJSDKFASGJASKLDGJAKSGDJ %@",ffr);
-
-        if ([self.view.window canBecomeKeyWindow] == YES) {
-            TGLog(TGLOG_REFAC, @"can become key window");
-        }
-        if ([self.view.window canBecomeMainWindow] == YES) {
-            TGLog(TGLOG_REFAC, @"can become main window");
-        }
-            TGLog(TGLOG_REFAC, @"The window %@",self.view.window);
     }
 }
 
@@ -163,22 +152,14 @@
 
     [theSplitView setVertical:YES];
     [theSplitView setDividerStyle:NSSplitViewDividerStyleThin];
-//    [theSplitView setDividerStyle:NSSplitViewDividerStylePaneSplitter];
     [theSplitView setDelegate:self];
     
-//    _songGridController = [[TGSongGridViewController alloc] initWithNibName:@"TGSongGridView" bundle:nil];
-//    _playlistController = [[TGPlaylistViewController alloc] initWithNibName:@"TGPlaylistView" bundle:nil];
-//    _songInfoController = [[TGSongInfoViewController alloc] initWithNibName:@"TGSongInfoView" bundle:nil];
-    
-   
     [_playlistController setSongPoolAPI:_currentSongPool];
     [_playlistController setDelegate:self];
-//    [_playlistController setMainController:self];
     
     // Add the views to the splitview.
     [theSplitView addSubview:[_playlistController view]];
     //MARK: COLL
-//    [theSplitView addSubview:[_songGridController view]];
     [theSplitView addSubview:[_coverDisplayController view]];
     [theSplitView addSubview:[_songInfoController view]];
 
@@ -191,25 +172,6 @@
 
     // Make sure the splitview's subviews are resized according to the newly added constraints.
     [theSplitView adjustSubviews];
-    
-
-/*
-    // Make and add debugDisplay
-    _debugDisplayController = [[self storyboard] instantiateControllerWithIdentifier:@"DebugDisplayController"];
-    [_debugDisplayController viewWillAppear];
-    [mainView addSubview:_debugDisplayController.view];
-*/
-    // TEO This is where the TGSongUIViewController should be instantiated and
-    // have its delegate set to this class.
-    //NUUI
-//    // Track the mouse movements.
-//    NSTrackingArea *trackingArea = [[NSTrackingArea alloc]
-//                                    initWithRect:NSMakeRect(0, 0, NSWidth(mainView.frame), NSHeight(mainView.frame))
-//                                    options: (NSTrackingMouseEnteredAndExited | NSTrackingMouseMoved | NSTrackingActiveInKeyWindow )
-//                                    owner:self userInfo:nil];
-//    
-//    [mainView addTrackingArea:trackingArea];
-
 }
 
 - (void)addConstraintsTo:(NSSplitView *)theSplitView {

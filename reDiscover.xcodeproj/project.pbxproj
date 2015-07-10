@@ -98,6 +98,7 @@
 		ABED8E341AB73B6E005B1403 /* SongArt.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABED8E331AB73B6E005B1403 /* SongArt.swift */; };
 		ABF767431AEE6D74007C7A12 /* SongPool.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABF767421AEE6D74007C7A12 /* SongPool.swift */; };
 		ABF767451AEE82B4007C7A12 /* LocalFileIO.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABF767441AEE82B4007C7A12 /* LocalFileIO.swift */; };
+		ABFB8D681B4F1400006519B0 /* TGSplitViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABFB8D671B4F1400006519B0 /* TGSplitViewController.swift */; };
 		ABFC06C41B04A27C00649BBD /* CoreDataStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABFC06C31B04A27C00649BBD /* CoreDataStore.swift */; };
 		ABFC8EB219C19C630007ECCB /* uploadedSS.plist in Resources */ = {isa = PBXBuildFile; fileRef = ABFC8EB119C19C630007ECCB /* uploadedSS.plist */; };
 		ABFC8EB519C1BCE90007ECCB /* uploadedSS.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = ABFC8EB319C1BCE90007ECCB /* uploadedSS.xcdatamodeld */; };
@@ -232,6 +233,7 @@
 		ABED8E331AB73B6E005B1403 /* SongArt.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SongArt.swift; path = reDiscover/SongArt.swift; sourceTree = "<group>"; };
 		ABF767421AEE6D74007C7A12 /* SongPool.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SongPool.swift; sourceTree = "<group>"; };
 		ABF767441AEE82B4007C7A12 /* LocalFileIO.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocalFileIO.swift; sourceTree = "<group>"; };
+		ABFB8D671B4F1400006519B0 /* TGSplitViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TGSplitViewController.swift; sourceTree = "<group>"; };
 		ABFC06C31B04A27C00649BBD /* CoreDataStore.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CoreDataStore.swift; sourceTree = "<group>"; };
 		ABFC8EB119C19C630007ECCB /* uploadedSS.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = uploadedSS.plist; sourceTree = "<group>"; };
 		ABFC8EB419C1BCE90007ECCB /* uploadedSS.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = uploadedSS.xcdatamodel; sourceTree = "<group>"; };
@@ -480,6 +482,7 @@
 		AB85BBDC1875AACF00670905 /* reDiscover */ = {
 			isa = PBXGroup;
 			children = (
+				ABFB8D671B4F1400006519B0 /* TGSplitViewController.swift */,
 				AB8B54771B4D1C3000C44485 /* CoverCollectionView.swift */,
 				AB3991E91AEA8B9F00381CAC /* DebugDisplay.swift */,
 				ABF767421AEE6D74007C7A12 /* SongPool.swift */,
@@ -689,6 +692,7 @@
 				ABBFC0E41B4AA55F00323C6D /* NSResponder+printResponderChain.swift in Sources */,
 				ABEC79DA1B0243BC00CD9F6C /* SongMetaDataStoreLocal.swift in Sources */,
 				AB85BC511875AB5200670905 /* TGSweetSpotControl.m in Sources */,
+				ABFB8D681B4F1400006519B0 /* TGSplitViewController.swift in Sources */,
 				AB3E9752187C20D600BECC09 /* TGPlaylistCellView.m in Sources */,
 				AB85BC541875AB5200670905 /* TGTimelineTransformer.m in Sources */,
 				ABFC06C41B04A27C00649BBD /* CoreDataStore.swift in Sources */,

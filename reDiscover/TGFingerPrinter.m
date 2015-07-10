@@ -76,8 +76,9 @@
     id<SongIDProtocol> songID = theSong.songID;
     
     NSURL* songURL = [_delegate URLForSongID:songID];
-//    TGLog(TGLOG_TMP,@"requestFingerPrintForSong called with song Id %@",songID);
+
     [self decodeAudioFileNew:songURL forContext:chromaprintContext ofLength:maxLength andDuration:&duration];
+    // The duration returned by the decodeAudioFileNew is not very precise - only to the second.
     
     if (chromaprint_get_fingerprint(chromaprintContext, &theFingerprint)) {
         
@@ -136,7 +137,6 @@
             // Since this is synchronous the call will block until either it succeeded or failed to fetch an UUId.
 //            TGLog(TGLOG_TMP,@"requesting UUId from generated fingerprint.");
 //            [self requestUUIDForSongID:songID withDuration:duration andFingerPrint:theFingerprint];
-            
             NSString *songFingerPrint = [NSString stringWithCString:theFingerprint encoding:NSASCIIStringEncoding];
             
             // Presumably the duration returned from fingerprinting is the most accurate so store it in the song.

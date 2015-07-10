@@ -46,11 +46,19 @@ TGSongTimelineViewControllerDelegate {
     private var songUIController: TGSongUIPopupController?
 //    private var songTimelineController: SongTimelinePopover?
     public var songTimelineController: TGSongTimelineViewController?
+    
+    
     public override func awakeFromNib() {
 
+        print("TGCoverDisplayViewController awake")
+        print("    The coverCollectionView is \(coverCollectionView)")
 //        coverCollectionView.selectable = true
         // Watch for changes to the CollectionView's selection, just so we can update our status display.
 //        coverCollectionView.addObserver(self, forKeyPath:"selectionIndexPaths" , options: .New, context: nil)
+        
+    }
+
+    public override func viewDidLoad() {
         
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "updateSongs:", name: "NewSongAdded", object: nil)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "updateCovers:", name: "songCoverUpdated", object: nil)
@@ -66,7 +74,7 @@ TGSongTimelineViewControllerDelegate {
         
         initializeTimelinePopover()
     }
-
+    
     func initializeTimelinePopover() {
         songTimelineController = TGSongTimelineViewController(nibName: "TGSongTimelineView", bundle: nil)
 //        songTimelineController = SongTimelinePopover(nibName: "TGSongTimelineView", bundle: nil)

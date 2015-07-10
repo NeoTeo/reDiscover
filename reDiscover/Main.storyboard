@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="8121.20" systemVersion="15A204h" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" initialViewController="1rG-hg-cjj">
+<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="8152.3" systemVersion="15A216g" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" initialViewController="Nxi-KE-3bM">
     <dependencies>
         <deployment identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="8121.20"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="8152.3"/>
     </dependencies>
     <scenes>
         <!--Window Controller-->
@@ -40,7 +40,7 @@
                                 <animations/>
                                 <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" image="DropArrow" id="9UV-0o-FxX"/>
                                 <connections>
-                                    <segue destination="cJE-xo-Vn6" kind="show" identifier="oldStyleSegue" id="s56-iv-DYh"/>
+                                    <segue destination="XiH-xD-SmT" kind="show" identifier="segueToSplitView" id="hRJ-Fb-EFs"/>
                                 </connections>
                             </imageView>
                         </subviews>
@@ -58,6 +58,145 @@
             </objects>
             <point key="canvasLocation" x="920" y="-51"/>
         </scene>
+        <!--Split View Controller-->
+        <scene sceneID="eVg-g5-mht">
+            <objects>
+                <splitViewController id="XiH-xD-SmT" customClass="TGSplitViewController" customModule="reDiscover" customModuleProvider="target" sceneMemberID="viewController">
+                    <splitViewItems>
+                        <splitViewItem canCollapse="YES" collapsed="YES" id="W0P-yD-rRt"/>
+                        <splitViewItem id="2o7-5d-FlK"/>
+                        <splitViewItem canCollapse="YES" collapsed="YES" id="dZ7-As-gBM"/>
+                    </splitViewItems>
+                    <splitView key="splitView" dividerStyle="thin" vertical="YES" id="TO9-Bc-PxR">
+                        <rect key="frame" x="0.0" y="0.0" width="450" height="300"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                        <animations/>
+                    </splitView>
+                    <connections>
+                        <outlet property="coverCollectionSVI" destination="2o7-5d-FlK" id="roA-pP-8It"/>
+                        <outlet property="playlistSplitViewItem" destination="W0P-yD-rRt" id="FgD-p5-mKJ"/>
+                        <outlet property="songInfoSVI" destination="dZ7-As-gBM" id="JsE-UY-Wov"/>
+                        <segue destination="ZAZ-MP-QmW" kind="relationship" relationship="splitItems" id="1cR-YR-9Gq"/>
+                        <segue destination="o0L-b7-uxX" kind="relationship" relationship="splitItems" id="ggk-og-rWJ"/>
+                        <segue destination="Qu5-dm-oTW" kind="relationship" relationship="splitItems" id="ucL-FG-CmL"/>
+                    </connections>
+                </splitViewController>
+                <customObject id="rrN-I8-baz" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1514" y="101"/>
+        </scene>
+        <!--Playlist View Controller-->
+        <scene sceneID="BNq-Gw-90r">
+            <objects>
+                <viewController id="ZAZ-MP-QmW" customClass="TGPlaylistViewController" sceneMemberID="viewController">
+                    <view key="view" id="Lzk-tu-C9Z">
+                        <rect key="frame" x="0.0" y="0.0" width="450" height="300"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                        <subviews>
+                            <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="zDl-Ww-dID">
+                                <rect key="frame" x="123" y="133" width="43" height="17"/>
+                                <animations/>
+                                <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Wooty" id="fzM-WG-YOw">
+                                    <font key="font" metaFont="system"/>
+                                    <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                    <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                </textFieldCell>
+                            </textField>
+                        </subviews>
+                        <animations/>
+                    </view>
+                </viewController>
+                <customObject id="0rr-wt-AEQ" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1995" y="546"/>
+        </scene>
+        <!--Cover Display View Controller-->
+        <scene sceneID="nXq-Px-rb6">
+            <objects>
+                <viewController id="o0L-b7-uxX" customClass="TGCoverDisplayViewController" customModule="reDiscover" customModuleProvider="target" sceneMemberID="viewController">
+                    <connections>
+                        <outlet property="coverCollectionView" destination="nge-dg-bzZ" id="Y1i-zn-sXP"/>
+                        <outlet property="sourceItemView" destination="nge-dg-bzZ" id="Hed-lj-rsI"/>
+                        <outlet property="view" destination="gSj-0W-kzU" id="z8T-mZ-Vg1"/>
+                    </connections>
+                </viewController>
+                <customView id="gSj-0W-kzU">
+                    <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                    <subviews>
+                        <scrollView wantsLayer="YES" autohidesScrollers="YES" horizontalLineScroll="10" horizontalPageScroll="10" verticalLineScroll="10" verticalPageScroll="10" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="WYY-qs-8nd">
+                            <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                            <clipView key="contentView" id="3iX-kb-WU9">
+                                <rect key="frame" x="1" y="1" width="598" height="598"/>
+                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                <subviews>
+                                    <collectionView id="nge-dg-bzZ" customClass="CoverCollectionView" customModule="reDiscover" customModuleProvider="target">
+                                        <rect key="frame" x="0.0" y="0.0" width="598" height="598"/>
+                                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                        <animations/>
+                                        <collectionViewFlowLayout key="collectionViewLayout" minimumInteritemSpacing="10" minimumLineSpacing="10" id="Ce4-f2-nOG">
+                                            <size key="itemSize" width="150" height="150"/>
+                                            <edgeInsets key="sectionInset" left="10" right="12" top="10" bottom="10"/>
+                                        </collectionViewFlowLayout>
+                                        <color key="primaryBackgroundColor" red="0.96078431369999995" green="0.96078431369999995" blue="0.96078431369999995" alpha="1" colorSpace="calibratedRGB"/>
+                                        <connections>
+                                            <outlet property="dataSource" destination="o0L-b7-uxX" id="lNc-uK-ooA"/>
+                                            <outlet property="delegate" destination="o0L-b7-uxX" id="Pon-S4-xOU"/>
+                                        </connections>
+                                    </collectionView>
+                                </subviews>
+                                <animations/>
+                            </clipView>
+                            <animations/>
+                            <scroller key="horizontalScroller" hidden="YES" wantsLayer="YES" verticalHuggingPriority="750" horizontal="YES" id="Su7-cu-K2j">
+                                <rect key="frame" x="1" y="144" width="233" height="15"/>
+                                <autoresizingMask key="autoresizingMask"/>
+                                <animations/>
+                            </scroller>
+                            <scroller key="verticalScroller" hidden="YES" wantsLayer="YES" verticalHuggingPriority="750" doubleValue="1" horizontal="NO" id="51J-Hg-fr0">
+                                <rect key="frame" x="234" y="1" width="15" height="143"/>
+                                <autoresizingMask key="autoresizingMask"/>
+                                <animations/>
+                            </scroller>
+                        </scrollView>
+                    </subviews>
+                    <constraints>
+                        <constraint firstItem="WYY-qs-8nd" firstAttribute="top" secondItem="gSj-0W-kzU" secondAttribute="top" id="EQN-fq-kA8"/>
+                        <constraint firstItem="WYY-qs-8nd" firstAttribute="leading" secondItem="gSj-0W-kzU" secondAttribute="leading" id="O8K-dL-SyX"/>
+                        <constraint firstAttribute="trailing" secondItem="WYY-qs-8nd" secondAttribute="trailing" id="fpq-Se-AiM"/>
+                        <constraint firstAttribute="bottom" secondItem="WYY-qs-8nd" secondAttribute="bottom" id="xHN-1E-hzv"/>
+                    </constraints>
+                    <animations/>
+                </customView>
+                <customObject id="v21-aR-Fjw" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1514" y="546"/>
+        </scene>
+        <!--Song Info View Controller-->
+        <scene sceneID="kTc-PP-HBa">
+            <objects>
+                <viewController id="Qu5-dm-oTW" customClass="TGSongInfoViewController" sceneMemberID="viewController">
+                    <view key="view" id="jPo-An-5mv">
+                        <rect key="frame" x="0.0" y="0.0" width="450" height="300"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                        <subviews>
+                            <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="eSA-l4-U4Z">
+                                <rect key="frame" x="193" y="142" width="65" height="17"/>
+                                <animations/>
+                                <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Hot Damn" id="Xp2-7P-pn4">
+                                    <font key="font" metaFont="system"/>
+                                    <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                    <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                </textFieldCell>
+                            </textField>
+                        </subviews>
+                        <animations/>
+                    </view>
+                </viewController>
+                <customObject id="1NJ-jk-8UF" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1049" y="546"/>
+        </scene>
         <!--Main View Controller-->
         <scene sceneID="XY3-af-wnw">
             <objects>
@@ -70,7 +209,7 @@
                 </viewController>
                 <customObject id="eJj-ng-8uK" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="920" y="601"/>
+            <point key="canvasLocation" x="476" y="664"/>
         </scene>
         <!--Application-->
         <scene sceneID="x5Z-Oz-JLm">
