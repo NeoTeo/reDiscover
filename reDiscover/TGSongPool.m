@@ -949,8 +949,8 @@ static int const kSongPoolStartCapacity = 250;
     lastRequestedSongId = selectedSongId;
     
     // Tell the main view controller that we've started fetching data for the selected song so it can update the UI.
-    [_delegate songPoolDidStartFetchingSong:selectedSongId];
-        
+    //REFAC [_delegate songPoolDidStartFetchingSong:selectedSongId];
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"songDidStartUpdating" object:selectedSongId];
     // Initiate the fingerprint/UUId generation and fetching of cover art.
     // Split this into synchronous functions called on a single separate thread:
     // 1) Get fingerprint for the song unless already there.

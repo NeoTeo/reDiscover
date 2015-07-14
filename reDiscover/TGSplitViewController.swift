@@ -56,6 +56,8 @@ extension TGSplitViewController {
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "songCoverWasUpdated:", name: "songCoverUpdated", object: nil)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "songMetaDataWasUpdated:", name: "songMetaDataUpdated", object: nil)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "userSelectedSongInContext:", name: "userSelectedSong", object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "songDidStartUpdating:", name: "songDidStartUpdating", object: nil)
+
     }
     
     // Make sure dependent controllers can access each other
@@ -100,18 +102,35 @@ extension TGSplitViewController {
         theSongPool?.cacheWithContext(theContext)
         theSongPool?.requestSongPlayback(songId)
     }
-    
-    //FIXME:
-    // This notification should be caught by the info view itself!
+
+    // Notification when a song starts loading/caching. Allows us to update UI to show activity.
+    func songDidStartUpdating(notification: NSNotification) {
+//        let songId = notification.object as! SongID
+        let infoPanel = songInfoSVI.viewController as! TGSongInfoViewController
+        infoPanel.setSongCoverImage(SongArt.getFetchingCoverImage())
+
+    }
+    // Called when the song metadata is updated and will in turn call the info panel
+    // to update its data.
     func songMetaDataWasUpdated(notification: NSNotification) {
         let songId = notification.object as! SongID
-        if songId.isEqual(theSongPool?.lastRequestedSongId()) {
-            print("song info update")
+        if songId.isEqual(theSongPool?.lastRequestedSongId()),
+            let infoPanel = songInfoSVI.viewController as? TGSongInfoViewController {
+            infoPanel.setSong(theSongPool?.songDataForSongID(songId))
         }
     }
     
     func songCoverWasUpdated(notification: NSNotification) {
-        print("song cover update")
+        let songId = notification.object as! SongID
+        if songId.isEqual(theSongPool?.lastRequestedSongId()),
+            let song = theSongPool?.songForID(songId){
+                let infoPanel = songInfoSVI.viewController as! TGSongInfoViewController
+                if let art = SongArt.artForSong(song) {
+                    infoPanel.setSongCoverImage(art)
+                } else {
+                    infoPanel.setSongCoverImage(SongArt.getNoCoverImage())
+                }
+        }
     }
 }
 

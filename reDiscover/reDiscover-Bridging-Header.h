@@ -26,4 +26,4 @@
 
 //TMP - delete this and just use TimelinePopover instead once this works.
 #import "TGSongTimelineViewController.h"
-//#import "TGSongInfoViewController.h"
+#import "TGSongInfoViewController.h"
