@@ -209,7 +209,7 @@ class TGSongAudioCacheTask : NSObject {
                 if row >= Int(gridDims.y) || col >= Int(gridDims.x) { break }
                 
                 let gridPos = NSPoint(x: col, y: row)
-                
+                // Is this songPoolAPI still set to call the matrix stuff?
                 if let songId = songPoolAPI?.songIdFromGridPos(gridPos) {
                     wantedCacheCount++
                     idHandler(songId)

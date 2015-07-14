@@ -93,12 +93,12 @@
 // TGSongPool Delegate methods that conforming classes must implement and that SongPool will call.
 @protocol TGSongPoolDelegate <NSObject>
 //@optional
-- (void)songPoolDidLoadSongURLWithID:(id<SongIDProtocol>)songID;
-- (void)songPoolDidLoadAllURLs:(NSUInteger)numberOfURLs;
-- (void)songPoolDidStartFetchingSong:(id<SongIDProtocol>)songID;
-- (void)songPoolDidStartPlayingSong:(id<SongIDProtocol>)songID;
-- (void)songPoolDidFinishPlayingSong:(id<SongIDProtocol>)songID;
-- (void)songPoolDidLoadDataForSongID:(id<SongIDProtocol>)songID;
+//- (void)songPoolDidLoadSongURLWithID:(id<SongIDProtocol>)songID;
+//- (void)songPoolDidLoadAllURLs:(NSUInteger)numberOfURLs;
+//- (void)songPoolDidStartFetchingSong:(id<SongIDProtocol>)songID;
+//- (void)songPoolDidStartPlayingSong:(id<SongIDProtocol>)songID;
+//- (void)songPoolDidFinishPlayingSong:(id<SongIDProtocol>)songID;
+//- (void)songPoolDidLoadDataForSongID:(id<SongIDProtocol>)songID;
 //- (void)setDebugCachedFlagsForSongIDArray:(NSArray*)songIDs toValue:(BOOL)value;
 @end
 

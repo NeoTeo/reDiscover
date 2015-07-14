@@ -8,7 +8,7 @@
 
 import Foundation
 
-final public class TGSplitViewController: NSSplitViewController {
+final public class TGSplitViewController: NSSplitViewController, TGMainViewControllerDelegate {
  
     @IBOutlet weak var playlistSplitViewItem: NSSplitViewItem!
     @IBOutlet weak var coverCollectionSVI: NSSplitViewItem!
@@ -35,6 +35,8 @@ extension TGSplitViewController {
         
         theSongPool = TGSongPool()
         theSongPool!.loadFromURL(theURL)
+        //FIXME: I'd rather this was done by making CoverViewController provide the functionality as class methods.
+        theSongPool!.delegate = self
         
         registerNotifications()
         connectControllers()
@@ -61,7 +63,8 @@ extension TGSplitViewController {
     }
     
     // Make sure dependent controllers can access each other
-    //FIXME: Find better way for this
+    //FIXME: Find better way for this - 
+    // eg make the methods that the playlist controller needs available as class methods in SongPool.
     func connectControllers() {
         let plistCtrlr = playlistSplitViewItem.viewController as! TGPlaylistViewController
         plistCtrlr.songPoolAPI = theSongPool
@@ -131,6 +134,15 @@ extension TGSplitViewController {
                     infoPanel.setSongCoverImage(SongArt.getNoCoverImage())
                 }
         }
+    }
+}
+
+// Method to comply with the TGMainViewControllerDelegate
+extension TGSplitViewController {
+    
+    public func songIdFromGridPos(pos: NSPoint) -> AnyObject! {
+        let coverCtrlr = coverCollectionSVI.viewController as! TGCoverDisplayViewController
+        return coverCtrlr.songIdFromGridPos(pos)
     }
 }
 

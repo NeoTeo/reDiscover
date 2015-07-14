@@ -1097,9 +1097,10 @@ static int const kSongPoolStartCapacity = 250;
 //    [_delegate songPoolDidStartFetchingSong:songID];
 
     // Inform the delegate that we've started playing the song.
-    if ([_delegate respondsToSelector:@selector(songPoolDidStartPlayingSong:)]) {
-        [_delegate songPoolDidStartPlayingSong:songID];
-    }
+    //REFAC
+    //if ([_delegate respondsToSelector:@selector(songPoolDidStartPlayingSong:)]) {
+    //    [_delegate songPoolDidStartPlayingSong:songID];
+    //}
 
     if ( makeSS ) {
         //MARK: REFAC
@@ -1163,9 +1164,10 @@ static int const kSongPoolStartCapacity = 250;
 - (void)songDidFinishPlayback:(id<TGSong>)song {
     // Pass this on to the delegate (which should be the controller).
     TGLog(TGLOG_ALL,@"song %lu did finish playback. The last requested song is %@",(unsigned long)[song songID],lastRequestedSongId);
-    if ([[self delegate] respondsToSelector:@selector(songPoolDidFinishPlayingSong:)]) {
-        [[self delegate] songPoolDidFinishPlayingSong:[song songID]];
-    }
+//    if ([[self delegate] respondsToSelector:@selector(songPoolDidFinishPlayingSong:)]) {
+//        [[self delegate] songPoolDidFinishPlayingSong:[song songID]];
+//    }
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"songDidFinishPlayback" object:[song songID]];
 }
 
 - (void)setSongPlaybackObserver:(AVPlayer*)songPlayer {

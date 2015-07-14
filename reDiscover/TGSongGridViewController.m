@@ -752,10 +752,11 @@ TGLog(TGLOG_REFAC, @"song grid view coords %@",NSStringFromPoint(mouseLoc));
     //[_songUIViewController setUIPosition:theRect.origin withPopAnimation:NO];
 }
 
-- (BOOL)UIisShowing {
-    return [[_songTimelineController songTimelinePopover] isShown] || [_delegate isUIShowing];
-
-}
+//REFAC
+//- (BOOL)UIisShowing {
+//    return [[_songTimelineController songTimelinePopover] isShown] || [_delegate isUIShowing];
+//
+//}
 
 // Called when a new row and column is selected either by moving mouse pointer or scrolling a new cell under it.
 - (void)songGridScrollViewDidChangeToRow:(NSInteger)theRow
@@ -763,9 +764,10 @@ TGLog(TGLOG_REFAC, @"song grid view coords %@",NSStringFromPoint(mouseLoc));
                                withSpeedVector:(NSPoint)theSpeed {
     
     // If a popover is shown, don't change cells.
-        if ([self UIisShowing]) {
-            return;
-        }
+//REFAC
+//        if ([self UIisShowing]) {
+//            return;
+//        }
     
 //    NSLog(@"The selection speed %@",NSStringFromPoint(theSpeed));
     
@@ -787,7 +789,7 @@ TGLog(TGLOG_REFAC, @"song grid view coords %@",NSStringFromPoint(mouseLoc));
     NSValue* gridDims = [NSValue valueWithPoint:NSMakePoint([_songCellMatrix numberOfColumns], [_songCellMatrix numberOfRows])];
 
     //CDFIX moved below caching so we cache first.
-    [_delegate userSelectedSongID:songID withContext:@{@"pos" : selectionPos, @"spd" : speedVector, @"gridDims" : gridDims}];
+    //REFAC[_delegate userSelectedSongID:songID withContext:@{@"pos" : selectionPos, @"spd" : speedVector, @"gridDims" : gridDims}];
     
     // If a popover is shown, hide it.
 //    if ([[_songTimelineController songTimelinePopover] isShown]) {
