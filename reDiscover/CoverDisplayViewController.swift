@@ -25,13 +25,6 @@ public protocol CoverDisplayViewController {
 //    }
 //}
 
-/*:
-The way we randomize the songs for display is/was:
-Upon loading of each song by the song pool we add it to an array of unmapped items.
-As a new item is requested by the collection view we pick an unmapped song at 
-random and associate it the requested index path so that any subsequent requests for
-that particular index path will result in the same item.
-*/
 public class TGCoverDisplayViewController: NSViewController, CoverDisplayViewController, NSCollectionViewDataSource, NSCollectionViewDelegate, NSCollectionViewDelegateFlowLayout, TGSongUIPopupProtocol,
 //TimelinePopoverDelegateProtocol { 
 TGSongTimelineViewControllerDelegate {
@@ -41,12 +34,14 @@ TGSongTimelineViewControllerDelegate {
     private var unmappedSongIdArray: [SongIDProtocol] = []
     private var mappedSongIds: [Int:SongIDProtocol] = [:]
     private var songCount = 0
-    
+
+    private var currentTrackingArea: NSTrackingArea?
     private var currentIdxPath: NSIndexPath?
     private var songUIController: TGSongUIPopupController?
 //    private var songTimelineController: SongTimelinePopover?
     public var songTimelineController: TGSongTimelineViewController?
     
+    private var collectionAccessQ: dispatch_queue_t = dispatch_queue_create("collectionAccessQ", DISPATCH_QUEUE_SERIAL)
     
     public override func awakeFromNib() {
 
@@ -64,15 +59,33 @@ TGSongTimelineViewControllerDelegate {
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "updateCovers:", name: "songCoverUpdated", object: nil)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "boundsChanged:", name: NSScrollViewDidLiveScrollNotification, object: nil)
         
-        let trackingRect = NSMakeRect(0, 0, self.view.frame.width, self.view.frame.height)
-        let trackingArea = NSTrackingArea(rect: trackingRect, options: [.MouseEnteredAndExited, .MouseMoved, .ActiveInKeyWindow], owner: self, userInfo: nil)
-        
-        self.view.addTrackingArea(trackingArea)
+//        let trackingRect = NSMakeRect(0, 0, self.view.frame.width, self.view.frame.height)
+//        let trackingArea = NSTrackingArea(rect: trackingRect, options: [.MouseEnteredAndExited, .MouseMoved, .ActiveInKeyWindow], owner: self, userInfo: nil)
+//        
+//        self.view.addTrackingArea(trackingArea)
         
         // Make sure the UI Controller is initialized.
         initializeUIController()
         
         initializeTimelinePopover()
+    }
+    
+    public override func viewWillLayout() {
+        print("Will layout")
+        currentTrackingArea = replaceTrackingArea(currentTrackingArea, fromView: self.view)
+        print("new trackingArea is \(currentTrackingArea)")
+    }
+    
+    func replaceTrackingArea(oldTrackingArea: NSTrackingArea?, fromView theView: NSView) -> NSTrackingArea {
+        if let oldTA = oldTrackingArea {
+            theView.removeTrackingArea(oldTA)
+        }
+        let trackingRect = NSMakeRect(0, 0, theView.frame.width, theView.frame.height)
+        let newTrackingArea = NSTrackingArea(rect: trackingRect, options: [.MouseEnteredAndExited, .MouseMoved, .ActiveInKeyWindow], owner: self, userInfo: nil)
+        
+        theView.addTrackingArea(newTrackingArea)
+
+        return newTrackingArea
     }
     
     func initializeTimelinePopover() {
@@ -130,42 +143,58 @@ TGSongTimelineViewControllerDelegate {
         }
     }
 
-    /*: Uncover covered song covers that the mouse moves over.
-    */
     public override func mouseMoved(theEvent: NSEvent) {
         
         // Convert the mouse pointer coordinates to the coverCollectionView coordinates. 
         // This does takes scrolling into consideration.
-        let loc = coverCollectionView.convertPoint(theEvent.locationInWindow, fromView: nil)
-        if let (item, idxPath) = coverAndIdxAtLocation(loc) where idxPath != currentIdxPath {
-            
-            // Store it so I can bail out above (Do I really need this?)
-            currentIdxPath = idxPath
-            print("The item and index is \(item) \(idxPath)")
+        uncoverSongCover(atLocationInWindow: theEvent.locationInWindow)
+    }
 
+    /*:
+    Uncover covered song covers.
+    Uncovering a song means picking a random song from the covered songs.
+    
+    The way we randomize the songs for display is:
+    Upon notification of a song added (updateSongs) we add its id to an array of unmapped ids.
+    As a new item is requested by the collection view we pick an unmapped song id at
+    random and associate it the requested index path so that any subsequent requests for
+    that particular index path will result in the same id.
+    
+    */
+    func uncoverSongCover(atLocationInWindow location: NSPoint) {
+        let loc = coverCollectionView.convertPoint(location, fromView: nil)
+        if let (item, idxPath) = coverAndIdxAtLocation(loc) where idxPath != currentIdxPath {
+            dispatch_async(collectionAccessQ){
+            // Store it so I can bail out above (Do I really need this?)
+            self.currentIdxPath = idxPath
+            print("The item and index is \(item) \(idxPath)")
+            
             //: At this point we don't know yet if the cover has been uncovered.
             //: If a songId is found in the mappedSongIds it means it has already been uncovered.
-            var songId = mappedSongIds[idxPath.item]
-
+            var songId = self.mappedSongIds[idxPath.item]
+            
             // Not yet uncovered. So we pick a random song from the unmapped songs.
             if songId == nil {
                 print("unCover!")
                 // remove a random songId from unmapped and add it to the mapped
-                let unmappedCount = UInt32(unmappedSongIdArray.count)
+                let unmappedCount = UInt32(self.unmappedSongIdArray.count)
                 let randIdx = arc4random_uniform(unmappedCount)
+                //FIXME: concurrent access here? - consider making safe accessors for the arrays instead
+                // This shit is locking/slowing everything down.
                 
-                songId = unmappedSongIdArray.removeAtIndex(Int(randIdx))
-                mappedSongIds[idxPath.item] = songId
+                    songId = self.unmappedSongIdArray.removeAtIndex(Int(randIdx))
+                    self.mappedSongIds[idxPath.item] = songId
+                
             }
-
-            // Let anyone interested know the user has selected songId
-            postNotificationOfSelection(songId!, atIndex: idxPath.item)
             
+            // Let anyone interested know the user has selected songId
+            self.postNotificationOfSelection(songId!, atIndex: idxPath.item)
+            }
             item.CoverLabel.stringValue = "fetching art..."
             // At this point we should probably initiate a cover animation.
+            
         }
     }
-    
     
     func postNotificationOfSelection(songId: SongIDProtocol, atIndex idx: Int) {
         // 1) Package the context in a data structure.
@@ -208,12 +237,17 @@ TGSongTimelineViewControllerDelegate {
     }
     
     func boundsChanged(theEvent: NSEvent) {
+        // if the song ui is not showing allow scrolling
+        // scrolling should also be able to select songs so call uncoverSong.
         //print("Scrollage")
     }
     /*: 
         Called when a new song with songId is added.
         Adds the new songId to the unmapped songs and inserts it into the coverCollectionView
         as a covered album cover so the user can see the collection grow as songs are loaded.
+        This method can be called async'ly off the main thread so we must be careful about 
+        concurrency issues with accessing the unmappedSongIdArray and incrementing the songCount, etc.
+        This is done via an access queue.
     */
     func updateSongs(notification: NSNotification) {
         if let songId = notification.object as? SongIDProtocol {
@@ -221,18 +255,28 @@ TGSongTimelineViewControllerDelegate {
             // How can we know if the songIDProtocol object is value or reference type?
             // And so how can we know if the unmappedSongIdArray is value or reference based?
             //FIXME:
-            unmappedSongIdArray.append(songId)
+            // queue the access to the collection up serially.
+            dispatch_async(collectionAccessQ) {
+                self.unmappedSongIdArray.append(songId)
 
-            // The next empty index is the same as the songCount (number of songs in collection).
-            let newIndexPath = NSIndexPath(forItem: songCount, inSection: 0)
-            songCount++
-            
-            // insertItemsAtIndexPaths wants a set, so we make a set.
-            let indexPaths: Set<NSIndexPath> = [newIndexPath]
-            
-            // collection view flips if we do this off the main queue, so The Dude abides.
-            dispatch_async(dispatch_get_main_queue()){
-                self.coverCollectionView.insertItemsAtIndexPaths(indexPaths)
+                // The next empty index is the same as the songCount (number of songs in collection).
+                let newIndexPath = NSIndexPath(forItem: self.songCount, inSection: 0)
+                self.songCount++
+                
+                // insertItemsAtIndexPaths wants a set, so we make a set.
+                let indexPaths: Set<NSIndexPath> = [newIndexPath]
+                
+                // collection view flips if we do this off the main queue, so The Dude abides.
+                // crashes with an EXC_BAD_ACCESS if we scroll down to catch up with the songs being added.
+                // It doesn't matter that the item index is 0 or the last (songCount) it still throws
+                // (and this is probably significant) when I scroll to the bottom - is this an animation thing?
+                // Enabling zombie objects in the scheme reveals that the crash occurs in the animation code with the 
+                // error: "*** -[UIViewAnimationContext completionHandler]: message sent to deallocated instance". 
+                // This smells like another Apple bug.
+                dispatch_sync(dispatch_get_main_queue()){
+                    //print("idxPaths \(indexPaths) and songCount = \(self.songCount)")
+                    self.coverCollectionView.insertItemsAtIndexPaths(indexPaths)
+               }
             }
         }
     }
@@ -268,8 +312,11 @@ TGSongTimelineViewControllerDelegate {
             self.coverCollectionView.reloadData()
         }
     }
+}
 
-    //MARK: TGSongTimelineViewControllerProtocol methods
+//MARK: TGSongTimelineViewControllerProtocol methods
+extension TGCoverDisplayViewController {
+    
     public func userCreatedNewSweetSpot(sender: AnyObject!) {
         print("user created new sweet spot")
     }
@@ -282,7 +329,12 @@ TGSongTimelineViewControllerDelegate {
         print("user selectted sweet spot marker at index")
     }
     
-    //MARK: TGSongUIPopupProtocol methods
+
+}
+
+//MARK: TGSongUIPopupProtocol methods
+extension TGCoverDisplayViewController {
+    
     func songUITimelineButtonWasPressed() {
         
         // The button's coords are relative to its's view so we need to convert.
@@ -305,17 +357,21 @@ TGSongTimelineViewControllerDelegate {
     func songUIInfoButtonWasPressed() {
         print("Go info")
     }
-    //MARK: NSCollectionViewDataSource methods
-//    public func numberOfSectionsInCollectionView(collectionView: NSCollectionView) -> Int {
-//        return 1
-//    }
-    
+}
+
+//MARK: NSCollectionViewDataSource methods
+extension TGCoverDisplayViewController {
+
+    //    public func numberOfSectionsInCollectionView(collectionView: NSCollectionView) -> Int {
+    //        return 1
+    //    }
+
     public func collectionView(collectionView: NSCollectionView, numberOfItemsInSection section: Int) -> Int {
         return songCount
     }
     
     public func collectionView(collectionView: NSCollectionView, itemForRepresentedObjectAtIndexPath indexPath: NSIndexPath) -> NSCollectionViewItem {
-
+//print("Datasource request for \(indexPath)")
         let item = collectionView.makeItemWithIdentifier("Cover", forIndexPath: indexPath) as! TGCollectionCover
         item.CoverLabel.stringValue = ""
         

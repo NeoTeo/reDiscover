@@ -75,7 +75,6 @@
 		ABB2B6621ADEB38F004F9F87 /* NSImage+HashId.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABB2B6611ADEB38F004F9F87 /* NSImage+HashId.swift */; };
 		ABB33FF019C72C3800439A5E /* SweetSpotServerIO.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABB33FEF19C72C3800439A5E /* SweetSpotServerIO.swift */; };
 		ABB592E31B2EC63700B57CC5 /* CoverDisplayViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABB592E21B2EC63700B57CC5 /* CoverDisplayViewController.swift */; };
-		ABB592E51B2ECB1D00B57CC5 /* CoverDisplayView.xib in Resources */ = {isa = PBXBuildFile; fileRef = ABB592E41B2ECB1D00B57CC5 /* CoverDisplayView.xib */; };
 		ABB592E81B2ED0A400B57CC5 /* Cover.xib in Resources */ = {isa = PBXBuildFile; fileRef = ABB592E71B2ED0A400B57CC5 /* Cover.xib */; };
 		ABB592EA1B2ED19C00B57CC5 /* TGCollectionCover.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABB592E91B2ED19C00B57CC5 /* TGCollectionCover.swift */; };
 		ABBFC0E41B4AA55F00323C6D /* NSResponder+printResponderChain.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABBFC0E31B4AA55F00323C6D /* NSResponder+printResponderChain.swift */; };
@@ -210,7 +209,6 @@
 		ABB2B6611ADEB38F004F9F87 /* NSImage+HashId.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSImage+HashId.swift"; sourceTree = "<group>"; };
 		ABB33FEF19C72C3800439A5E /* SweetSpotServerIO.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SweetSpotServerIO.swift; sourceTree = "<group>"; };
 		ABB592E21B2EC63700B57CC5 /* CoverDisplayViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CoverDisplayViewController.swift; sourceTree = "<group>"; };
-		ABB592E41B2ECB1D00B57CC5 /* CoverDisplayView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = CoverDisplayView.xib; sourceTree = "<group>"; };
 		ABB592E71B2ED0A400B57CC5 /* Cover.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = Cover.xib; sourceTree = "<group>"; };
 		ABB592E91B2ED19C00B57CC5 /* TGCollectionCover.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TGCollectionCover.swift; sourceTree = "<group>"; };
 		ABBFC0E31B4AA55F00323C6D /* NSResponder+printResponderChain.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSResponder+printResponderChain.swift"; sourceTree = "<group>"; };
@@ -520,7 +518,6 @@
 				ABEC263C1951C6F200A57CE3 /* Main.storyboard */,
 				AB3991EA1AEA8B9F00381CAC /* DebugDisplay.xib */,
 				AB4529371A88EAF300A6B15A /* TGSongUIPopupController.xib */,
-				ABB592E41B2ECB1D00B57CC5 /* CoverDisplayView.xib */,
 				ABB592E71B2ED0A400B57CC5 /* Cover.xib */,
 				AB85BC1A1875AB5200670905 /* TGPlaylistView.xib */,
 				AB85BC241875AB5200670905 /* TGSongInfoView.xib */,
@@ -594,7 +591,6 @@
 				ABB592E81B2ED0A400B57CC5 /* Cover.xib in Resources */,
 				AB85BC4D1875AB5200670905 /* TGSongTimelineView.xib in Resources */,
 				ABEC263D1951C6F200A57CE3 /* Main.storyboard in Resources */,
-				ABB592E51B2ECB1D00B57CC5 /* CoverDisplayView.xib in Resources */,
 				AB85BBEF1875AACF00670905 /* Images.xcassets in Resources */,
 				AB663FD81A8AA14700E50596 /* TGSongGridView.xib in Resources */,
 				ABFC8EB219C19C630007ECCB /* uploadedSS.plist in Resources */,
