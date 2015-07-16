@@ -45,7 +45,9 @@ final class TGSongAudioCacher : NSObject {
         
         operationBlock.addExecutionBlock(){// [unowned operationBlock] in
             let cacheTask = TGSongAudioCacheTask(songPoolAPI: self.songPoolAPI)
-            self.songPlayerCache = cacheTask.cacheWithContext(theContext)
+//            self.songPlayerCache = cacheTask.cacheWithContext(theContext)
+            //REFAC test
+            self.songPlayerCache = cacheTask.cacheWithContext(theContext, oldCache: self.songPlayerCache)
             
             if let pp = self.pendingPlayerRequestCallback {
                 // Check if the pending player request is in this new cache
@@ -112,11 +114,15 @@ class TGSongAudioCacheTask : NSObject {
         songPoolAPI = theAPI
     }
     
-//    func cacheWithContext(theContext: NSDictionary) -> HashToPlayerDictionary {
-    func cacheWithContext(theContext: SongSelectionContext) -> HashToPlayerDictionary {
+
+//    func cacheWithContext(theContext: SongSelectionContext) -> HashToPlayerDictionary {
+    //REFAC test - htf did this ever not start over every time?
+    func cacheWithContext(theContext: SongSelectionContext, oldCache: HashToPlayerDictionary) -> HashToPlayerDictionary {
         //FIXME: WTF is this?!
         let condLock = NSConditionLock(condition: 42)
         
+        //REFAC test
+        self.songPlayerCache = oldCache
         /* By virtue of the locking of this thread until the cache is done, there are never any players left in the loadingPlayers.
         let players  = [AVPlayer](self.loadingPlayers.keys)
         for player in players {

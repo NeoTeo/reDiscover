@@ -120,6 +120,9 @@ extension TGSplitViewController {
             case "]":
                 print("Right panel")
                 songInfoSVI.animator().collapsed = !songInfoSVI.collapsed
+            case "d":
+                print("Dump debug")
+                theSongPool?.debugLogCaches()
             default:
                 break
             }
