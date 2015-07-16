@@ -43,8 +43,8 @@ public class TGCoverDisplayViewController: NSViewController, CoverDisplayViewCon
     
     public override func awakeFromNib() {
 
-        print("TGCoverDisplayViewController awake")
-        print("    The coverCollectionView is \(coverCollectionView)")
+//        print("TGCoverDisplayViewController awake")
+//        print("    The coverCollectionView is \(coverCollectionView)")
 //        coverCollectionView.selectable = true
         // Watch for changes to the CollectionView's selection, just so we can update our status display.
 //        coverCollectionView.addObserver(self, forKeyPath:"selectionIndexPaths" , options: .New, context: nil)
@@ -59,8 +59,7 @@ public class TGCoverDisplayViewController: NSViewController, CoverDisplayViewCon
         
         initializeTimelinePopover()
     }
-    
-    
+        
     func initializeObservers() {
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "updateSongs:", name: "NewSongAdded", object: nil)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "updateCovers:", name: "songCoverUpdated", object: nil)

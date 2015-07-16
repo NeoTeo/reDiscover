@@ -14,6 +14,13 @@ final public class TGSplitViewController: NSSplitViewController, TGMainViewContr
     @IBOutlet weak var coverCollectionSVI: NSSplitViewItem!
     @IBOutlet weak var songInfoSVI: NSSplitViewItem!
     
+    // Shadow the above SplitViewItems' viewControllers
+    private var playlistPanelCtrlr: TGPlaylistViewController!
+    private var coversPanelCtrlr: TGCoverDisplayViewController!
+    private var infoPanelCtrlr: TGSongInfoViewController!
+    
+    private var objectController: NSObjectController?
+    
     var theURL: NSURL?
     // Would rather use the Static version
     var theSongPool: TGSongPool?
@@ -23,12 +30,13 @@ final public class TGSplitViewController: NSSplitViewController, TGMainViewContr
 extension TGSplitViewController {
     
     public override func viewDidAppear() {
-        print("TGSplitView did appear. Let's have a look at the views.")
-        view.printAllSubviews()
-        
-        print("playlist \(playlistSplitViewItem.viewController)")
-        print("coverCollection \(coverCollectionSVI.viewController)")
-        print("songInfo \(songInfoSVI.viewController)")
+//        print("TGSplitView did appear. Let's have a look at the views.")
+//        view.printAllSubviews()
+//        
+//        print("playlist \(playlistSplitViewItem.viewController)")
+//        print("coverCollection \(coverCollectionSVI.viewController)")
+//        print("songInfo \(songInfoSVI.viewController)")
+        connectControllers()
         
         // make this the first responder.
         self.view.window?.makeFirstResponder(self)
@@ -39,19 +47,48 @@ extension TGSplitViewController {
         theSongPool!.delegate = self
         
         registerNotifications()
-        connectControllers()
+        
+        setupBindings()
     }
     
     func setupBindings() {
-        let transformer = NSValueTransformer(forName: "TimelineTransformer")
-        transformer?.bind("maxDuration", toObject: theSongPool!, withKeyPath: "currentSongDuration", options: nil)
+        
+        if objectController == nil {
+            objectController = NSObjectController(content: theSongPool)
+        }
+        // Bind the timeline value transformer's maxDuration with the song pool's currentSongDuration.
+        let transformer = TGTimelineTransformer()
+        NSValueTransformer.setValueTransformer(transformer, forName: "TimelineTransformer")
+        transformer.bind("maxDuration", toObject: theSongPool!, withKeyPath: "currentSongDuration", options: nil)
+        
+        // Bind the playlist controller's progress indicator value parameter with
+        // the song pool's playheadPos via the timeline value transformer.
+        playlistPanelCtrlr.playlistProgress?.bind("value",
+            toObject: theSongPool!,
+            withKeyPath: "playheadPos",
+            options: [NSValueTransformerNameBindingOption : "TimelineTransformer"])
         
         
+        // Bind the timeline nsslider (timelineBar) to observe the requestedPlayheadPosition 
+        // of the currently playing song via the objectcontroller using the TimelineTransformer.
+        coversPanelCtrlr.songTimelineController?.timelineBar?.bind("value",
+            toObject: objectController!,
+            withKeyPath: "selection.requestedPlayheadPosition",
+            options: [NSValueTransformerNameBindingOption : "TimelineTransformer"])
+        
+        // Bind the selection's (the songpool) playheadPos with the timeline bar
+        // cell's currentPlayheadPositionInPercent so we can animate the bar.
+        coversPanelCtrlr.songTimelineController?.timelineBar?.cell?.bind("currentPlayheadPositionInPercent",
+            toObject: objectController!,
+            withKeyPath: "selection.playheadPos",
+            options: [NSValueTransformerNameBindingOption : "TimelineTransformer"])
+
+
     }
     
-    func registerTransformer() {
-        NSValueTransformer.setValueTransformer(TGTimelineTransformer(), forName: "TimelineTransformer")
-    }
+//    func registerTransformer() {
+//        NSValueTransformer.setValueTransformer(TGTimelineTransformer(), forName: "TimelineTransformer")
+//    }
     
     func registerNotifications() {
         
@@ -66,11 +103,12 @@ extension TGSplitViewController {
     //FIXME: Find better way for this - 
     // eg make the methods that the playlist controller needs available as class methods in SongPool.
     func connectControllers() {
-        let plistCtrlr = playlistSplitViewItem.viewController as! TGPlaylistViewController
-        plistCtrlr.songPoolAPI = theSongPool
-//        plistCtrlr.delegate = self
+        playlistPanelCtrlr = playlistSplitViewItem.viewController as! TGPlaylistViewController
+        coversPanelCtrlr = coverCollectionSVI.viewController as! TGCoverDisplayViewController
+        infoPanelCtrlr = songInfoSVI.viewController as! TGSongInfoViewController
         
-        //let infoCtrlr = playlistSplitViewItem.viewController as! TGSongInfoViewController
+        playlistPanelCtrlr.songPoolAPI = theSongPool
+//        playlistPanelCtrlr.delegate = self
 
     }
     
@@ -147,11 +185,14 @@ extension TGSplitViewController {
 }
 
 extension NSView {
-    
-    func printAllSubviews() {
-        Swift.print("This view is: \(self)")
+    private func _printAllSubviews(indentString: String) {
+        Swift.print(indentString+"This view is: \(self)")
         for sv in self.subviews {
-            sv.printAllSubviews()
+            sv._printAllSubviews(indentString+"  ")
         }
+    }
+    
+    public func printAllSubviews() {
+        _printAllSubviews("|")
     }
 }

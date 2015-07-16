@@ -15,7 +15,7 @@
 #import "TGPlaylistViewController.h"
 #import "TGSongInfoViewController.h"
 #import "TGSongTimelineViewController.h"
-#import "TGTimelineTransformer.h"
+//#import "TGTimelineTransformer.h"
 //#import "NSImage+TGHashId.h"
 
 #import "rediscover-swift.h"
