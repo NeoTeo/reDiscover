@@ -25,9 +25,7 @@ public protocol CoverDisplayViewController {
 //    }
 //}
 
-public class TGCoverDisplayViewController: NSViewController, CoverDisplayViewController, NSCollectionViewDataSource, NSCollectionViewDelegate, NSCollectionViewDelegateFlowLayout, TGSongUIPopupProtocol,
-//TimelinePopoverDelegateProtocol { 
-TGSongTimelineViewControllerDelegate {
+public class TGCoverDisplayViewController: NSViewController, CoverDisplayViewController, NSCollectionViewDelegate, NSCollectionViewDelegateFlowLayout {
     
     @IBOutlet weak var coverCollectionView: CoverCollectionView!
     
@@ -55,19 +53,18 @@ TGSongTimelineViewControllerDelegate {
 
     public override func viewDidLoad() {
         
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "updateSongs:", name: "NewSongAdded", object: nil)
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "updateCovers:", name: "songCoverUpdated", object: nil)
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "boundsChanged:", name: NSScrollViewDidLiveScrollNotification, object: nil)
+        initializeObservers()
         
-//        let trackingRect = NSMakeRect(0, 0, self.view.frame.width, self.view.frame.height)
-//        let trackingArea = NSTrackingArea(rect: trackingRect, options: [.MouseEnteredAndExited, .MouseMoved, .ActiveInKeyWindow], owner: self, userInfo: nil)
-//        
-//        self.view.addTrackingArea(trackingArea)
-        
-        // Make sure the UI Controller is initialized.
         initializeUIController()
         
         initializeTimelinePopover()
+    }
+    
+    
+    func initializeObservers() {
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "updateSongs:", name: "NewSongAdded", object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "updateCovers:", name: "songCoverUpdated", object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "boundsChanged:", name: NSScrollViewDidLiveScrollNotification, object: nil)
     }
     
     public override func viewWillLayout() {
@@ -200,6 +197,7 @@ TGSongTimelineViewControllerDelegate {
         // 1) Package the context in a data structure.
         // 2) post notification with the context.
         //FIXME: For now we bodge the speed vector.
+        let bogusSpeedVector = NSMakePoint(1, 1)
         
         // Get the dimensions in rows and columns of the current cover collection layout.
         let (cols, rows) = (coverCollectionView.collectionViewLayout as! NSCollectionViewFlowLayout).colsAndRowsFromLayout()
@@ -212,7 +210,7 @@ TGSongTimelineViewControllerDelegate {
         print("cols \(cols) and rows \(rows), x \(x) and y \(y)")
         
         let dims = NSMakePoint(CGFloat(cols), CGFloat(rows))
-        let context = TGSongSelectionContext(selectedSongId: songId, speedVector: NSMakePoint(1, 1), selectionPos: loc, gridDimensions: dims)
+        let context = TGSongSelectionContext(selectedSongId: songId, speedVector: bogusSpeedVector, selectionPos: loc, gridDimensions: dims)
         
         NSNotificationCenter.defaultCenter().postNotificationName("userSelectedSong", object: context)
         
@@ -315,7 +313,7 @@ TGSongTimelineViewControllerDelegate {
 }
 
 //MARK: TGSongTimelineViewControllerProtocol methods
-extension TGCoverDisplayViewController {
+extension TGCoverDisplayViewController: TGSongTimelineViewControllerDelegate {
     
     public func userCreatedNewSweetSpot(sender: AnyObject!) {
         print("user created new sweet spot")
@@ -333,7 +331,7 @@ extension TGCoverDisplayViewController {
 }
 
 //MARK: TGSongUIPopupProtocol methods
-extension TGCoverDisplayViewController {
+extension TGCoverDisplayViewController: TGSongUIPopupProtocol {
     
     func songUITimelineButtonWasPressed() {
         
@@ -360,7 +358,7 @@ extension TGCoverDisplayViewController {
 }
 
 //MARK: NSCollectionViewDataSource methods
-extension TGCoverDisplayViewController {
+extension TGCoverDisplayViewController: NSCollectionViewDataSource {
 
     //    public func numberOfSectionsInCollectionView(collectionView: NSCollectionView) -> Int {
     //        return 1
