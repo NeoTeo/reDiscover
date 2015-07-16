@@ -228,8 +228,9 @@ class TGSongAudioCacheTask : NSObject {
             return
         }
         
-        let songAsset: AVURLAsset = AVURLAsset(URL: songURL, options: nil) //options: [AVURLAssetPreferPreciseDurationAndTimingKey:true])
-        
+//        let songAsset: AVURLAsset = AVURLAsset(URL: songURL, options: nil) //options: 
+        let songAsset: AVURLAsset = AVURLAsset(URL: songURL, options: [AVURLAssetPreferPreciseDurationAndTimingKey : true])
+        print("slow loading AV URL asset")
         let thePlayer = AVPlayer()
         
         // The closure we want to have executed upon successful loading. We store this with the player it belongs to.
