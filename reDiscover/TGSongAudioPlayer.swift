@@ -98,7 +98,8 @@ class TGSongAudioPlayer: NSObject {
     }
     
     func playAtTime(startTime: Float64) {
-        currentPlayer?.seekToTime(CMTimeMakeWithSeconds(startTime, 1)){ success in
+        print("beep")
+        currentPlayer?.seekToTime(CMTimeMakeWithSeconds(startTime, 1000)){ success in
             if success == true {
 //                println("Playback from \(startTime) succeeded")
                 self.playSong()
@@ -107,7 +108,7 @@ class TGSongAudioPlayer: NSObject {
 ////                println("Playback from \(startTime) failed/was interrupted.")
 //            }
         }
-        
+        print("boop")
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "stopSong", name: AVPlayerItemDidPlayToEndTimeNotification, object: currentPlayer)
     }
     

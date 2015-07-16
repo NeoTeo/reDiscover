@@ -86,10 +86,6 @@ extension TGSplitViewController {
 
     }
     
-//    func registerTransformer() {
-//        NSValueTransformer.setValueTransformer(TGTimelineTransformer(), forName: "TimelineTransformer")
-//    }
-    
     func registerNotifications() {
         
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "songCoverWasUpdated:", name: "songCoverUpdated", object: nil)
