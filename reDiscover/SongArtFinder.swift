@@ -16,9 +16,9 @@ different ways:
     - Looks in the directory the song is in.
     - Looks the song up on a web service using the song's UUID.
 */
-@objc class SongArtFinder {
+class SongArtFinder: NSObject {
     
-    class func findArtForSong(song: TGSong, collection: AlbumCollection) -> NSImage? {
+    @objc class func findArtForSong(song: TGSong, collection: AlbumCollection) -> NSImage? {
         // No existing artID. Try looking in the metadata.
         let arts = SongCommonMetaData.getCoverArtForSong(song)
         if arts.count > 0 {

@@ -37,8 +37,16 @@ final class TGSongAudioCacher : NSObject {
 
     //func cacheWithContext(theContext: NSDictionary) {
     func cacheWithContext(theContext: SongSelectionContext) {
-        // To make this as responsive as possible we cancel any previous ops and put the operation in an op queue.
+
+        /**
+        Each cacheTask will block until it is done. Because we wrap them in operation
+        blocks and add them to the cachingOpQueue all previous cacheTasks/op blocks
+        can be cancelled if a newer request (which intrinsically has a higher
+        priority) arrives.
+        */
         
+        // We no longer need any of the queued up caching operations because we
+        // have a new request.
         cachingOpQueue.cancelAllOperations()
         
         let operationBlock = NSBlockOperation()
@@ -93,11 +101,25 @@ final class TGSongAudioCacher : NSObject {
 
 }
 
+/**
+    `TGSongAudioCacheTask` initiates the construction of a cache based on its given
+    context and waits for the caching to be done before returning. This is so that
+    the caller doesn't set too many tasks in motion that cannot be (as easily)
+    cancelled.
+    
+    Eg. if we set 10 tasks going (by moving quickly over that many different
+    songs) and we create 10 tasks that return as soon as they have started but before
+    having finished caching, we have no (easy) way of interrupting a remote load
+    of a resource.
+
+    `TGSongAudioCacheTask` also tries to reuse what it can from the given oldCache
+    to avoid re-caching.
+*/
 class TGSongAudioCacheTask : NSObject {
     
     let cachingOpQueue = NSOperationQueue()
     
-    // Global context variable used by the observer.
+    // class context variable used by the observer.
     private var myContext = 0
     
     var songPoolAPI: SongPoolAccessProtocol?
@@ -118,10 +140,10 @@ class TGSongAudioCacheTask : NSObject {
 //    func cacheWithContext(theContext: SongSelectionContext) -> HashToPlayerDictionary {
     //REFAC test - htf did this ever not start over every time?
     func cacheWithContext(theContext: SongSelectionContext, oldCache: HashToPlayerDictionary) -> HashToPlayerDictionary {
-        //FIXME: WTF is this?!
+        //Make this method synchronous - won't return until the new cache is back.
         let condLock = NSConditionLock(condition: 42)
         
-        //REFAC test
+        //REFAC test - copies the dict ints but the AVPlayers are still references to the same objects.
         self.songPlayerCache = oldCache
         /* By virtue of the locking of this thread until the cache is done, there are never any players left in the loadingPlayers.
         let players  = [AVPlayer](self.loadingPlayers.keys)
@@ -144,6 +166,11 @@ class TGSongAudioCacheTask : NSObject {
             condLock.unlockWithCondition(69)
         }
 
+
+        /** 
+            Wait here until the `newCacheFromCache` finishes and calls the closure
+            passed to it which replaces the `songPlayerCache` and unlocks.
+        */
         // Lock thread until the condition 69 is signalled.
         condLock.lockWhenCondition(69)
         condLock.unlock()
@@ -159,7 +186,10 @@ class TGSongAudioCacheTask : NSObject {
         let newCacheLock        = NSLock()
         
         var newCache: HashToPlayerDictionary = HashToPlayerDictionary() {
-            // This keeps track of how many objects have been added to the cache.
+            /** 
+                Call the completion handler once the number of items in the `newCache`
+                matches the `wantedCacheCount`.
+            */
             didSet {
                 if wantedCacheCount != 0 {
                     // If we're done, call the completion handler.
@@ -170,35 +200,62 @@ class TGSongAudioCacheTask : NSObject {
             }
         }
         
+        /**
+            The method `generateWantedSongIds` will figure out, based on the `context`, 
+            what songs to cache and will call the trailing closure with each songId 
+            as it is chosen. The closure ensures existing players are re-used or
+            initiates the creation of a new one by calling `performWhenReadyForPlayback`
+            and adds it to the `newCache` once it is ready. The loading of a player
+            ensures the song itself is cached (loaded and ready to play).
+        */
         wantedCacheCount = generateWantedSongIds(context, operationBlock: operationBlock) { songId in
             // This is a handler that is passed a songId of a song that needs caching.
             // If the song was already in the old cache, copy it to the new cache.
             if let oldPlayer = oldCache[songId.hash] {
-                // since oldCache is a deep copy of the actual cache we are effectively copying the asset.
-                // We need to lock it during access because it might get accessed concurrently by the loading completion block below.
+                /** 
+                    Since oldCache is a deep copy of the actual cache we are effectively 
+                    copying the asset. We need to lock it during access because it 
+                    might get accessed concurrently by a loading completion block
+                    below that was initiated on a previous run.
+                */
                 newCacheLock.lock()
                 newCache[songId.hash] = oldPlayer
                 newCacheLock.unlock()
+                
             } else {
                 
-                // Song player had not been previously cached. Do it now and add it to the newCache when it's done.
+                /// Song player had not been previously cached.
+                /// Do it now and add it to the newCache when it's ready.
                 self.performWhenReadyForPlayback(songId){ songPlayer in
                  
+                    /// This can get called some time after
                     newCacheLock.lock()
                     newCache[songId.hash] = songPlayer
                     newCacheLock.unlock()
                 }
             }
         }
-        // This catches the case where the songs cache before the generateWantedSongsIds is done.
+        
+        /**
+            This catches the case where all the songs are already cached by the 
+            time the `generateWantedSongsIds` returns with a `wantedCacheCount`: 
+            If the `newCache` contains the same amount of players as we wanted, 
+            we call the completion handler, otherwise the completion handler is 
+            called in the `didSet` of the `newCache`.
+        */
         if newCache.count == wantedCacheCount {
-
-            // (early bird) completion handler that will be replacing cache.
             completionHandler(newCache)
         }
     }
-
-//    func generateWantedSongIds(theContext: NSDictionary, operationBlock: NSBlockOperation?, idHandler: (SongIDProtocol)->()) -> Int {
+    
+    /**
+        This method will use the given context to decide on a number of songIds 
+        that should be cached.
+        It calls the given `idHandler` with each chosen `songId` right away.
+    
+        Future improvements will take a caching algo to allow for different
+        types of caching selections.
+    */
     func generateWantedSongIds(theContext: SongSelectionContext, operationBlock: NSBlockOperation?, idHandler: (SongIDProtocol)->()) -> Int {
         
         let selectionPos    = theContext.selectionPos
@@ -210,22 +267,27 @@ class TGSongAudioCacheTask : NSObject {
         for var row = Int(selectionPos.y)-radius ; row <= Int(selectionPos.y)+radius ; row++ {
             for var col = Int(selectionPos.x)-radius ; col <= Int(selectionPos.x)+radius ; col++ {
                 
-                // Guards
+                // Guards - Don't go lower than 0 or outside the dims of the grid.
                 if row < 0 || col < 0 { continue }
-                if row >= Int(gridDims.y) || col >= Int(gridDims.x) { break }
+                if row >= Int(gridDims.y) || col >= Int(gridDims.x) { continue } //break }
                 
                 let gridPos = NSPoint(x: col, y: row)
-                // Is this songPoolAPI still set to call the matrix stuff?
+
                 if let songId = songPoolAPI?.songIdFromGridPos(gridPos) {
                     wantedCacheCount++
                     idHandler(songId)
                 }
             }
         }
-
+print("wantedCacheCount \(wantedCacheCount)")
         return wantedCacheCount
     }
     
+    /**
+    This method performs the given closure when the player for a given songId is
+    ready to play. This implies that it has been cached and has an associated AVPlayer
+    with which to play back the song that the id refers to.
+    */
     func performWhenReadyForPlayback(songId: SongIDProtocol, readySongHandler: (AVPlayer)->()) {
         
         // At this point we don't know if the url is for the local file system or streaming.
@@ -234,7 +296,6 @@ class TGSongAudioCacheTask : NSObject {
             return
         }
         
-//        let songAsset: AVURLAsset = AVURLAsset(URL: songURL, options: nil) //options: 
         let songAsset: AVURLAsset = AVURLAsset(URL: songURL, options: [AVURLAssetPreferPreciseDurationAndTimingKey : true])
         print("slow loading AV URL asset")
         let thePlayer = AVPlayer()
@@ -255,19 +316,26 @@ class TGSongAudioCacheTask : NSObject {
         self.loadingPlayers[thePlayer] = aClosure
         self.loadingPlayersLock.unlock()
 
-        // add an observer to get called when the player status changes.
+        // add an observer to get called when the player status changes (to signal completion).
         thePlayer.addObserver(self, forKeyPath: "status", options: .New, context: &self.myContext)
 
         songAsset.loadValuesAsynchronouslyForKeys(["tracks"]){
-            // Everything in here is executed asyncly and thus any access to class properties need to either be atomic or serialized.
-            // This completion block is called exactly once per invocation; either sync'ly if an error occurred straight away or
-            // async'ly if a value of any one of the specified keys is loaded OR an error occurred in the loading OR cancelLoading was invoked on the asset.
-
+            /** 
+                Everything in here is executed asyncly and thus any access to class
+                properties need to either be atomic or serialized. This completion 
+                block is called exactly once per invocation; either sync'ly if an 
+                error occurred straight away or async'ly if a value of any one of 
+                the specified keys is loaded OR an error occurred in the loading
+                OR `cancelLoading` was invoked on the asset.
+            */
             var error: NSError?
             var thePlayerItem: AVPlayerItem?
             
-            // Since this closure is also called when the call is cancelled we need to check for specific values.
-            // Streams don't have a tracks value so if it fails we assume it's a stream.    
+            /** 
+                Since this closure is also called when the call is cancelled we
+                need to check for specific values. Streams don't have a tracks value
+                so if it fails we assume it's a stream.
+            */
             switch(songAsset.statusOfValueForKey("tracks", error: &error)) {
             case .Loaded:
                 // This is a file
@@ -285,12 +353,15 @@ class TGSongAudioCacheTask : NSObject {
             //Make sure the asset's duration value is available before kicking off the song player loading.
             songAsset.loadValuesAsynchronouslyForKeys(["duration"]){
                 print("load async duration")
-                // Since the loading begins as soon as the player item is associated with the player I have to do this *after* adding the observer to an uninited player.
+                /// Since the loading begins as soon as the player item is associated with the player I have to do this *after* adding the observer to an uninited player.
                 thePlayer.replaceCurrentItemWithPlayerItem(thePlayerItem)
             }
         }
     }
     
+    /**
+        Observer method called when the status of the player changes.
+    */
     override func observeValueForKeyPath(keyPath: String?, ofObject object: AnyObject?, change: [String : AnyObject]?, context: UnsafeMutablePointer<Void>) {
         if context == &myContext {
             
@@ -311,25 +382,4 @@ class TGSongAudioCacheTask : NSObject {
         }
 
     }
-    /*
-    override func observeValueForKeyPath(keyPath: String?, ofObject object: AnyObject?, change: [NSObject : AnyObject]?, context: UnsafeMutablePointer<Void>) {
-        if context == &myContext {
-
-            let playa = object as! AVPlayer
-            
-            // call the closure that corresponds to this player
-            //FIXME: Don't actually believe loadingPlayers can be accessed concurrently. 
-            // Both this and the closure executed by loadValuesAsynchronouslyForKeys are on the same thread,
-            // so they shouldn't be concurrent. Try to remove and test.
-            self.loadingPlayersLock.lock() // lock it because performWhenReadyForPlayback may be adding to loadingPlayers in a different thread.
-            let completionHandler = self.loadingPlayers.removeValueForKey(playa) as VoidVoidClosure?
-            self.loadingPlayersLock.unlock()
-            completionHandler?()
-            
-        } else {
-            // Observer with different context. Passing to super.
-            super.observeValueForKeyPath(keyPath, ofObject: object, change: change, context: context)
-        }
-    }
-    */
 }

@@ -163,7 +163,7 @@ public class TGCoverDisplayViewController: NSViewController, CoverDisplayViewCon
             dispatch_async(collectionAccessQ){
             // Store it so I can bail out above (Do I really need this?)
             self.currentIdxPath = idxPath
-            print("The item and index is \(item) \(idxPath)")
+//            print("The item and index is \(item) \(idxPath)")
             
             //: At this point we don't know yet if the cover has been uncovered.
             //: If a songId is found in the mappedSongIds it means it has already been uncovered.
@@ -206,7 +206,7 @@ public class TGCoverDisplayViewController: NSViewController, CoverDisplayViewCon
         let x = Int(floor(CGFloat(idx - (cols * y))))
         let loc = NSMakePoint(CGFloat(x), CGFloat(y))
         
-        print("cols \(cols) and rows \(rows), x \(x) and y \(y)")
+//        print("cols \(cols) and rows \(rows), x \(x) and y \(y)")
         
         let dims = NSMakePoint(CGFloat(cols), CGFloat(rows))
         let context = TGSongSelectionContext(selectedSongId: songId, speedVector: bogusSpeedVector, selectionPos: loc, gridDimensions: dims)

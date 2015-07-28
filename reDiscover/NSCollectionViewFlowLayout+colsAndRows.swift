@@ -16,9 +16,13 @@ extension NSCollectionViewFlowLayout {
         let iSpacing = minimumInteritemSpacing
         let lSpacing = minimumLineSpacing
         let inset = sectionInset
-        
-        let cols = Int(ceil((contSize.width - (inset.left + inset.right)) / (itemSize.width+iSpacing)))
+
+        var cols = Int(floor((contSize.width - (inset.left + inset.right - iSpacing)) / (itemSize.width+iSpacing)))
         let rows = Int(ceil((contSize.height - (inset.top + inset.bottom)) / (itemSize.height+lSpacing)))
+        
+        /// Since we never compress below 1 column, if the math returns 0 we set
+        /// it back to 1.
+        if cols == 0 { cols = 1 }
         return (cols, rows)
     }
  
