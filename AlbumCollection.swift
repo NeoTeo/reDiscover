@@ -40,7 +40,8 @@ extension AlbumCollection {
         
         for songId in songIds as! [SongIDProtocol] {
             if let song = SongPool.songForSongId(songId),
-                let songArt = SongArt.artForSong(song) {
+                let artId = song.artID,
+                let songArt = SongArt.getArt(forArtId: artId) {
                   //FIXME: For now just return any song art we find
                     return songArt
             }

@@ -214,7 +214,7 @@ final class SongPool : NSObject {
         }
     }
 
-    static func addSong(withArtId artId: String, forSongId songId: SongIDProtocol) {
+    static func addSong(withArtId artId: SongArtId, forSongId songId: SongIDProtocol) {
         guard let queue = songPoolAccessQ else { return }
         
         dispatch_sync(queue) {
@@ -229,6 +229,21 @@ final class SongPool : NSObject {
         }
     }
 
+    static func checkForArt(forSongId songId: SongIDProtocol, inAlbumCollection collection: AlbumCollection) {
+        guard let song = songForSongId(songId) else { return }
+
+        // Change artForSong to take a songId
+        if song.artID == nil || SongArt.getArt(forArtId: song.artID!) == nil {
+            if let image = SongArtFinder.findArtForSong(song, collection: collection) {
+                let newArtId = SongArt.addImage(image)
+                SongPool.addSong(withArtId: newArtId, forSongId: songId)
+            }
+        } else {
+            print("Image was found in art cache")
+        }
+        
+        NSNotificationCenter.defaultCenter().postNotificationName("songCoverUpdated", object: songId)
+    }
 //    static func songPoolWithSong(thePool: SongDictionary, theSong: TGSong) -> SongDictionary {
 //        
 //    }

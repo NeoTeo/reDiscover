@@ -602,9 +602,11 @@
 - (void)updatePanelsForSong:(id<SongIDProtocol>)songId defaultImage:(NSImage*)defImg {
     dispatch_async(dispatch_get_global_queue(QOS_CLASS_USER_INTERACTIVE, 0), ^{
         // Only update the info window for the currently playing song.
-            NSImage *art = [SongArt artForSong:[_currentSongPool songForID:songId]];
-            if (art == nil)
-                art = defImg;
+//            NSImage *art = [SongArt artForSong:[_currentSongPool songForID:songId]];
+        id<TGSong> song = [_currentSongPool songForID:songId];
+        NSImage* art = [SongArt getArtForArtId:song.artID];
+        if (art == nil)
+            art = defImg;
             // REFAC commented out
             //[_songGridController setCoverImage:art forSongWithID:songId];
         

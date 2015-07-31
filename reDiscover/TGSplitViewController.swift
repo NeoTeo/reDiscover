@@ -161,11 +161,16 @@ extension TGSplitViewController {
     }
     
     func songCoverWasUpdated(notification: NSNotification) {
+        
         let songId = notification.object as! SongID
+        
         if songId.isEqual(theSongPool?.lastRequestedSongId()),
             let song = theSongPool?.songForID(songId){
+                
                 let infoPanel = songInfoSVI.viewController as! TGSongInfoViewController
-                if let art = SongArt.artForSong(song) {
+                if let artId = song.artID,
+                    
+                    let art = SongArt.getArt(forArtId: artId) {
                     infoPanel.setSongCoverImage(art)
                 } else {
                     infoPanel.setSongCoverImage(SongArt.getNoCoverImage())

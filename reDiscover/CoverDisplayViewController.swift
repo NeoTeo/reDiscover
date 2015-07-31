@@ -376,10 +376,12 @@ extension TGCoverDisplayViewController: NSCollectionViewDataSource {
         // song and associate them, then return the item.
         // Find the referenced image and connect it to the item
 
-        if let songId = mappedSongIds[indexPath.item] {
-            
-            image = SongArt.artForSong(SongPool.songForSongId(songId)!)
-            
+        if let songId = mappedSongIds[indexPath.item],
+            let song = SongPool.songForSongId(songId) {
+                
+            if let artId = song.artID {
+                image = SongArt.getArt(forArtId: artId)
+            }
             // If we couldn't find any art set the image to no cover rather than the back cover.
             if image == nil {
                 image = NSImage(named: "noCover")

@@ -65,16 +65,20 @@ class SongArt : NSObject {
         return image.hashId()
     }
     
-    static func artForSong(song: TGSong) -> NSImage? {
-        
-        // Check if the song already has art in the artCache.
-        // Return it if it does.
-        if  let id = song.artID,
-            let art = artCache.artForArtId(id) {
-            return art
-        }
-        
-        return nil
+//    static func artForSong(song: TGSong) -> NSImage? {
+//        
+//        // Check if the song already has art in the artCache.
+//        // Return it if it does.
+//        if  let id = song.artID,
+//            let art = artCache.artForArtId(id) {
+//            return art
+//        }
+//        
+//        return nil
+//    }
+    
+    static func getArt(forArtId artId: String) -> NSImage? {
+        return artCache.artForArtId(artId)
     }
     
     /**
@@ -84,10 +88,10 @@ class SongArt : NSObject {
     - parameter artId: the art id.
     - returns: A new song with the given art id.
     */
-    static func songWithArtId(song: TGSong, artId: SongArtId) -> TGSong {
-        
-        let newSong = Song(songId: song.songID, metadata: song.metadata, urlString: song.urlString, sweetSpots: song.sweetSpots, fingerPrint: song.fingerPrint, selectedSS: song.selectedSweetSpot, releases: song.songReleases, artId: artId as String, UUId: song.UUId, RelId: song.RelId)
-        
-        return newSong
-    }
+//    static func songWithArtId(song: TGSong, artId: SongArtId) -> TGSong {
+//        
+//        let newSong = Song(songId: song.songID, metadata: song.metadata, urlString: song.urlString, sweetSpots: song.sweetSpots, fingerPrint: song.fingerPrint, selectedSS: song.selectedSweetSpot, releases: song.songReleases, artId: artId as String, UUId: song.UUId, RelId: song.RelId)
+//        
+//        return newSong
+//    }
 }

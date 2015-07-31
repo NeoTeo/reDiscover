@@ -1014,39 +1014,7 @@ static int const kSongPoolStartCapacity = 250;
                 albumCollection = [AlbumCollection collectionWithAddedAlbum:albumCollection album:album];
             }
             
-            
-            // Check the cache for art associated with this song's artId.
-            NSImage *otherImg = [SongArt artForSong:aSong];
-            
-            if (otherImg == nil) {
-                NSURL *arse =[ NSURL URLWithString:aSong.urlString];
-                [DebugDisplay updateDebugStrings:[NSString stringWithFormat:@"%@",[arse filePathURL].lastPathComponent]];
-
-                // Ask the SongArtFinder to find it and if it succeeds,
-                // add the found art to the artCache.
-                otherImg = [SongArtFinder findArtForSong:aSong collection:albumCollection];
-                if (otherImg != nil) {
-                    //aSong = [SongArt songWithArtId:aSong artId:[SongArt addImage:otherImg]];
-                    // replace old song with the new song in the songpool.
-                    //[SongPool addSong:aSong];
-                    [SongPool addSongWithArtId:[SongArt addImage:otherImg] forSongId:selectedSongId];
-                }
-                
-            } else {
-                TGLog(TGLOG_REFAC, @"Whoa");
-            }
-            
-            // Since the code within this dispatch_async can run concurrently in multiple
-            // threads, the concurrent access to the songPoolDictionary should be flattened
-            // into a serial queue (songPoolQueue) running in a separate thread.
-            //dispatch_sync(songPoolQueue, ^{
-                // replace old song with the new song in the songpool.
-                //[SongPool addSong:aSong];
-                // Here we should signal that the song now has cover art.
-                // Or update the song in question if its current image == fetching image
-                [[NSNotificationCenter defaultCenter] postNotificationName:@"songCoverUpdated" object:selectedSongId];
-        
-            //});
+            [SongPool checkForArtForSongId:selectedSongId inAlbumCollection:albumCollection];
         }
     });
 }
