@@ -15,7 +15,7 @@ import Foundation
     
     var songID: SongIDProtocol { get }
     var urlString: String? { get }
-    var selectedSweetSpot: Float { get }
+    var selectedSweetSpot: NSNumber? { get }
     var sweetSpots: [SweetSpot]? { get }
     var metadata: SongCommonMetaData? { get }
     var artID: String? { get }
@@ -25,7 +25,7 @@ import Foundation
     var RelId: String? { get }
     
     init(songId: SongIDProtocol, metadata: SongCommonMetaData?, urlString: String?, sweetSpots: [SweetSpot]?,
-        fingerPrint: String?, selectedSS: SweetSpot, releases: NSData?, artId: String?, UUId: String?, RelId: String?)
+        fingerPrint: String?, selectedSS: SweetSpot?, releases: NSData?, artId: String?, UUId: String?, RelId: String?)
     
     //func isEqualTo(aSong: TGSong) -> Bool;
     //func copy()

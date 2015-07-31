@@ -20,7 +20,7 @@ class SongArtFinder: NSObject {
     
     @objc class func findArtForSong(song: TGSong, collection: AlbumCollection) -> NSImage? {
         // No existing artID. Try looking in the metadata.
-        let arts = SongCommonMetaData.getCoverArtForSong(song)
+        let arts = SongCommonMetaData.getCoverArtForSong(song.songID)
         if arts.count > 0 {
             // FIXME: For now just pick the first. We want this to be user selectable.
             return arts[0]

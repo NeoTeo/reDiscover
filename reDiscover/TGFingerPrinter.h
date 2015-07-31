@@ -29,16 +29,17 @@
     NSMutableDictionary *fingerPrintStatus;
 }
 
-- (nullable NSString *)fingerprintForSong:(__nonnull id<TGSong>)theSong;
-- (__nonnull id<TGSong>)songWithFingerPrint:(__nonnull id<TGSong>)song;
-    
+//- (nullable NSString *)fingerprintForSong:(__nonnull id<TGSong>)theSong;
+//- (__nonnull id<TGSong>)songWithFingerPrint:(__nonnull id<TGSong>)song;
+- (nullable NSString *)fingerprintForSongId:(__nonnull id<SongIDProtocol>)songId;
+
 //MARK: REFAC
 - (NSUInteger)fingerPrintStatusForSong:(__nonnull id<TGSong>)theSong;
 - (void)setFingerPrintStatusForSong:(__nonnull id<TGSong>)theSong toStatus:(UInt)status;
 
 #pragma clang assume_nonnull begin
 - (void)requestFingerPrintForSong:(id<SongIDProtocol>)songID withHandler:(void (^)(NSString*))fingerprintHandler;
-- (void)requestUUIDForSongID:(id<SongIDProtocol>)songID withDuration:(int)duration andFingerPrint:(char*)theFingerprint;
+//- (void)requestUUIDForSongID:(id<SongIDProtocol>)songID withDuration:(int)duration andFingerPrint:(char*)theFingerprint;
 - (NSInteger)decodeAudioFile:(NSURL *)fileURL forContext:(ChromaprintContext __nonnull * __nonnull)theContext ofLength:(NSInteger)maxLength andDuration:(int *)duration;
 
 

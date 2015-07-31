@@ -67,9 +67,7 @@ public class TGCoverDisplayViewController: NSViewController, CoverDisplayViewCon
     }
     
     public override func viewWillLayout() {
-        print("Will layout")
         currentTrackingArea = replaceTrackingArea(currentTrackingArea, fromView: self.view)
-        print("new trackingArea is \(currentTrackingArea)")
     }
     
     func replaceTrackingArea(oldTrackingArea: NSTrackingArea?, fromView theView: NSView) -> NSTrackingArea {

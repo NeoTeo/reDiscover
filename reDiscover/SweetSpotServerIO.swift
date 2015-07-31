@@ -22,9 +22,9 @@ import Cocoa
 */
 class SweetSpotServerIO: NSObject {
 
-    let opQueue: NSOperationQueue?
+//    let opQueue: NSOperationQueue?
     // The delegate to communicate with song pool
-    var delegate: SongPoolAccessProtocol?
+    //var delegate: SongPoolAccessProtocol?
     // Should this be lazy?
     
     // The location of the SweetSpotServer. For now it's just localhost.
@@ -35,7 +35,7 @@ class SweetSpotServerIO: NSObject {
     
     override init() {
         // Start an asynchronous operation queue
-        opQueue = NSOperationQueue()
+//        opQueue = NSOperationQueue()
 
         super.init()
         
@@ -45,6 +45,8 @@ class SweetSpotServerIO: NSObject {
     }
     
     /**
+    REFACTOR - This needs to work for a static class
+    
     Set up the Core Data persistent store for sweet spots that have already been uploaded to the server.
     */
     func setupUploadedSweetSpotsMOC() {
@@ -138,7 +140,8 @@ class SweetSpotServerIO: NSObject {
     
     
     func sweetSpotHasBeenUploaded(theSS: Double, theSongID: SongIDProtocol) -> Bool {
-        if  let songUUID = delegate?.UUIDStringForSongID(theSongID),
+//        if  let songUUID = delegate?.UUIDStringForSongID(theSongID),
+        if let songUUID = SongUUID.getUUIDForSongId(theSongID),
             let ssData = uploadedSweetSpots[songUUID] as UploadedSSData?,
             let sweetSpots = ssData.sweetSpots as NSArray? {
                 
@@ -150,19 +153,21 @@ class SweetSpotServerIO: NSObject {
     //MARK: Below here belongs in the sweetspotserver class
     func uploadSweetSpotsForSongID(songID: SongIDProtocol) -> Bool {
         // First get the song's uuid
-        let songUUID = delegate?.UUIDStringForSongID(songID)
-        if songUUID == nil {
+//        let songUUID = delegate?.UUIDStringForSongID(songID)
+        guard let songUUID = SongUUID.getUUIDForSongId(songID) else {
             print("uploadSweetSpotsForSongID ERROR: song has no UUID")
             return false
         }
-        if let sweetSpots = delegate?.sweetSpotsForSongID(songID) as NSArray? {
+        
+        if let song = SongPool.songForSongId(songID),
+            sweetSpots = SweetSpotControl.sweetSpotsForSong(song) as NSArray? {
             for sweetSpot in sweetSpots {
                 if sweetSpotHasBeenUploaded(sweetSpot as! Double, theSongID: songID) {
                     print("Has been uploaded")
                     continue
                 }
 
-                let requestIDURL = NSURL(string: "http://\(hostNameAndPort)/submit?songUUID=\(songUUID!.utf8)&songSweetSpot=\(sweetSpot as! Double)")
+                let requestIDURL = NSURL(string: "http://\(hostNameAndPort)/submit?songUUID=\(songUUID.utf8)&songSweetSpot=\(sweetSpot as! Double)")
                 if requestIDURL == nil { return false }
                 
                 print("this is a sweetSpot upload url \(requestIDURL!)")
@@ -179,10 +184,10 @@ class SweetSpotServerIO: NSObject {
                         if (status == "ok") != nil {
                             print("Upload to SweetSpotServer returned OK")
                             
-                            var uploadedSS = uploadedSweetSpots[songUUID!]
+                            var uploadedSS = uploadedSweetSpots[songUUID]
                             if uploadedSS == nil {
                                 // The song has no existing sweetspots so we create a new set with the sweet spot.
-                                uploadedSS = UploadedSSData.insertItemWithSongUUIDString(songUUID!, inManagedObjectContext: uploadedSweetSpotsMOC) as UploadedSSData
+                                uploadedSS = UploadedSSData.insertItemWithSongUUIDString(songUUID, inManagedObjectContext: uploadedSweetSpotsMOC) as UploadedSSData
                                 uploadedSS?.sweetSpots = NSArray(object: sweetSpot) as [AnyObject]
                             } else {
                                 // The song already has a set of sweetspots so we need to add to it.
@@ -193,7 +198,7 @@ class SweetSpotServerIO: NSObject {
                             }
                             
                             // Add the new data to the dictionary
-                            uploadedSweetSpots[songUUID!] = uploadedSS!
+                            uploadedSweetSpots[songUUID] = uploadedSS!
                             
                         }
                     }
@@ -211,19 +216,38 @@ class SweetSpotServerIO: NSObject {
 //        return true;
 //    }
     
+    /** 
+    The async nature of this method (has to IO with an external server) means it 
+    never actually returns the sweet spots but relies on a adding the song with 
+    the new sweet spots to the song pool which is gross.
+    */
+    /** FIXME: REFACTOR
+    Turn this sucker into a sync method that does what it says on the tin or at
+    least a method that takes a continuation (completion closure)
+    The problem is that I don't have a good concept of how to deal with song changes
+    in indeterminate order which they will be when they depend on external IO.
+    Eg.
+    1) I fire off an async request A for reading meta data for a song.
+    2) I fire off an async request B for reading sweet spots of a song.
+    3) B returns with some sweet spots so I make a new song with the sweet spots
+    4) A returns with meta data so I make a new song with the meta data but because
+        I'm using the old song captured at the creation of the closure it will not
+        have the sweet spots that were added in step 3.
+    
+    Solution: Don't use songs but song ids and look up the song at the time the
+    closure is called - eg 4) make a new song with the song we get from the id which
+    will contain the sweet spots added in step 3 and the new meta data.
+    */
     func requestSweetSpotsForSongID(songID: SongIDProtocol) -> NSArray? {
-        let songUUID = delegate?.UUIDStringForSongID(songID)
-        if songUUID == nil {
-            print("uploadSweetSpotsForSongID ERROR: song has no UUID")
-            return nil
-        }
+
+        guard let songUUID = SongUUID.getUUIDForSongId(songID) else { return nil }
+        guard let theURL = NSURL(string: "http://\(hostNameAndPort)/lookup?songUUID=\(songUUID.utf8)") else { return nil }
         
-        let theURL = NSURL(string: "http://\(hostNameAndPort)/lookup?songUUID=\(songUUID!.utf8)")
-        if theURL == nil { return nil }
-        
-        let theRequest = NSURLRequest(URL: theURL!)
-        NSURLConnection.sendAsynchronousRequest(theRequest, queue: opQueue!, completionHandler: {
-                (response: NSURLResponse?, data: NSData?, error: NSError?) -> Void in
+        let request = NSURLRequest(URL: theURL)
+        let task = NSURLSession.sharedSession().dataTaskWithRequest(request) { (data, response, error) in
+//        NSURLConnection.sendAsynchronousRequest(theRequest, queue: opQueue!, completionHandler: {
+//                (response: NSURLResponse?, data: NSData?, error: NSError?) -> Void in
+            guard let song = SongPool.songForSongId(songID) else { return }
             if data != nil {
                 do {
                     let requestJSON = try NSJSONSerialization.JSONObjectWithData(data!, options: NSJSONReadingOptions.MutableContainers ) as! NSDictionary
@@ -244,19 +268,21 @@ class SweetSpotServerIO: NSObject {
                                 print("the song id is \(songID )")
                                 
                                 // If the song already has sweet spots add the server's sweet spots to them.
-                                if let songSS = self.delegate?.sweetSpotsForSongID(songID) {
-                                    let mutableSS = NSMutableArray(array: songSS)
-                                
-                                    for ss in serverSweetSpots {
-                                        mutableSS.addObject(ss)
+//                                if let songSS = self.delegate?.sweetSpotsForSongID(songID) {
+                                if let songSS = SweetSpotControl.sweetSpotsForSong(song) {
+//                                    let mutableSS = NSMutableArray(array: songSS)
+                                    var mutableSS = [SweetSpot](songSS)
+                                    for ss in serverSweetSpots as! [SweetSpot] {
+                                        mutableSS.append(ss)
+//                                        mutableSS.addObject(ss)
                                     }
-                                    
-                                    self.delegate?.replaceSweetSpots(mutableSS as [AnyObject], forSongID: songID)
-                 
-//                                    self.delegate?.replaceSweetSpots(mutableSS as NSArray as! [AnyObject], forSongID: songID)
+//                                    self.delegate?.replaceSweetSpots(mutableSS as [AnyObject], forSongID: songID)
+                                    let newSong = SweetSpotControl.songWithSweetSpots(mutableSS, forSong: song)
+                                    SongPool.addSong(newSong)
                                     
                                 } else {
-                                    self.delegate?.replaceSweetSpots(serverSweetSpots as [AnyObject], forSongID: songID)
+                                    let newSong = SweetSpotControl.songWithSweetSpots(serverSweetSpots as! [SweetSpot], forSong: song)
+                                    SongPool.addSong(newSong)
                                 }
                                 
                                 // Set the first sweet spot to be the active one.
@@ -269,8 +295,8 @@ class SweetSpotServerIO: NSObject {
                     return
                 }
             }
-        })
-        
+        }
+        task.resume()
         return nil;
     }
 }

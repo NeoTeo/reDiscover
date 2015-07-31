@@ -8,7 +8,7 @@
 
 import Foundation
 
-typealias SweetSpot = Float
+typealias SweetSpot = NSNumber //Float
 // The current implementation stores sweet spots in each song instance.
 // To make songs immutable this means we need to make a new song from the old one
 // every time we want to change any of its properties, including sweet spots.
@@ -17,7 +17,7 @@ typealias SweetSpot = Float
 // with the new sweetspot.
 class SweetSpotControl : NSObject {
     
-    static func selectedSweetSpotForSong(song: TGSong) -> Float {
+    static func selectedSweetSpotForSong(song: TGSong) -> SweetSpot? {
         // Swift doesn't know what is inside the NSNumber, so we tell it.
 //        if let sss = song.selectedSweetSpot {
 //            return Float(sss);
@@ -32,6 +32,9 @@ class SweetSpotControl : NSObject {
         return song.sweetSpots //as? [SweetSpot]
     }
     
+    static func songWithSweetSpots(sweetSpots: [SweetSpot], forSong song: TGSong) -> TGSong {
+        return Song(songId: song.songID, metadata: song.metadata, urlString: song.urlString, sweetSpots: sweetSpots, fingerPrint: song.fingerPrint, selectedSS: song.selectedSweetSpot, releases: song.songReleases, artId: song.artID, UUId: song.UUId, RelId: song.RelId)
+    }
     // Used to be makeSweetSpotAtTime:
     /**
     Make a copy of the given song with a sweet spot set to the given time.

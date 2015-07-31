@@ -12,7 +12,7 @@ class AcoustIDWebService: NSObject {
 
     static let acoustIdAPIKey = "QVFHY3iP"
     
-    class func dataDictForFingerprint(duration: UInt, fingerprint: String) -> NSDictionary? {
+    class func dataDict(forFingerprint fingerprint: String, ofDuration duration: UInt) -> NSDictionary? {
 
         let path = "http://api.acoustid.org/v2/lookup?client=\(acoustIdAPIKey)&meta=releases&duration=\(duration)&fingerprint=\(fingerprint)"
 

@@ -45,6 +45,7 @@
     TGLog(TGLOG_ALL,@"freeing chromaprint context.");
 }
 
+/*
 - (id<TGSong>)songWithFingerPrint:(id<TGSong>)song {
     NSString *fingerprint = [self fingerprintForSong:song];
     return [[Song alloc] initWithSongId:song.songID
@@ -58,6 +59,7 @@
                                    UUId:song.UUId
                                   RelId:song.RelId];
 }
+*/
 
 /**
  Produces a fingerprint from the given song using the chromaprint library.
@@ -65,17 +67,17 @@
  @params theSong The song to fingerprint.
  @returns the fingerprint as a nullable NSString*.
  */
-- (nullable NSString *)fingerprintForSong:(id<TGSong>)theSong {
-    
+//- (nullable NSString *)fingerprintForSong:(id<TGSong>)theSong {
+- (nullable NSString *)fingerprintForSongId:(id<SongIDProtocol> _Nonnull)songId {
     int maxLength = 120;
     char *theFingerprint;
     int duration;
     
     ChromaprintContext *chromaprintContext = chromaprint_new(CHROMAPRINT_ALGORITHM_DEFAULT);
 
-    id<SongIDProtocol> songID = theSong.songID;
+    //id<SongIDProtocol> songID = theSong.songID;
     
-    NSURL* songURL = [_delegate URLForSongID:songID];
+    NSURL* songURL = [_delegate URLForSongID:songId];
 
     [self decodeAudioFileNew:songURL forContext:chromaprintContext ofLength:maxLength andDuration:&duration];
     // The duration returned by the decodeAudioFileNew is not very precise - only to the second.
@@ -91,7 +93,7 @@
         return songFingerPrint;
         
     } else
-        TGLog(TGLOG_ALL,@"ERROR: Fingerprinter failed to produce a fingerprint for songId %@",songID);
+        TGLog(TGLOG_ALL,@"ERROR: Fingerprinter failed to produce a fingerprint for songId %@",songId);
     
     chromaprint_free(chromaprintContext);
 
@@ -156,6 +158,7 @@
     });
 }
 
+/*
 - (void)requestUUIDForSongID:(id<SongIDProtocol>)songID withDuration:(int)duration andFingerPrint:(char*)theFingerprint {
     // make sure we copy the fingerprint as it gets deallocated outside this method.
     // Don't run this async, since the caller is already running async and shouldn't return before this has had a go.
@@ -191,7 +194,7 @@
             TGLog(TGLOG_ALL,@"ERROR: AcoustID server returned %@",status);
 //    });
 }
-
+*/
 
 
 // Taken from fpcalc.c example of the chromaprint library and slightly modified.

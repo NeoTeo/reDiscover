@@ -764,7 +764,7 @@
             return;
         }
         
-        [_currentSongPool requestSongPlayback:newSongID withStartTimeInSeconds:0 makeSweetSpot:NO];
+        [_currentSongPool requestSongPlayback:newSongID withStartTimeInSeconds:[NSNumber numberWithFloat:0] makeSweetSpot:NO];
     }
 }
 

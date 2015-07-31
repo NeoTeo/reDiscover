@@ -121,7 +121,7 @@ static int const kSongPoolStartCapacity = 250;
         
         // The sweetSpotServerIO object handles all comms with the remote sweet spot server.
         _sweetSpotServerIO = [[SweetSpotServerIO alloc] init];
-        _sweetSpotServerIO.delegate = self;
+        //_sweetSpotServerIO.delegate = self;
                 
         // Starting off with an empty songID cache.
         songIDCache = [[NSMutableSet alloc] init];
@@ -633,8 +633,8 @@ static int const kSongPoolStartCapacity = 250;
     // Get the song's start time in seconds.
 //    NSNumber *startTime = [song startTime];
     //MARK: REFAC
-//    NSNumber *startTime = [song currentSweetSpot];
-    NSNumber *startTime = [NSNumber numberWithFloat:[SweetSpotControl selectedSweetSpotForSong:song]];
+//    NSNumber *startTime = [NSNumber numberWithFloat:[SweetSpotControl selectedSweetSpotForSong:song]];
+        NSNumber *startTime = [SweetSpotControl selectedSweetSpotForSong:song];
     /// Request sweetspots from the sweetspot server if the song does not have a start time, has a uuid and has not
     /// exceeded its alotted queries.
 
@@ -643,14 +643,17 @@ static int const kSongPoolStartCapacity = 250;
     /// A manual refresh would be the way to force a check.
     /// Also, if there's no uuid, should we send off for fingerprinting and uuid lookup or should this occur higher up the stack
     /// and the check for uuid should opt out sooner...
-    /* REFAC
-    if ((startTime == nil) && (song.uuid != nil) && (song.SSCheckCountdown-- == 0)) {
+    
+    /* REFAC */
+    if (startTime == nil) {// && (song.uuid != nil) && (song.SSCheckCountdown-- == 0)) {
         // Reset the counter.
-        song.SSCheckCountdown = (NSUInteger)kSSCheckCounterSize;
-        
+//        song.SSCheckCountdown = (NSUInteger)kSSCheckCounterSize;
+        TGLog(TGLOG_REFAC, @"song: %@ has uuid %@",song.songID,song.UUId);
+        //FIXME: REFAC This really ought to get called as soon as the song uuid is made.
         [_sweetSpotServerIO requestSweetSpotsForSongID:song.songID];
     }
-    */
+    //*/
+    
     return startTime;
 }
 
@@ -676,7 +679,7 @@ static int const kSongPoolStartCapacity = 250;
 //    [theSong setSweetSpot:newPosition];
     
     //MARK: REFAC
-    id<TGSong> newSong = [SweetSpotControl songWithSelectedSweetSpot:theSong atTime:[newPosition floatValue]];
+    id<TGSong> newSong = [SweetSpotControl songWithSelectedSweetSpot:theSong atTime:newPosition];
     //[songPoolDictionary setObject:newSong forKey:newSong.songID];
     [SongPool addSong:newSong];
 }
@@ -961,49 +964,41 @@ static int const kSongPoolStartCapacity = 250;
     //
     // 4) Notify all done.
     //MARK: REFAC
-//    arses
+
     dispatch_async(dispatch_get_global_queue(QOS_CLASS_BACKGROUND, 0), ^{
+
+        SongCommonMetaData* metadata = [SongCommonMetaData loadedMetaDataForSongId:selectedSongId];
+        [SongPool addSongWithMetadata:metadata forSongId:selectedSongId];
+        
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"songMetaDataUpdated" object:selectedSongId];
+        
         id<TGSong> __nonnull aSong  = [self songForID:selectedSongId];
-
-//        // Look at the file for metadata
-        aSong = [SongCommonMetaData songWithLoadedMetaData:aSong];
-
-        dispatch_sync(songPoolQueue, ^{
-            
-            // replace old song with the new song in the songpool.
-            [SongPool addSong:aSong];
-            // Or update the song in question if its current image == fetching image
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"songMetaDataUpdated" object:selectedSongId];
-            
-        });
         
         if ([aSong fingerPrint] == nil) {
-            aSong = [songFingerPrinter songWithFingerPrint:aSong];
+            NSString* fingerprint = [songFingerPrinter fingerprintForSongId:selectedSongId];
+            [SongPool addSongWithFingerprint:fingerprint forSongId:selectedSongId];
         }
         
+        aSong = [SongPool songForSongId:selectedSongId];
         if (aSong.fingerPrint != nil) {
             
             if (aSong.UUId == nil) {
                 //FIXME: See if we can get the duration from the fingerprint instead.
                 CMTime songDuration = [songAudioPlayer songDuration];
-                NSDictionary *acoustIdData = [AcoustIDWebService dataDictForFingerprint:CMTimeGetSeconds(songDuration) fingerprint:aSong.fingerPrint];
-                
+                NSDictionary* acoustIdData = [AcoustIDWebService dataDictForFingerprint:aSong.fingerPrint ofDuration:CMTimeGetSeconds(songDuration)];
                 // Consider just having AcoustIDWebService return the bestMatchReleaseId instead
                 NSDictionary *bestRelease = [AcoustIDWebService bestMatchReleaseForSong:aSong inDictionary:acoustIdData];
                 // At this point we should call a func that picks the best id from the acoustIdData based
                 // on how well each matches the other metadata we have on the song.
+                [SongPool addSongWithReleaseId:[bestRelease objectForKey:@"id"] forSongId:selectedSongId];
                 
                 if( acoustIdData != nil) {
-//                    TGLog(TGLOG_REFAC, @"AcoustID data %@",acoustIdData);
                     NSString *songUUID = [SongUUID extractUUIDFromDictionary:acoustIdData];
-                    //FIXME: SongUUID shouldn't return a new song. It should return a UUID and we should have a constructor
-                    // for song that takes just an uuid and returns a new song with all other fields copied and
-                    // added the uuid!
-//                    aSong = [Song songWithChanges:aSong changes:@{@"UUId" : songUUID, @"RelId" : [bestRelease objectForKey:@"id"]}];
-                    aSong = [SongUUID songWithNewUUId:aSong newUUId:songUUID newReleaseId:[bestRelease objectForKey:@"id"]];
+                    [SongPool addSongWithUUId:songUUID forSongId:selectedSongId];
                 }
             }
             // Get the song's album if there. If not it means its metadata is borken.
+            aSong = [SongPool songForSongId:selectedSongId];
             NSString *aId = [Album albumIdForSong:aSong];
             if (aId != nil) {
                 
@@ -1031,7 +1026,10 @@ static int const kSongPoolStartCapacity = 250;
                 // add the found art to the artCache.
                 otherImg = [SongArtFinder findArtForSong:aSong collection:albumCollection];
                 if (otherImg != nil) {
-                    aSong = [SongArt songWithArtId:aSong artId:[SongArt addImage:otherImg]];
+                    //aSong = [SongArt songWithArtId:aSong artId:[SongArt addImage:otherImg]];
+                    // replace old song with the new song in the songpool.
+                    //[SongPool addSong:aSong];
+                    [SongPool addSongWithArtId:[SongArt addImage:otherImg] forSongId:selectedSongId];
                 }
                 
             } else {
@@ -1041,14 +1039,14 @@ static int const kSongPoolStartCapacity = 250;
             // Since the code within this dispatch_async can run concurrently in multiple
             // threads, the concurrent access to the songPoolDictionary should be flattened
             // into a serial queue (songPoolQueue) running in a separate thread.
-            dispatch_sync(songPoolQueue, ^{
+            //dispatch_sync(songPoolQueue, ^{
                 // replace old song with the new song in the songpool.
-                [SongPool addSong:aSong];
+                //[SongPool addSong:aSong];
                 // Here we should signal that the song now has cover art.
                 // Or update the song in question if its current image == fetching image
                 [[NSNotificationCenter defaultCenter] postNotificationName:@"songCoverUpdated" object:selectedSongId];
         
-            });
+            //});
         }
     });
 }
@@ -1065,7 +1063,7 @@ static int const kSongPoolStartCapacity = 250;
     }
     
     //MARK: REFAC
-    NSNumber *startTime = [NSNumber numberWithFloat:[SweetSpotControl selectedSweetSpotForSong:aSong]];
+    NSNumber *startTime = [SweetSpotControl selectedSweetSpotForSong:aSong];
     [self requestSongPlayback:songID withStartTimeInSeconds:startTime makeSweetSpot:NO];
 
 //    [self requestSongPlayback:songID withStartTimeInSeconds:aSong.currentSweetSpot makeSweetSpot:NO];
@@ -1105,7 +1103,7 @@ static int const kSongPoolStartCapacity = 250;
     if ( makeSS ) {
         //MARK: REFAC
 //        [aSong makeSweetSpotAtTime:time];
-        id<TGSong> newSong = [SweetSpotControl songWithSelectedSweetSpot:aSong atTime:[time floatValue]];
+        id<TGSong> newSong = [SweetSpotControl songWithSelectedSweetSpot:aSong atTime:time];
         //[songPoolDictionary setObject:newSong forKey:newSong.songID];
         [SongPool addSong:newSong];
     }
@@ -1280,6 +1278,8 @@ static int const kSongPoolStartCapacity = 250;
     
     TGLog(TGLOG_DBG,@"+^v^v^v^v^v^v^v^v^v^v^v^v+");
     [songAudioCacher dumpCacheToLog];
+    id<TGSong> nowSong = [SongPool songForSongId:currentlyPlayingSongId];
+    TGLog(TGLOG_DBG, @"sweetspots for selection id%@ is %@",nowSong.songID,[SweetSpotControl sweetSpotsForSong:nowSong]);
 }
 
 - (NSString*)statusValToString:(NSUInteger)statusVal {
