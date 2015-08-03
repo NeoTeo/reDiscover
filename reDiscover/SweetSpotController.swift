@@ -31,7 +31,7 @@ class SweetSpotControl : NSObject {
     static func sweetSpotsForSong(song: TGSong) -> [SweetSpot]? {
         return song.sweetSpots //as? [SweetSpot]
     }
-    
+
     static func songWithSweetSpots(sweetSpots: [SweetSpot], forSong song: TGSong) -> TGSong {
         return Song(songId: song.songID, metadata: song.metadata, urlString: song.urlString, sweetSpots: sweetSpots, fingerPrint: song.fingerPrint, selectedSS: song.selectedSweetSpot, releases: song.songReleases, artId: song.artID, UUId: song.UUId, RelId: song.RelId)
     }
@@ -54,7 +54,7 @@ class SweetSpotControl : NSObject {
 //                        releases: nil,
 //                        artId: song.artID)
     }
-    
+  /*
     // replacement for TGSong storeSelectedSweetSpot
     static func songWithAddedSweetSpot(song: TGSong, withSweetSpot sweetSpot: SweetSpot) -> TGSong {
 
@@ -68,4 +68,5 @@ class SweetSpotControl : NSObject {
 
         return Song(songId: song.songID, metadata: song.metadata, urlString: song.urlString, sweetSpots: tmpSpots!, fingerPrint: song.fingerPrint, selectedSS: song.selectedSweetSpot, releases: song.songReleases, artId: song.artID, UUId: song.UUId, RelId: song.RelId)
     }
+*/
 }

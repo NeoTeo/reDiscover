@@ -734,7 +734,7 @@ TGLog(TGLOG_REFAC, @"song grid view coords %@",NSStringFromPoint(mouseLoc));
     
     // Ask the song pool to set the playhead position (and the playback) to the given time for the given song.
 //    [_songPoolAPI setRequestedPlayheadPosition:sweetSpotTime forSongID:theSongID];
-    [_songPoolAPI setRequestedPlayheadPosition:sweetSpotTime];
+    [_songPoolAPI setRequestedPlayheadPosition:sweetSpotTime makeSS:YES];
 }
 
 - (void)userSelectedExistingSweetSpot:(id)sender {

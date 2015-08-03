@@ -668,9 +668,8 @@ static int const kSongPoolStartCapacity = 250;
  of the currently playing song to newPosition and sets a sweet spot for the song which gets stored on next save.
  The requestedPlayheadPosition should only result in a sweet spot when the user releases the slider.
 */
-//- (void)setRequestedPlayheadPosition:(NSNumber *)newPosition forSongID:(id<SongIDProtocol>)songID {
-- (void)setRequestedPlayheadPosition:(NSNumber *)newPosition {
-    
+//- (void)setRequestedPlayheadPosition:(NSNumber *)newPosition {
+- (void)setRequestedPlayheadPosition:(NSNumber *)newPosition makeSS:(BOOL)makeSweetSpot {
     requestedPlayheadPosition = newPosition;
     id<TGSong> theSong = [self songForID:lastRequestedSongId];
     
@@ -679,9 +678,11 @@ static int const kSongPoolStartCapacity = 250;
 //    [theSong setSweetSpot:newPosition];
     
     //MARK: REFAC
-    id<TGSong> newSong = [SweetSpotControl songWithSelectedSweetSpot:theSong atTime:newPosition];
-    //[songPoolDictionary setObject:newSong forKey:newSong.songID];
-    [SongPool addSong:newSong];
+    if (makeSweetSpot) {
+        id<TGSong> newSong = [SweetSpotControl songWithSelectedSweetSpot:theSong atTime:newPosition];
+        //[songPoolDictionary setObject:newSong forKey:newSong.songID];
+        [SongPool addSong:newSong];
+    }
 }
 
 
@@ -1103,8 +1104,8 @@ static int const kSongPoolStartCapacity = 250;
         TGLog(TGLOG_TMP, @"currentSongDuration %f",CMTimeGetSeconds([songAudioPlayer songDuration]));
             [self setValue:[NSNumber numberWithFloat:CMTimeGetSeconds([songAudioPlayer songDuration])] forKey:@"currentSongDuration"];
 
-            [self setRequestedPlayheadPosition:startTime];
-            
+            //[self setRequestedPlayheadPosition:startTime];
+            [self setRequestedPlayheadPosition:startTime makeSS:makeSS];
         }
     }];
     //NUCACHE end
