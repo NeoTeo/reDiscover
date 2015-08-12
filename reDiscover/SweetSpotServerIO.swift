@@ -160,14 +160,14 @@ class SweetSpotServerIO: NSObject {
         }
         
         if let song = SongPool.songForSongId(songID),
-            sweetSpots = SweetSpotControl.sweetSpotsForSong(song) as NSArray? {
+            sweetSpots = SweetSpotControl.sweetSpotsForSong(song) as Set<SweetSpot>? {//NSArray? {
             for sweetSpot in sweetSpots {
-                if sweetSpotHasBeenUploaded(sweetSpot as! Double, theSongID: songID) {
+                if sweetSpotHasBeenUploaded(sweetSpot as Double, theSongID: songID) {
                     print("Has been uploaded")
                     continue
                 }
 
-                let requestIDURL = NSURL(string: "http://\(hostNameAndPort)/submit?songUUID=\(songUUID.utf8)&songSweetSpot=\(sweetSpot as! Double)")
+                let requestIDURL = NSURL(string: "http://\(hostNameAndPort)/submit?songUUID=\(songUUID.utf8)&songSweetSpot=\(sweetSpot as Double)")
                 if requestIDURL == nil { return false }
                 
                 print("this is a sweetSpot upload url \(requestIDURL!)")
@@ -262,26 +262,32 @@ class SweetSpotServerIO: NSObject {
                         // Use the line above to avoid the line below.
                         if result! is NSDictionary {
                             let resultDict = result as! NSDictionary
-                            let serverSweetSpots = resultDict["sweetspots"] as! NSArray
+                            let serverSweetSpots = resultDict["sweetspots"] as! [SweetSpot]//NSArray
                             if serverSweetSpots.count > 0 {
                                 print("the serverSweetSpots has \(serverSweetSpots.count) elements")
                                 print("the song id is \(songID )")
                                 
                                 // If the song already has sweet spots add the server's sweet spots to them.
 //                                if let songSS = self.delegate?.sweetSpotsForSongID(songID) {
-                                if let songSS = SweetSpotControl.sweetSpotsForSong(song) {
+                                var songSS: Set<SweetSpot>? = SweetSpotControl.sweetSpotsForSong(song)
+//                                if let songSS = SweetSpotControl.sweetSpotsForSong(song) {
+                                if songSS != nil {
 //                                    let mutableSS = NSMutableArray(array: songSS)
-                                    var mutableSS = [SweetSpot](songSS)
-                                    for ss in serverSweetSpots as! [SweetSpot] {
-                                        mutableSS.append(ss)
-//                                        mutableSS.addObject(ss)
+//                                    var mutableSS = [SweetSpot](songSS)
+                    
+                                    for ss in serverSweetSpots {
+                                        songSS!.insert(ss)
+//                                        mutableSS.append(ss)
                                     }
 //                                    self.delegate?.replaceSweetSpots(mutableSS as [AnyObject], forSongID: songID)
-                                    let newSong = SweetSpotControl.songWithSweetSpots(mutableSS, forSong: song)
+                                    let newSong = SweetSpotControl.songWithSweetSpots(songSS!, forSong: song)
                                     SongPool.addSong(newSong)
                                     
                                 } else {
-                                    let newSong = SweetSpotControl.songWithSweetSpots(serverSweetSpots as! [SweetSpot], forSong: song)
+//                                    let newSong = SweetSpotControl.songWithSweetSpots(serverSweetSpots as! [SweetSpot], forSong: song)
+//                                    let newSSSet = Set(arrayLiteral: serverSweetSpots) as! Set<SweetSpot>
+                                    let newSSSet = Set<SweetSpot>(serverSweetSpots)
+                                    let newSong = SweetSpotControl.songWithSweetSpots(newSSSet, forSong: song)
                                     SongPool.addSong(newSong)
                                 }
                                 

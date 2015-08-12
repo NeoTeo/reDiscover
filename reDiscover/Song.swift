@@ -14,7 +14,8 @@ class Song : NSObject,TGSong {
     let songID: SongIDProtocol
     let urlString: String?
     let selectedSweetSpot: NSNumber? //Float
-    let sweetSpots: [SweetSpot]?
+//    let sweetSpots: [SweetSpot]?
+    let sweetSpots: Set<SweetSpot>?
     let metadata: SongCommonMetaData?
     let artID: String?
     let fingerPrint: String?
@@ -22,7 +23,8 @@ class Song : NSObject,TGSong {
     let UUId: String?
     let RelId: String?
     
-    required init(songId: SongIDProtocol, metadata: SongCommonMetaData?, urlString: String?, sweetSpots: [SweetSpot]?,
+//    required init(songId: SongIDProtocol, metadata: SongCommonMetaData?, urlString: String?, sweetSpots: [SweetSpot]?,
+    required init(songId: SongIDProtocol, metadata: SongCommonMetaData?, urlString: String?, sweetSpots: Set<SweetSpot>?,
         fingerPrint: String?, selectedSS: SweetSpot?, releases: NSData?, artId: String?, UUId: String?, RelId: String?) {
             
             self.songID              = songId
@@ -79,7 +81,8 @@ extension Song {
             case .UrlString:
                 urlString = obj as? String
             case .SweetSpots:
-                sweetspots = obj as? [SweetSpot]
+//                sweetspots = obj as? [SweetSpot]
+                sweetspots = obj as? Set<SweetSpot>
             case .Fingerprint:
                 fingerprint = obj as? String
             case .SelectedSS:

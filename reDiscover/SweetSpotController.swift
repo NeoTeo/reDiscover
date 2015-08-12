@@ -28,11 +28,13 @@ class SweetSpotControl : NSObject {
         //return 0.0
     }
     
-    static func sweetSpotsForSong(song: TGSong) -> [SweetSpot]? {
+//    static func sweetSpotsForSong(song: TGSong) -> [SweetSpot]? {
+    static func sweetSpotsForSong(song: TGSong) -> Set<SweetSpot>? {
         return song.sweetSpots //as? [SweetSpot]
     }
 
-    static func songWithSweetSpots(sweetSpots: [SweetSpot], forSong song: TGSong) -> TGSong {
+//    static func songWithSweetSpots(sweetSpots: [SweetSpot], forSong song: TGSong) -> TGSong {
+    static func songWithSweetSpots(sweetSpots: Set<SweetSpot>, forSong song: TGSong) -> TGSong {
         return Song(songId: song.songID, metadata: song.metadata, urlString: song.urlString, sweetSpots: sweetSpots, fingerPrint: song.fingerPrint, selectedSS: song.selectedSweetSpot, releases: song.songReleases, artId: song.artID, UUId: song.UUId, RelId: song.RelId)
     }
     // Used to be makeSweetSpotAtTime:
