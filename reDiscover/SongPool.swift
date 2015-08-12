@@ -114,7 +114,7 @@ final class SongPool : NSObject {
             let oldSong = songForSongId(songId)
             
             // Then we create a new song from the old song and the new metadata (want crash if oldSong is nil)
-            let newSong = Song.songWithChanges(oldSong!, changes: ["urlString":urlString])
+            let newSong = Song.songWithChanges(oldSong!, changes: [.UrlString:urlString])
             
             // Then we add that new song to the song pool using the songId
             SongPool.songPool![songId as! SongID] = newSong as? Song
@@ -207,7 +207,7 @@ final class SongPool : NSObject {
             let oldSong = songForSongId(songId)
             
             // Then we create a new song from the old song and the new metadata (want crash if oldSong is nil)
-            let newSong = Song.songWithChanges(oldSong!, changes: ["RelId":RelId])
+            let newSong = Song.songWithChanges(oldSong!, changes: [.RelId : RelId])
             
             // Then we add that new song to the song pool using the songId
             SongPool.songPool![songId as! SongID] = newSong as? Song
@@ -222,7 +222,7 @@ final class SongPool : NSObject {
             let oldSong = songForSongId(songId)
             
             // Then we create a new song from the old song and the new metadata (want crash if oldSong is nil)
-            let newSong = Song.songWithChanges(oldSong!, changes: ["artId":artId])
+            let newSong = Song.songWithChanges(oldSong!, changes: [.ArtId : artId])
             
             // Then we add that new song to the song pool using the songId
             SongPool.songPool![songId as! SongID] = newSong as? Song

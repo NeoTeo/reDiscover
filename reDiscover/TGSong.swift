@@ -28,6 +28,5 @@ import Foundation
         fingerPrint: String?, selectedSS: SweetSpot?, releases: NSData?, artId: String?, UUId: String?, RelId: String?)
     
     //func isEqualTo(aSong: TGSong) -> Bool;
-    //func copy()
 }
 

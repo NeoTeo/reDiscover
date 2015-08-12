@@ -48,8 +48,8 @@ class SongArtFinder: NSObject {
                 let imageURLs = LocalFileIO.imageURLsAtPath(dirURL)
                 
             var words = ["scan","album","art","cover","front","fold"]
-                
-            if let albumName = dirURL.filePathURL?.absoluteString.lastPathComponent.stringByRemovingPercentEncoding {
+            let absString: NSString? = dirURL.filePathURL?.absoluteString
+            if let albumName = absString?.lastPathComponent.stringByRemovingPercentEncoding {
                 words.append(albumName)
             }
             
@@ -77,7 +77,8 @@ class SongArtFinder: NSObject {
         
         // Return a lambda that returns true if its input matches any of the matchWords.
         return { url in
-            if let word = url.filePathURL?.absoluteString.lastPathComponent.stringByRemovingPercentEncoding {
+            let absString: NSString? = url.filePathURL?.absoluteString
+            if let word = absString?.lastPathComponent.stringByRemovingPercentEncoding {
                 let regEx: NSRegularExpression?
                 do {
                     regEx = try NSRegularExpression(pattern: rex, options: .CaseInsensitive)

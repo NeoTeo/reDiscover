@@ -44,10 +44,10 @@ class LocalFileIO: NSObject {
                 
             let fileUTI = unmanagedFileUTI.takeRetainedValue()
             // Only add image files.
-            if UTTypeConformsTo(fileUTI, kUTTypeImage) != 0 {
+            if UTTypeConformsTo(fileUTI, kUTTypeImage) {
                 return .Image
             }
-            if UTTypeConformsTo(fileUTI, kUTTypeAudio) != 0 {
+            if UTTypeConformsTo(fileUTI, kUTTypeAudio) {
                 return .Audio
             }
         }

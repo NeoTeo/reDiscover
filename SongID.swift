@@ -48,8 +48,9 @@ SongIDs do not persist across instances.
     
     // To comply with the NSCopying protocol
     func copyWithZone(zone: NSZone) -> AnyObject {
-        let copy = SongID.allocWithZone(zone)
-        copy.idValue = self.idValue
+//        let copy = SongID.allocWithZone(zone)
+        let copy = self.copy()
+        //copy.idValue = self.idValue
         return copy
     }
 }

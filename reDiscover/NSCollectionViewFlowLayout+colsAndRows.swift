@@ -12,7 +12,7 @@ import Foundation
 extension NSCollectionViewFlowLayout {
     
     func colsAndRowsFromLayout() -> (Int, Int) {
-        let contSize = collectionViewContentSize()
+        let contSize = collectionViewContentSize
         let iSpacing = minimumInteritemSpacing
         let lSpacing = minimumLineSpacing
         let inset = sectionInset

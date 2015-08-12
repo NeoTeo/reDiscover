@@ -40,49 +40,58 @@ class Song : NSObject,TGSong {
     //    func isEqualTo(aSong: TGSong) -> Bool {
     //        return aSong.songID.isEqual(self.songID)
     //    }
-    //    func copy() {
-    //        println("copy")
-    //    }
+}
+
+enum SongProperty: Hashable {
+    case Id
+    case Metadata
+    case UrlString
+    case SweetSpots
+    case Fingerprint
+    case SelectedSS
+    case Releases
+    case ArtId
+    case UuId
+    case RelId
 }
 
 extension Song {
-
-    static func songWithChanges(theSong: TGSong, changes: [String : AnyObject]) -> TGSong {
-        var songId = theSong.songID
-        var metadata = theSong.metadata
-        var urlString = theSong.urlString
-        var sweetspots = theSong.sweetSpots
+    
+    static func songWithChanges(theSong: TGSong, changes: [SongProperty : AnyObject]) -> TGSong {
+        
+        var songId      = theSong.songID
+        var metadata    = theSong.metadata
+        var urlString   = theSong.urlString
+        var sweetspots  = theSong.sweetSpots
         var fingerprint = theSong.fingerPrint
-        var selectedSS = theSong.selectedSweetSpot
-        var releases = theSong.songReleases
-        var artId = theSong.artID
-        var uuid = theSong.UUId
-        var relid = theSong.RelId
+        var selectedSS  = theSong.selectedSweetSpot
+        var releases    = theSong.songReleases
+        var artId       = theSong.artID
+        var uuid        = theSong.UUId
+        var relid       = theSong.RelId
         
         for (change, obj) in changes {
             switch change {
-            case "songId":
+            case .Id:
                 songId = obj as! SongIDProtocol
-            case "metadata":
+            case .Metadata:
                 metadata = obj as? SongCommonMetaData
-            case "urlString":
+            case .UrlString:
                 urlString = obj as? String
-            case "sweetSpots":
+            case .SweetSpots:
                 sweetspots = obj as? [SweetSpot]
-            case "fingerPrint":
+            case .Fingerprint:
                 fingerprint = obj as? String
-            case "selectedSS":
+            case .SelectedSS:
                 selectedSS = obj as? SweetSpot
-            case "releases":
+            case .Releases:
                 releases = obj as? NSData
-            case "artId":
+            case .ArtId:
                 artId = obj as? String
-            case "UUId":
+            case .UuId:
                 uuid = obj as? String
-            case "RelId":
+            case .RelId:
                 relid = obj as? String
-            default:
-                print("Unknown value in songWithChanges")
             }
         }
         
