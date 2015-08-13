@@ -21,10 +21,10 @@ final class SongPool : NSObject {
         return delegate!.songDurationForSongID(songId)
     }
     //MARK: deprecated - call SweetSpotController.sweetSpotsForSong directly
-    static func sweetSpotsForSongId(songId: SongID) -> NSArray {
-        return delegate!.sweetSpotsForSongID(songId)
-    }
-    
+//    static func sweetSpotsForSongId(songId: SongID) -> NSArray {
+//        return delegate!.sweetSpotsForSongID(songId)
+//    }
+//    
     // Until we've switched TGSongPool over to this class we'll use it as a delegate.
     // In this case we request the song for the given id and return a copy of it.
     static func songForSongId(songId: SongIDProtocol) -> TGSong? {
@@ -45,6 +45,26 @@ final class SongPool : NSObject {
 //        return nil
     }
 
+    static func updateMetadata(forSongId songId: SongIDProtocol) {
+        guard let metadata = SongCommonMetaData.loadedMetaDataForSongId(songId) else { return }
+        addSong(withChanges: [.Metadata : metadata], forSongId: songId)
+        
+        NSNotificationCenter.defaultCenter().postNotificationName("songMetaDataUpdated", object: songId)
+    }
+
+//    static func updateRemoteData(forSongId songId: SongIDProtocol, with) {
+//    }
+    
+    static func updateFingerPrint(forSongId songId: SongIDProtocol, withFingerPrinter fingerPrinter: FingerPrinter) {
+        guard let song = songForSongId(songId) else { return }
+        
+        // If there is no fingerprint, generate one sync'ly
+        if song.fingerPrint == nil,
+            let newFingerPrint = fingerPrinter.fingerprint(forSongId: songId) {
+            addSong(withChanges: [.Fingerprint : newFingerPrint], forSongId: songId)
+        }
+        
+    }
     
     static func UUIDStringForSongId(songId: SongIDProtocol) -> String? {
         return SongUUID.getUUIDForSongId(songId)
@@ -105,7 +125,23 @@ final class SongPool : NSObject {
             }
         }
     }
-
+    
+    static func addSong(withChanges changes: [SongProperty : AnyObject], forSongId songId: SongIDProtocol) {
+        guard let queue = songPoolAccessQ else { return }
+        
+        dispatch_sync(queue) {
+            // First we get the up-to-date song
+            let oldSong = songForSongId(songId)
+            
+            // Then we create a new song from the old song and the new metadata (want crash if oldSong is nil)
+            let newSong = Song.songWithChanges(oldSong!, changes: changes)
+            
+            // Then we add that new song to the song pool using the songId
+            SongPool.songPool![songId as! SongID] = newSong as? Song
+        }
+    }
+    
+    /**
     static func addSong(withURLString urlString: String, forSongId songId: SongIDProtocol) {
         guard let queue = songPoolAccessQ else { return }
         
@@ -127,21 +163,24 @@ final class SongPool : NSObject {
         dispatch_sync(queue) {
             // First we get the up-to-date song
             let oldSong = songForSongId(songId)
-            
-            // Then we create a new song from the old song and the new metadata
-            let newSong = Song(songId: songId,
-                metadata: metadata,
-                urlString: oldSong?.urlString,
-                sweetSpots: oldSong?.sweetSpots,
-                fingerPrint: oldSong?.fingerPrint,
-                selectedSS: oldSong?.selectedSweetSpot,
-                releases: oldSong?.songReleases,
-                artId: oldSong?.artID,
-                UUId: oldSong?.UUId,
-                RelId: oldSong?.RelId)
+
+            // Then we create a new song from the old song and the new metadata (want crash if oldSong is nil)
+            let newSong = Song.songWithChanges(oldSong!, changes: [.Metadata : metadata])
+
+//            // Then we create a new song from the old song and the new metadata
+//            let newSong = Song(songId: songId,
+//                metadata: metadata,
+//                urlString: oldSong?.urlString,
+//                sweetSpots: oldSong?.sweetSpots,
+//                fingerPrint: oldSong?.fingerPrint,
+//                selectedSS: oldSong?.selectedSweetSpot,
+//                releases: oldSong?.songReleases,
+//                artId: oldSong?.artID,
+//                UUId: oldSong?.UUId,
+//                RelId: oldSong?.RelId)
             
             // Then we add that new song to the song pool using the songId
-            SongPool.songPool![songId as! SongID] = newSong
+            SongPool.songPool![songId as! SongID] = newSong as? Song
             
             print("AddSongMetadata: \(newSong.songID) just added to songPool has the following sweet spots \(newSong.sweetSpots)")
         }
@@ -154,25 +193,27 @@ final class SongPool : NSObject {
             // First we get the up-to-date song
             let oldSong = songForSongId(songId)
             
+            // Then we create a new song from the old song and the new metadata (want crash if oldSong is nil)
+            let newSong = Song.songWithChanges(oldSong!, changes: [.Fingerprint : fingerprint])
+            
             // Then we create a new song from the old song and the new metadata
-            let newSong = Song(songId: songId,
-                metadata: oldSong?.metadata,
-                urlString: oldSong?.urlString,
-                sweetSpots: oldSong?.sweetSpots,
-                fingerPrint: fingerprint,
-                selectedSS: oldSong?.selectedSweetSpot,
-                releases: oldSong?.songReleases,
-                artId: oldSong?.artID,
-                UUId: oldSong?.UUId,
-                RelId: oldSong?.RelId)
+//            let newSong = Song(songId: songId,
+//                metadata: oldSong?.metadata,
+//                urlString: oldSong?.urlString,
+//                sweetSpots: oldSong?.sweetSpots,
+//                fingerPrint: fingerprint,
+//                selectedSS: oldSong?.selectedSweetSpot,
+//                releases: oldSong?.songReleases,
+//                artId: oldSong?.artID,
+//                UUId: oldSong?.UUId,
+//                RelId: oldSong?.RelId)
             
             // Then we add that new song to the song pool using the songId
-            SongPool.songPool![songId as! SongID] = newSong
+            SongPool.songPool![songId as! SongID] = newSong as? Song
             
             print("AddSongFingerprint: \(newSong.songID) just added to songPool has the following sweet spots \(newSong.sweetSpots)")
         }
-    }
-
+    }*/
     static func addSong(withUUId UUId: String, forSongId songId: SongIDProtocol) {
         guard let queue = songPoolAccessQ else { return }
         
@@ -213,7 +254,7 @@ final class SongPool : NSObject {
             SongPool.songPool![songId as! SongID] = newSong as? Song
         }
     }
-
+/*
     static func addSong(withArtId artId: SongArtId, forSongId songId: SongIDProtocol) {
         guard let queue = songPoolAccessQ else { return }
         
@@ -228,7 +269,7 @@ final class SongPool : NSObject {
             SongPool.songPool![songId as! SongID] = newSong as? Song
         }
     }
-
+*/
     static func checkForArt(forSongId songId: SongIDProtocol, inAlbumCollection collection: AlbumCollection) {
         guard let song = songForSongId(songId) else { return }
 
@@ -236,7 +277,8 @@ final class SongPool : NSObject {
         if song.artID == nil || SongArt.getArt(forArtId: song.artID!) == nil {
             if let image = SongArtFinder.findArtForSong(song, collection: collection) {
                 let newArtId = SongArt.addImage(image)
-                SongPool.addSong(withArtId: newArtId, forSongId: songId)
+                //SongPool.addSong(withArtId: newArtId, forSongId: songId)
+                SongPool.addSong(withChanges: [.ArtId : newArtId], forSongId: songId)
             }
         } else {
             print("Image was found in art cache")

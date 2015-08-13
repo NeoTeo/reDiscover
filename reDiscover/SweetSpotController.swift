@@ -15,7 +15,7 @@ typealias SweetSpot = NSNumber //Float
 // The methods of this class should act on songs and for those methods that modify
 // a song (eg. add a new sweet spot) they should create and return a new song
 // with the new sweetspot.
-class SweetSpotControl : NSObject {
+class SweetSpotController : NSObject {
     
     static func selectedSweetSpotForSong(song: TGSong) -> SweetSpot? {
         // Swift doesn't know what is inside the NSNumber, so we tell it.
@@ -27,9 +27,15 @@ class SweetSpotControl : NSObject {
         // sweet spots for this song. The server may receive them at any time.
         //return 0.0
     }
-    
+
+    static func sweetSpots(forSongId songId: SongIDProtocol) -> Set<SweetSpot>? {
+        guard let song = SongPool.songForSongId(songId) else { return nil }
+        
+        return song.sweetSpots
+    }
+
 //    static func sweetSpotsForSong(song: TGSong) -> [SweetSpot]? {
-    static func sweetSpotsForSong(song: TGSong) -> Set<SweetSpot>? {
+    static func sweetSpots(forSong song: TGSong) -> Set<SweetSpot>? {
         return song.sweetSpots //as? [SweetSpot]
     }
 

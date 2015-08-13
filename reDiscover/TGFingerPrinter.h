@@ -8,6 +8,7 @@
 
 #import <Foundation/Foundation.h>
 #import "chromaprint.h"
+//typedef void *ChromaprintContext;
 
 //#import "/Users/teo/Dropbox/usr/local/include/chromaprint.h"
 //#import "/Users/teo/Dropbox/usr/local/include/chromaprint.h"
@@ -17,9 +18,10 @@
 @protocol SongIDProtocol;
 @protocol SongPoolAccessProtocol;
 @protocol TGSong;
+@protocol FingerPrinter;
 
 
-@interface TGFingerPrinter : NSObject
+@interface TGFingerPrinter : NSObject <FingerPrinter>
 {
 //    ChromaprintContext *chromaprintContext;
     // A serial queue for fingerprinting multiple songs.

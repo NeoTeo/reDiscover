@@ -160,7 +160,7 @@ class SweetSpotServerIO: NSObject {
         }
         
         if let song = SongPool.songForSongId(songID),
-            sweetSpots = SweetSpotControl.sweetSpotsForSong(song) as Set<SweetSpot>? {//NSArray? {
+            sweetSpots = SweetSpotController.sweetSpots(forSong: song) as Set<SweetSpot>? {
             for sweetSpot in sweetSpots {
                 if sweetSpotHasBeenUploaded(sweetSpot as Double, theSongID: songID) {
                     print("Has been uploaded")
@@ -255,10 +255,8 @@ class SweetSpotServerIO: NSObject {
                     if let status = requestJSON.objectForKey("status") as! String? {
                         if (status == "ok") == nil { return }
                             
-                        let result: AnyObject? = requestJSON.objectForKey("result")
-                        if result == nil { return }
+                        guard let result: AnyObject? = requestJSON.objectForKey("result") else { return }
                         
-                        // if result == nil || result! is NSDictionary) == false { return }
                         // Use the line above to avoid the line below.
                         if result! is NSDictionary {
                             let resultDict = result as! NSDictionary
@@ -268,29 +266,22 @@ class SweetSpotServerIO: NSObject {
                                 print("the song id is \(songID )")
                                 
                                 // If the song already has sweet spots add the server's sweet spots to them.
-//                                if let songSS = self.delegate?.sweetSpotsForSongID(songID) {
-                                var songSS: Set<SweetSpot>? = SweetSpotControl.sweetSpotsForSong(song)
-//                                if let songSS = SweetSpotControl.sweetSpotsForSong(song) {
+                                var songSS: Set<SweetSpot>? = SweetSpotController.sweetSpots(forSong: song)
+                                var newSSSet: Set<SweetSpot>?
                                 if songSS != nil {
-//                                    let mutableSS = NSMutableArray(array: songSS)
-//                                    var mutableSS = [SweetSpot](songSS)
-                    
                                     for ss in serverSweetSpots {
                                         songSS!.insert(ss)
-//                                        mutableSS.append(ss)
                                     }
-//                                    self.delegate?.replaceSweetSpots(mutableSS as [AnyObject], forSongID: songID)
-                                    let newSong = SweetSpotControl.songWithSweetSpots(songSS!, forSong: song)
-                                    SongPool.addSong(newSong)
-                                    
+                                    //let newSong = SweetSpotController.songWithSweetSpots(songSS!, forSong: song)
+                                    //SongPool.addSong(newSong)
+                                    newSSSet = songSS
                                 } else {
-//                                    let newSong = SweetSpotControl.songWithSweetSpots(serverSweetSpots as! [SweetSpot], forSong: song)
-//                                    let newSSSet = Set(arrayLiteral: serverSweetSpots) as! Set<SweetSpot>
-                                    let newSSSet = Set<SweetSpot>(serverSweetSpots)
-                                    let newSong = SweetSpotControl.songWithSweetSpots(newSSSet, forSong: song)
-                                    SongPool.addSong(newSong)
+//                                    let newSSSet = Set<SweetSpot>(serverSweetSpots)
+                                    //let newSong = SweetSpotController.songWithSweetSpots(newSSSet, forSong: song)
+                                    //SongPool.addSong(newSong)
+                                    newSSSet = Set<SweetSpot>(serverSweetSpots)
                                 }
-                                
+                                SongPool.addSong(withChanges: [.SweetSpots : newSSSet!], forSongId: songID)
                                 // Set the first sweet spot to be the active one.
     //                            self.delegate?.setActiveSweetSpotIndex(0, forSongID: songID)
                             }

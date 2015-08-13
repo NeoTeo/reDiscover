@@ -8,9 +8,9 @@
 
 #import "TGSongTimelineViewController.h"
 #import "TGTimelineSliderCell.h"
-#import "TGSweetSpotControl.h"
+//#import "TGSweetSpotControl.h"
 #import "TGSongPool.h"
-
+#import "rediscover-swift.h"
 
 @interface TGSongTimelineViewController ()
 
@@ -85,8 +85,8 @@
     [theCell setTheController:self];
     
     NSNumber *songDuration = [_songPoolAPI songDurationForSongID:songID];
-    NSArray *songSweetSpots = [_songPoolAPI sweetSpotsForSongID:songID];
-    
+    //NSArray *songSweetSpots = [_songPoolAPI sweetSpotsForSongID:songID];
+    NSSet* songSweetSpots = [SweetSpotController sweetSpotsForSongId:songID];
     [theCell makeMarkersFromSweetSpots:songSweetSpots forSongDuration:songDuration];
 }
 

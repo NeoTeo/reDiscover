@@ -44,7 +44,7 @@ class Song : NSObject,TGSong {
     //    }
 }
 
-enum SongProperty: Hashable {
+public enum SongProperty: Hashable {
     case Id
     case Metadata
     case UrlString
@@ -81,7 +81,6 @@ extension Song {
             case .UrlString:
                 urlString = obj as? String
             case .SweetSpots:
-//                sweetspots = obj as? [SweetSpot]
                 sweetspots = obj as? Set<SweetSpot>
             case .Fingerprint:
                 fingerprint = obj as? String

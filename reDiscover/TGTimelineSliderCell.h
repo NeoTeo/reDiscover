@@ -10,7 +10,7 @@
 
 // Forward class declaration
 @class TGTimelineBarView;
-@class SweetSpotControl;
+//@class SweetSpotControl;
 
 static const int kSweetSpotMarkerHeight = 8;
 static const int kTimelineBarHeight = 8;
@@ -30,8 +30,8 @@ static const int kTimelineBarHeight = 8;
     NSImageView *knobImageView;
 }
 
--(void)makeMarkersFromSweetSpots:(NSArray *)sweetSpots forSongDuration:(NSNumber *)songDuration;
-
+//-(void)makeMarkersFromSweetSpots:(NSArray *)sweetSpots forSongDuration:(NSNumber *)songDuration;
+-(void)makeMarkersFromSweetSpots:(NSSet*)sweetSpots forSongDuration:(NSNumber *)songDuration;
 //-(void)mouseEntered:(NSEvent *)theEvent;
 //-(void)mouseExited:(NSEvent *)theEvent;
 

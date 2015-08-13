@@ -99,6 +99,7 @@
 		ABF767451AEE82B4007C7A12 /* LocalFileIO.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABF767441AEE82B4007C7A12 /* LocalFileIO.swift */; };
 		ABFB8D681B4F1400006519B0 /* TGSplitViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABFB8D671B4F1400006519B0 /* TGSplitViewController.swift */; };
 		ABFC06C41B04A27C00649BBD /* CoreDataStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABFC06C31B04A27C00649BBD /* CoreDataStore.swift */; };
+		ABFC8B4B1B7CEEC500A92019 /* FingerPrinter.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABFC8B4A1B7CEEC500A92019 /* FingerPrinter.swift */; };
 		ABFC8EB219C19C630007ECCB /* uploadedSS.plist in Resources */ = {isa = PBXBuildFile; fileRef = ABFC8EB119C19C630007ECCB /* uploadedSS.plist */; };
 		ABFC8EB519C1BCE90007ECCB /* uploadedSS.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = ABFC8EB319C1BCE90007ECCB /* uploadedSS.xcdatamodeld */; };
 		ABFD9DD41AD4217700718631 /* SongUUID.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABFD9DD31AD4217700718631 /* SongUUID.swift */; };
@@ -232,9 +233,9 @@
 		ABF767441AEE82B4007C7A12 /* LocalFileIO.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocalFileIO.swift; sourceTree = "<group>"; };
 		ABFB8D671B4F1400006519B0 /* TGSplitViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TGSplitViewController.swift; sourceTree = "<group>"; };
 		ABFC06C31B04A27C00649BBD /* CoreDataStore.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CoreDataStore.swift; sourceTree = "<group>"; };
+		ABFC8B4A1B7CEEC500A92019 /* FingerPrinter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FingerPrinter.swift; sourceTree = "<group>"; };
 		ABFC8EB119C19C630007ECCB /* uploadedSS.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = uploadedSS.plist; sourceTree = "<group>"; };
 		ABFC8EB419C1BCE90007ECCB /* uploadedSS.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = uploadedSS.xcdatamodel; sourceTree = "<group>"; };
-		ABFD9DD21AD41B7C00718631 /* TGSongProtocol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TGSongProtocol.h; sourceTree = "<group>"; };
 		ABFD9DD31AD4217700718631 /* SongUUID.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SongUUID.swift; sourceTree = "<group>"; };
 		B0A41F8D7A62E0163971460D /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.release.xcconfig; path = "Pods/Target Support Files/Pods/Pods.release.xcconfig"; sourceTree = "<group>"; };
 		D0D5D6C8D57F5E3B4457F53C /* Pods.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -324,6 +325,7 @@
 				AB01DB03194F499900368693 /* TGStack.m */,
 				AB01DB05194F49B800368693 /* TGStack.h */,
 				AB85BC0F1875AB5200670905 /* TGFingerPrinter.h */,
+				ABFC8B4A1B7CEEC500A92019 /* FingerPrinter.swift */,
 				AB85BC101875AB5200670905 /* TGFingerPrinter.m */,
 				AB71279919407C8D0002B1F8 /* reDiscover-Bridging-Header.h */,
 				ABB2B6611ADEB38F004F9F87 /* NSImage+HashId.swift */,
@@ -419,7 +421,6 @@
 				ABE49BB61AE50991008A28B0 /* Hasher.swift */,
 				AB725A3E1ADA9311003E94E6 /* SweetSpot */,
 				AB725A3D1AD922BC003E94E6 /* SongArt */,
-				ABFD9DD21AD41B7C00718631 /* TGSongProtocol.h */,
 				ABFD9DD31AD4217700718631 /* SongUUID.swift */,
 				ABEC79D71B0242E100CD9F6C /* SongMetaData.swift */,
 				ABED8E311AB72F4F005B1403 /* SongCommonMetadata.swift */,
@@ -707,6 +708,7 @@
 				AB85BC4B1875AB5200670905 /* TGSongInfoViewController.m in Sources */,
 				AB725A3C1AD92256003E94E6 /* SongArtCache.swift in Sources */,
 				AB85BC3E1875AB5200670905 /* TGFingerPrinter.m in Sources */,
+				ABFC8B4B1B7CEEC500A92019 /* FingerPrinter.swift in Sources */,
 				ABAF47821B38590600F13528 /* CoverImage.swift in Sources */,
 				AB4529661A895B4100A6B15A /* TGAppDelegate.swift in Sources */,
 				AB85BC471875AB5200670905 /* TGSongCellMatrix.m in Sources */,

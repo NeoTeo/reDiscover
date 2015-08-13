@@ -135,7 +135,38 @@
 //    NSLog(@"the controlview dims are %@",NSStringFromRect([_controlView frame]));
 }
 
+-(void)makeMarkersFromSweetSpots:(NSSet*)sweetSpots forSongDuration:(NSNumber *)songDuration {
+    
+    // Adding and removing subviews need to happen on the main thread.
+    dispatch_async(dispatch_get_main_queue(), ^{
+        int spotIndex = 0;
+        // Clear out the existing sweet spot markers from the sweetSpotsView.
+        [[sweetSpotsView subviews] makeObjectsPerformSelector:@selector(removeFromSuperviewWithoutNeedingDisplay)];
+        
+        // Add the new sweet spot markers.
+        for (NSNumber *sspot in sweetSpots) {
+            // skip on bogus duration
+            if ([songDuration doubleValue] == 0) {NSLog(@"ERROR: Song duration is 0!");continue;}
+            double ssXPos = CGRectGetWidth(barRect)/[songDuration doubleValue]*[sspot doubleValue];
+            if(isnan(ssXPos) == YES || isfinite(ssXPos) == NO) {
+                NSLog(@"Something wrong with ssXPos");
+            }
+            TGSweetSpotControl *aSSControl = [[TGSweetSpotControl alloc] initWithFrame:NSMakeRect(ssXPos,
+                                                                                                  kSweetSpotMarkerHeight,
+                                                                                                  kSweetSpotMarkerHeight,
+                                                                                                  kSweetSpotMarkerHeight)];
+            [aSSControl setTag:spotIndex++];
+            [aSSControl setTarget:_theController];
+            //        [aSSControl setAction:@selector(sweetspotMarkerAction:)];
+            [aSSControl setAction:@selector(userSelectedExistingSweetSpot:)];
+            [aSSControl setImage:knobImage];
+            
+            [sweetSpotsView addSubview:aSSControl];
+        }
+    });
+}
 
+/** REFAC
 -(void)makeMarkersFromSweetSpots:(NSArray *)sweetSpots forSongDuration:(NSNumber *)songDuration {
     
     // Adding and removing subviews need to happen on the main thread.
@@ -166,7 +197,7 @@
         }
     });
 }
-
+*/
 
 -(void)drawSweetSpotsInView:(NSView *)theView {
     
