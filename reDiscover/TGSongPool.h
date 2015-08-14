@@ -34,12 +34,12 @@
 @protocol TGMainViewControllerDelegate;
 @protocol TGSong;
 @protocol SongSelectionContext;
-/**
-   A SongID must conform to the SongIDProtocol.
-   Currently there's not much point to the SongIDProtocol other than decoupling.
- */
-@protocol SongIDProtocol <NSObject, NSCopying>
-@end
+///**
+//   A SongID must conform to the SongIDProtocol.
+//   Currently there's not much point to the SongIDProtocol other than decoupling.
+// */
+//@protocol SongIDProtocol <NSObject, NSCopying>
+//@end
 
 
 // Methods that SongPool implements for others to call.

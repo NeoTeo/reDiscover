@@ -52,13 +52,39 @@ final class SongPool : NSObject {
         NSNotificationCenter.defaultCenter().postNotificationName("songMetaDataUpdated", object: songId)
     }
 
-//    static func updateRemoteData(forSongId songId: SongIDProtocol, with) {
-//    }
+    static func updateRemoteData(forSongId songId: SongIDProtocol, withDuration duration: CMTime) {
+        guard let song = songForSongId(songId) else { return }
+        guard let fingerprint = song.fingerPrint else { return }
+        
+        // If the song has not yet a uuid, get one.
+        let uuid = song.UUId
+        if uuid == nil {
+            let durationInSeconds = UInt(CMTimeGetSeconds(duration))
+            if let acoustIdData = AcoustIDWebService.dataDict(forFingerprint: fingerprint, ofDuration: durationInSeconds),
+                let songUUId = SongUUID.extractUUIDFromDictionary(acoustIdData),
+                let bestRelease = AcoustIDWebService.bestMatchRelease(forSong: song, inDictionary: acoustIdData),
+                let releaseId = bestRelease.objectForKey("id") {
+                    SongPool.addSong(withChanges: [.RelId : releaseId, .UuId : songUUId], forSongId: songId)
+            }
+        }
+    }
+    
+    static func getAlbum(forSongId songId: SongIDProtocol, fromAlbumCollection albums: AlbumCollection) {
+        if let song = songForSongId(songId),
+            let albumId = Album.albumIdForSong(song) {
+                var album = AlbumCollection.albumWithIdFromCollection(albums, albumId: albumId)
+                if album == nil {
+                    album = Album(albumId: albumId, songIds: Set(arrayLiteral: songId as! SongID))
+                } else {
+                    album = Album.albumWithAddedSong(song, oldAlbum: album!)
+                }
+        }
+    }
     
     static func updateFingerPrint(forSongId songId: SongIDProtocol, withFingerPrinter fingerPrinter: FingerPrinter) {
         guard let song = songForSongId(songId) else { return }
         
-        // If there is no fingerprint, generate one sync'ly
+        // If there is no fingerprint, generate one sync'ly - this can be slow!
         if song.fingerPrint == nil,
             let newFingerPrint = fingerPrinter.fingerprint(forSongId: songId) {
             addSong(withChanges: [.Fingerprint : newFingerPrint], forSongId: songId)

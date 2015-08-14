@@ -13,6 +13,7 @@
 
 // Need this for SongIdProtocol defs
 #import "TGSongPool.h"
+#import "rediscover-swift.h"
 
 @implementation TGSongGridScrollView
 
@@ -162,7 +163,7 @@
         id<SongIDProtocol> songID = [_delegate songIDFromGridColumn:mouseCol andRow:mouseRow];
         
         if (songID == nil) { return; }
-        
+        //SongID* lastSong = [_delegate lastRequestedSong];
         if ([[_delegate lastRequestedSong] isEqual:songID] == NO) {
             // Find the cell that corresponds to the new coordinates and ask it for its id.
             if (_delegate && [_delegate respondsToSelector:@selector(songGridScrollViewDidChangeToRow:andColumn:withSpeedVector:)]) {

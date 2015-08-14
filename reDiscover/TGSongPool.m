@@ -968,19 +968,22 @@ static int const kSongPoolStartCapacity = 250;
     dispatch_async(dispatch_get_global_queue(QOS_CLASS_BACKGROUND, 0), ^{
 
         [SongPool updateMetadataForSongId:selectedSongId];
-//        SongCommonMetaData* metadata = [SongCommonMetaData loadedMetaDataForSongId:selectedSongId];
-//        [SongPool addSongWithMetadata:metadata forSongId:selectedSongId];
-//        
-//        
-//        [[NSNotificationCenter defaultCenter] postNotificationName:@"songMetaDataUpdated" object:selectedSongId];
+        [SongPool updateFingerPrintForSongId: selectedSongId withFingerPrinter: songFingerPrinter];
+        [SongPool updateRemoteDataForSongId:selectedSongId withDuration:[songAudioPlayer songDuration]];
+        [SongPool getAlbumForSongId:selectedSongId fromAlbumCollection:albumCollection];
+        [SongPool checkForArtForSongId:selectedSongId inAlbumCollection:albumCollection];
+        return;
+        /*
+        SongCommonMetaData* metadata = [SongCommonMetaData loadedMetaDataForSongId:selectedSongId];
+        [SongPool addSongWithMetadata:metadata forSongId:selectedSongId];
+        
+        
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"songMetaDataUpdated" object:selectedSongId];
         
         id<TGSong> __nonnull aSong  = [self songForID:selectedSongId];
-
-        [SongPool updateFingerPrintForSongId: selectedSongId withFingerPrinter: songFingerPrinter];
-
-//        if ([aSong fingerPrint] == nil) {
-//            NSString* fingerprint = [songFingerPrinter fingerprintForSongId:selectedSongId];
-//            [SongPool addSongWithFingerprint:fingerprint forSongId:selectedSongId];
+        if ([aSong fingerPrint] == nil) {
+            NSString* fingerprint = [songFingerPrinter fingerprintForSongId:selectedSongId];
+            [SongPool addSongWithFingerprint:fingerprint forSongId:selectedSongId];
             
         
         aSong = [SongPool songForSongId:selectedSongId];
@@ -1020,7 +1023,9 @@ static int const kSongPoolStartCapacity = 250;
             
             [SongPool checkForArtForSongId:selectedSongId inAlbumCollection:albumCollection];
         }
+         */
     });
+         
 }
 
 /**
