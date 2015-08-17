@@ -99,7 +99,7 @@
     if ([_songTimelinePopover isShown]) {
         [_songTimelinePopover close];
     } else {
-        // Make sure wiew is loaded
+        // Make sure view is loaded
         [self view];
         
         [_songTimelinePopover showRelativeToRect:theBounds ofView:theView preferredEdge:NSRectEdgeMaxY];

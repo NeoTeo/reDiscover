@@ -321,7 +321,7 @@ extension TGCoverDisplayViewController: TGSongTimelineViewControllerDelegate {
     }
     
     public func userSelectedSweetSpotMarkerAtIndex(ssIndex: UInt) {
-        print("user selectted sweet spot marker at index")
+        print("user selected sweet spot marker at index")
     }
     
 

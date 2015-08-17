@@ -772,7 +772,7 @@
 
 #pragma mark TGSongGridViewControllerDelegate method implementations
 
-- (void)setDebugCachedFlagsForSongIDArray:(NSArray*)songIDs toValue:(BOOL)value {
+- (void)setDebugCachedFlagsForSongIDArray:(NSArray<SongIDProtocol>*)songIDs toValue:(BOOL)value {
     for (id<SongIDProtocol> songID in songIDs) {
         [_songGridController setDebugCachedFlagForSongID:songID toValue:value];
     }

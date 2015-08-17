@@ -529,12 +529,12 @@ static int const kSongPoolStartCapacity = 250;
 }
 */
 
-- (NSArray*)sweetSpotsForSongID:(id<SongIDProtocol>)songID {
-    id<TGSong> theSong = [self songForID:songID];
-    if (theSong == nil) { return nil; }
-    
-    return theSong.sweetSpots;
-}
+//- (NSArray*)sweetSpotsForSongID:(id<SongIDProtocol>)songID {
+//    id<TGSong> theSong = [self songForID:songID];
+//    if (theSong == nil) { return nil; }
+//    
+//    return theSong.sweetSpots;
+//}
 
 
 //- (NSSet*)currentCache {
@@ -668,8 +668,9 @@ static int const kSongPoolStartCapacity = 250;
  of the currently playing song to newPosition and sets a sweet spot for the song which gets stored on next save.
  The requestedPlayheadPosition should only result in a sweet spot when the user releases the slider.
 */
-//- (void)setRequestedPlayheadPosition:(NSNumber *)newPosition {
-- (void)setRequestedPlayheadPosition:(NSNumber *)newPosition makeSS:(BOOL)makeSweetSpot {
+- (void)setRequestedPlayheadPosition:(NSNumber *)newPosition {
+    //REFACDUP
+//- (void)setRequestedPlayheadPosition:(NSNumber *)newPosition makeSS:(BOOL)makeSweetSpot {
     requestedPlayheadPosition = newPosition;
     id<TGSong> theSong = [self songForID:lastRequestedSongId];
     
@@ -678,10 +679,10 @@ static int const kSongPoolStartCapacity = 250;
 //    [theSong setSweetSpot:newPosition];
     
     //MARK: REFAC
-    if (makeSweetSpot) {
+//    if (makeSweetSpot) {
         id<TGSong> newSong = [SweetSpotController songWithSelectedSweetSpot:theSong atTime:newPosition];
         [SongPool addSong:newSong];
-    }
+//    }
 }
 
 
@@ -1039,6 +1040,7 @@ static int const kSongPoolStartCapacity = 250;
         return;
     }
     
+//    - So what selects the sweet spot?
     //MARK: REFAC
     NSNumber *startTime = [SweetSpotController selectedSweetSpotForSong:aSong];
     [self requestSongPlayback:songID withStartTimeInSeconds:startTime makeSweetSpot:NO];
@@ -1112,8 +1114,9 @@ static int const kSongPoolStartCapacity = 250;
         TGLog(TGLOG_TMP, @"currentSongDuration %f",CMTimeGetSeconds([songAudioPlayer songDuration]));
             [self setValue:[NSNumber numberWithFloat:CMTimeGetSeconds([songAudioPlayer songDuration])] forKey:@"currentSongDuration"];
 
-            //[self setRequestedPlayheadPosition:startTime];
-            [self setRequestedPlayheadPosition:startTime makeSS:makeSS];
+            [self setRequestedPlayheadPosition:startTime];
+            //FIXME REFACDUP
+//            [self setRequestedPlayheadPosition:startTime makeSS:makeSS];
         }
     }];
     //NUCACHE end
@@ -1204,7 +1207,7 @@ static int const kSongPoolStartCapacity = 250;
     TGLog(TGLOG_DBG,@"The artId: %@",theSong.artID);
     TGLog(TGLOG_DBG,@"The UUID is %@",[self UUIDStringForSongID:songId]);
     TGLog(TGLOG_DBG,@"The song has a fingerprint: %@",[self fingerprintExistsForSongID:songId]?@"Yes":@"No");
-    TGLog(TGLOG_DBG,@"The sweetspots are %@",[self sweetSpotsForSongID:songId]);
+    TGLog(TGLOG_DBG,@"The sweetspots are %@",[SweetSpotController sweetSpotsForSongId:songId]);
     
     TGLog(TGLOG_DBG,@"^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^");
     
