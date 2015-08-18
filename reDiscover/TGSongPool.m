@@ -1044,7 +1044,7 @@ static int const kSongPoolStartCapacity = 250;
 //    - So what selects the sweet spot?
     //MARK: REFAC
     NSNumber *startTime = [SweetSpotController selectedSweetSpotForSong:aSong];
-    [self requestSongPlayback:songID withStartTimeInSeconds:startTime makeSweetSpot:NO];
+    [self requestSongPlayback:songID withStartTimeInSeconds:startTime];
 
 //    [self requestSongPlayback:songID withStartTimeInSeconds:aSong.currentSweetSpot makeSweetSpot:NO];
 }
@@ -1058,7 +1058,7 @@ static int const kSongPoolStartCapacity = 250;
  :params: time The offset in seconds to start playing the song at.
  */
 //FIXME: Consider removing the makeSweetSpot parameter as we are going to set that separately.
-- (void)requestSongPlayback:(id<SongIDProtocol>)songID withStartTimeInSeconds:(NSNumber *)time makeSweetSpot:(BOOL)makeSS {
+- (void)requestSongPlayback:(id<SongIDProtocol>)songID withStartTimeInSeconds:(NSNumber *)time {
     
     id<TGSong> aSong = [self songForID:songID];
     if (aSong == NULL) {
