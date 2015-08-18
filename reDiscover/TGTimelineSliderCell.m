@@ -19,6 +19,8 @@
  */
 - (void)stopTracking:(NSPoint)lastPoint at:(NSPoint)stopPoint inView:(NSView *)controlView mouseIsUp:(BOOL)flag {
     NSLog(@"Done tracking!");
+    // Notify that the user has created a sweet spot at the current time.
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"UserCreatedSweetSpot" object:nil];
 //    [_theController userCreatedNewSweetSpot:<#(id)#>]
 }
 

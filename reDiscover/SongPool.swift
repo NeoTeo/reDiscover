@@ -136,8 +136,6 @@ final class SongPool : NSObject {
         }
     }
 
-
-
     static func addSong(theSong: TGSong) {
         guard let queue = songPoolAccessQ else { return }
         

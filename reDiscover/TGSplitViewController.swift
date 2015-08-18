@@ -92,6 +92,7 @@ extension TGSplitViewController {
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "songMetaDataWasUpdated:", name: "songMetaDataUpdated", object: nil)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "userSelectedSongInContext:", name: "userSelectedSong", object: nil)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "songDidStartUpdating:", name: "songDidStartUpdating", object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "userCreatedSweetSpot:", name: "UserCreatedSweetSpot", object: nil)
 
     }
     
@@ -143,6 +144,18 @@ extension TGSplitViewController {
         theSongPool?.requestSongPlayback(songId)
     }
 
+    /** This is called when the TGTimelineSliderCell detects that the user has let
+        go of the sweet spot slider and thus wants to create a new sweet spot at the
+        corresponding time. The song is always the TGSongPool's currentlyPlayingSongId and the
+        time is the TGSongPool's requestedPlayheadPosition.
+    */
+    func userCreatedSweetSpot(notification: NSNotification) {
+        if let ssTime = theSongPool?.requestedPlayheadPosition(),
+            let songId = theSongPool?.currentlyPlayingSongId() {
+            SweetSpotController.addSweetSpot(atTime: ssTime, forSongId: songId)
+        }
+    }
+    
     // Notification when a song starts loading/caching. Allows us to update UI to show activity.
     func songDidStartUpdating(notification: NSNotification) {
 //        let songId = notification.object as! SongID

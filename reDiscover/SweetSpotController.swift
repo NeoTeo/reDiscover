@@ -17,6 +17,11 @@ typealias SweetSpot = NSNumber //Float
 // with the new sweetspot.
 class SweetSpotController : NSObject {
     
+    /// Add, to the song pool, a new sweet spot to an existing song given by the songId.
+    static func addSweetSpot(atTime time: SweetSpot, forSongId songId: SongIDProtocol) {
+        SongPool.addSong(withChanges: [.SelectedSS : time], forSongId: songId)
+    }
+    
     static func selectedSweetSpotForSong(song: TGSong) -> SweetSpot? {
         // Swift doesn't know what is inside the NSNumber, so we tell it.
 //        if let sss = song.selectedSweetSpot {

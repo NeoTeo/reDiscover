@@ -231,6 +231,8 @@
 - (BOOL)validateURL:(NSURL *)anURL;
 - (BOOL)loadFromURL:(NSURL *)anURL ;
 
+-(NSNumber *)requestedPlayheadPosition;
+
 //- (void)requestImageForSongID:(id<SongIDProtocol>)songID withHandler:(void (^)(NSImage *))imageHandler;
 
 //MARK: Song data accessor methods. -

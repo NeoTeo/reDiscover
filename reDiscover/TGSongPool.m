@@ -672,17 +672,18 @@ static int const kSongPoolStartCapacity = 250;
     //REFACDUP
 //- (void)setRequestedPlayheadPosition:(NSNumber *)newPosition makeSS:(BOOL)makeSweetSpot {
     requestedPlayheadPosition = newPosition;
-    id<TGSong> theSong = [self songForID:lastRequestedSongId];
-    
+//    id<TGSong> theSong = [self songForID:lastRequestedSongId];
+    TGLog(TGLOG_REFAC, @"setRequestedPlayheadPosition");
     // Set the current playback time and the currently selected sweet spot to the new position.
     [songAudioPlayer setCurrentPlayTime:[newPosition doubleValue]];
 //    [theSong setSweetSpot:newPosition];
     
-    //MARK: REFAC
-//    if (makeSweetSpot) {
+/** REFAC This is already being done in requestSongPlayback when makeSS is true.
+    if (makeSweetSpot) {
         id<TGSong> newSong = [SweetSpotController songWithSelectedSweetSpot:theSong atTime:newPosition];
         [SongPool addSong:newSong];
-//    }
+    }
+ */
 }
 
 
@@ -1056,6 +1057,7 @@ static int const kSongPoolStartCapacity = 250;
  :params: songID The id of the song to play.
  :params: time The offset in seconds to start playing the song at.
  */
+//FIXME: Consider removing the makeSweetSpot parameter as we are going to set that separately.
 - (void)requestSongPlayback:(id<SongIDProtocol>)songID withStartTimeInSeconds:(NSNumber *)time makeSweetSpot:(BOOL)makeSS {
     
     id<TGSong> aSong = [self songForID:songID];
@@ -1079,13 +1081,13 @@ static int const kSongPoolStartCapacity = 250;
     //    [_delegate songPoolDidStartPlayingSong:songID];
     //}
 
-    if ( makeSS ) {
-        //MARK: REFAC
-//        [aSong makeSweetSpotAtTime:time];
-        id<TGSong> newSong = [SweetSpotController songWithSelectedSweetSpot:aSong atTime:time];
-        //[songPoolDictionary setObject:newSong forKey:newSong.songID];
-        [SongPool addSong:newSong];
-    }
+//MARK: REFAC
+//    if ( makeSS ) {
+////        [aSong makeSweetSpotAtTime:time];
+//        id<TGSong> newSong = [SweetSpotController songWithSelectedSweetSpot:aSong atTime:time];
+//        //[songPoolDictionary setObject:newSong forKey:newSong.songID];
+//        [SongPool addSong:newSong];
+//    }
 
     //NUCACHE
     [songAudioCacher performWhenPlayerIsAvailableForSongId:songID callBack:^(AVPlayer* thePlayer){
