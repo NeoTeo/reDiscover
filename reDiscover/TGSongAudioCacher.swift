@@ -31,18 +31,20 @@ final class TGSongAudioCacher : NSObject {
     
     override init() {
         super.init()
+        
         // Ensure the caching operation queue is effectively serial by reducing its concurrent op count to 1.
         cachingOpQueue.maxConcurrentOperationCount = 1
+        
+        // Make the qos higher than default.
+        cachingOpQueue.qualityOfService = .UserInitiated
     }
 
-    //func cacheWithContext(theContext: NSDictionary) {
     func cacheWithContext(theContext: SongSelectionContext) {
 
         /**
         Each cacheTask will block until it is done. Because we wrap them in operation
         blocks and add them to the cachingOpQueue all previous cacheTasks/op blocks
-        can be cancelled if a newer request (which intrinsically has a higher
-        priority) arrives.
+        can be cancelled if a newer (and implicitly more important) request arrives.
         */
         
         // We no longer need any of the queued up caching operations because we
@@ -71,9 +73,15 @@ final class TGSongAudioCacher : NSObject {
 //            if operationBlock.cancelled == true { println("cancelled") } else { println("succeeded")}
 //        }
         
-        cachingOpQueue.addOperation(operationBlock)
+        /** Make the new operation dependent on the successful completion of the
+        previous operation (if any).
+        */
+        if cachingOpQueue.operationCount > 0 {
+            let prevOp = cachingOpQueue.operations[cachingOpQueue.operationCount-1]
+            operationBlock.addDependency(prevOp)
+        }
         
-//        println("cachingOpQueue count: \(cachingOpQueue.operationCount)")
+        cachingOpQueue.addOperation(operationBlock)
     }
 
     func songPlayerForSongId(songId: SongIDProtocol) -> AVPlayer? {
@@ -102,6 +110,7 @@ final class TGSongAudioCacher : NSObject {
 }
 
 /**
+    A CacheTask represents a unit of work that will cache a number of songs.
     `TGSongAudioCacheTask` initiates the construction of a cache based on its given
     context and waits for the caching to be done before returning. This is so that
     the caller doesn't set too many tasks in motion that cannot be (as easily)
@@ -158,18 +167,17 @@ class TGSongAudioCacheTask : NSObject {
             self.loadingPlayersLock.unlock()
         }
         */
-        // The start a new cache.
+        
+        // Make a new cache and call trailing closure when done.
         self.newCacheFromCache(self.songPlayerCache, withContext: theContext, operationBlock: nil) { newCache in
             self.songPlayerCache = newCache
             condLock.lock()
             // Signal condition 69.
             condLock.unlockWithCondition(69)
         }
-
-
-        /** 
-            Wait here until the `newCacheFromCache` finishes and calls the closure
-            passed to it which replaces the `songPlayerCache` and unlocks.
+        /**
+        Wait here until the `newCacheFromCache` finishes and calls its trailing
+        closure which replaces the `songPlayerCache` and unlocks the thread.
         */
         // Lock thread until the condition 69 is signalled.
         condLock.lockWhenCondition(69)

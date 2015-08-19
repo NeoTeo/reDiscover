@@ -669,21 +669,10 @@ static int const kSongPoolStartCapacity = 250;
  The requestedPlayheadPosition should only result in a sweet spot when the user releases the slider.
 */
 - (void)setRequestedPlayheadPosition:(NSNumber *)newPosition {
-    //REFACDUP
-//- (void)setRequestedPlayheadPosition:(NSNumber *)newPosition makeSS:(BOOL)makeSweetSpot {
+    
     requestedPlayheadPosition = newPosition;
-//    id<TGSong> theSong = [self songForID:lastRequestedSongId];
-    TGLog(TGLOG_REFAC, @"setRequestedPlayheadPosition");
     // Set the current playback time and the currently selected sweet spot to the new position.
     [songAudioPlayer setCurrentPlayTime:[newPosition doubleValue]];
-//    [theSong setSweetSpot:newPosition];
-    
-/** REFAC This is already being done in requestSongPlayback when makeSS is true.
-    if (makeSweetSpot) {
-        id<TGSong> newSong = [SweetSpotController songWithSelectedSweetSpot:theSong atTime:newPosition];
-        [SongPool addSong:newSong];
-    }
- */
 }
 
 
@@ -968,7 +957,9 @@ static int const kSongPoolStartCapacity = 250;
     //MARK: REFAC
 
     dispatch_async(dispatch_get_global_queue(QOS_CLASS_BACKGROUND, 0), ^{
-
+        /** Consider wrapping each of these calls in nsoperations with each being dependent on
+         the success of the previous operation.
+        */
         [SongPool updateMetadataForSongId:selectedSongId];
         [SongPool updateFingerPrintForSongId: selectedSongId withFingerPrinter: songFingerPrinter];
         [SongPool updateRemoteDataForSongId:selectedSongId withDuration:[songAudioPlayer songDuration]];
@@ -1041,8 +1032,6 @@ static int const kSongPoolStartCapacity = 250;
         return;
     }
     
-//    - So what selects the sweet spot?
-    //MARK: REFAC
     NSNumber *startTime = [SweetSpotController selectedSweetSpotForSong:aSong];
     [self requestSongPlayback:songID withStartTimeInSeconds:startTime];
 
@@ -1081,14 +1070,6 @@ static int const kSongPoolStartCapacity = 250;
     //    [_delegate songPoolDidStartPlayingSong:songID];
     //}
 
-//MARK: REFAC
-//    if ( makeSS ) {
-////        [aSong makeSweetSpotAtTime:time];
-//        id<TGSong> newSong = [SweetSpotController songWithSelectedSweetSpot:aSong atTime:time];
-//        //[songPoolDictionary setObject:newSong forKey:newSong.songID];
-//        [SongPool addSong:newSong];
-//    }
-
     //NUCACHE
     [songAudioCacher performWhenPlayerIsAvailableForSongId:songID callBack:^(AVPlayer* thePlayer){
         
@@ -1117,8 +1098,6 @@ static int const kSongPoolStartCapacity = 250;
             [self setValue:[NSNumber numberWithFloat:CMTimeGetSeconds([songAudioPlayer songDuration])] forKey:@"currentSongDuration"];
 
             [self setRequestedPlayheadPosition:startTime];
-            //FIXME REFACDUP
-//            [self setRequestedPlayheadPosition:startTime makeSS:makeSS];
         }
     }];
     //NUCACHE end
