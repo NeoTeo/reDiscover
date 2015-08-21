@@ -7,6 +7,10 @@
 //
 
 import Foundation
+
+
+
+
 final class AlbumCollection : NSObject {
     let albumCache: [AlbumId : Album]
     
@@ -20,12 +24,38 @@ final class AlbumCollection : NSObject {
 }
 
 extension AlbumCollection {
+    
     class func albumWithIdFromCollection(collection: AlbumCollection, albumId: AlbumId) -> Album? {
         return collection.albumCache[albumId]
 //        if let album = albumCache[albumId] {
 //            return Album(songIds: album.songIds)
 //        }
 //        return nil
+    }
+    
+    static func update(albumContainingSongId songId: SongIDProtocol, usingOldCollection albums: AlbumCollection) -> AlbumCollection {
+
+        /// Only make a new album if we have a valid song and albumId
+        if let song = SongPool.songForSongId(songId),
+            let albumId = Album.albumIdForSong(song) {
+                
+                /// Check if we already have an album with the given id in the given collection
+                var album = AlbumCollection.albumWithIdFromCollection(albums, albumId: albumId)
+                
+                /// If an album was found make a copy of it with the song added to
+                /// it, otherwise make a new album.
+                if album == nil {
+                    album = Album(albumId: albumId, songIds: Set(arrayLiteral: songId as! SongID))
+                } else {
+                    album = Album.albumWithAddedSong(song, oldAlbum: album!)
+                }
+                
+                // return a copy of the old collection with the new updated album added.
+                return collectionWithAddedAlbum(albums, album: album!)
+        }
+        
+        /// No change, just return the old album collection.
+        return albums
     }
     
     class func collectionWithAddedAlbum(collection: AlbumCollection, album: Album) -> AlbumCollection {

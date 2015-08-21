@@ -138,7 +138,7 @@
     NSLock* selectedSongsCacheLock;
     
     /** CACH2 a queue of caches */
-    NSMutableArray* cacheQueue;
+//    NSMutableArray* cacheQueue;
     /** CACH2 a queue of callback blocks */
     NSMutableArray* callbackQueue;
     

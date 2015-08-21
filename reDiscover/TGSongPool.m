@@ -141,8 +141,8 @@ static int const kSongPoolStartCapacity = 250;
         callbackQueueLock = [[NSLock alloc] init];
         selectedSongsCacheLock = [[NSLock alloc] init];
         
-        cacheQueue = [[NSMutableArray alloc] init];
-        [cacheQueue enqueue:[NSMutableSet setWithCapacity:0]];
+//        cacheQueue = [[NSMutableArray alloc] init];
+//        [cacheQueue enqueue:[NSMutableSet setWithCapacity:0]];
         callbackQueue = [[NSMutableArray alloc] init];
         
         //NUCACHE
@@ -956,14 +956,14 @@ static int const kSongPoolStartCapacity = 250;
     // 4) Notify all done.
     //MARK: REFAC
 
-    dispatch_async(dispatch_get_global_queue(QOS_CLASS_BACKGROUND, 0), ^{
+    dispatch_async(dispatch_get_global_queue(QOS_CLASS_USER_INITIATED, 0), ^{
         /** Consider wrapping each of these calls in nsoperations with each being dependent on
          the success of the previous operation.
         */
         [SongPool updateMetadataForSongId:selectedSongId];
         [SongPool updateFingerPrintForSongId: selectedSongId withFingerPrinter: songFingerPrinter];
         [SongPool updateRemoteDataForSongId:selectedSongId withDuration:[songAudioPlayer songDuration]];
-        [SongPool getAlbumForSongId:selectedSongId fromAlbumCollection:albumCollection];
+        albumCollection = [AlbumCollection updateWithAlbumContainingSongId:selectedSongId usingOldCollection:albumCollection];
         [SongPool checkForArtForSongId:selectedSongId inAlbumCollection:albumCollection];
         return;
         /*
@@ -1023,6 +1023,8 @@ static int const kSongPoolStartCapacity = 250;
 
 /**
  Initiate a request to play back the given song at its selected sweet spot.
+ If no selected sweet spot exists, check to see if the song has any stored sweet 
+ spots and pick the first one. If none exist just play the song from the start.
  :params: songID The id of the song to play.
 */
 - (void)requestSongPlayback:(id<SongIDProtocol>)songID {
@@ -1034,8 +1036,6 @@ static int const kSongPoolStartCapacity = 250;
     
     NSNumber *startTime = [SweetSpotController selectedSweetSpotForSong:aSong];
     [self requestSongPlayback:songID withStartTimeInSeconds:startTime];
-
-//    [self requestSongPlayback:songID withStartTimeInSeconds:aSong.currentSweetSpot makeSweetSpot:NO];
 }
 
 
@@ -1046,7 +1046,6 @@ static int const kSongPoolStartCapacity = 250;
  :params: songID The id of the song to play.
  :params: time The offset in seconds to start playing the song at.
  */
-//FIXME: Consider removing the makeSweetSpot parameter as we are going to set that separately.
 - (void)requestSongPlayback:(id<SongIDProtocol>)songID withStartTimeInSeconds:(NSNumber *)time {
     
     id<TGSong> aSong = [self songForID:songID];
@@ -1056,19 +1055,6 @@ static int const kSongPoolStartCapacity = 250;
     }
     
     lastRequestedSongId = songID;
-    //TGLog(TGLOG_ALL,@"requestSongPlayback just set lastRequestedSong to %@",lastRequestedSong.songID);
-    
-    //MARK: COVR
-    // This allows the main controller to update the song id's cover to "fetching" before the song is ready to play.
-    // Currently it doesn't work because the cache cancellation stuff causes some songs marked as fetching to not be cached after all
-    // and therefore not having their covers refreshed.
-//    [_delegate songPoolDidStartFetchingSong:songID];
-
-    // Inform the delegate that we've started playing the song.
-    //REFAC
-    //if ([_delegate respondsToSelector:@selector(songPoolDidStartPlayingSong:)]) {
-    //    [_delegate songPoolDidStartPlayingSong:songID];
-    //}
 
     //NUCACHE
     [songAudioCacher performWhenPlayerIsAvailableForSongId:songID callBack:^(AVPlayer* thePlayer){

@@ -69,17 +69,19 @@ final class SongPool : NSObject {
         }
     }
     
-    static func getAlbum(forSongId songId: SongIDProtocol, fromAlbumCollection albums: AlbumCollection) {
-        if let song = songForSongId(songId),
-            let albumId = Album.albumIdForSong(song) {
-                var album = AlbumCollection.albumWithIdFromCollection(albums, albumId: albumId)
-                if album == nil {
-                    album = Album(albumId: albumId, songIds: Set(arrayLiteral: songId as! SongID))
-                } else {
-                    album = Album.albumWithAddedSong(song, oldAlbum: album!)
-                }
-        }
-    }
+//    static func getAlbum(forSongId songId: SongIDProtocol, fromAlbumCollection albums: AlbumCollection) -> Album? {
+//        var album: Album?
+//        if let song = songForSongId(songId),
+//            let albumId = Album.albumIdForSong(song) {
+//                album = AlbumCollection.albumWithIdFromCollection(albums, albumId: albumId)
+//                if album == nil {
+//                    album = Album(albumId: albumId, songIds: Set(arrayLiteral: songId as! SongID))
+//                } else {
+//                    album = Album.albumWithAddedSong(song, oldAlbum: album!)
+//                }
+//        }
+//        return album
+//    }
     
     static func updateFingerPrint(forSongId songId: SongIDProtocol, withFingerPrinter fingerPrinter: FingerPrinter) {
         guard let song = songForSongId(songId) else { return }
