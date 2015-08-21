@@ -20,8 +20,7 @@
 
 #import "rediscover-swift.h"
 
-
-@interface TGMainViewController () <NSSplitViewDelegate, TGSongPoolDelegate,TGMainViewControllerDelegate,TGSongUIPopupProtocol>
+@interface TGMainViewController () <NSSplitViewDelegate,TGMainViewControllerDelegate,TGSongUIPopupProtocol>
 @end
 
 // Main coordinating controller.
@@ -534,8 +533,6 @@
 #pragma mark -
 #pragma mark SongPoolDelegate methods
 // SongPoolDelegate methods
-
-// TGSongPoolDelegate methods
 - (void)songPoolDidLoadAllURLs:(NSUInteger)numberOfURLs {
     TGLog(TGLOG_ALL,@"songPooFinished with %ld songs",(long)numberOfURLs);
     //[_songGridController initSongGrid:numberOfURLs];

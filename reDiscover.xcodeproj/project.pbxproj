@@ -68,6 +68,7 @@
 		AB85BC5F1875AD7A00670905 /* TGSongGridScrollView.m in Sources */ = {isa = PBXBuildFile; fileRef = AB85BC5E1875AD7A00670905 /* TGSongGridScrollView.m */; };
 		AB8B54781B4D1C3000C44485 /* CoverCollectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB8B54771B4D1C3000C44485 /* CoverCollectionView.swift */; };
 		AB9479D61B419FF2004B7C82 /* Dictionary+Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB9479D51B419FF2004B7C82 /* Dictionary+Utils.swift */; };
+		AB9811CF1B87672B00BA75DD /* SongPoolAccessProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB9811CE1B87672B00BA75DD /* SongPoolAccessProtocol.swift */; };
 		ABAF47821B38590600F13528 /* CoverImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABAF47811B38590600F13528 /* CoverImage.swift */; };
 		ABB2B6621ADEB38F004F9F87 /* NSImage+HashId.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABB2B6611ADEB38F004F9F87 /* NSImage+HashId.swift */; };
 		ABB33FF019C72C3800439A5E /* SweetSpotServerIO.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABB33FEF19C72C3800439A5E /* SweetSpotServerIO.swift */; };
@@ -199,6 +200,7 @@
 		AB85BC641875B2F600670905 /* Accelerate.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accelerate.framework; path = System/Library/Frameworks/Accelerate.framework; sourceTree = SDKROOT; };
 		AB8B54771B4D1C3000C44485 /* CoverCollectionView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CoverCollectionView.swift; sourceTree = "<group>"; };
 		AB9479D51B419FF2004B7C82 /* Dictionary+Utils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Dictionary+Utils.swift"; sourceTree = "<group>"; };
+		AB9811CE1B87672B00BA75DD /* SongPoolAccessProtocol.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SongPoolAccessProtocol.swift; path = ../SongPoolAccessProtocol.swift; sourceTree = "<group>"; };
 		ABAF47811B38590600F13528 /* CoverImage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CoverImage.swift; sourceTree = "<group>"; };
 		ABB2B6611ADEB38F004F9F87 /* NSImage+HashId.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "NSImage+HashId.swift"; path = "reDiscover/NSImage+HashId.swift"; sourceTree = "<group>"; };
 		ABB33FEF19C72C3800439A5E /* SweetSpotServerIO.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SweetSpotServerIO.swift; sourceTree = "<group>"; };
@@ -311,6 +313,7 @@
 			isa = PBXGroup;
 			children = (
 				ABFD9DD31AD4217700718631 /* SongUUID.swift */,
+				AB9811CE1B87672B00BA75DD /* SongPoolAccessProtocol.swift */,
 				ABC474511B7DFC9700BCB40C /* SongIDProtocol.swift */,
 				ABE49BB41AE16105008A28B0 /* SongID.swift */,
 				AB638F871ADD1A2100D4C8FA /* TGSong.swift */,
@@ -727,6 +730,7 @@
 				ABFD9DD41AD4217700718631 /* SongUUID.swift in Sources */,
 				ABCA1E211B00E988003CFB93 /* AudioFileStore.swift in Sources */,
 				ABB2B6621ADEB38F004F9F87 /* NSImage+HashId.swift in Sources */,
+				AB9811CF1B87672B00BA75DD /* SongPoolAccessProtocol.swift in Sources */,
 				AB9479D61B419FF2004B7C82 /* Dictionary+Utils.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

@@ -6,6 +6,7 @@
 //  Copyright (c) 2013 Teo Sartori. All rights reserved.
 //
 
+#import "rediscover-swift.h"
 #import "TGPlaylistViewController.h"
 #import "TGPlaylistCellView.h"
 #import "TGPlaylist.h"

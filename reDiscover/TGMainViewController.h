@@ -16,20 +16,13 @@
 @class TGSongInfoViewController;
 @class TGSongUIPopupController;
 @class TGCoverDisplayViewController;
-
-//@class TGSongUIViewController;
-//@class TGSongTimelineViewController;
 @class TGIdleTimer;
 @class DebugDisplay;
 
-@protocol TGSongPoolDelegate;
 @protocol SongIDProtocol;
 @protocol CoverDisplayViewController;
 
-@protocol TGMainViewControllerDelegate <TGSongPoolDelegate>
-//- (void)userSelectedSongID:(id<SongIDProtocol>)songID withContext:(NSDictionary*)theContext;
-//- (void)setDebugCachedFlagsForSongIDArray:(NSArray*)songIDs toValue:(BOOL)value;
-//-(BOOL)isUIShowing;
+@protocol TGMainViewControllerDelegate
 - (id)songIdFromGridPos:(NSPoint) pos;
 @end
 
@@ -54,26 +47,17 @@
 @property NSObjectController *myObjectController;
 
 // The three parts of the split view
-//TODO: see if we can do this with protocols, once it works.
-//@property id<CoverDisplayViewController> coverDisplayController;
+// TODO     see if we can do this with protocols, once it works.
 @property TGCoverDisplayViewController *coverDisplayController;
 @property TGPlaylistViewController *playlistController;
 @property TGSongGridViewController *songGridController;
 @property TGSongInfoViewController *songInfoController;
 @property TGSongUIPopupController *songUIController;
-
-//@property TGSongUIViewController *songUIController;
-
 @property DebugDisplay* debugDisplay;
-
 @property NSDictionary *genreToColourDictionary;
-
 @property TGIdleTimer *idleTimer;
 
 - (id)initWithFrame:(NSRect)theFrame;
-
 - (void)setSongPool:(TGSongPool *)theSongPool;
-//- (void)setDebugCachedFlagsForSongIDArray:(NSArray*)songIDs toValue:(BOOL)value;
-//- (void)refreshCoverForSongId:(id<SongIDProtocol>)songId;
 
 @end

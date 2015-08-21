@@ -5,6 +5,7 @@
 //  Created by teo on 18/03/13.
 //  Copyright (c) 2013 Teo Sartori. All rights reserved.
 //
+#import "rediscover-swift.h"
 #import <QuartzCore/QuartzCore.h>
 #import "TGSongGridViewController.h"
 #import "TGGridCell.h"
@@ -20,16 +21,6 @@
 
 #import "CAKeyframeAnimation+Parametric.h"
 
-//#include <os/trace.h>
-//#include <os/activity.h>
-
-// Trying out some pop animation.
-//#import <POP/POP.h>
-
-// The private interface declaration overrides the public one to implement the TGSongDelegate protocol.
-//@interface TGSongGridController () <TGSongUIViewControllerDelegate,TGSongGridScrollViewDelegate, TGSongPoolDelegate>
-//
-//@end
 
 @interface TGSongGridViewController ()
 
@@ -728,13 +719,13 @@ TGLog(TGLOG_REFAC, @"song grid view coords %@",NSStringFromPoint(mouseLoc));
 - (void)userSelectedSweetSpotMarkerAtIndex:(NSUInteger)ssIndex {
     
     // Ask the song pool for the currently playing song.
-    id<SongIDProtocol> theSongID = [_songPoolAPI currentlyPlayingSongId];
+//    id<SongIDProtocol> theSongID = [_songPoolAPI currentlyPlayingSongId];
     // Ask the song pool for the sweet spots for the given song and extract the sweet spot at the given index.
-    NSNumber* sweetSpotTime = [[_songPoolAPI sweetSpotsForSongID:theSongID] objectAtIndex:ssIndex];
+//    NSNumber* sweetSpotTime = [[_songPoolAPI sweetSpotsForSongID:theSongID] objectAtIndex:ssIndex];
     
     // Ask the song pool to set the playhead position (and the playback) to the given time for the given song.
 //    [_songPoolAPI setRequestedPlayheadPosition:sweetSpotTime forSongID:theSongID];
-    [_songPoolAPI setRequestedPlayheadPosition:sweetSpotTime makeSS:YES];
+//    [_songPoolAPI setRequestedPlayheadPosition:sweetSpotTime];
 }
 
 - (void)userSelectedExistingSweetSpot:(id)sender {

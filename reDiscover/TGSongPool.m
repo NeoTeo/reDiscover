@@ -8,7 +8,7 @@
 
 #import <AVFoundation/AVFoundation.h>
 
-#import "TGSongPool.h"
+//#import "TGSongPool.h"
 #import "TGSongGridViewController.h"
 #import "TGMainViewController.h"
 
@@ -21,14 +21,12 @@
 //#import "NSImage+TGHashId.h"
 
 #import "rediscover-swift.h"
-
+#import "TGSongPool.h"
 // The private interface declaration overrides the public one to declare conformity to the Delegate protocols.
-@interface TGSongPool () <TGFingerPrinterDelegate,SongPoolAccessProtocol>
+@interface TGSongPool () <TGFingerPrinterDelegate, SongPoolAccessProtocol>
 @end
 
 // constant definitions
-//static int const kSSCheckCounterSize    = 10;
-//static int const kDefaultAlbumSongCount = 8;
 static int const kSongPoolStartCapacity = 250;
 
 @implementation TGSongPool

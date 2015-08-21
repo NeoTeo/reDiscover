@@ -12,15 +12,9 @@
 
 #import "NSMutableArray+QueueAdditions.h"
 
-
-// class forward declaration
-
-
+// class forward declarations
 @class TGSong;
-
 @class TGFingerPrinter;
-
-//@class SongPlayer;
 @class CoverArtArchiveWebFetcher;
 @class TGStack;
 @class AVAudioFile;
@@ -34,75 +28,9 @@
 @protocol TGMainViewControllerDelegate;
 @protocol TGSong;
 @protocol SongSelectionContext;
-///**
-//   A SongID must conform to the SongIDProtocol.
-//   Currently there's not much point to the SongIDProtocol other than decoupling.
-// */
-//@protocol SongIDProtocol <NSObject, NSCopying>
-//@end
-
-
-// Methods that SongPool implements for others to call.
-@protocol SongPoolAccessProtocol
-//MARK: REFAC - added to give TGMainViewController access.
--(id<TGSong>)songForID:(id<SongIDProtocol>)songID;
-
-- (NSURL *)songURLForSongID:(id<SongIDProtocol>)songID;
-- (NSString*)UUIDStringForSongID:(id<SongIDProtocol>)songID;
-- (NSData*)releasesForSongID:(id<SongIDProtocol>)songID;
-- (NSString*)albumForSongID:(id<SongIDProtocol>)songID;
-//- (AVAudioFile*)cachedAudioFileForSongID:(id<SongIDProtocol>)songID;
-//- (NSNumber*)cachedLengthForSongID:(id<SongIDProtocol>)songID;
-
-- (void)requestSongPlayback:(id<SongIDProtocol>)songID;
-- (void)requestSongPlayback:(id<SongIDProtocol>)songID
-     withStartTimeInSeconds:(NSNumber *)time;
-
-- (NSDictionary *)songDataForSongID:(id<SongIDProtocol>)songID;
-- (NSNumber *)songDurationForSongID:(id<SongIDProtocol>)songID;
-//- (void)setSongDuration:(NSNumber*)duration forSongId:(id<SongIDProtocol>)songId;
-
-- (id<SongIDProtocol>)lastRequestedSongId;
-- (id<SongIDProtocol>)currentlyPlayingSongId;
-
-//- (void)setRequestedPlayheadPosition:(NSNumber *)newPosition;
-- (void)setRequestedPlayheadPosition:(NSNumber *)newPosition makeSS:(BOOL)makeSweetSpot;
-
-// Sweet Spot accessors.
-- (NSArray*)sweetSpotsForSongID:(id<SongIDProtocol>)songID;
-- (void)replaceSweetSpots:(NSArray*)sweetSpots forSongID:(id<SongIDProtocol>)songID;
-- (void)setActiveSweetSpotIndex:(int)ssIndex forSongID:(id<SongIDProtocol>)songID;
-
-//- (void)cacheWithContext:(NSDictionary*)cacheContext;
-- (void)cacheWithContext:(id<SongSelectionContext>)cacheContext;
-//- (void)newCacheFromCache:(NSMutableSet*)oldCache withContext:(NSDictionary*)cacheContext andHandler:(void (^)(NSMutableSet*))newCacheHandler;
-
-- (NSManagedObjectContext*)TEOSongDataMOC;
-
-// Get the song Id of the the song at the grid position (request goes through to the song grid controller)
-- (id<SongIDProtocol>)songIdFromGridPos:(NSPoint)gridPosition;
-
-// Debug methods
-- (void)debugLogSongWithId:(id<SongIDProtocol>)songId;
-- (void)debugLogCaches;
-@end
-
-
-
-// TGSongPool Delegate methods that conforming classes must implement and that SongPool will call.
-@protocol TGSongPoolDelegate <NSObject>
-//@optional
-//- (void)songPoolDidLoadSongURLWithID:(id<SongIDProtocol>)songID;
-//- (void)songPoolDidLoadAllURLs:(NSUInteger)numberOfURLs;
-//- (void)songPoolDidStartFetchingSong:(id<SongIDProtocol>)songID;
-//- (void)songPoolDidStartPlayingSong:(id<SongIDProtocol>)songID;
-//- (void)songPoolDidFinishPlayingSong:(id<SongIDProtocol>)songID;
-//- (void)songPoolDidLoadDataForSongID:(id<SongIDProtocol>)songID;
-//- (void)setDebugCachedFlagsForSongIDArray:(NSArray*)songIDs toValue:(BOOL)value;
-@end
+@protocol SongPoolAccessProtocol;
 
 // The public interface declaration doesn't implement the TGSongDelegate. The private interface declaration in the .m will.
-//@interface TGSongPool : NSObject <TGPlaylistViewControllerDelegate, SongPoolAccessProtocol>
 @interface TGSongPool : NSObject <SongPoolAccessProtocol>
 {
     int loadedURLs;
@@ -152,27 +80,22 @@
     /** This serial queue ensures all the cache clearing blocks are performed in the background
     and that they don't clear the same song simultanously. */
     // REFAC
-    dispatch_queue_t songPoolQueue;
     AlbumCollection *albumCollection;
-    
+    dispatch_queue_t songPoolQueue;
     dispatch_queue_t songLoadUnloadQueue;
-    
     dispatch_queue_t playbackQueue;
     dispatch_queue_t serialDataLoad;
     dispatch_queue_t timelineUpdateQueue;
     
     NSUInteger songPoolStartCapacity;
     NSMutableDictionary *songPoolDictionary;
-//    id<TGSong> currentlyPlayingSong;
-//    id<TGSong> lastRequestedSong;
+    
     id<SongIDProtocol> currentlyPlayingSongId;
     id<SongIDProtocol> lastRequestedSongId;
     
     int32_t srCounter;
     
     TGFingerPrinter *songFingerPrinter;
-//    UUIDMaker *songUUIDMaker;
-//    SongArtCache* artCache;
     
     NSManagedObjectModel *songUserDataManagedObjectModel;
     NSManagedObjectContext *songPoolManagedContext;
@@ -226,6 +149,21 @@
 @property NSString* fetchingCoverArtHashId;
 
 // Methods
+/// REFAC start
+-(id<TGSong>)songForID:(id<SongIDProtocol>)songID;
+- (NSURL *)songURLForSongID:(id<SongIDProtocol>)songID;
+- (void)requestSongPlayback:(id<SongIDProtocol>)songID;
+- (void)requestSongPlayback:(id<SongIDProtocol>)songID withStartTimeInSeconds:(NSNumber *)time;
+- (NSDictionary *)songDataForSongID:(id<SongIDProtocol>)songID;
+- (NSNumber *)songDurationForSongID:(id<SongIDProtocol>)songID;
+- (id<SongIDProtocol>)lastRequestedSongId;
+- (id<SongIDProtocol>)currentlyPlayingSongId;
+- (void)cacheWithContext:(id<SongSelectionContext>)cacheContext;
+- (id<SongIDProtocol>)songIdFromGridPos:(NSPoint)gridPosition;
+- (void)debugLogSongWithId:(id<SongIDProtocol>)songId;
+- (void)debugLogCaches;
+/// REFAC end
+
 - (id<SongIDProtocol>)initWithURL:(NSURL*) theURL;
 - (BOOL)validateURL:(NSURL *)anURL;
 - (BOOL)loadFromURL:(NSURL *)anURL ;
