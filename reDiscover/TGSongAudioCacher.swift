@@ -144,47 +144,23 @@ class TGSongAudioCacheTask : NSObject {
         songPoolAPI = theAPI
     }
     
-
-//    func cacheWithContext(theContext: SongSelectionContext) -> HashToPlayerDictionary {
-    //REFAC test - htf did this ever not start over every time?
     func cacheWithContext(theContext: SongSelectionContext, oldCache: HashToPlayerDictionary) -> HashToPlayerDictionary {
-        //Make this method synchronous - won't return until the new cache is back.
-        let condLock = NSConditionLock(condition: 42)
-        
-        //REFAC test - copies the dict ints but the AVPlayers are still references to the same objects.
+        let group = dispatch_group_create()
         self.songPlayerCache = oldCache
-        /* By virtue of the locking of this thread until the cache is done, there are never any players left in the loadingPlayers.
-        let players  = [AVPlayer](self.loadingPlayers.keys)
-        for player in players {
-            NSLog("Cancelling player %@",player)
-            // might want to cancel loading here as well?
-            player.removeObserver(self, forKeyPath: "status", context: &self.myContext)
-            player.currentItem?.asset.cancelLoading()
-            
-            self.loadingPlayersLock.lock()
-            self.loadingPlayers.removeValueForKey(player)
-            self.loadingPlayersLock.unlock()
-        }
-        */
         
+        dispatch_group_enter(group)
         // Make a new cache and call trailing closure when done.
         self.newCacheFromCache(self.songPlayerCache, withContext: theContext, operationBlock: nil) { newCache in
             self.songPlayerCache = newCache
-            condLock.lock()
-            // Signal condition 69.
-            condLock.unlockWithCondition(69)
+            dispatch_group_leave(group)
         }
-        /**
-        Wait here until the `newCacheFromCache` finishes and calls its trailing
-        closure which replaces the `songPlayerCache` and unlocks the thread.
-        */
-        // Lock thread until the condition 69 is signalled.
-        condLock.lockWhenCondition(69)
-        condLock.unlock()
-
+        
+        // Block until all that entered the group have left it.
+        dispatch_group_wait(group, DISPATCH_TIME_FOREVER)
+        
         return songPlayerCache
     }
-    
+        
     
 //    func newCacheFromCache(oldCache: HashToPlayerDictionary, withContext context: NSDictionary, operationBlock: NSBlockOperation?, completionHandler: (HashToPlayerDictionary)->()) {
     func newCacheFromCache(oldCache: HashToPlayerDictionary, withContext context: SongSelectionContext, operationBlock: NSBlockOperation?, completionHandler: (HashToPlayerDictionary)->()) {
