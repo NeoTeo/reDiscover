@@ -139,7 +139,6 @@ class TGSongAudioCacheTask : NSObject {
     
     // holds the ready players
     var songPlayerCache = HashToPlayerDictionary()
-    let cacheLock = NSLock();
 
     init(songPoolAPI theAPI: SongPoolAccessProtocol?) {
         songPoolAPI = theAPI
@@ -226,9 +225,11 @@ class TGSongAudioCacheTask : NSObject {
                     might get accessed concurrently by a loading completion block
                     below that was initiated on a previous run.
                 */
-                newCacheLock.lock()
-                newCache[songId.hash] = oldPlayer
-                newCacheLock.unlock()
+                //newCacheLock.lock()
+                newCacheLock.withCriticalScope {
+                    newCache[songId.hash] = oldPlayer
+                }
+                //newCacheLock.unlock()
                 
             } else {
                 
@@ -237,9 +238,9 @@ class TGSongAudioCacheTask : NSObject {
                 self.performWhenReadyForPlayback(songId){ songPlayer in
                  
                     /// This can get called some time after
-                    newCacheLock.lock()
-                    newCache[songId.hash] = songPlayer
-                    newCacheLock.unlock()
+                    newCacheLock.withCriticalScope {// lock()
+                        newCache[songId.hash] = songPlayer
+                    }//newCacheLock.unlock()
                 }
             }
         }
@@ -320,9 +321,9 @@ print("wantedCacheCount \(wantedCacheCount)")
         // store the completionHandler for this player so it can be called on successful load.
         // locking access because it may be accessed async'ly by the observeValueForKeyPath observing a status change.
         //FIXME: Find a non locking solution (like a queue)
-        self.loadingPlayersLock.lock()
-        self.loadingPlayers[thePlayer] = aClosure
-        self.loadingPlayersLock.unlock()
+        self.loadingPlayersLock.withCriticalScope {
+            self.loadingPlayers[thePlayer] = aClosure
+        }
 
         // add an observer to get called when the player status changes (to signal completion).
         thePlayer.addObserver(self, forKeyPath: "status", options: .New, context: &self.myContext)
@@ -379,9 +380,12 @@ print("wantedCacheCount \(wantedCacheCount)")
             //FIXME: Don't actually believe loadingPlayers can be accessed concurrently.
             // Both this and the closure executed by loadValuesAsynchronouslyForKeys are on the same thread,
             // so they shouldn't be concurrent. Try to remove and test.
-            self.loadingPlayersLock.lock() // lock it because performWhenReadyForPlayback may be adding to loadingPlayers in a different thread.
-            let completionHandler = self.loadingPlayers.removeValueForKey(playa) as VoidVoidClosure?
-            self.loadingPlayersLock.unlock()
+            var completionHandler: VoidVoidClosure?
+            /// Lock it because performWhenReadyForPlayback may be adding to loadingPlayers in a different thread.
+            self.loadingPlayersLock.withCriticalScope {
+                completionHandler = self.loadingPlayers.removeValueForKey(playa) as VoidVoidClosure?
+            }
+            
             completionHandler?()
             
         } else {
