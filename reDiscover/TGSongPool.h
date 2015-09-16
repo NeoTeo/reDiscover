@@ -31,6 +31,11 @@
 @protocol SongPoolAccessProtocol;
 
 // The public interface declaration doesn't implement the TGSongDelegate. The private interface declaration in the .m will.
+/**
+ The compiler warns that it is not able to find the protocol definition but according
+ to [this](http://ipfs.io/ipfs/QmR6JzdNSTtPPzcj91AbAd9q1gxBRL7ACPxtUQgUkW7PCV) 
+ Stack Overflow answer there's no way around it.
+ */
 @interface TGSongPool : NSObject <SongPoolAccessProtocol>
 {
     int loadedURLs;
@@ -156,8 +161,8 @@
 - (void)requestSongPlayback:(id<SongIDProtocol>)songID withStartTimeInSeconds:(NSNumber *)time;
 - (NSDictionary *)songDataForSongID:(id<SongIDProtocol>)songID;
 - (NSNumber *)songDurationForSongID:(id<SongIDProtocol>)songID;
-- (id<SongIDProtocol>)lastRequestedSongId;
-- (id<SongIDProtocol>)currentlyPlayingSongId;
+
+
 - (void)cacheWithContext:(id<SongSelectionContext>)cacheContext;
 - (id<SongIDProtocol>)songIdFromGridPos:(NSPoint)gridPosition;
 - (void)debugLogSongWithId:(id<SongIDProtocol>)songId;

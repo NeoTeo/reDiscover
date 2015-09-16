@@ -24,7 +24,6 @@ class SweetSpotServerIO: NSObject {
 
 //    let opQueue: NSOperationQueue?
     // The delegate to communicate with song pool
-    //var delegate: SongPoolAccessProtocol?
     // Should this be lazy?
     
     // The location of the SweetSpotServer. For now it's just localhost.
