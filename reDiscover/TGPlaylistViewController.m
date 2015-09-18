@@ -12,6 +12,7 @@
 #import "TGPlaylist.h"
 #import "TGSongPool.h"
 
+
 @interface TGPlaylistViewController () <TGPlaylistDelegate>
 @end
 
@@ -99,7 +100,8 @@
         [playlist setPosInPlaylist:selectedRow];
         id<SongIDProtocol> newSongID = [playlist songIDAtIndex:selectedRow];
 //        [_songPoolAPI requestSongPlayback:newSongID withStartTimeInSeconds:[NSNumber numberWithFloat:0] makeSweetSpot:NO];
-        [_songPoolAPI requestSongPlayback:newSongID withStartTimeInSeconds:nil];
+        [_songPoolAPI requestSongPlayback:newSongID withStartTimeInSeconds:[NSNumber numberWithFloat:0]];
+
     }
 
     [_playlistTableView deselectRow:selectedRow];

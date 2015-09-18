@@ -764,6 +764,7 @@
         }
         
         [_currentSongPool requestSongPlayback:newSongID withStartTimeInSeconds:[NSNumber numberWithFloat:0]];
+
     }
 }
 
@@ -775,6 +776,7 @@
     }
 }
 
+/*
 - (void)userSelectedSongInContext:(NSNotification*)notification {
 
     id<SongSelectionContext> theContext = (id<SongSelectionContext>)notification.object;
@@ -791,13 +793,14 @@
     
     [_currentSongPool cacheWithContext:theContext];
     //id<SongIDProtocol> songId = [theContext objectForKey:@"selectedSongId"];
-    [_currentSongPool requestSongPlayback:songId];
+    //[_currentSongPool requestSongPlayback:songId];
+    [SongPool requestSongPlayback:songId];
     
     // reset the idle timer
     [_idleTimer startIdleTimer];
     
 }
-
+*/
 /*
 - (void)userSelectedSongID:(id<SongIDProtocol>)songID withContext:(NSDictionary *)theContext {
     

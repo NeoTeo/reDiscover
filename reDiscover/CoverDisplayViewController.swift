@@ -169,7 +169,6 @@ public class TGCoverDisplayViewController: NSViewController, CoverDisplayViewCon
             
             // Not yet uncovered. So we pick a random song from the unmapped songs.
             if songId == nil {
-                print("unCover!")
                 // remove a random songId from unmapped and add it to the mapped
                 let unmappedCount = UInt32(self.unmappedSongIdArray.count)
                 let randIdx = arc4random_uniform(unmappedCount)
@@ -281,7 +280,7 @@ public class TGCoverDisplayViewController: NSViewController, CoverDisplayViewCon
         Called when a song with songId has loaded its cover art.
     */
     func updateCovers(notification: NSNotification) {
-        print("Cover update")
+//        print("Cover update")
       // We should call the cover fade-in animation from here.
 /* This is not working in b3
         // Not sure this is the best way – O(n), but for now it works.

@@ -45,6 +45,21 @@ final class SongPool : NSObject {
 //        return nil
     }
 
+    /**     Initiate a request to play back the given song.
+    
+            If the song has a selected sweet spot play the song from there otherwise
+            just play the song from the start.
+            :params: songID The id of the song to play.
+    */
+    static func requestSongPlayback(songId: SongIDProtocol) {
+        guard let song = SongPool.songForSongId(songId) else { return }
+        
+        let startTime = SweetSpotController.selectedSweetSpotForSong(song)
+        delegate!.requestSongPlayback(songId, withStartTimeInSeconds: startTime)
+        
+    }
+    
+    
     static func updateMetadata(forSongId songId: SongIDProtocol) {
         guard let metadata = SongCommonMetaData.loadedMetaDataForSongId(songId) else { return }
         addSong(withChanges: [.Metadata : metadata], forSongId: songId)
@@ -171,9 +186,9 @@ final class SongPool : NSObject {
                 //SongPool.addSong(withArtId: newArtId, forSongId: songId)
                 SongPool.addSong(withChanges: [.ArtId : newArtId], forSongId: songId)
             }
-        } else {
+        }/* else {
             print("Image was found in art cache")
-        }
+        }*/
         
         NSNotificationCenter.defaultCenter().postNotificationName("songCoverUpdated", object: songId)
     }

@@ -157,7 +157,7 @@
 /// REFAC start
 -(id<TGSong>)songForID:(id<SongIDProtocol>)songID;
 - (NSURL *)songURLForSongID:(id<SongIDProtocol>)songID;
-- (void)requestSongPlayback:(id<SongIDProtocol>)songID;
+//- (void)requestSongPlayback:(id<SongIDProtocol>)songID;
 - (void)requestSongPlayback:(id<SongIDProtocol>)songID withStartTimeInSeconds:(NSNumber *)time;
 - (NSDictionary *)songDataForSongID:(id<SongIDProtocol>)songID;
 - (NSNumber *)songDurationForSongID:(id<SongIDProtocol>)songID;

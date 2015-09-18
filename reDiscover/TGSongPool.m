@@ -1024,7 +1024,7 @@ static int const kSongPoolStartCapacity = 250;
  spots and pick the first one. If none exist just play the song from the start.
  :params: songID The id of the song to play.
 */
-- (void)requestSongPlayback:(id<SongIDProtocol>)songID {
+/**- (void)requestSongPlayback:(id<SongIDProtocol>)songID {
     id<TGSong> aSong = [self songForID:songID];
     if (aSong == nil) {
         TGLog(TGLOG_REFAC, @"requestSongPlayback - no song found.");
@@ -1034,7 +1034,7 @@ static int const kSongPoolStartCapacity = 250;
     NSNumber *startTime = [SweetSpotController selectedSweetSpotForSong:aSong];
     [self requestSongPlayback:songID withStartTimeInSeconds:startTime];
 }
-
+*/
 
 /**
     Initiate a request to play back the given song at the given start time in seconds.
@@ -1077,7 +1077,9 @@ static int const kSongPoolStartCapacity = 250;
         
             [songAudioPlayer playAtTime:[startTime floatValue]];
             currentlyPlayingSongId = songID;
-        TGLog(TGLOG_TMP, @"currentSongDuration %f",CMTimeGetSeconds([songAudioPlayer songDuration]));
+            
+            TGLog(TGLOG_TMP, @"currentSongDuration %f",CMTimeGetSeconds([songAudioPlayer songDuration]));
+            
             [self setValue:[NSNumber numberWithFloat:CMTimeGetSeconds([songAudioPlayer songDuration])] forKey:@"currentSongDuration"];
 
             [self setRequestedPlayheadPosition:startTime];

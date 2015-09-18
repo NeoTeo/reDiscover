@@ -10,9 +10,6 @@ import Cocoa
 import AVFoundation
 
 typealias HashToPlayerDictionary    = [Int:AVPlayer]
-typealias VoidVoidClosure           = ()->()
-typealias PlayerToVoidClosure       = [AVPlayer:VoidVoidClosure]
-
 
 final class TGSongAudioCacher : NSObject {
     
@@ -60,9 +57,20 @@ final class TGSongAudioCacher : NSObject {
             
             let cacheTask = SongAudioCacheTask(songPoolAPI: self.songPoolAPI)
 
+            /// cacheWithContext will block until...all players are cached or just all started caching?
             self.songPlayerCache = cacheTask.cacheWithContext(theContext, oldCache: self.songPlayerCache)
             
-            /// If there's a pending request check if this new cache can service it.
+            /**     If there's a pending request check if this new cache can service it.
+                    Since the access to the pendingPlayerRequestCallback is not 
+                    arbited there's a chance the pendingPlayerRequestCallback is 
+                    set *after* a successful load. This causes it to not be played
+                    until next time it is requested.
+            
+                    1) Thread A: CacheWithContext is called and caching is initiated (in this block)
+                    2) Thread B: performWhenPlayerIsAvailableForSongId is called but player is not in cache yet.
+                    3) Thread A:caching of that player finishes and the pendingPlayerRequestCallback is looked at - it's empty so skip.
+                    3) Thread B: pendingPlayerRequestCallback is set to a new requestBlock.
+            */
             if let pp = self.pendingPlayerRequestCallback {
                 
                 // Check if the pending player request is in this new cache

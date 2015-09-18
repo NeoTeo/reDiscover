@@ -26,8 +26,9 @@ to avoid re-caching.
 */
 class SongAudioCacheTask : NSObject {
     
-    let cachingOpQueue = NSOperationQueue()
-    
+    typealias VoidVoidClosure           = ()->()
+    typealias PlayerToVoidClosure       = [AVPlayer:VoidVoidClosure]
+  
     // class context variable used by the observer.
     private var myContext = 0
     
@@ -45,12 +46,15 @@ class SongAudioCacheTask : NSObject {
     }
     
     func cacheWithContext(theContext: SongSelectionContext, oldCache: HashToPlayerDictionary) -> HashToPlayerDictionary {
+        
         let group = dispatch_group_create()
         self.songPlayerCache = oldCache
         
         dispatch_group_enter(group)
         // Make a new cache and call trailing closure when done.
         self.newCacheFromCache(self.songPlayerCache, withContext: theContext, operationBlock: nil) { newCache in
+            
+            /// Replace the songPlayerCache with the new one.
             self.songPlayerCache = newCache
             dispatch_group_leave(group)
         }
@@ -69,8 +73,8 @@ class SongAudioCacheTask : NSObject {
         
         var newCache: HashToPlayerDictionary = HashToPlayerDictionary() {
             /**
-            Call the completion handler once the number of items in the `newCache`
-            matches the `wantedCacheCount`.
+            Once the number of items in the `newCache` matches the `wantedCacheCount`
+            we know we have finished so we call the completion handler.
             */
             didSet {
                 if wantedCacheCount != 0 {
@@ -98,7 +102,8 @@ class SongAudioCacheTask : NSObject {
                 Since oldCache is a deep copy of the actual cache we are effectively
                 copying the asset. We need to lock it during access because it
                 might get accessed concurrently by a loading completion block
-                below that was initiated on a previous run.
+                below (performWhenReadyForPlayback in the else) that was initiated 
+                previously.
                 */
                 
                 newCacheLock.withCriticalScope {
@@ -162,14 +167,14 @@ class SongAudioCacheTask : NSObject {
                 }
             }
         }
-        print("wantedCacheCount \(wantedCacheCount)")
+//        print("wantedCacheCount \(wantedCacheCount)")
         return wantedCacheCount
     }
     
-    /**
-    This method performs the given closure when the player for a given songId is
-    ready to play. This implies that it has been cached and has an associated AVPlayer
-    with which to play back the song that the id refers to.
+    /**     This method performs the readySongHandler closure when the player for 
+            a given songId is ready to play. This implies that it has been cached 
+            and has an associated AVPlayer with which to play back the song that 
+            the id refers to.
     */
     func performWhenReadyForPlayback(songId: SongIDProtocol, readySongHandler: (AVPlayer)->()) {
         
@@ -180,7 +185,9 @@ class SongAudioCacheTask : NSObject {
         }
         
         let songAsset: AVURLAsset = AVURLAsset(URL: songURL, options: [AVURLAssetPreferPreciseDurationAndTimingKey : true])
+        
         print("slow loading AV URL asset")
+        
         let thePlayer = AVPlayer()
         
         // The closure we want to have executed upon successful loading. We store this with the player it belongs to.
@@ -194,7 +201,7 @@ class SongAudioCacheTask : NSObject {
         
         // store the completionHandler for this player so it can be called on successful load.
         // locking access because it may be accessed async'ly by the observeValueForKeyPath observing a status change.
-        //FIXME: Find a non locking solution (like a queue)
+        //FIXME: Find a non locking solution (eg. a queue of execution blocks)
         self.loadingPlayersLock.withCriticalScope {
             self.loadingPlayers[thePlayer] = aClosure
         }
@@ -242,10 +249,12 @@ class SongAudioCacheTask : NSObject {
         }
     }
     
-    /**
-    Observer method called when the status of the player changes.
+    /**     Observer method called when the status of the player changes.
+            If the player is found in the loadingPlayers it is removed from it and
+            the completionHandler stored with it is called.
     */
     override func observeValueForKeyPath(keyPath: String?, ofObject object: AnyObject?, change: [String : AnyObject]?, context: UnsafeMutablePointer<Void>) {
+        
         if context == &myContext {
             
             let playa = object as! AVPlayer
@@ -254,14 +263,12 @@ class SongAudioCacheTask : NSObject {
             //FIXME: Don't actually believe loadingPlayers can be accessed concurrently.
             // Both this and the closure executed by loadValuesAsynchronouslyForKeys are on the same thread,
             // so they shouldn't be concurrent. Try to remove and test.
-            var completionHandler: VoidVoidClosure?
             /// Lock it because performWhenReadyForPlayback may be adding to loadingPlayers in a different thread.
             self.loadingPlayersLock.withCriticalScope {
-                completionHandler = self.loadingPlayers.removeValueForKey(playa) as VoidVoidClosure?
+                if let completionHandler = self.loadingPlayers.removeValueForKey(playa) as VoidVoidClosure? {
+                    completionHandler()
+                }
             }
-            
-            completionHandler?()
-            
         } else {
             // Observer with different context. Passing to super.
             //super.observeValueForKeyPath(keyPath, ofObject: object, change: change, context: context)

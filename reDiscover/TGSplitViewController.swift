@@ -141,7 +141,8 @@ extension TGSplitViewController {
         }
         
         theSongPool?.cacheWithContext(theContext)
-        theSongPool?.requestSongPlayback(songId)
+        //theSongPool?.requestSongPlayback(songId)
+        SongPool.requestSongPlayback(songId)
     }
 
     /** This is called when the TGTimelineSliderCell detects that the user has let

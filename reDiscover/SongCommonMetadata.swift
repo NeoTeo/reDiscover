@@ -81,7 +81,7 @@ extension SongCommonMetaData {
 
         if  let sng = SongPool.songForSongId(songId) where sng.urlString != nil,
             let url = NSURL(string: sng.urlString!) {
-                print("commonMetadataForSong song \(sng.songID) sweeties \(sng.sweetSpots)")
+//                print("commonMetadataForSong song \(sng.songID) sweeties \(sng.sweetSpots)")
                 let songAsset = AVURLAsset(URL: url , options: nil)
                 return songAsset.commonMetadata
         }
@@ -182,12 +182,12 @@ extension SongCommonMetaData {
         if albums.count > 0 { album = albums[0].value as! String }
         if artists.count > 0 { artist = artists[0].value as! String }
         //FIXME: Beware, this can also be a string value!
-        print("YEARS: \(years)")
+        //print("YEARS: \(years)")
         if years.count > 0 && years[0].key!.isKindOfClass(NSNumber) {
             if let num = years[0].numberValue {
                 //year = years[0].numberValue?.unsignedIntegerValue as! UInt
                 year = num.unsignedLongValue
-                print("Magic!~~ \(year)")
+                //print("Magic!~~ \(year)")
             }
         }
 //        if years.count > 0 { year = years[0].numberValue as! UInt }
