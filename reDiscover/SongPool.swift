@@ -12,37 +12,21 @@ typealias SongDictionary = [SongID: Song]
 
 final class SongPool : NSObject {
     
-    private static var songPool: SongDictionary?
+    // Until we've switched TGSongPool over to this class we'll use it as a delegate.
     static var delegate: SongPoolAccessProtocol?
+    
+    private static var songPool: SongDictionary?
     private static var songPoolAccessQ: dispatch_queue_t?
 
     
     static func durationForSongId(songId: SongID) -> NSNumber {
         return delegate!.songDurationForSongID(songId)
     }
-    //MARK: deprecated - call SweetSpotController.sweetSpotsForSong directly
-//    static func sweetSpotsForSongId(songId: SongID) -> NSArray {
-//        return delegate!.sweetSpotsForSongID(songId)
-//    }
-//    
-    // Until we've switched TGSongPool over to this class we'll use it as a delegate.
-    // In this case we request the song for the given id and return a copy of it.
+    
+    
+    /// Request the song for the given id and return a copy of it.
     static func songForSongId(songId: SongIDProtocol) -> TGSong? {
         return songPool?[songId as! SongID]
-//        if let song = delegate?.songForID(songId) {
-//            
-//            return Song(songId: song.songID,
-//                metadata: song.metadata,
-//                urlString: song.urlString,
-//                sweetSpots: song.sweetSpots,
-//                fingerPrint: song.fingerPrint,
-//                selectedSS: song.selectedSweetSpot,
-//                releases: song.songReleases,
-//                artId: song.artID,
-//                UUId: song.UUId,
-//                RelId: song.RelId)
-//        }
-//        return nil
     }
 
     /**     Initiate a request to play back the given song.
@@ -58,7 +42,6 @@ final class SongPool : NSObject {
         delegate!.requestSongPlayback(songId, withStartTimeInSeconds: startTime)
         
     }
-    
     
     static func updateMetadata(forSongId songId: SongIDProtocol) {
         guard let metadata = SongCommonMetaData.loadedMetaDataForSongId(songId) else { return }

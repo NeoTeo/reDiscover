@@ -9,6 +9,13 @@
 import Cocoa
 import AVFoundation
 
+@objc public enum CachingMethod : Int {
+    case None
+    case All
+    case Square
+    case SpeedRect
+}
+
 typealias HashToPlayerDictionary    = [Int:AVPlayer]
 
 final class TGSongAudioCacher : NSObject {
@@ -21,10 +28,26 @@ final class TGSongAudioCacher : NSObject {
     }
     
     var songPoolAPI: SongPoolAccessProtocol?
-    var pendingPlayerRequestCallback: SongIdToPlayerRequestBlock?
+    /// Serialize the access to the pendingPlayerRequestCallback.
+    let pendingRequestQ = dispatch_queue_create("Request access q", DISPATCH_QUEUE_SERIAL)
+    var _pendingPlayerRequestCallback: SongIdToPlayerRequestBlock?
+    var pendingPlayerRequestCallback: SongIdToPlayerRequestBlock? {
+        get {
+            var requestCallback: SongIdToPlayerRequestBlock?
+            dispatch_sync(self.pendingRequestQ) {
+                requestCallback = self._pendingPlayerRequestCallback
+            }
+            return requestCallback
+        }
+        set(request) {
+            dispatch_sync(self.pendingRequestQ) {
+                self._pendingPlayerRequestCallback = request
+            }
+        }
+    }
 
-    let cachingOpQueue                  = NSOperationQueue()
-    var songPlayerCache                 = HashToPlayerDictionary()
+    let cachingOpQueue  = NSOperationQueue()
+    var songPlayerCache = HashToPlayerDictionary()
 
     var debugId = 0
     
@@ -57,20 +80,10 @@ final class TGSongAudioCacher : NSObject {
             
             let cacheTask = SongAudioCacheTask(songPoolAPI: self.songPoolAPI)
 
-            /// cacheWithContext will block until...all players are cached or just all started caching?
+            /// cacheWithContext will block until the whole cache has been loaded.
             self.songPlayerCache = cacheTask.cacheWithContext(theContext, oldCache: self.songPlayerCache)
             
-            /**     If there's a pending request check if this new cache can service it.
-                    Since the access to the pendingPlayerRequestCallback is not 
-                    arbited there's a chance the pendingPlayerRequestCallback is 
-                    set *after* a successful load. This causes it to not be played
-                    until next time it is requested.
-            
-                    1) Thread A: CacheWithContext is called and caching is initiated (in this block)
-                    2) Thread B: performWhenPlayerIsAvailableForSongId is called but player is not in cache yet.
-                    3) Thread A:caching of that player finishes and the pendingPlayerRequestCallback is looked at - it's empty so skip.
-                    3) Thread B: pendingPlayerRequestCallback is set to a new requestBlock.
-            */
+            /**     If there's a pending request check if this new cache can service it. */
             if let pp = self.pendingPlayerRequestCallback {
                 
                 // Check if the pending player request is in this new cache
@@ -79,6 +92,7 @@ final class TGSongAudioCacher : NSObject {
                     self.pendingPlayerRequestCallback = nil
                 }
             }
+            
         }
         
 /*        operationBlock.completionBlock = {
@@ -116,8 +130,7 @@ final class TGSongAudioCacher : NSObject {
             callBack(player)
         } else {
             // Add the callback to a dictionary where it's associated with the songId.
-            pendingPlayerRequestCallback = SongIdToPlayerRequestBlock(songId: songId, callBack: callBack)
-
+            self.pendingPlayerRequestCallback = SongIdToPlayerRequestBlock(songId: songId, callBack: callBack)
             /** It is assumed that the requested song is in the process of being
                 cached but has not yet succeeded. When it does succeed, the execution
                 block (in cacheWithContext) will check for the pending request and 

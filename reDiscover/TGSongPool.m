@@ -935,12 +935,9 @@ static int const kSongPoolStartCapacity = 250;
     [songAudioCacher cacheWithContext:cacheContext];
 
     id<SongIDProtocol> selectedSongId = cacheContext.selectedSongId;
-    //REFAC - set the lastSelectedSongID here so that the songPoolDidStartFetchingSong knows.
-//    lastRequestedSong = [self songForID:selectedSongId];
     lastRequestedSongId = selectedSongId;
     
     // Tell the main view controller that we've started fetching data for the selected song so it can update the UI.
-    //REFAC [_delegate songPoolDidStartFetchingSong:selectedSongId];
     [[NSNotificationCenter defaultCenter] postNotificationName:@"songDidStartUpdating" object:selectedSongId];
     // Initiate the fingerprint/UUId generation and fetching of cover art.
     // Split this into synchronous functions called on a single separate thread:
@@ -951,69 +948,20 @@ static int const kSongPoolStartCapacity = 250;
     // 3) Get Cover Art from UUId unless already there.
     //
     // 4) Notify all done.
-    //MARK: REFAC
 
     dispatch_async(dispatch_get_global_queue(QOS_CLASS_USER_INITIATED, 0), ^{
         /** Consider wrapping each of these calls in nsoperations with each being dependent on
-         the success of the previous operation.
+         the success of the previous operation. Specifically, most of these rely on
+         the song having been fingerprinted which cannot happen until the song has
+         been loaded/cached.
         */
         [SongPool updateMetadataForSongId:selectedSongId];
+        /** The fingerprinter and subsequent functions are dependent on the audio
+        being fully loaded. We should add that dependency. */
         [SongPool updateFingerPrintForSongId: selectedSongId withFingerPrinter: songFingerPrinter];
         [SongPool updateRemoteDataForSongId:selectedSongId withDuration:[songAudioPlayer songDuration]];
         albumCollection = [AlbumCollection updateWithAlbumContainingSongId:selectedSongId usingOldCollection:albumCollection];
         [SongPool checkForArtForSongId:selectedSongId inAlbumCollection:albumCollection];
-        return;
-        /*
-        SongCommonMetaData* metadata = [SongCommonMetaData loadedMetaDataForSongId:selectedSongId];
-        [SongPool addSongWithMetadata:metadata forSongId:selectedSongId];
-        
-        
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"songMetaDataUpdated" object:selectedSongId];
-        
-        id<TGSong> __nonnull aSong  = [self songForID:selectedSongId];
-        if ([aSong fingerPrint] == nil) {
-            NSString* fingerprint = [songFingerPrinter fingerprintForSongId:selectedSongId];
-            [SongPool addSongWithFingerprint:fingerprint forSongId:selectedSongId];
-            
-        
-        aSong = [SongPool songForSongId:selectedSongId];
-        if (aSong.fingerPrint != nil) {
-            
-            if (aSong.UUId == nil) {
-                //FIXME: See if we can get the duration from the fingerprint instead.
-                CMTime songDuration = [songAudioPlayer songDuration];
-                NSDictionary* acoustIdData = [AcoustIDWebService dataDictForFingerprint:aSong.fingerPrint ofDuration:CMTimeGetSeconds(songDuration)];
-                // Consider just having AcoustIDWebService return the bestMatchReleaseId instead
-                NSDictionary *bestRelease = [AcoustIDWebService bestMatchReleaseForSong:aSong inDictionary:acoustIdData];
-                // At this point we should call a func that picks the best id from the acoustIdData based
-                // on how well each matches the other metadata we have on the song.
-                [SongPool addSongWithReleaseId:[bestRelease objectForKey:@"id"] forSongId:selectedSongId];
-                
-                if( acoustIdData != nil) {
-                    NSString *songUUID = [SongUUID extractUUIDFromDictionary:acoustIdData];
-                    [SongPool addSongWithUUId:songUUID forSongId:selectedSongId];
-                }
-            }
-            // Get the song's album if there. If not it means its metadata is borken.
-            aSong = [SongPool songForSongId:selectedSongId];
-            NSString *aId = [Album albumIdForSong:aSong];
-            if (aId != nil) {
-                
-                // Get the album the song belongs to, whether it's in it or not.
-                Album *album = [AlbumCollection albumWithIdFromCollection:albumCollection albumId:aId];
-                if (album == nil) {
-                    album = [[Album alloc] initWithAlbumId:aId songIds:[NSSet setWithObject:selectedSongId]];
-                }
-                else {
-                    album = [Album albumWithAddedSong:aSong oldAlbum:album];
-                }
-                
-                albumCollection = [AlbumCollection collectionWithAddedAlbum:albumCollection album:album];
-            }
-            
-            [SongPool checkForArtForSongId:selectedSongId inAlbumCollection:albumCollection];
-        }
-         */
     });
          
 }

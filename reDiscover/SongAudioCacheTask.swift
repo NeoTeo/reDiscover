@@ -95,9 +95,11 @@ class SongAudioCacheTask : NSObject {
         ensures the song itself is cached (loaded and ready to play).
         */
         wantedCacheCount = generateWantedSongIds(context, operationBlock: operationBlock) { songId in
+            print("completion block for generateWantedSongIds.")
             // This is a handler that is passed a songId of a song that needs caching.
             // If the song was already in the old cache, copy it to the new cache.
             if let oldPlayer = oldCache[songId.hash] {
+                print("found a cached player for song id",songId.hash)
                 /**
                 Since oldCache is a deep copy of the actual cache we are effectively
                 copying the asset. We need to lock it during access because it
@@ -111,11 +113,12 @@ class SongAudioCacheTask : NSObject {
                 }
                 
             } else {
-                
+                print("No cached player found for song id",songId.hash,"so call performWhenReadyForPlayback")
                 /// Song player had not been previously cached.
                 /// Do it now and add it to the newCache when it's ready.
                 self.performWhenReadyForPlayback(songId){ songPlayer in
-                    
+                    print("This is the completion block for performWhenReadyForPlayback for song",songId.hash)
+                    print("Add the song to the new cache")
                     /// This can get called some time after
                     newCacheLock.withCriticalScope {
                         newCache[songId.hash] = songPlayer
@@ -151,13 +154,15 @@ class SongAudioCacheTask : NSObject {
         let radius          = 2
         
         var wantedCacheCount = 0
+
         // Figure out what songs to cache
         for var row = Int(selectionPos.y)-radius ; row <= Int(selectionPos.y)+radius ; row++ {
+            if row >= Int(gridDims.y) { break }
             for var col = Int(selectionPos.x)-radius ; col <= Int(selectionPos.x)+radius ; col++ {
                 
                 // Guards - Don't go lower than 0 or outside the dims of the grid.
                 if row < 0 || col < 0 { continue }
-                if row >= Int(gridDims.y) || col >= Int(gridDims.x) { continue } //break }
+                if col >= Int(gridDims.x) { break }
                 
                 let gridPos = NSPoint(x: col, y: row)
                 
@@ -167,7 +172,7 @@ class SongAudioCacheTask : NSObject {
                 }
             }
         }
-//        print("wantedCacheCount \(wantedCacheCount)")
+
         return wantedCacheCount
     }
     
@@ -184,7 +189,8 @@ class SongAudioCacheTask : NSObject {
             return
         }
         
-        let songAsset: AVURLAsset = AVURLAsset(URL: songURL, options: [AVURLAssetPreferPreciseDurationAndTimingKey : true])
+//        let songAsset: AVURLAsset = AVURLAsset(URL: songURL, options: [AVURLAssetPreferPreciseDurationAndTimingKey : true])
+        let songAsset: AVURLAsset = AVURLAsset(URL: songURL, options: nil)
         
         print("slow loading AV URL asset")
         

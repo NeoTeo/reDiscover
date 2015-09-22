@@ -206,7 +206,7 @@ public class TGCoverDisplayViewController: NSViewController, CoverDisplayViewCon
 //        print("cols \(cols) and rows \(rows), x \(x) and y \(y)")
         
         let dims = NSMakePoint(CGFloat(cols), CGFloat(rows))
-        let context = TGSongSelectionContext(selectedSongId: songId, speedVector: bogusSpeedVector, selectionPos: loc, gridDimensions: dims)
+        let context = TGSongSelectionContext(selectedSongId: songId, speedVector: bogusSpeedVector, selectionPos: loc, gridDimensions: dims, cachingMethod: .Square)
         
         NSNotificationCenter.defaultCenter().postNotificationName("userSelectedSong", object: context)
         
