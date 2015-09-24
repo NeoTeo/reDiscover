@@ -168,7 +168,7 @@ extension SongCommonMetaData {
     private static func extractMetaData(fromRawMetadata metadata: [AnyObject]) -> SongCommonMetaData {
         var title: String = "No title"
         var album: String = "No album"
-        var genre: String = "No genre"
+        let genre: String = "No genre"
         var artist: String = "No artist"
         var year: UInt = 0
         let metadata = metadata as! [AVMetadataItem]

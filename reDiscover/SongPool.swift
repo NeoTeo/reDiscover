@@ -17,7 +17,8 @@ final class SongPool : NSObject {
     
     private static var songPool: SongDictionary?
     private static var songPoolAccessQ: dispatch_queue_t?
-
+    
+    private static let songDataUpdaterOpQ = NSOperationQueue()
     
     static func durationForSongId(songId: SongID) -> NSNumber {
         return delegate!.songDurationForSongID(songId)
@@ -41,6 +42,22 @@ final class SongPool : NSObject {
         let startTime = SweetSpotController.selectedSweetSpotForSong(song)
         delegate!.requestSongPlayback(songId, withStartTimeInSeconds: startTime)
         
+    }
+    
+    static func requestUpdatedData(forSongId songId: SongIDProtocol) {
+        /// This shouldn't really be set every time we request updated data.
+        songDataUpdaterOpQ.maxConcurrentOperationCount = 1
+        songDataUpdaterOpQ.qualityOfService = .UserInitiated
+        
+        // Override all previous ops by cancelling them and adding the new one.
+        songDataUpdaterOpQ.cancelAllOperations()
+        
+        let updaterOperation = NSBlockOperation {
+            SongPool.updateMetadata(forSongId: songId)
+            //SongPool.updateFingerPrint(forSongId: songId, withFingerPrinter: FingerPrinter )
+        }
+        
+        songDataUpdaterOpQ.addOperation(updaterOperation)
     }
     
     static func updateMetadata(forSongId songId: SongIDProtocol) {
@@ -90,6 +107,11 @@ final class SongPool : NSObject {
             addSong(withChanges: [.Fingerprint : newFingerPrint], forSongId: songId)
         }
         
+    }
+    
+    static func URLForSongId(songId: SongIDProtocol) -> NSURL? {
+        guard let song = songForSongId(songId) where (song.urlString != nil) else { return nil }
+        return NSURL(string: song.urlString!)
     }
     
     static func UUIDStringForSongId(songId: SongIDProtocol) -> String? {

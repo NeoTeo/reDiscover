@@ -7,6 +7,7 @@
 //
 @import AppKit;
 
+#import "chromaprint.h"
 #import "TGFingerPrinter.h"
 
 //#import <libavcodec/avcodec.h>
@@ -60,7 +61,7 @@
 
     //id<SongIDProtocol> songID = theSong.songID;
     
-    NSURL* songURL = [_delegate URLForSongID:songId];
+    NSURL* songURL = [SongPool URLForSongId:songId];//[_delegate URLForSongID:songId];
 
     [self decodeAudioFileNew:songURL forContext:chromaprintContext ofLength:maxLength andDuration:&duration];
     // The duration returned by the decodeAudioFileNew is not very precise - only to the second.

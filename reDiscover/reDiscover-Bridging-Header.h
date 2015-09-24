@@ -18,6 +18,7 @@
 // For songUUID
 #import "TGSongProtocol.h"
 
+#import "TGFingerPrinter.h"
 //#import "NSImage+TGHashId.h"
 
 #import <CommonCrypto/CommonCrypto.h>

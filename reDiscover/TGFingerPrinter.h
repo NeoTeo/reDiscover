@@ -7,13 +7,9 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "chromaprint.h"
-//typedef void *ChromaprintContext;
+//#import "chromaprint.h"
 
-//#import "/Users/teo/Dropbox/usr/local/include/chromaprint.h"
-//#import "/Users/teo/Dropbox/usr/local/include/chromaprint.h"
 // Forward declarations.
-//@class TGSong;
 @protocol TGFingerPrinterDelegate;
 @protocol SongIDProtocol;
 @protocol SongPoolAccessProtocol;
@@ -21,37 +17,31 @@
 @protocol FingerPrinter;
 
 
-@interface TGFingerPrinter : NSObject <FingerPrinter>
+@interface TGFingerPrinter : NSObject //<FingerPrinter>
 {
-//    ChromaprintContext *chromaprintContext;
     // A serial queue for fingerprinting multiple songs.
     dispatch_queue_t fingerprintingQueue;
-    // A concurrent queue for fingerprinting multiple songs.
-//    NSOperationQueue *opQueue;
     NSMutableDictionary *fingerPrintStatus;
 }
 
-//- (nullable NSString *)fingerprintForSong:(__nonnull id<TGSong>)theSong;
-//- (__nonnull id<TGSong>)songWithFingerPrint:(__nonnull id<TGSong>)song;
 - (nullable NSString *)fingerprintForSongId:(__nonnull id<SongIDProtocol>)songId;
 
-//MARK: REFAC
+
 - (NSUInteger)fingerPrintStatusForSong:(__nonnull id<TGSong>)theSong;
 - (void)setFingerPrintStatusForSong:(__nonnull id<TGSong>)theSong toStatus:(UInt)status;
 
 #pragma clang assume_nonnull begin
-- (void)requestFingerPrintForSong:(id<SongIDProtocol>)songID withHandler:(void (^)(NSString*))fingerprintHandler;
-//- (void)requestUUIDForSongID:(id<SongIDProtocol>)songID withDuration:(int)duration andFingerPrint:(char*)theFingerprint;
-- (NSInteger)decodeAudioFile:(NSURL *)fileURL forContext:(ChromaprintContext __nonnull * __nonnull)theContext ofLength:(NSInteger)maxLength andDuration:(int *)duration;
+//- (void)requestFingerPrintForSong:(id<SongIDProtocol>)songID withHandler:(void (^)(NSString*))fingerprintHandler;
+//- (NSInteger)decodeAudioFile:(NSURL *)fileURL forContext:(ChromaprintContext __nonnull * __nonnull)theContext ofLength:(NSInteger)maxLength andDuration:(int *)duration;
 
 
-@property id<TGFingerPrinterDelegate> delegate;
-@property id<SongPoolAccessProtocol>songPoolAPI;
+//@property id<TGFingerPrinterDelegate> delegate;
+//@property id<SongPoolAccessProtocol>songPoolAPI;
 #pragma clang assume_nonnull end
 @end
 
 
-
+/*
 @protocol TGFingerPrinterDelegate <NSObject>
 @optional
 #pragma clang assume_nonnull begin
@@ -62,3 +52,4 @@
 #pragma clang assume_nonnull end
 
 @end
+*/

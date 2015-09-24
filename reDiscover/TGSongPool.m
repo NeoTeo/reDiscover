@@ -23,7 +23,8 @@
 #import "rediscover-swift.h"
 #import "TGSongPool.h"
 // The private interface declaration overrides the public one to declare conformity to the Delegate protocols.
-@interface TGSongPool () <TGFingerPrinterDelegate, SongPoolAccessProtocol>
+//@interface TGSongPool () <TGFingerPrinterDelegate, SongPoolAccessProtocol>
+@interface TGSongPool () <SongPoolAccessProtocol>
 @end
 
 // constant definitions
@@ -72,8 +73,8 @@ static int const kSongPoolStartCapacity = 250;
         //[self initBasicCovers];
         
         // Create and hook up the song fingerprinter.
-        songFingerPrinter = [[TGFingerPrinter alloc] init];
-        [songFingerPrinter setDelegate:self];
+//        songFingerPrinter = [[TGFingerPrinter alloc] init];
+//        [songFingerPrinter setDelegate:self];
         
 //        songUUIDMaker = [[UUIDMaker alloc] init];
 //        artCache = [[SongArtCache alloc] init];
@@ -949,21 +950,25 @@ static int const kSongPoolStartCapacity = 250;
     //
     // 4) Notify all done.
 
-    dispatch_async(dispatch_get_global_queue(QOS_CLASS_USER_INITIATED, 0), ^{
-        /** Consider wrapping each of these calls in nsoperations with each being dependent on
-         the success of the previous operation. Specifically, most of these rely on
-         the song having been fingerprinted which cannot happen until the song has
-         been loaded/cached.
-        */
-        [SongPool updateMetadataForSongId:selectedSongId];
-        /** The fingerprinter and subsequent functions are dependent on the audio
-        being fully loaded. We should add that dependency. */
-        [SongPool updateFingerPrintForSongId: selectedSongId withFingerPrinter: songFingerPrinter];
-        [SongPool updateRemoteDataForSongId:selectedSongId withDuration:[songAudioPlayer songDuration]];
-        albumCollection = [AlbumCollection updateWithAlbumContainingSongId:selectedSongId usingOldCollection:albumCollection];
-        [SongPool checkForArtForSongId:selectedSongId inAlbumCollection:albumCollection];
-    });
-         
+    /** Move this to an operation queue so we can cancel these as new requests arrive.
+     */
+    [SongPool requestUpdatedDataForSongId:selectedSongId];
+//    dispatch_async(dispatch_get_global_queue(QOS_CLASS_USER_INITIATED, 0), ^{
+//        /** Consider wrapping each of these calls in nsoperations with each being dependent on
+//         the success of the previous operation. Specifically, most of these rely on
+//         the song having been fingerprinted which cannot happen until the song has
+//         been loaded/cached.
+//        */
+//
+//        [SongPool updateMetadataForSongId:selectedSongId];
+//        /** The fingerprinter and subsequent functions are dependent on the audio
+//        being fully loaded. We should add that dependency. */
+//        [SongPool updateFingerPrintForSongId: selectedSongId withFingerPrinter: songFingerPrinter];
+//        [SongPool updateRemoteDataForSongId:selectedSongId withDuration:[songAudioPlayer songDuration]];
+//        albumCollection = [AlbumCollection updateWithAlbumContainingSongId:selectedSongId usingOldCollection:albumCollection];
+//        [SongPool checkForArtForSongId:selectedSongId inAlbumCollection:albumCollection];
+//    });
+    
 }
 
 /**

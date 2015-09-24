@@ -222,7 +222,10 @@ public class TGCoverDisplayViewController: NSViewController, CoverDisplayViewCon
         return nil
     }
     
-    //: Return the songId found at the position in the grid. Nil if not found.
+    /** Return the songId found at the position in the grid. Nil if not found.
+        Not that if a cover at the given grid position hasn't been mapped to a song
+        the method will return an empty optional.
+    */
     public func songIdFromGridPos(gridPos: NSPoint) -> SongIDProtocol? {
         
         // Ask the flow layout for an index given a grid position.

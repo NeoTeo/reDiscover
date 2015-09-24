@@ -100,7 +100,7 @@
     
     int32_t srCounter;
     
-    TGFingerPrinter *songFingerPrinter;
+//    TGFingerPrinter *songFingerPrinter;
     
     NSManagedObjectModel *songUserDataManagedObjectModel;
     NSManagedObjectContext *songPoolManagedContext;
