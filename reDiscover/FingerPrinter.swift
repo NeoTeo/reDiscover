@@ -8,15 +8,6 @@
 
 import Foundation
 
-//@objc
-protocol FingerPrinter {
+@objc protocol FingerPrinter {
     func fingerprint(forSongId songId: SongIDProtocol) -> String?
-}
-
-
-struct FingerPrinterWrapper : FingerPrinter {
-    static private let fingerPrinter = TGFingerPrinter()
-    func fingerprint(forSongId songId: SongIDProtocol) -> String? {
-        return fingerprint(forSongId: songId)
-    }
 }

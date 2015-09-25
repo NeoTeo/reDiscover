@@ -26,7 +26,7 @@
 #import "TGSongProtocol.h"
 //#import "TEOSongData.h"
 
-@implementation TGFingerPrinter
+@implementation TGFingerPrinter 
 
 - (id)init {
     self = [super init];

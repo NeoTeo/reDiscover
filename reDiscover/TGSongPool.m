@@ -108,7 +108,15 @@ static int const kSongPoolStartCapacity = 250;
 */
         //FIXME: Change the delegate to actually passing the artForSong method the required params.
         [SongPool setDelegate:self];
-        albumCollection = [[AlbumCollection alloc] init];
+
+        songAudioPlayer = [[TGSongAudioPlayer alloc] init];
+        [songAudioPlayer setVolume:0.2];
+        
+        /// Make sure the SongPool is set up with various instances
+        [SongPool setVarious:[[TGFingerPrinter alloc] init] audioPlayer:songAudioPlayer];
+        
+        
+        //albumCollection = [[AlbumCollection alloc] init];
         
         /// The CoverArtArchiveWebFetcher handles all comms with the remote cover art archive.
 //MARK: REFAC
@@ -148,8 +156,8 @@ static int const kSongPoolStartCapacity = 250;
         songAudioCacher = [[TGSongAudioCacher alloc] init];
         songAudioCacher.songPoolAPI = self;
         
-        songAudioPlayer = [[TGSongAudioPlayer alloc] init];
-        [songAudioPlayer setVolume:0.2];
+//        songAudioPlayer = [[TGSongAudioPlayer alloc] init];
+//        [songAudioPlayer setVolume:0.2];
     }
     
     return self;
@@ -926,13 +934,21 @@ static int const kSongPoolStartCapacity = 250;
 
 #pragma mark Caching methods
 
-/**
- Caching entrypoint. 
- This method is called with a cache context that defines the position and speed of the selection and
- is used to determine the optimal caching strategy.
- */
+/** Caching entrypoint.
+    This method is called with a cache context that defines the position and speed of the selection and
+    is used to determine the optimal caching strategy.
+     
+    The method is called on a collectionAccessQ so we need to be sure that this
+    cannot get called multiple times concurrently as that would mess up the SongPool
+    requestUpdatedDataForSongId.
+*/
+static bool debugConcurrentCheck = false;
+
 - (void)cacheWithContext:(id<SongSelectionContext>)cacheContext {
 
+    NSAssert(debugConcurrentCheck == false, @"Called before done!");
+    debugConcurrentCheck = YES;
+    
     [songAudioCacher cacheWithContext:cacheContext];
 
     id<SongIDProtocol> selectedSongId = cacheContext.selectedSongId;
@@ -953,6 +969,7 @@ static int const kSongPoolStartCapacity = 250;
     /** Move this to an operation queue so we can cancel these as new requests arrive.
      */
     [SongPool requestUpdatedDataForSongId:selectedSongId];
+    debugConcurrentCheck = NO;
 //    dispatch_async(dispatch_get_global_queue(QOS_CLASS_USER_INITIATED, 0), ^{
 //        /** Consider wrapping each of these calls in nsoperations with each being dependent on
 //         the success of the previous operation. Specifically, most of these rely on

@@ -15,10 +15,29 @@ final class SongPool : NSObject {
     // Until we've switched TGSongPool over to this class we'll use it as a delegate.
     static var delegate: SongPoolAccessProtocol?
     
+    /** I wanted the fingerPrinter to be a static protocol that I could call without
+    having to instantiate it and without having to know about a specific implementation
+    but although Swift allows static protocols you cannot call them directly; you 
+    need a specific class that conforms to the static protocol and then you can call
+    that instead. However, this means we're complected with that specific class which
+    we want to avoid.*/
+    private static var fingerPrinter: FingerPrinter?
+    //FIXME: turn these two into protocols!
+    private static var albumCollection: AlbumCollection?
+    private static var songAudioPlayer: TGSongAudioPlayer?
+    
+    
     private static var songPool: SongDictionary?
     private static var songPoolAccessQ: dispatch_queue_t?
     
     private static let songDataUpdaterOpQ = NSOperationQueue()
+    
+    static func setVarious(theFingerPrinter: FingerPrinter, audioPlayer: TGSongAudioPlayer) {
+        fingerPrinter = theFingerPrinter
+        albumCollection = AlbumCollection()
+        songAudioPlayer = audioPlayer
+    }
+    
     
     static func durationForSongId(songId: SongID) -> NSNumber {
         return delegate!.songDurationForSongID(songId)
@@ -52,12 +71,31 @@ final class SongPool : NSObject {
         // Override all previous ops by cancelling them and adding the new one.
         songDataUpdaterOpQ.cancelAllOperations()
         
-        let updaterOperation = NSBlockOperation {
-            SongPool.updateMetadata(forSongId: songId)
-            //SongPool.updateFingerPrint(forSongId: songId, withFingerPrinter: FingerPrinter )
+        let updateMetadataOp = NSBlockOperation {
+            updateMetadata(forSongId: songId)
         }
+        let fingerPrinterOp = NSBlockOperation {
+            /// If fingerPrinter is an empty optional we want it to crash.
+            updateFingerPrint(forSongId: songId, withFingerPrinter: fingerPrinter! )
+        }
+        let remoteDataOp = NSBlockOperation {
+            /// If songAudioPlayer is an empty optional we want it to crash.
+            updateRemoteData(forSongId: songId, withDuration: songAudioPlayer!.songDuration)
+        }
+        let updateAlbumOp = NSBlockOperation {
+            albumCollection = AlbumCollection.update(albumContainingSongId: songId, usingOldCollection: albumCollection!)
+        }
+        let checkArtOp = NSBlockOperation {
+            checkForArt(forSongId: songId, inAlbumCollection: albumCollection!)
+        }
+        // Make operations dependendt on each other.
+        fingerPrinterOp.addDependency(updateMetadataOp)
+        remoteDataOp.addDependency(fingerPrinterOp)
+        updateAlbumOp.addDependency(remoteDataOp)
+        checkArtOp.addDependency(updateAlbumOp)
         
-        songDataUpdaterOpQ.addOperation(updaterOperation)
+        /// Add the ops to the queue.
+        songDataUpdaterOpQ.addOperations([updateMetadataOp, fingerPrinterOp, remoteDataOp, updateAlbumOp, checkArtOp], waitUntilFinished: false)
     }
     
     static func updateMetadata(forSongId songId: SongIDProtocol) {
@@ -66,7 +104,7 @@ final class SongPool : NSObject {
         
         NSNotificationCenter.defaultCenter().postNotificationName("songMetaDataUpdated", object: songId)
     }
-
+    
     static func updateRemoteData(forSongId songId: SongIDProtocol, withDuration duration: CMTime) {
         guard let song = songForSongId(songId) else { return }
         guard let fingerprint = song.fingerPrint else { return }

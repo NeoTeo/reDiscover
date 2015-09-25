@@ -17,7 +17,7 @@
 @protocol FingerPrinter;
 
 
-@interface TGFingerPrinter : NSObject //<FingerPrinter>
+@interface TGFingerPrinter : NSObject <FingerPrinter>
 {
     // A serial queue for fingerprinting multiple songs.
     dispatch_queue_t fingerprintingQueue;
