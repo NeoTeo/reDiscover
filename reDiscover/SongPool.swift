@@ -16,11 +16,11 @@ final class SongPool : NSObject {
     static var delegate: SongPoolAccessProtocol?
     
     /** I wanted the fingerPrinter to be a static protocol that I could call without
-    having to instantiate it and without having to know about a specific implementation
-    but although Swift allows static protocols you cannot call them directly; you 
-    need a specific class that conforms to the static protocol and then you can call
-    that instead. However, this means we're complected with that specific class which
-    we want to avoid.*/
+        having to instantiate it and without having to know about a specific implementation
+        but although Swift allows static protocols you cannot call them directly; you
+        need a specific class that conforms to the static protocol and then you can call
+        that instead. However, this means we're complected with that specific class which
+        we want to avoid.*/
     private static var fingerPrinter: FingerPrinter?
     //FIXME: turn these two into protocols!
     private static var albumCollection: AlbumCollection?
@@ -32,6 +32,8 @@ final class SongPool : NSObject {
     
     private static let songDataUpdaterOpQ = NSOperationQueue()
     
+    /** Bodgy type method to set the instances of the things we haven't yet turned
+        into static classes/structs */
     static func setVarious(theFingerPrinter: FingerPrinter, audioPlayer: TGSongAudioPlayer) {
         fingerPrinter = theFingerPrinter
         albumCollection = AlbumCollection()
@@ -63,14 +65,29 @@ final class SongPool : NSObject {
         
     }
     
+    /** Set up a chain of operations each dependent on the previous that update 
+        various data associated with a song; 
+        1) Loading its embedded file metadata,
+        2) Generating an acoustic fingerprint of the song's audio,
+        3) Looking up additional data such as an UUID using the fingerprint,
+        4) Maintaining and updating the local album collection data.
+        5) Looking for cover art in a large variety of places (including a web service).
+    */
     static func requestUpdatedData(forSongId songId: SongIDProtocol) {
-        /// This shouldn't really be set every time we request updated data.
+        
+        /// Let any interested parties know we've started updating the current song.
+        NSNotificationCenter.defaultCenter().postNotificationName("songDidStartUpdating", object: songId)
+        
+        /** This shouldn't really be set every time we request updated data but
+        since this is a static class we've no init to call. */
         songDataUpdaterOpQ.maxConcurrentOperationCount = 1
         songDataUpdaterOpQ.qualityOfService = .UserInitiated
         
         // Override all previous ops by cancelling them and adding the new one.
         songDataUpdaterOpQ.cancelAllOperations()
         
+
+        /// All the calls inside the blocks are synchronous.
         let updateMetadataOp = NSBlockOperation {
             updateMetadata(forSongId: songId)
         }
@@ -88,7 +105,8 @@ final class SongPool : NSObject {
         let checkArtOp = NSBlockOperation {
             checkForArt(forSongId: songId, inAlbumCollection: albumCollection!)
         }
-        // Make operations dependendt on each other.
+        
+        // Make operations dependent on each other.
         fingerPrinterOp.addDependency(updateMetadataOp)
         remoteDataOp.addDependency(fingerPrinterOp)
         updateAlbumOp.addDependency(remoteDataOp)
@@ -99,13 +117,17 @@ final class SongPool : NSObject {
     }
     
     static func updateMetadata(forSongId songId: SongIDProtocol) {
+        
         guard let metadata = SongCommonMetaData.loadedMetaDataForSongId(songId) else { return }
+        
         addSong(withChanges: [.Metadata : metadata], forSongId: songId)
         
+        /// Let anyone listening know that we've updated the metadata for the songId.
         NSNotificationCenter.defaultCenter().postNotificationName("songMetaDataUpdated", object: songId)
     }
     
     static func updateRemoteData(forSongId songId: SongIDProtocol, withDuration duration: CMTime) {
+
         guard let song = songForSongId(songId) else { return }
         guard let fingerprint = song.fingerPrint else { return }
         
@@ -225,13 +247,11 @@ final class SongPool : NSObject {
         // Change artForSong to take a songId
         if song.artID == nil || SongArt.getArt(forArtId: song.artID!) == nil {
             if let image = SongArtFinder.findArtForSong(song, collection: collection) {
+                
                 let newArtId = SongArt.addImage(image)
-                //SongPool.addSong(withArtId: newArtId, forSongId: songId)
                 SongPool.addSong(withChanges: [.ArtId : newArtId], forSongId: songId)
             }
-        }/* else {
-            print("Image was found in art cache")
-        }*/
+        }
         
         NSNotificationCenter.defaultCenter().postNotificationName("songCoverUpdated", object: songId)
     }

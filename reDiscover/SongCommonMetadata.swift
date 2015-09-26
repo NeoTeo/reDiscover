@@ -166,21 +166,34 @@ extension SongCommonMetaData {
     }
     */
     private static func extractMetaData(fromRawMetadata metadata: [AnyObject]) -> SongCommonMetaData {
-        var title: String = "No title"
-        var album: String = "No album"
-        let genre: String = "No genre"
-        var artist: String = "No artist"
-        var year: UInt = 0
-        let metadata = metadata as! [AVMetadataItem]
+        
+        var title: String   = "No title"
+        var album: String   = "No album"
+        let genre: String   = "No genre"
+        var artist: String  = "No artist"
+        var year: UInt      = 0
+        let metadata        = metadata as! [AVMetadataItem]
 
-        let titles = AVMetadataItem.metadataItemsFromArray(metadata, withKey: AVMetadataCommonKeyTitle, keySpace:AVMetadataKeySpaceCommon)
-        let albums = AVMetadataItem.metadataItemsFromArray(metadata, withKey: AVMetadataCommonKeyAlbumName, keySpace:AVMetadataKeySpaceCommon)
-        let artists = AVMetadataItem.metadataItemsFromArray(metadata, withKey: AVMetadataCommonKeyArtist, keySpace:AVMetadataKeySpaceCommon)
-        let years = AVMetadataItem.metadataItemsFromArray(metadata, withKey: AVMetadataCommonKeyCreationDate, keySpace:AVMetadataKeySpaceCommon)
+        let titles = AVMetadataItem.metadataItemsFromArray(metadata,
+            withKey: AVMetadataCommonKeyTitle,
+            keySpace:AVMetadataKeySpaceCommon)
+        
+        let albums = AVMetadataItem.metadataItemsFromArray(metadata,
+            withKey: AVMetadataCommonKeyAlbumName,
+            keySpace:AVMetadataKeySpaceCommon)
+        
+        let artists = AVMetadataItem.metadataItemsFromArray(metadata,
+            withKey: AVMetadataCommonKeyArtist,
+            keySpace:AVMetadataKeySpaceCommon)
+        
+        let years = AVMetadataItem.metadataItemsFromArray(metadata, 
+            withKey: AVMetadataCommonKeyCreationDate,
+            keySpace:AVMetadataKeySpaceCommon)
 
         if titles.count > 0 { title = titles[0].value as! String }
         if albums.count > 0 { album = albums[0].value as! String }
         if artists.count > 0 { artist = artists[0].value as! String }
+        
         //FIXME: Beware, this can also be a string value!
         //print("YEARS: \(years)")
         if years.count > 0 && years[0].key!.isKindOfClass(NSNumber) {

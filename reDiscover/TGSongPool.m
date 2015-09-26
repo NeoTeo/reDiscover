@@ -940,7 +940,7 @@ static int const kSongPoolStartCapacity = 250;
      
     The method is called on a collectionAccessQ so we need to be sure that this
     cannot get called multiple times concurrently as that would mess up the SongPool
-    requestUpdatedDataForSongId.
+    requestUpdatedDataForSongId. Hence the debug crap.
 */
 static bool debugConcurrentCheck = false;
 
@@ -953,38 +953,9 @@ static bool debugConcurrentCheck = false;
 
     id<SongIDProtocol> selectedSongId = cacheContext.selectedSongId;
     lastRequestedSongId = selectedSongId;
-    
-    // Tell the main view controller that we've started fetching data for the selected song so it can update the UI.
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"songDidStartUpdating" object:selectedSongId];
-    // Initiate the fingerprint/UUId generation and fetching of cover art.
-    // Split this into synchronous functions called on a single separate thread:
-    // 1) Get fingerprint for the song unless already there.
-    // TGFingerprinter fingerprintForSong
-    // 2) Get UUId from fingerprint unless already there.
-    // UUIDForSong
-    // 3) Get Cover Art from UUId unless already there.
-    //
-    // 4) Notify all done.
 
-    /** Move this to an operation queue so we can cancel these as new requests arrive.
-     */
     [SongPool requestUpdatedDataForSongId:selectedSongId];
     debugConcurrentCheck = NO;
-//    dispatch_async(dispatch_get_global_queue(QOS_CLASS_USER_INITIATED, 0), ^{
-//        /** Consider wrapping each of these calls in nsoperations with each being dependent on
-//         the success of the previous operation. Specifically, most of these rely on
-//         the song having been fingerprinted which cannot happen until the song has
-//         been loaded/cached.
-//        */
-//
-//        [SongPool updateMetadataForSongId:selectedSongId];
-//        /** The fingerprinter and subsequent functions are dependent on the audio
-//        being fully loaded. We should add that dependency. */
-//        [SongPool updateFingerPrintForSongId: selectedSongId withFingerPrinter: songFingerPrinter];
-//        [SongPool updateRemoteDataForSongId:selectedSongId withDuration:[songAudioPlayer songDuration]];
-//        albumCollection = [AlbumCollection updateWithAlbumContainingSongId:selectedSongId usingOldCollection:albumCollection];
-//        [SongPool checkForArtForSongId:selectedSongId inAlbumCollection:albumCollection];
-//    });
     
 }
 
