@@ -95,6 +95,7 @@ final class SongPool : NSObject {
             /// If fingerPrinter is an empty optional we want it to crash.
             updateFingerPrint(forSongId: songId, withFingerPrinter: fingerPrinter! )
         }
+        /// This relies on the fingerprint to request the UUId from  a server.
         let remoteDataOp = NSBlockOperation {
             /// If songAudioPlayer is an empty optional we want it to crash.
             updateRemoteData(forSongId: songId, withDuration: songAudioPlayer!.songDuration)
@@ -105,15 +106,21 @@ final class SongPool : NSObject {
         let checkArtOp = NSBlockOperation {
             checkForArt(forSongId: songId, inAlbumCollection: albumCollection!)
         }
-        
-        // Make operations dependent on each other.
+        let fetchSweetspotsOp = NSBlockOperation {
+            SweetSpotServerIO.requestSweetSpotsForSongID(songId)
+        }
+
+        /// Make operations dependent on each other.
         fingerPrinterOp.addDependency(updateMetadataOp)
         remoteDataOp.addDependency(fingerPrinterOp)
         updateAlbumOp.addDependency(remoteDataOp)
         checkArtOp.addDependency(updateAlbumOp)
         
+        /// The sweetspot fetcher only depends on the fingerprint and the UUID.
+        fetchSweetspotsOp.addDependency(remoteDataOp)
+        
         /// Add the ops to the queue.
-        songDataUpdaterOpQ.addOperations([updateMetadataOp, fingerPrinterOp, remoteDataOp, updateAlbumOp, checkArtOp], waitUntilFinished: false)
+        songDataUpdaterOpQ.addOperations([updateMetadataOp, fingerPrinterOp, remoteDataOp, updateAlbumOp, checkArtOp, fetchSweetspotsOp], waitUntilFinished: false)
     }
     
     static func updateMetadata(forSongId songId: SongIDProtocol) {

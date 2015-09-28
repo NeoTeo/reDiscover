@@ -127,7 +127,7 @@ static int const kSongPoolStartCapacity = 250;
         [self setupManagedObjectContext];
         
         // The sweetSpotServerIO object handles all comms with the remote sweet spot server.
-        _sweetSpotServerIO = [[SweetSpotServerIO alloc] init];
+//        _sweetSpotServerIO = [[SweetSpotServerIO alloc] init];
         //_sweetSpotServerIO.delegate = self;
                 
         // Starting off with an empty songID cache.
@@ -625,43 +625,7 @@ static int const kSongPoolStartCapacity = 250;
     return [self songForID:songID].fingerPrint != nil;
 }
 - (void)testUploadSSForSongID:(id<SongIDProtocol>)theID {
-    [_sweetSpotServerIO uploadSweetSpotsForSongID:theID];
-}
-
-
-/** 
- This will return the "sweet spot" for the given song.
- If no local sweet spot is found a request for sweet spots is sent to the remote sweet spot server.
- @params song The song we want the sweet spot for.
- @returns The currently selected sweet spot for the given song.
-*/
-- (NSNumber *)fetchSongSweetSpot:(id<TGSong>)song {
-//- (NSNumber *)fetchSongSweetSpot:(TGSong *)song withHandler:(void (^)(NSNumber*))sweetSpotHandler {
-    // Get the song's start time in seconds.
-//    NSNumber *startTime = [song startTime];
-    //MARK: REFAC
-//    NSNumber *startTime = [NSNumber numberWithFloat:[SweetSpotControl selectedSweetSpotForSong:song]];
-        NSNumber *startTime = [SweetSpotController selectedSweetSpotForSong:song];
-    /// Request sweetspots from the sweetspot server if the song does not have a start time, has a uuid and has not
-    /// exceeded its alotted queries.
-
-    //FIXME:
-    /// Don't use the ssCheckCountdown. Only check sweetspots on app start and only for songs that don't already have any.
-    /// A manual refresh would be the way to force a check.
-    /// Also, if there's no uuid, should we send off for fingerprinting and uuid lookup or should this occur higher up the stack
-    /// and the check for uuid should opt out sooner...
-    
-    /* REFAC */
-    if (startTime == nil) {// && (song.uuid != nil) && (song.SSCheckCountdown-- == 0)) {
-        // Reset the counter.
-//        song.SSCheckCountdown = (NSUInteger)kSSCheckCounterSize;
-        TGLog(TGLOG_REFAC, @"song: %@ has uuid %@",song.songID,song.UUId);
-        //FIXME: REFAC This really ought to get called as soon as the song uuid is made.
-        [_sweetSpotServerIO requestSweetSpotsForSongID:song.songID];
-    }
-    //*/
-    
-    return startTime;
+    [SweetSpotServerIO uploadSweetSpotsForSongID:theID];
 }
 
 
@@ -893,7 +857,7 @@ static int const kSongPoolStartCapacity = 250;
     [self saveContext:NO];
     
     // uploadedSweetSpots save
-    [_sweetSpotServerIO storeUploadedSweetSpotsDictionary];
+    [SweetSpotServerIO storeUploadedSweetSpotsDictionary];
     
     return;
 }
@@ -1006,11 +970,12 @@ static bool debugConcurrentCheck = false;
             
             id<TGSong> song = [self songForID:songID];
 
-            // If there's no start time, check the sweet spot server for one. If one is found set the startTime to it.
+            /** If there's no start time, check the sweet spot server for one. 
+                If one is found set the startTime to it, else set it to the beginning. */
             NSNumber* startTime = time;
             if (startTime == nil) {
                 // At this point we really ought to make sure we have a song uuid generated from the fingerprint.
-                startTime = [self fetchSongSweetSpot:song];
+                startTime = [SweetSpotController selectedSweetSpotForSong:song];
                 if (startTime == nil) {
                     startTime = [NSNumber numberWithDouble:0.0];
                 }

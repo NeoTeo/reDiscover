@@ -27,28 +27,26 @@ class SweetSpotServerIO: NSObject {
     // Should this be lazy?
     
     // The location of the SweetSpotServer. For now it's just localhost.
-    let hostNameAndPort = "localhost:6969"
+    private static let hostNameAndPort = "localhost:6969"
     
-    var uploadedSweetSpots: Dictionary<String,UploadedSSData> = [String:UploadedSSData]()
-    var uploadedSweetSpotsMOC: NSManagedObjectContext?
+    private static var uploadedSweetSpots: Dictionary<String,UploadedSSData> = [String:UploadedSSData]()
+    private static var uploadedSweetSpotsMOC: NSManagedObjectContext?
     
-    override init() {
-        // Start an asynchronous operation queue
-//        opQueue = NSOperationQueue()
-
-        super.init()
-        
-        
-        setupUploadedSweetSpotsMOC()
-        initUploadedSweetSpots()
-    }
+//    override init() {
+//
+//        super.init()
+//        
+//        
+//        setupUploadedSweetSpotsMOC()
+//        initUploadedSweetSpots()
+//    }
     
     /**
     REFACTOR - This needs to work for a static class
     
     Set up the Core Data persistent store for sweet spots that have already been uploaded to the server.
     */
-    func setupUploadedSweetSpotsMOC() {
+    static func setupUploadedSweetSpotsMOC() {
         var error: NSError?
         
         if  let modelURL = NSBundle.mainBundle().URLForResource("uploadedSS", withExtension: "momd"),
@@ -73,7 +71,7 @@ class SweetSpotServerIO: NSObject {
     }
     
     
-    func initUploadedSweetSpots() {
+    static func initUploadedSweetSpots() {
 
         let fetchRequest = NSFetchRequest(entityName: "UploadedSSData")
 //MARK: Enable this when the wipwip work is done
@@ -117,11 +115,15 @@ class SweetSpotServerIO: NSObject {
   
     }
     
+    static func initMOC() {
+        setupUploadedSweetSpotsMOC()
+        initUploadedSweetSpots()
+    }
     
-    func storeUploadedSweetSpotsDictionary() {
+    static func storeUploadedSweetSpotsDictionary() {
         if uploadedSweetSpotsMOC == nil {
-            print("ERROR: uploaded sweet spots managed object context is nil.")
-            return
+            initMOC()
+            assert(uploadedSweetSpotsMOC != nil, "Error: no sweetspot MOC")
         }
         
         if uploadedSweetSpotsMOC!.hasChanges {
@@ -138,7 +140,7 @@ class SweetSpotServerIO: NSObject {
     }
     
     
-    func sweetSpotHasBeenUploaded(theSS: Double, theSongID: SongIDProtocol) -> Bool {
+    static func sweetSpotHasBeenUploaded(theSS: Double, theSongID: SongIDProtocol) -> Bool {
 //        if  let songUUID = delegate?.UUIDStringForSongID(theSongID),
         if let songUUID = SongUUID.getUUIDForSongId(theSongID),
             let ssData = uploadedSweetSpots[songUUID] as UploadedSSData?,
@@ -150,7 +152,7 @@ class SweetSpotServerIO: NSObject {
     }
     
     //MARK: Below here belongs in the sweetspotserver class
-    func uploadSweetSpotsForSongID(songID: SongIDProtocol) -> Bool {
+    static func uploadSweetSpotsForSongID(songID: SongIDProtocol) -> Bool {
         // First get the song's uuid
 //        let songUUID = delegate?.UUIDStringForSongID(songID)
         guard let songUUID = SongUUID.getUUIDForSongId(songID) else {
@@ -237,15 +239,14 @@ class SweetSpotServerIO: NSObject {
     closure is called - eg 4) make a new song with the song we get from the id which
     will contain the sweet spots added in step 3 and the new meta data.
     */
-    func requestSweetSpotsForSongID(songID: SongIDProtocol) -> NSArray? {
+    static func requestSweetSpotsForSongID(songID: SongIDProtocol) -> NSArray? {
 
         guard let songUUID = SongUUID.getUUIDForSongId(songID) else { return nil }
         guard let theURL = NSURL(string: "http://\(hostNameAndPort)/lookup?songUUID=\(songUUID.utf8)") else { return nil }
-        
+
         let request = NSURLRequest(URL: theURL)
         let task = NSURLSession.sharedSession().dataTaskWithRequest(request) { (data, response, error) in
-//        NSURLConnection.sendAsynchronousRequest(theRequest, queue: opQueue!, completionHandler: {
-//                (response: NSURLResponse?, data: NSData?, error: NSError?) -> Void in
+            
             guard let song = SongPool.songForSongId(songID) else { return }
             if data != nil {
                 do {
@@ -271,18 +272,19 @@ class SweetSpotServerIO: NSObject {
                                     for ss in serverSweetSpots {
                                         songSS!.insert(ss)
                                     }
-                                    //let newSong = SweetSpotController.songWithSweetSpots(songSS!, forSong: song)
-                                    //SongPool.addSong(newSong)
                                     newSSSet = songSS
                                 } else {
-//                                    let newSSSet = Set<SweetSpot>(serverSweetSpots)
-                                    //let newSong = SweetSpotController.songWithSweetSpots(newSSSet, forSong: song)
-                                    //SongPool.addSong(newSong)
                                     newSSSet = Set<SweetSpot>(serverSweetSpots)
                                 }
-                                SongPool.addSong(withChanges: [.SweetSpots : newSSSet!], forSongId: songID)
-                                // Set the first sweet spot to be the active one.
-    //                            self.delegate?.setActiveSweetSpotIndex(0, forSongID: songID)
+                                
+                                /// If a sweet spot is already selected, use it
+                                /// otherwise pick the first from the new set.
+                                var newSelectedSS = song.selectedSweetSpot
+                                if newSelectedSS == nil {
+                                    newSelectedSS = newSSSet!.first
+                                }
+                                
+                                SongPool.addSong(withChanges: [.SweetSpots : newSSSet!, .SelectedSS : newSelectedSS!], forSongId: songID)
                             }
                         }
                     }
@@ -292,6 +294,7 @@ class SweetSpotServerIO: NSObject {
                 }
             }
         }
+
         task.resume()
         return nil;
     }

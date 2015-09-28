@@ -145,7 +145,7 @@
 @property NSManagedObjectContext*   TEOmanagedObjectContext;
 @property NSDictionary*             TEOSongDataDictionary;
 
-@property SweetSpotServerIO* sweetSpotServerIO;
+//@property SweetSpotServerIO* sweetSpotServerIO;
 
 @property NSFileManager*    sharedFileManager;
 
