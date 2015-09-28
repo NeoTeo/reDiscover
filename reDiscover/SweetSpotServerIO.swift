@@ -285,6 +285,9 @@ class SweetSpotServerIO: NSObject {
                                 }
                                 
                                 SongPool.addSong(withChanges: [.SweetSpots : newSSSet!, .SelectedSS : newSelectedSS!], forSongId: songID)
+                                
+                                // Let any listeners know we've updated the sweetspots of songID
+                                NSNotificationCenter.defaultCenter().postNotificationName("SweetSpotsUpdated", object: songID)
                             }
                         }
                     }

@@ -113,14 +113,21 @@ final class SongPool : NSObject {
         /// Make operations dependent on each other.
         fingerPrinterOp.addDependency(updateMetadataOp)
         remoteDataOp.addDependency(fingerPrinterOp)
+
+        /// The sweetspot fetcher and album op depend on the fingerprint and the UUID.
+        fetchSweetspotsOp.addDependency(remoteDataOp)
         updateAlbumOp.addDependency(remoteDataOp)
+        
         checkArtOp.addDependency(updateAlbumOp)
         
-        /// The sweetspot fetcher only depends on the fingerprint and the UUID.
-        fetchSweetspotsOp.addDependency(remoteDataOp)
         
         /// Add the ops to the queue.
-        songDataUpdaterOpQ.addOperations([updateMetadataOp, fingerPrinterOp, remoteDataOp, updateAlbumOp, checkArtOp, fetchSweetspotsOp], waitUntilFinished: false)
+        songDataUpdaterOpQ.addOperations([  updateMetadataOp,
+                                            fingerPrinterOp,
+                                            remoteDataOp,
+                                            updateAlbumOp,
+                                            checkArtOp,
+                                            fetchSweetspotsOp], waitUntilFinished: false)
     }
     
     static func updateMetadata(forSongId songId: SongIDProtocol) {

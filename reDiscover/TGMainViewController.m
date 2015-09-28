@@ -395,7 +395,7 @@
     NSSize butDims = NSMakeSize(30, 30);
     NSRect butFrame = NSMakeRect(mPos.x-butDims.width/2, mPos.y-butDims.height/2, butDims.width, butDims.height);
 
-    [tmp toggleTimelinePopoverRelativeToBounds:butFrame ofView:self.view];
+    //[tmp toggleTimelinePopoverRelativeToBounds:butFrame ofView:self.view];
 }
 
 #pragma mark -
@@ -649,7 +649,7 @@
     // Let the timelinecontroller know that we've changed song.
     // (would a song change be better signalled as a global notification?)
     //MARK: wipEv change this to a notification
-    [_songGridController.songTimelineController setCurrentSongID:songID];
+    //[_songGridController.songTimelineController setCurrentSongID:songID];
 }
 
 /* REFAC

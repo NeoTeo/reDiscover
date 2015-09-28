@@ -25,7 +25,7 @@ public protocol CoverDisplayViewController {
 //    }
 //}
 
-public class TGCoverDisplayViewController: NSViewController, CoverDisplayViewController, NSCollectionViewDelegate, NSCollectionViewDelegateFlowLayout {
+public class TGCoverDisplayViewController: NSViewController, CoverDisplayViewController, NSCollectionViewDelegate, NSCollectionViewDelegateFlowLayout, TimelinePopoverDelegateProtocol {
     
     @IBOutlet weak var coverCollectionView: CoverCollectionView!
     
@@ -36,8 +36,8 @@ public class TGCoverDisplayViewController: NSViewController, CoverDisplayViewCon
     private var currentTrackingArea: NSTrackingArea?
     private var currentIdxPath: NSIndexPath?
     private var songUIController: TGSongUIPopupController?
-//    private var songTimelineController: SongTimelinePopover?
-    public var songTimelineController: TGSongTimelineViewController?
+    public var songTimelineController: TimelinePopover?
+//    public var songTimelineController: TGSongTimelineViewController?
     
     private var collectionAccessQ: dispatch_queue_t = dispatch_queue_create("collectionAccessQ", DISPATCH_QUEUE_SERIAL)
     
@@ -83,8 +83,9 @@ public class TGCoverDisplayViewController: NSViewController, CoverDisplayViewCon
     }
     
     func initializeTimelinePopover() {
-        songTimelineController = TGSongTimelineViewController(nibName: "TGSongTimelineView", bundle: nil)
-//        songTimelineController = SongTimelinePopover(nibName: "TGSongTimelineView", bundle: nil)
+        //songTimelineController = TGSongTimelineViewController(nibName: "TGSongTimelineView", bundle: nil)
+        songTimelineController = TimelinePopover(nibName: "TGSongTimelineView", bundle: nil)
+        
         songTimelineController!.delegate = self
         
         // make sure timeline controller's views are loaded
@@ -340,7 +341,8 @@ extension TGCoverDisplayViewController: TGSongUIPopupProtocol {
         // <ake a new frame.
         let popupBounds = NSMakeRect(location.x, location.y, bDims.width, bDims.height)
 
-        songTimelineController?.toggleTimelinePopoverRelativeToBounds(popupBounds, ofView: self.view)
+//        songTimelineController?.toggleTimelinePopoverRelativeToBounds(popupBounds, ofView: self.view)
+    songTimelineController?.togglePopoverRelativeToBounds(popupBounds, ofView: self.view)
     }
     
     func songUIPlusButtonWasPressed() {

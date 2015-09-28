@@ -23,10 +23,7 @@ class SweetSpotController : NSObject {
     }
     
     static func selectedSweetSpotForSong(song: TGSong) -> SweetSpot? {
-        // Swift doesn't know what is inside the NSNumber, so we tell it.
-//        if let sss = song.selectedSweetSpot {
-//            return Float(sss);
-//        }
+
         return song.selectedSweetSpot
         // Add request to sweetSpotServerIO (once rewritten) to check the server at some appropriate interval for
         // sweet spots for this song. The server may receive them at any time.
@@ -34,21 +31,20 @@ class SweetSpotController : NSObject {
     }
 
     static func sweetSpots(forSongId songId: SongIDProtocol) -> Set<SweetSpot>? {
-        guard let song = SongPool.songForSongId(songId) else { return nil }
         
+        guard let song = SongPool.songForSongId(songId) else { return nil }
+
         return song.sweetSpots
     }
 
-//    static func sweetSpotsForSong(song: TGSong) -> [SweetSpot]? {
     static func sweetSpots(forSong song: TGSong) -> Set<SweetSpot>? {
         return song.sweetSpots //as? [SweetSpot]
     }
-
-//    static func songWithSweetSpots(sweetSpots: [SweetSpot], forSong song: TGSong) -> TGSong {
+/*
     static func songWithSweetSpots(sweetSpots: Set<SweetSpot>, forSong song: TGSong) -> TGSong {
         return Song(songId: song.songID, metadata: song.metadata, urlString: song.urlString, sweetSpots: sweetSpots, fingerPrint: song.fingerPrint, selectedSS: song.selectedSweetSpot, releases: song.songReleases, artId: song.artID, UUId: song.UUId, RelId: song.RelId)
     }
-    // Used to be makeSweetSpotAtTime:
+    
     /**
     Make a copy of the given song with a sweet spot set to the given time.
     
@@ -59,27 +55,6 @@ class SweetSpotController : NSObject {
     static func songWithSelectedSweetSpot(song: TGSong, atTime startTime: SweetSpot) -> TGSong {
         return Song(songId: song.songID, metadata: song.metadata, urlString: song.urlString, sweetSpots: song.sweetSpots, fingerPrint: song.fingerPrint, selectedSS: startTime, releases: song.songReleases, artId: song.artID, UUId: song.UUId, RelId: song.RelId)
         
-//        return TGSong(  metadata: song.metadata,
-//                        urlString: song.urlString,
-//                        sweetSpots: song.sweetSpots,
-//                        fingerPrint: song.fingerPrint,
-//                        selectedSS: startTime,
-//                        releases: nil,
-//                        artId: song.artID)
-    }
-  /*
-    // replacement for TGSong storeSelectedSweetSpot
-    static func songWithAddedSweetSpot(song: TGSong, withSweetSpot sweetSpot: SweetSpot) -> TGSong {
-
-        var tmpSpots = SweetSpotControl.sweetSpotsForSong(song)
-        
-        if tmpSpots != nil {
-            tmpSpots!.append(sweetSpot)
-        } else {
-            tmpSpots = [sweetSpot]
-        }
-
-        return Song(songId: song.songID, metadata: song.metadata, urlString: song.urlString, sweetSpots: tmpSpots!, fingerPrint: song.fingerPrint, selectedSS: song.selectedSweetSpot, releases: song.songReleases, artId: song.artID, UUId: song.UUId, RelId: song.RelId)
     }
 */
 }

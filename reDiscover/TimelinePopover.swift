@@ -9,35 +9,35 @@
 import Foundation
 
 protocol TimelinePopoverDelegateProtocol {
-    //unc userCreatedNewSweetSpot
+    //func userCreatedNewSweetSpot
 }
 
-class SongTimelinePopover : NSViewController, TimelinePopoverDelegateProtocol {
+public class TimelinePopover : NSViewController {//, TimelinePopoverDelegateProtocol {
     
     var delegate: TimelinePopoverDelegateProtocol?
     
-    @IBOutlet var thePopover: NSPopover?
+    @IBOutlet var thePopover: NSPopover!
     @IBOutlet var timelineBar: NSSlider?
     
     override init?(nibName nibNameOrNil: String?, bundle nibBundleOrNil: NSBundle?) {
         super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
     }
     
-    required init?(coder: NSCoder) {
+    public required init?(coder: NSCoder) {
         super.init(coder: coder)
     }
 }
 
-extension SongTimelinePopover {
+extension TimelinePopover {
     
-    override func awakeFromNib() {
+    public override func awakeFromNib() {
         
         let trackingRect = self.view.frame
         let trackingArea = NSTrackingArea(rect: trackingRect,options: [.MouseEnteredAndExited, .ActiveInKeyWindow], owner: timelineBar?.cell, userInfo: nil)
         
         self.view.addTrackingArea(trackingArea)
         
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "updateTimelineSweetSpots:", name: "SweetspotsUpdated", object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "updateTimelineSweetSpots:", name: "SweetSpotsUpdated", object: nil)
     }
     
     func updateTimelineSweetSpots(notification: NSNotification) {
