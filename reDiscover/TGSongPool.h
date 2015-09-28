@@ -24,11 +24,12 @@
 @class AlbumCollection;
 
 // protocol forward declaration
-@protocol SongGridAccessProtocol;
+//@protocol SongGridAccessProtocol;
 @protocol TGMainViewControllerDelegate;
 @protocol TGSong;
 @protocol SongSelectionContext;
 @protocol SongPoolAccessProtocol;
+@protocol CoverDisplayViewController;
 
 // The public interface declaration doesn't implement the TGSongDelegate. The private interface declaration in the .m will.
 /**
@@ -126,8 +127,9 @@
 @property TGStack* requestedSongStack;
 @property CoverArtArchiveWebFetcher* coverArtWebFetcher;
 
-@property id<TGMainViewControllerDelegate> delegate;
-@property id<SongGridAccessProtocol> songGridAccessAPI;
+//@property id<TGMainViewControllerDelegate> delegate;
+@property id<CoverDisplayViewController>coverDisplayAccessAPI;
+//@property id<SongGridAccessProtocol> songGridAccessAPI;
 
 //// Holds the art associated with the songs. Songs will hold indices into the art array.
 //@property NSMutableArray *artArray;

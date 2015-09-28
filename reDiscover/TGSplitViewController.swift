@@ -8,7 +8,7 @@
 
 import Foundation
 
-final public class TGSplitViewController: NSSplitViewController, TGMainViewControllerDelegate {
+final public class TGSplitViewController: NSSplitViewController {//, TGMainViewControllerDelegate {
  
     @IBOutlet weak var playlistSplitViewItem: NSSplitViewItem!
     @IBOutlet weak var coverCollectionSVI: NSSplitViewItem!
@@ -43,8 +43,9 @@ extension TGSplitViewController {
         
         theSongPool = TGSongPool()
         theSongPool!.loadFromURL(theURL)
+        theSongPool!.coverDisplayAccessAPI = coversPanelCtrlr
         //FIXME: I'd rather this was done by making CoverViewController provide the functionality as class methods.
-        theSongPool!.delegate = self
+//        theSongPool!.delegate = self
         
         registerNotifications()
         
