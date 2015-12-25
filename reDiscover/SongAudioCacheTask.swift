@@ -156,9 +156,9 @@ class SongAudioCacheTask : NSObject {
         var wantedCacheCount = 0
 
         // Figure out what songs to cache
-        for var row = Int(selectionPos.y)-radius ; row <= Int(selectionPos.y)+radius ; row++ {
+        for var row = Int(selectionPos.y)-radius ; row <= Int(selectionPos.y)+radius ; row += 1 {
             if row >= Int(gridDims.y) { break }
-            for var col = Int(selectionPos.x)-radius ; col <= Int(selectionPos.x)+radius ; col++ {
+            for var col = Int(selectionPos.x)-radius ; col <= Int(selectionPos.x)+radius ; col += 1 {
                 
                 // Guards - Don't go lower than 0 or outside the dims of the grid.
                 if row < 0 || col < 0 { continue }
@@ -168,7 +168,7 @@ class SongAudioCacheTask : NSObject {
                 
                 if let songId = songPoolAPI?.songIdFromGridPos(gridPos) {
                     
-                    wantedCacheCount++
+                    wantedCacheCount += 1
                     idHandler(songId)
                 }
             }

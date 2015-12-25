@@ -50,12 +50,12 @@ class AcoustIDWebService: NSObject {
                 var releaseScore = 0
                 //println("Release: \(release)")
                 if let title = release["title"] as? String {
-                    if title.lowercaseString == song.metadata?.album.lowercaseString { releaseScore++ }
+                    if title.lowercaseString == song.metadata?.album.lowercaseString { releaseScore += 1 }
                 }
                 
                 //FIXME: For now just hardwired to US. Make it check for the user's country or some selected setting.
                 if let country = release["country"] as? String {
-                    if country.lowercaseString == "us" { releaseScore++ }
+                    if country.lowercaseString == "us" { releaseScore += 1 }
                 }
                 
                 if let date = release["date"] as? NSDictionary,

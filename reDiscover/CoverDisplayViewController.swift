@@ -259,7 +259,7 @@ public class TGCoverDisplayViewController: NSViewController, CoverDisplayViewCon
 
                 // The next empty index is the same as the songCount (number of songs in collection).
                 let newIndexPath = NSIndexPath(forItem: self.songCount, inSection: 0)
-                self.songCount++
+                self.songCount += 1
                 
                 // insertItemsAtIndexPaths wants a set, so we make a set.
                 let indexPaths: Set<NSIndexPath> = [newIndexPath]

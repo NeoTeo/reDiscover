@@ -71,7 +71,7 @@ final class TGSongAudioCacher : NSObject {
         
         /// Cancel any pending operations in the cachingOpQueue.
         cachingOpQueue.cancelAllOperations()
-        debugId++
+        debugId += 1
         let operationBlock = NSBlockOperation()
 
         operationBlock.addExecutionBlock(){
