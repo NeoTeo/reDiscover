@@ -21,8 +21,8 @@
 		AB43ACF91C4963F8001F258F /* SongFingerprinter.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB43ACF81C4963F8001F258F /* SongFingerprinter.swift */; };
 		AB43ACFB1C49642E001F258F /* TGSongFingerprinter.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB43ACFA1C49642E001F258F /* TGSongFingerprinter.swift */; };
 		AB43ACFF1C4966D9001F258F /* DelMe.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB43ACFE1C4966D9001F258F /* DelMe.swift */; };
-		AB43AD001C497184001F258F /* Accelerate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AB85BC641875B2F600670905 /* Accelerate.framework */; };
-		AB43AD021C4971B3001F258F /* libchromaprint.a in Frameworks */ = {isa = PBXBuildFile; fileRef = AB43AD011C4971B3001F258F /* libchromaprint.a */; };
+		AB43AD041C49AB6A001F258F /* Accelerate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AB43AD031C49AB6A001F258F /* Accelerate.framework */; };
+		AB43AD061C49ABC9001F258F /* libchromaprint.a in Frameworks */ = {isa = PBXBuildFile; fileRef = AB43AD051C49ABC9001F258F /* libchromaprint.a */; };
 		AB4529381A88EAF300A6B15A /* TGSongUIPopupController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB4529361A88EAF300A6B15A /* TGSongUIPopupController.swift */; };
 		AB4529391A88EAF300A6B15A /* TGSongUIPopupController.xib in Resources */ = {isa = PBXBuildFile; fileRef = AB4529371A88EAF300A6B15A /* TGSongUIPopupController.xib */; };
 		AB4529661A895B4100A6B15A /* TGAppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB4529651A895B4100A6B15A /* TGAppDelegate.swift */; };
@@ -106,19 +106,13 @@
 		AB01DB03194F499900368693 /* TGStack.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TGStack.m; path = ../TGStack.m; sourceTree = "<group>"; };
 		AB01DB05194F49B800368693 /* TGStack.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = TGStack.h; path = ../TGStack.h; sourceTree = "<group>"; };
 		AB095A7A1B2F12CD009201A2 /* CoverImageView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CoverImageView.swift; sourceTree = "<group>"; };
-		AB0D052D1889E06400F08566 /* libiconv.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libiconv.dylib; path = usr/lib/libiconv.dylib; sourceTree = SDKROOT; };
 		AB1BC13E1976C91E003F02B9 /* ScrollingTextView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScrollingTextView.swift; sourceTree = "<group>"; };
 		AB1D28B11B5006AA006C7FFF /* TGTimelineTransformer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TGTimelineTransformer.swift; sourceTree = "<group>"; };
-		AB241FD21889767500E8E03F /* libbz2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libbz2.dylib; path = usr/lib/libbz2.dylib; sourceTree = SDKROOT; };
-		AB241FD41889774800E8E03F /* CoreFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreFoundation.framework; path = System/Library/Frameworks/CoreFoundation.framework; sourceTree = SDKROOT; };
-		AB241FD61889776700E8E03F /* VideoDecodeAcceleration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = VideoDecodeAcceleration.framework; path = System/Library/Frameworks/VideoDecodeAcceleration.framework; sourceTree = SDKROOT; };
-		AB241FD9188977AB00E8E03F /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
 		AB301E7419050C830093B654 /* TEOSongData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TEOSongData.h; sourceTree = "<group>"; };
 		AB301E7519050C830093B654 /* TEOSongData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TEOSongData.m; sourceTree = "<group>"; };
 		AB37EC1D1B25B77C00C94597 /* TimelinePopover.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TimelinePopover.swift; sourceTree = "<group>"; };
 		AB3991E91AEA8B9F00381CAC /* DebugDisplay.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DebugDisplay.swift; sourceTree = "<group>"; };
 		AB3991EA1AEA8B9F00381CAC /* DebugDisplay.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = DebugDisplay.xib; sourceTree = "<group>"; };
-		AB3E97481876F94700BECC09 /* libchromaprint.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libchromaprint.a; path = ../chromaprint/build/Release/libchromaprint.a; sourceTree = "<group>"; };
 		AB3E9750187C20D600BECC09 /* TGPlaylistCellView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TGPlaylistCellView.h; sourceTree = "<group>"; };
 		AB3E9751187C20D600BECC09 /* TGPlaylistCellView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TGPlaylistCellView.m; sourceTree = "<group>"; };
 		AB3FF56119C1D3CE00D6C5EF /* UploadedSSData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UploadedSSData.h; sourceTree = "<group>"; };
@@ -127,11 +121,11 @@
 		AB43ACF81C4963F8001F258F /* SongFingerprinter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SongFingerprinter.swift; sourceTree = "<group>"; };
 		AB43ACFA1C49642E001F258F /* TGSongFingerprinter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TGSongFingerprinter.swift; sourceTree = "<group>"; };
 		AB43ACFE1C4966D9001F258F /* DelMe.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DelMe.swift; sourceTree = "<group>"; };
-		AB43AD011C4971B3001F258F /* libchromaprint.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libchromaprint.a; path = ChromaprintLib/libchromaprint.a; sourceTree = "<group>"; };
+		AB43AD031C49AB6A001F258F /* Accelerate.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accelerate.framework; path = System/Library/Frameworks/Accelerate.framework; sourceTree = SDKROOT; };
+		AB43AD051C49ABC9001F258F /* libchromaprint.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libchromaprint.a; path = ChromaprintLib/libchromaprint.a; sourceTree = "<group>"; };
 		AB4529361A88EAF300A6B15A /* TGSongUIPopupController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TGSongUIPopupController.swift; sourceTree = "<group>"; };
 		AB4529371A88EAF300A6B15A /* TGSongUIPopupController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = TGSongUIPopupController.xib; sourceTree = "<group>"; };
 		AB4529651A895B4100A6B15A /* TGAppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TGAppDelegate.swift; sourceTree = "<group>"; };
-		AB4E078E19B618260052EEC0 /* QTKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QTKit.framework; path = System/Library/Frameworks/QTKit.framework; sourceTree = SDKROOT; };
 		AB5C9AA81BA99B30006B74A6 /* SongAudioCacheTask.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SongAudioCacheTask.swift; sourceTree = "<group>"; };
 		AB5E5DDB1B3BF96F007C6307 /* SongSelectionContext.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SongSelectionContext.swift; sourceTree = "<group>"; };
 		AB638F871ADD1A2100D4C8FA /* TGSong.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TGSong.swift; sourceTree = "<group>"; };
@@ -146,17 +140,12 @@
 		AB7FFB6219589D1E002D1E63 /* DropView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DropView.swift; sourceTree = "<group>"; };
 		AB8182D71A5D5DAA000939F1 /* TGSongAudioCacher.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TGSongAudioCacher.swift; sourceTree = "<group>"; };
 		AB85BBD31875AACF00670905 /* reDiscover.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = reDiscover.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		AB85BBD61875AACF00670905 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
-		AB85BBD91875AACF00670905 /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
-		AB85BBDA1875AACF00670905 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
-		AB85BBDB1875AACF00670905 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		AB85BBDE1875AACF00670905 /* reDiscover-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "reDiscover-Info.plist"; sourceTree = "<group>"; };
 		AB85BBE01875AACF00670905 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		AB85BBE21875AACF00670905 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		AB85BBE41875AACF00670905 /* reDiscover-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "reDiscover-Prefix.pch"; sourceTree = "<group>"; };
 		AB85BBE61875AACF00670905 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.rtf; name = en; path = en.lproj/Credits.rtf; sourceTree = "<group>"; };
 		AB85BBEE1875AACF00670905 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
-		AB85BBF51875AACF00670905 /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
 		AB85BC111875AB5200670905 /* TGGridCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TGGridCell.h; sourceTree = "<group>"; };
 		AB85BC121875AB5200670905 /* TGGridCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TGGridCell.m; sourceTree = "<group>"; };
 		AB85BC131875AB5200670905 /* TGIdleTimer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TGIdleTimer.h; sourceTree = "<group>"; };
@@ -190,13 +179,8 @@
 		AB85BC331875AB5200670905 /* TGTimelineBarView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TGTimelineBarView.m; sourceTree = "<group>"; };
 		AB85BC341875AB5200670905 /* TGTimelineSliderCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TGTimelineSliderCell.h; sourceTree = "<group>"; };
 		AB85BC351875AB5200670905 /* TGTimelineSliderCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TGTimelineSliderCell.m; sourceTree = "<group>"; };
-		AB85BC571875ACE200670905 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
-		AB85BC591875AD1500670905 /* CoreMedia.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMedia.framework; path = System/Library/Frameworks/CoreMedia.framework; sourceTree = SDKROOT; };
-		AB85BC5B1875AD3B00670905 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		AB85BC5D1875AD7A00670905 /* TGSongGridScrollView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TGSongGridScrollView.h; sourceTree = "<group>"; };
 		AB85BC5E1875AD7A00670905 /* TGSongGridScrollView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TGSongGridScrollView.m; sourceTree = "<group>"; };
-		AB85BC621875B2E000670905 /* libc++.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libc++.dylib"; path = "usr/lib/libc++.dylib"; sourceTree = SDKROOT; };
-		AB85BC641875B2F600670905 /* Accelerate.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accelerate.framework; path = System/Library/Frameworks/Accelerate.framework; sourceTree = SDKROOT; };
 		AB8B54771B4D1C3000C44485 /* CoverCollectionView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CoverCollectionView.swift; sourceTree = "<group>"; };
 		AB9479D51B419FF2004B7C82 /* Dictionary+Utils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Dictionary+Utils.swift"; sourceTree = "<group>"; };
 		AB9811CE1B87672B00BA75DD /* SongPoolAccessProtocol.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SongPoolAccessProtocol.swift; path = ../SongPoolAccessProtocol.swift; sourceTree = "<group>"; };
@@ -221,7 +205,6 @@
 		ABE49BB81AE50F48008A28B0 /* AlbumCollection.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AlbumCollection.swift; path = ../AlbumCollection.swift; sourceTree = "<group>"; };
 		ABE49BBA1AE50FC2008A28B0 /* Album.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Album.swift; sourceTree = "<group>"; };
 		ABEC263C1951C6F200A57CE3 /* Main.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Main.storyboard; sourceTree = "<group>"; };
-		ABEC79D11B020E2800CD9F6C /* RealmSwift.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = RealmSwift.framework; sourceTree = "<group>"; };
 		ABEC79D51B02402200CD9F6C /* SongMetaDataStore.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SongMetaDataStore.swift; sourceTree = "<group>"; };
 		ABEC79D71B0242E100CD9F6C /* SongMetaData.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SongMetaData.swift; sourceTree = "<group>"; };
 		ABEC79D91B0243BC00CD9F6C /* SongMetaDataStoreLocal.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SongMetaDataStoreLocal.swift; sourceTree = "<group>"; };
@@ -237,7 +220,6 @@
 		ABFC8EB119C19C630007ECCB /* uploadedSS.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = uploadedSS.plist; sourceTree = "<group>"; };
 		ABFC8EB419C1BCE90007ECCB /* uploadedSS.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = uploadedSS.xcdatamodel; sourceTree = "<group>"; };
 		ABFD9DD31AD4217700718631 /* SongUUID.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SongUUID.swift; path = ../SongUUID.swift; sourceTree = "<group>"; };
-		D0D5D6C8D57F5E3B4457F53C /* Pods.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -245,8 +227,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				AB43AD021C4971B3001F258F /* libchromaprint.a in Frameworks */,
-				AB43AD001C497184001F258F /* Accelerate.framework in Frameworks */,
+				AB43AD061C49ABC9001F258F /* libchromaprint.a in Frameworks */,
+				AB43AD041C49AB6A001F258F /* Accelerate.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -365,6 +347,16 @@
 			name = "song timeline";
 			sourceTree = "<group>";
 		};
+		AB43AD071C49ABD2001F258F /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				AB43AD051C49ABC9001F258F /* libchromaprint.a */,
+				AB43AD031C49AB6A001F258F /* Accelerate.framework */,
+			);
+			name = Frameworks;
+			path = ..;
+			sourceTree = "<group>";
+		};
 		AB725A3D1AD922BC003E94E6 /* SongArt */ = {
 			isa = PBXGroup;
 			children = (
@@ -404,7 +396,6 @@
 				ABEC79D91B0243BC00CD9F6C /* SongMetaDataStoreLocal.swift */,
 				ABEC79DB1B025B8D00CD9F6C /* SongGeneratedMetaData.swift */,
 				AB85BBDC1875AACF00670905 /* reDiscover */,
-				AB85BBD51875AACF00670905 /* Frameworks */,
 				AB85BBD41875AACF00670905 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -415,41 +406,6 @@
 				AB85BBD31875AACF00670905 /* reDiscover.app */,
 			);
 			name = Products;
-			sourceTree = "<group>";
-		};
-		AB85BBD51875AACF00670905 /* Frameworks */ = {
-			isa = PBXGroup;
-			children = (
-				AB43AD011C4971B3001F258F /* libchromaprint.a */,
-				ABEC79D11B020E2800CD9F6C /* RealmSwift.framework */,
-				AB4E078E19B618260052EEC0 /* QTKit.framework */,
-				AB0D052D1889E06400F08566 /* libiconv.dylib */,
-				AB241FD9188977AB00E8E03F /* libz.dylib */,
-				AB241FD61889776700E8E03F /* VideoDecodeAcceleration.framework */,
-				AB241FD41889774800E8E03F /* CoreFoundation.framework */,
-				AB241FD21889767500E8E03F /* libbz2.dylib */,
-				AB3E97481876F94700BECC09 /* libchromaprint.a */,
-				AB85BC641875B2F600670905 /* Accelerate.framework */,
-				AB85BC621875B2E000670905 /* libc++.dylib */,
-				AB85BC5B1875AD3B00670905 /* QuartzCore.framework */,
-				AB85BC591875AD1500670905 /* CoreMedia.framework */,
-				AB85BC571875ACE200670905 /* AVFoundation.framework */,
-				AB85BBD61875AACF00670905 /* Cocoa.framework */,
-				AB85BBF51875AACF00670905 /* XCTest.framework */,
-				AB85BBD81875AACF00670905 /* Other Frameworks */,
-				D0D5D6C8D57F5E3B4457F53C /* Pods.framework */,
-			);
-			name = Frameworks;
-			sourceTree = "<group>";
-		};
-		AB85BBD81875AACF00670905 /* Other Frameworks */ = {
-			isa = PBXGroup;
-			children = (
-				AB85BBD91875AACF00670905 /* AppKit.framework */,
-				AB85BBDA1875AACF00670905 /* CoreData.framework */,
-				AB85BBDB1875AACF00670905 /* Foundation.framework */,
-			);
-			name = "Other Frameworks";
 			sourceTree = "<group>";
 		};
 		AB85BBDC1875AACF00670905 /* reDiscover */ = {
@@ -475,6 +431,7 @@
 		AB85BBDD1875AACF00670905 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				AB43AD071C49ABD2001F258F /* Frameworks */,
 				AB71279919407C8D0002B1F8 /* reDiscover-Bridging-Header.h */,
 				AB43ACF41C4962DD001F258F /* dummy.cpp */,
 				ABFC8EB119C19C630007ECCB /* uploadedSS.plist */,
@@ -780,7 +737,6 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",
-					"/Users/teo/source/Apple/OSX/rediscover/RealmSwift.framework/**",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "reDiscover/reDiscover-Prefix.pch";
@@ -820,7 +776,6 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",
-					"/Users/teo/source/Apple/OSX/rediscover/RealmSwift.framework/**",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "reDiscover/reDiscover-Prefix.pch";
