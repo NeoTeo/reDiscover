@@ -18,6 +18,10 @@
 		AB3991EC1AEA8B9F00381CAC /* DebugDisplay.xib in Resources */ = {isa = PBXBuildFile; fileRef = AB3991EA1AEA8B9F00381CAC /* DebugDisplay.xib */; };
 		AB3E9752187C20D600BECC09 /* TGPlaylistCellView.m in Sources */ = {isa = PBXBuildFile; fileRef = AB3E9751187C20D600BECC09 /* TGPlaylistCellView.m */; };
 		AB3FF56319C1D3CE00D6C5EF /* UploadedSSData.m in Sources */ = {isa = PBXBuildFile; fileRef = AB3FF56219C1D3CE00D6C5EF /* UploadedSSData.m */; };
+		AB43ACF51C4962DD001F258F /* dummy.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AB43ACF41C4962DD001F258F /* dummy.cpp */; };
+		AB43ACF91C4963F8001F258F /* SongFingerprinter.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB43ACF81C4963F8001F258F /* SongFingerprinter.swift */; };
+		AB43ACFB1C49642E001F258F /* TGSongFingerprinter.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB43ACFA1C49642E001F258F /* TGSongFingerprinter.swift */; };
+		AB43ACFF1C4966D9001F258F /* DelMe.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB43ACFE1C4966D9001F258F /* DelMe.swift */; };
 		AB4529381A88EAF300A6B15A /* TGSongUIPopupController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB4529361A88EAF300A6B15A /* TGSongUIPopupController.swift */; };
 		AB4529391A88EAF300A6B15A /* TGSongUIPopupController.xib in Resources */ = {isa = PBXBuildFile; fileRef = AB4529371A88EAF300A6B15A /* TGSongUIPopupController.xib */; };
 		AB4529661A895B4100A6B15A /* TGAppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB4529651A895B4100A6B15A /* TGAppDelegate.swift */; };
@@ -27,7 +31,7 @@
 		AB4E079019B618360052EEC0 /* libc++.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = AB85BC621875B2E000670905 /* libc++.dylib */; };
 		AB4E079119B618640052EEC0 /* libbz2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = AB241FD21889767500E8E03F /* libbz2.dylib */; };
 		AB4E079219B61AEC0052EEC0 /* VideoDecodeAcceleration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AB241FD61889776700E8E03F /* VideoDecodeAcceleration.framework */; };
-		AB5C9AA91BA99B30006B74A6 /* SongAudioCacheTask.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB5C9AA81BA99B30006B74A6 /* SongAudioCacheTask.swift */; settings = {ASSET_TAGS = (); }; };
+		AB5C9AA91BA99B30006B74A6 /* SongAudioCacheTask.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB5C9AA81BA99B30006B74A6 /* SongAudioCacheTask.swift */; };
 		AB5E5DDC1B3BF96F007C6307 /* SongSelectionContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB5E5DDB1B3BF96F007C6307 /* SongSelectionContext.swift */; };
 		AB638F881ADD1A2100D4C8FA /* TGSong.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB638F871ADD1A2100D4C8FA /* TGSong.swift */; };
 		AB663FD81A8AA14700E50596 /* TGSongGridView.xib in Resources */ = {isa = PBXBuildFile; fileRef = AB663FD71A8AA14700E50596 /* TGSongGridView.xib */; };
@@ -44,7 +48,6 @@
 		AB85BBE31875AACF00670905 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = AB85BBE21875AACF00670905 /* main.m */; };
 		AB85BBE71875AACF00670905 /* Credits.rtf in Resources */ = {isa = PBXBuildFile; fileRef = AB85BBE51875AACF00670905 /* Credits.rtf */; };
 		AB85BBEF1875AACF00670905 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = AB85BBEE1875AACF00670905 /* Images.xcassets */; };
-		AB85BC3E1875AB5200670905 /* TGFingerPrinter.m in Sources */ = {isa = PBXBuildFile; fileRef = AB85BC101875AB5200670905 /* TGFingerPrinter.m */; };
 		AB85BC3F1875AB5200670905 /* TGGridCell.m in Sources */ = {isa = PBXBuildFile; fileRef = AB85BC121875AB5200670905 /* TGGridCell.m */; };
 		AB85BC401875AB5200670905 /* TGIdleTimer.m in Sources */ = {isa = PBXBuildFile; fileRef = AB85BC141875AB5200670905 /* TGIdleTimer.m */; };
 		AB85BC421875AB5200670905 /* TGMainViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = AB85BC171875AB5200670905 /* TGMainViewController.m */; };
@@ -70,7 +73,7 @@
 		AB8B54781B4D1C3000C44485 /* CoverCollectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB8B54771B4D1C3000C44485 /* CoverCollectionView.swift */; };
 		AB9479D61B419FF2004B7C82 /* Dictionary+Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB9479D51B419FF2004B7C82 /* Dictionary+Utils.swift */; };
 		AB9811CF1B87672B00BA75DD /* SongPoolAccessProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB9811CE1B87672B00BA75DD /* SongPoolAccessProtocol.swift */; };
-		ABA6D21D1B8CAE13000CEB8C /* NSLock+Operations.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABA6D21C1B8CAE13000CEB8C /* NSLock+Operations.swift */; settings = {ASSET_TAGS = (); }; };
+		ABA6D21D1B8CAE13000CEB8C /* NSLock+Operations.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABA6D21C1B8CAE13000CEB8C /* NSLock+Operations.swift */; };
 		ABAF47821B38590600F13528 /* CoverImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABAF47811B38590600F13528 /* CoverImage.swift */; };
 		ABB2B6621ADEB38F004F9F87 /* NSImage+HashId.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABB2B6611ADEB38F004F9F87 /* NSImage+HashId.swift */; };
 		ABB33FF019C72C3800439A5E /* SweetSpotServerIO.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABB33FEF19C72C3800439A5E /* SweetSpotServerIO.swift */; };
@@ -102,7 +105,7 @@
 		ABF767451AEE82B4007C7A12 /* LocalFileIO.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABF767441AEE82B4007C7A12 /* LocalFileIO.swift */; };
 		ABFB8D681B4F1400006519B0 /* TGSplitViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABFB8D671B4F1400006519B0 /* TGSplitViewController.swift */; };
 		ABFC06C41B04A27C00649BBD /* CoreDataStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABFC06C31B04A27C00649BBD /* CoreDataStore.swift */; };
-		ABFC8B4B1B7CEEC500A92019 /* FingerPrinter.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABFC8B4A1B7CEEC500A92019 /* FingerPrinter.swift */; };
+		ABFC8B4B1B7CEEC500A92019 /* Fingerprinter.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABFC8B4A1B7CEEC500A92019 /* Fingerprinter.swift */; };
 		ABFC8EB219C19C630007ECCB /* uploadedSS.plist in Resources */ = {isa = PBXBuildFile; fileRef = ABFC8EB119C19C630007ECCB /* uploadedSS.plist */; };
 		ABFC8EB519C1BCE90007ECCB /* uploadedSS.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = ABFC8EB319C1BCE90007ECCB /* uploadedSS.xcdatamodeld */; };
 		ABFD9DD41AD4217700718631 /* SongUUID.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABFD9DD31AD4217700718631 /* SongUUID.swift */; };
@@ -130,6 +133,10 @@
 		AB3E9751187C20D600BECC09 /* TGPlaylistCellView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TGPlaylistCellView.m; sourceTree = "<group>"; };
 		AB3FF56119C1D3CE00D6C5EF /* UploadedSSData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UploadedSSData.h; sourceTree = "<group>"; };
 		AB3FF56219C1D3CE00D6C5EF /* UploadedSSData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UploadedSSData.m; sourceTree = "<group>"; };
+		AB43ACF41C4962DD001F258F /* dummy.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = dummy.cpp; sourceTree = "<group>"; };
+		AB43ACF81C4963F8001F258F /* SongFingerprinter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SongFingerprinter.swift; sourceTree = "<group>"; };
+		AB43ACFA1C49642E001F258F /* TGSongFingerprinter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TGSongFingerprinter.swift; sourceTree = "<group>"; };
+		AB43ACFE1C4966D9001F258F /* DelMe.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DelMe.swift; sourceTree = "<group>"; };
 		AB4529361A88EAF300A6B15A /* TGSongUIPopupController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TGSongUIPopupController.swift; sourceTree = "<group>"; };
 		AB4529371A88EAF300A6B15A /* TGSongUIPopupController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = TGSongUIPopupController.xib; sourceTree = "<group>"; };
 		AB4529651A895B4100A6B15A /* TGAppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TGAppDelegate.swift; sourceTree = "<group>"; };
@@ -159,8 +166,6 @@
 		AB85BBE61875AACF00670905 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.rtf; name = en; path = en.lproj/Credits.rtf; sourceTree = "<group>"; };
 		AB85BBEE1875AACF00670905 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		AB85BBF51875AACF00670905 /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
-		AB85BC0F1875AB5200670905 /* TGFingerPrinter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TGFingerPrinter.h; sourceTree = "<group>"; };
-		AB85BC101875AB5200670905 /* TGFingerPrinter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TGFingerPrinter.m; sourceTree = "<group>"; };
 		AB85BC111875AB5200670905 /* TGGridCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TGGridCell.h; sourceTree = "<group>"; };
 		AB85BC121875AB5200670905 /* TGGridCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TGGridCell.m; sourceTree = "<group>"; };
 		AB85BC131875AB5200670905 /* TGIdleTimer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TGIdleTimer.h; sourceTree = "<group>"; };
@@ -237,7 +242,7 @@
 		ABF767441AEE82B4007C7A12 /* LocalFileIO.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocalFileIO.swift; sourceTree = "<group>"; };
 		ABFB8D671B4F1400006519B0 /* TGSplitViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TGSplitViewController.swift; sourceTree = "<group>"; };
 		ABFC06C31B04A27C00649BBD /* CoreDataStore.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CoreDataStore.swift; sourceTree = "<group>"; };
-		ABFC8B4A1B7CEEC500A92019 /* FingerPrinter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FingerPrinter.swift; sourceTree = "<group>"; };
+		ABFC8B4A1B7CEEC500A92019 /* Fingerprinter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Fingerprinter.swift; sourceTree = "<group>"; };
 		ABFC8EB119C19C630007ECCB /* uploadedSS.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = uploadedSS.plist; sourceTree = "<group>"; };
 		ABFC8EB419C1BCE90007ECCB /* uploadedSS.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = uploadedSS.xcdatamodel; sourceTree = "<group>"; };
 		ABFD9DD31AD4217700718631 /* SongUUID.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SongUUID.swift; path = ../SongUUID.swift; sourceTree = "<group>"; };
@@ -316,6 +321,9 @@
 		AB3E974C187BFD8700BECC09 /* Common */ = {
 			isa = PBXGroup;
 			children = (
+				ABFC8B4A1B7CEEC500A92019 /* Fingerprinter.swift */,
+				AB43ACF81C4963F8001F258F /* SongFingerprinter.swift */,
+				AB43ACFA1C49642E001F258F /* TGSongFingerprinter.swift */,
 				ABFD9DD31AD4217700718631 /* SongUUID.swift */,
 				AB9811CE1B87672B00BA75DD /* SongPoolAccessProtocol.swift */,
 				ABC474511B7DFC9700BCB40C /* SongIDProtocol.swift */,
@@ -326,9 +334,6 @@
 				AB8182D71A5D5DAA000939F1 /* TGSongAudioCacher.swift */,
 				AB01DB03194F499900368693 /* TGStack.m */,
 				AB01DB05194F49B800368693 /* TGStack.h */,
-				ABFC8B4A1B7CEEC500A92019 /* FingerPrinter.swift */,
-				AB85BC0F1875AB5200670905 /* TGFingerPrinter.h */,
-				AB85BC101875AB5200670905 /* TGFingerPrinter.m */,
 				AB71279919407C8D0002B1F8 /* reDiscover-Bridging-Header.h */,
 				AB85BC2E1875AB5200670905 /* TGSongUserData.h */,
 				AB85BC2F1875AB5200670905 /* TGSongUserData.m */,
@@ -345,6 +350,7 @@
 				ABCA1E221B00EAE9003CFB93 /* LocalAudioFileStore.swift */,
 				ABCB68E818FD57E4009CF277 /* TEOSong.xcdatamodeld */,
 				ABFC8EB319C1BCE90007ECCB /* uploadedSS.xcdatamodeld */,
+				AB43ACFE1C4966D9001F258F /* DelMe.swift */,
 			);
 			name = Common;
 			sourceTree = "<group>";
@@ -498,6 +504,7 @@
 		AB85BBDD1875AACF00670905 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				AB43ACF41C4962DD001F258F /* dummy.cpp */,
 				ABFC8EB119C19C630007ECCB /* uploadedSS.plist */,
 				AB85BBDE1875AACF00670905 /* reDiscover-Info.plist */,
 				AB85BBDF1875AACF00670905 /* InfoPlist.strings */,
@@ -671,6 +678,7 @@
 				ABEC79D81B0242E100CD9F6C /* SongMetaData.swift in Sources */,
 				ABF767451AEE82B4007C7A12 /* LocalFileIO.swift in Sources */,
 				AB3FF56319C1D3CE00D6C5EF /* UploadedSSData.m in Sources */,
+				AB43ACF51C4962DD001F258F /* dummy.cpp in Sources */,
 				AB095A7B1B2F12CD009201A2 /* CoverImageView.swift in Sources */,
 				ABE49BB71AE50991008A28B0 /* Hasher.swift in Sources */,
 				ABB33FF019C72C3800439A5E /* SweetSpotServerIO.swift in Sources */,
@@ -699,6 +707,7 @@
 				AB301E7619050C830093B654 /* TEOSongData.m in Sources */,
 				ABBFC0E41B4AA55F00323C6D /* NSResponder+printResponderChain.swift in Sources */,
 				ABEC79DA1B0243BC00CD9F6C /* SongMetaDataStoreLocal.swift in Sources */,
+				AB43ACFB1C49642E001F258F /* TGSongFingerprinter.swift in Sources */,
 				AB85BC511875AB5200670905 /* TGSweetSpotControl.m in Sources */,
 				ABFB8D681B4F1400006519B0 /* TGSplitViewController.swift in Sources */,
 				AB3E9752187C20D600BECC09 /* TGPlaylistCellView.m in Sources */,
@@ -711,6 +720,7 @@
 				AB85BC401875AB5200670905 /* TGIdleTimer.m in Sources */,
 				AB1BC13F1976C91E003F02B9 /* ScrollingTextView.swift in Sources */,
 				ABED8E321AB72F4F005B1403 /* SongCommonMetadata.swift in Sources */,
+				AB43ACF91C4963F8001F258F /* SongFingerprinter.swift in Sources */,
 				ABBFC0E61B4AA5BC00323C6D /* NSCollectionViewFlowLayout+colsAndRows.swift in Sources */,
 				ABDBA6871AF0F5A60069CFFB /* AcoustIDWebService.swift in Sources */,
 				ABEC79D61B02402200CD9F6C /* SongMetaDataStore.swift in Sources */,
@@ -721,8 +731,7 @@
 				AB85BC4F1875AB5200670905 /* TGSongUIViewController.m in Sources */,
 				AB85BC4B1875AB5200670905 /* TGSongInfoViewController.m in Sources */,
 				AB725A3C1AD92256003E94E6 /* SongArtCache.swift in Sources */,
-				AB85BC3E1875AB5200670905 /* TGFingerPrinter.m in Sources */,
-				ABFC8B4B1B7CEEC500A92019 /* FingerPrinter.swift in Sources */,
+				ABFC8B4B1B7CEEC500A92019 /* Fingerprinter.swift in Sources */,
 				ABAF47821B38590600F13528 /* CoverImage.swift in Sources */,
 				AB4529661A895B4100A6B15A /* TGAppDelegate.swift in Sources */,
 				ABA6D21D1B8CAE13000CEB8C /* NSLock+Operations.swift in Sources */,
@@ -738,6 +747,7 @@
 				ABFD9DD41AD4217700718631 /* SongUUID.swift in Sources */,
 				ABCA1E211B00E988003CFB93 /* AudioFileStore.swift in Sources */,
 				ABB2B6621ADEB38F004F9F87 /* NSImage+HashId.swift in Sources */,
+				AB43ACFF1C4966D9001F258F /* DelMe.swift in Sources */,
 				AB9811CF1B87672B00BA75DD /* SongPoolAccessProtocol.swift in Sources */,
 				AB9479D61B419FF2004B7C82 /* Dictionary+Utils.swift in Sources */,
 			);
@@ -797,6 +807,8 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = "$(PROJECT_DIR)/ChromaprintLib";
+				LIBRARY_SEARCH_PATHS = "$(PROJECT_DIR)/ChromaprintLib";
 				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = macosx;
@@ -830,6 +842,8 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = "$(PROJECT_DIR)/ChromaprintLib";
+				LIBRARY_SEARCH_PATHS = "$(PROJECT_DIR)/ChromaprintLib";
 				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				SDKROOT = macosx;
 				USER_HEADER_SEARCH_PATHS = "../**";

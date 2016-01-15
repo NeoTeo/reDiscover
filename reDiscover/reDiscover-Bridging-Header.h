@@ -18,7 +18,7 @@
 // For songUUID
 #import "TGSongProtocol.h"
 
-#import "TGFingerPrinter.h"
+//#import "TGFingerPrinter.h"
 //#import "NSImage+TGHashId.h"
 
 #import <CommonCrypto/CommonCrypto.h>
@@ -29,3 +29,5 @@
 //TMP - delete this and just use TimelinePopover instead once this works.
 #import "TGSongTimelineViewController.h"
 #import "TGSongInfoViewController.h"
+
+#import <chromaprint.h>

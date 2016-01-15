@@ -12,7 +12,7 @@
 #import "TGSongGridViewController.h"
 #import "TGMainViewController.h"
 
-#import "TGFingerPrinter.h"
+//#import "TGFingerPrinter.h"
 
 #import "TGSongUserData.h"
 #import "TEOSongData.h"
@@ -113,8 +113,8 @@ static int const kSongPoolStartCapacity = 250;
         [songAudioPlayer setVolume:0.2];
         
         /// Make sure the SongPool is set up with various instances
-        [SongPool setVarious:[[TGFingerPrinter alloc] init] audioPlayer:songAudioPlayer];
-        
+//        [SongPool setVarious:[[TGFingerPrinter alloc] init] audioPlayer:songAudioPlayer];
+        [SongPool setVarious: songAudioPlayer];
         
         //albumCollection = [[AlbumCollection alloc] init];
         

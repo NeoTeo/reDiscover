@@ -21,7 +21,7 @@ final class SongPool : NSObject {
         need a specific class that conforms to the static protocol and then you can call
         that instead. However, this means we're complected with that specific class which
         we want to avoid.*/
-    private static var fingerPrinter: FingerPrinter?
+//    private static var fingerPrinter: OldFingerPrinter?
     //FIXME: turn these two into protocols!
     private static var albumCollection: AlbumCollection?
     private static var songAudioPlayer: TGSongAudioPlayer?
@@ -34,8 +34,8 @@ final class SongPool : NSObject {
     
     /** Bodgy type method to set the instances of the things we haven't yet turned
         into static classes/structs */
-    static func setVarious(theFingerPrinter: FingerPrinter, audioPlayer: TGSongAudioPlayer) {
-        fingerPrinter = theFingerPrinter
+//    static func setVarious(theFingerPrinter: OldFingerPrinter, audioPlayer: TGSongAudioPlayer) {
+    static func setVarious( audioPlayer: TGSongAudioPlayer) {
         albumCollection = AlbumCollection()
         songAudioPlayer = audioPlayer
     }
@@ -93,7 +93,8 @@ final class SongPool : NSObject {
         }
         let fingerPrinterOp = NSBlockOperation {
             /// If fingerPrinter is an empty optional we want it to crash.
-            updateFingerPrint(forSongId: songId, withFingerPrinter: fingerPrinter! )
+//            updateFingerPrint(forSongId: songId, withFingerPrinter: fingerPrinter! )
+            updateFingerPrint(forSongId: songId )
         }
         /// This relies on the fingerprint to request the UUId from  a server.
         let remoteDataOp = NSBlockOperation {
@@ -172,13 +173,18 @@ final class SongPool : NSObject {
 //        return album
 //    }
     
-    static func updateFingerPrint(forSongId songId: SongIDProtocol, withFingerPrinter fingerPrinter: FingerPrinter) {
+//    static func updateFingerPrint(forSongId songId: SongIDProtocol, withFingerPrinter fingerPrinter: OldFingerPrinter) {
+    static func updateFingerPrint(forSongId songId: SongIDProtocol) {
         guard let song = songForSongId(songId) else { return }
         
         // If there is no fingerprint, generate one sync'ly - this can be slow!
+//        if song.fingerPrint == nil,
+//            let newFingerPrint = fingerPrinter.fingerprint(forSongId: songId) {
+//            addSong(withChanges: [.Fingerprint : newFingerPrint], forSongId: songId)
+//        }
         if song.fingerPrint == nil,
-            let newFingerPrint = fingerPrinter.fingerprint(forSongId: songId) {
-            addSong(withChanges: [.Fingerprint : newFingerPrint], forSongId: songId)
+            let newFingerPrint = TGSongFingerprinter.fingerprint(forSongId: songId) {
+                addSong(withChanges: [.Fingerprint : newFingerPrint], forSongId: songId)
         }
         
     }
