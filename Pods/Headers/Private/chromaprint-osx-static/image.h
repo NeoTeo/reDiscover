@@ -1,1 +1,0 @@
-../../../chromaprint-osx-static/src/image.h

@@ -1,1 +1,0 @@
-../../../chromaprint-osx-static/src/fingerprinter_configuration.h

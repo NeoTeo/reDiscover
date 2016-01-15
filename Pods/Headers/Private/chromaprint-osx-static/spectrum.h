@@ -1,1 +1,0 @@
-../../../chromaprint-osx-static/src/spectrum.h

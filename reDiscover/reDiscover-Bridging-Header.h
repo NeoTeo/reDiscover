@@ -12,14 +12,8 @@
 // SweetSpotServerIO needs to know about the UploadedSSData class
 #import "UploadedSSData.h"
 
-// Fingerprinter needs to know about chromaprint.
-//#import "chromaprint.h"
-
 // For songUUID
 #import "TGSongProtocol.h"
-
-//#import "TGFingerPrinter.h"
-//#import "NSImage+TGHashId.h"
 
 #import <CommonCrypto/CommonCrypto.h>
 

@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		0903AF1F52096CF9A58651C4 /* Pods.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D0D5D6C8D57F5E3B4457F53C /* Pods.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 		AB01DB04194F499900368693 /* TGStack.m in Sources */ = {isa = PBXBuildFile; fileRef = AB01DB03194F499900368693 /* TGStack.m */; };
 		AB095A7B1B2F12CD009201A2 /* CoverImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB095A7A1B2F12CD009201A2 /* CoverImageView.swift */; };
 		AB1BC13F1976C91E003F02B9 /* ScrollingTextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB1BC13E1976C91E003F02B9 /* ScrollingTextView.swift */; };
@@ -22,6 +21,8 @@
 		AB43ACF91C4963F8001F258F /* SongFingerprinter.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB43ACF81C4963F8001F258F /* SongFingerprinter.swift */; };
 		AB43ACFB1C49642E001F258F /* TGSongFingerprinter.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB43ACFA1C49642E001F258F /* TGSongFingerprinter.swift */; };
 		AB43ACFF1C4966D9001F258F /* DelMe.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB43ACFE1C4966D9001F258F /* DelMe.swift */; };
+		AB43AD001C497184001F258F /* Accelerate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AB85BC641875B2F600670905 /* Accelerate.framework */; };
+		AB43AD021C4971B3001F258F /* libchromaprint.a in Frameworks */ = {isa = PBXBuildFile; fileRef = AB43AD011C4971B3001F258F /* libchromaprint.a */; };
 		AB4529381A88EAF300A6B15A /* TGSongUIPopupController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB4529361A88EAF300A6B15A /* TGSongUIPopupController.swift */; };
 		AB4529391A88EAF300A6B15A /* TGSongUIPopupController.xib in Resources */ = {isa = PBXBuildFile; fileRef = AB4529371A88EAF300A6B15A /* TGSongUIPopupController.xib */; };
 		AB4529661A895B4100A6B15A /* TGAppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB4529651A895B4100A6B15A /* TGAppDelegate.swift */; };
@@ -30,7 +31,6 @@
 		AB4E078F19B618260052EEC0 /* QTKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AB4E078E19B618260052EEC0 /* QTKit.framework */; };
 		AB4E079019B618360052EEC0 /* libc++.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = AB85BC621875B2E000670905 /* libc++.dylib */; };
 		AB4E079119B618640052EEC0 /* libbz2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = AB241FD21889767500E8E03F /* libbz2.dylib */; };
-		AB4E079219B61AEC0052EEC0 /* VideoDecodeAcceleration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AB241FD61889776700E8E03F /* VideoDecodeAcceleration.framework */; };
 		AB5C9AA91BA99B30006B74A6 /* SongAudioCacheTask.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB5C9AA81BA99B30006B74A6 /* SongAudioCacheTask.swift */; };
 		AB5E5DDC1B3BF96F007C6307 /* SongSelectionContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB5E5DDB1B3BF96F007C6307 /* SongSelectionContext.swift */; };
 		AB638F881ADD1A2100D4C8FA /* TGSong.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB638F871ADD1A2100D4C8FA /* TGSong.swift */; };
@@ -112,7 +112,6 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		519B18FEE8576990A26C4BDB /* Pods.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.debug.xcconfig; path = "Pods/Target Support Files/Pods/Pods.debug.xcconfig"; sourceTree = "<group>"; };
 		AB01DB03194F499900368693 /* TGStack.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TGStack.m; path = ../TGStack.m; sourceTree = "<group>"; };
 		AB01DB05194F49B800368693 /* TGStack.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = TGStack.h; path = ../TGStack.h; sourceTree = "<group>"; };
 		AB095A7A1B2F12CD009201A2 /* CoverImageView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CoverImageView.swift; sourceTree = "<group>"; };
@@ -137,6 +136,7 @@
 		AB43ACF81C4963F8001F258F /* SongFingerprinter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SongFingerprinter.swift; sourceTree = "<group>"; };
 		AB43ACFA1C49642E001F258F /* TGSongFingerprinter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TGSongFingerprinter.swift; sourceTree = "<group>"; };
 		AB43ACFE1C4966D9001F258F /* DelMe.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DelMe.swift; sourceTree = "<group>"; };
+		AB43AD011C4971B3001F258F /* libchromaprint.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libchromaprint.a; path = ChromaprintLib/libchromaprint.a; sourceTree = "<group>"; };
 		AB4529361A88EAF300A6B15A /* TGSongUIPopupController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TGSongUIPopupController.swift; sourceTree = "<group>"; };
 		AB4529371A88EAF300A6B15A /* TGSongUIPopupController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = TGSongUIPopupController.xib; sourceTree = "<group>"; };
 		AB4529651A895B4100A6B15A /* TGAppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TGAppDelegate.swift; sourceTree = "<group>"; };
@@ -246,7 +246,6 @@
 		ABFC8EB119C19C630007ECCB /* uploadedSS.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = uploadedSS.plist; sourceTree = "<group>"; };
 		ABFC8EB419C1BCE90007ECCB /* uploadedSS.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = uploadedSS.xcdatamodel; sourceTree = "<group>"; };
 		ABFD9DD31AD4217700718631 /* SongUUID.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SongUUID.swift; path = ../SongUUID.swift; sourceTree = "<group>"; };
-		B0A41F8D7A62E0163971460D /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.release.xcconfig; path = "Pods/Target Support Files/Pods/Pods.release.xcconfig"; sourceTree = "<group>"; };
 		D0D5D6C8D57F5E3B4457F53C /* Pods.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -255,7 +254,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				AB4E079219B61AEC0052EEC0 /* VideoDecodeAcceleration.framework in Frameworks */,
+				AB43AD021C4971B3001F258F /* libchromaprint.a in Frameworks */,
+				AB43AD001C497184001F258F /* Accelerate.framework in Frameworks */,
 				AB4E079119B618640052EEC0 /* libbz2.dylib in Frameworks */,
 				AB4E079019B618360052EEC0 /* libc++.dylib in Frameworks */,
 				AB4E078F19B618260052EEC0 /* QTKit.framework in Frameworks */,
@@ -265,22 +265,12 @@
 				AB85BC5A1875AD1500670905 /* CoreMedia.framework in Frameworks */,
 				AB85BC581875ACE200670905 /* AVFoundation.framework in Frameworks */,
 				AB85BBD71875AACF00670905 /* Cocoa.framework in Frameworks */,
-				0903AF1F52096CF9A58651C4 /* Pods.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		A45421905E820B9A3DA9306F /* Pods */ = {
-			isa = PBXGroup;
-			children = (
-				519B18FEE8576990A26C4BDB /* Pods.debug.xcconfig */,
-				B0A41F8D7A62E0163971460D /* Pods.release.xcconfig */,
-			);
-			name = Pods;
-			sourceTree = "<group>";
-		};
 		AB3E974A187BFC7E00BECC09 /* App start view */ = {
 			isa = PBXGroup;
 			children = (
@@ -334,7 +324,6 @@
 				AB8182D71A5D5DAA000939F1 /* TGSongAudioCacher.swift */,
 				AB01DB03194F499900368693 /* TGStack.m */,
 				AB01DB05194F49B800368693 /* TGStack.h */,
-				AB71279919407C8D0002B1F8 /* reDiscover-Bridging-Header.h */,
 				AB85BC2E1875AB5200670905 /* TGSongUserData.h */,
 				AB85BC2F1875AB5200670905 /* TGSongUserData.m */,
 				AB85BC131875AB5200670905 /* TGIdleTimer.h */,
@@ -435,7 +424,6 @@
 				AB85BBDC1875AACF00670905 /* reDiscover */,
 				AB85BBD51875AACF00670905 /* Frameworks */,
 				AB85BBD41875AACF00670905 /* Products */,
-				A45421905E820B9A3DA9306F /* Pods */,
 			);
 			sourceTree = "<group>";
 		};
@@ -450,6 +438,7 @@
 		AB85BBD51875AACF00670905 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				AB43AD011C4971B3001F258F /* libchromaprint.a */,
 				ABEC79D11B020E2800CD9F6C /* RealmSwift.framework */,
 				AB4E078E19B618260052EEC0 /* QTKit.framework */,
 				AB0D052D1889E06400F08566 /* libiconv.dylib */,
@@ -504,6 +493,7 @@
 		AB85BBDD1875AACF00670905 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				AB71279919407C8D0002B1F8 /* reDiscover-Bridging-Header.h */,
 				AB43ACF41C4962DD001F258F /* dummy.cpp */,
 				ABFC8EB119C19C630007ECCB /* uploadedSS.plist */,
 				AB85BBDE1875AACF00670905 /* reDiscover-Info.plist */,
@@ -551,12 +541,9 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = AB85BC041875AACF00670905 /* Build configuration list for PBXNativeTarget "reDiscover" */;
 			buildPhases = (
-				61BF372820FC442D98F5DCBA /* Check Pods Manifest.lock */,
 				AB85BBCF1875AACF00670905 /* Sources */,
 				AB85BBD01875AACF00670905 /* Frameworks */,
 				AB85BBD11875AACF00670905 /* Resources */,
-				4841F6531A6146ABB5CC567B /* Copy Pods Resources */,
-				FC1D6E6D5E8A1EB66D88C071 /* Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -617,54 +604,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
-
-/* Begin PBXShellScriptBuildPhase section */
-		4841F6531A6146ABB5CC567B /* Copy Pods Resources */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "Copy Pods Resources";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods/Pods-resources.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		61BF372820FC442D98F5DCBA /* Check Pods Manifest.lock */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "Check Pods Manifest.lock";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
-			showEnvVarsInLog = 0;
-		};
-		FC1D6E6D5E8A1EB66D88C071 /* Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "Embed Pods Frameworks";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods/Pods-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		AB85BBCF1875AACF00670905 /* Sources */ = {
@@ -852,7 +791,6 @@
 		};
 		AB85BC051875AACF00670905 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 519B18FEE8576990A26C4BDB /* Pods.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
@@ -876,7 +814,10 @@
 				);
 				INFOPLIST_FILE = "reDiscover/reDiscover-Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
-				LIBRARY_SEARCH_PATHS = "$(inherited)/**";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)/**",
+					"$(PROJECT_DIR)/ChromaprintLib",
+				);
 				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				OTHER_LDFLAGS = "$(inherited)";
 				PRODUCT_BUNDLE_IDENTIFIER = "TerminalGlow.${PRODUCT_NAME:rfc1034identifier}";
@@ -890,7 +831,6 @@
 		};
 		AB85BC061875AACF00670905 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = B0A41F8D7A62E0163971460D /* Pods.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
@@ -909,7 +849,10 @@
 				);
 				INFOPLIST_FILE = "reDiscover/reDiscover-Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
-				LIBRARY_SEARCH_PATHS = "$(inherited)/**";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)/**",
+					"$(PROJECT_DIR)/ChromaprintLib",
+				);
 				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				OTHER_LDFLAGS = "$(inherited)";
 				PRODUCT_BUNDLE_IDENTIFIER = "TerminalGlow.${PRODUCT_NAME:rfc1034identifier}";

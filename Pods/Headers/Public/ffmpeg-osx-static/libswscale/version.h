@@ -1,1 +1,0 @@
-../../../../ffmpeg-osx-static/include/libswscale/version.h

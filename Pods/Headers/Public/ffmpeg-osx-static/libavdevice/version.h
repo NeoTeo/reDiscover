@@ -1,1 +1,0 @@
-../../../../ffmpeg-osx-static/include/libavdevice/version.h
