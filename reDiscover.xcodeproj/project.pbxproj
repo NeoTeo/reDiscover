@@ -26,11 +26,6 @@
 		AB4529381A88EAF300A6B15A /* TGSongUIPopupController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB4529361A88EAF300A6B15A /* TGSongUIPopupController.swift */; };
 		AB4529391A88EAF300A6B15A /* TGSongUIPopupController.xib in Resources */ = {isa = PBXBuildFile; fileRef = AB4529371A88EAF300A6B15A /* TGSongUIPopupController.xib */; };
 		AB4529661A895B4100A6B15A /* TGAppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB4529651A895B4100A6B15A /* TGAppDelegate.swift */; };
-		AB4E078C19B618160052EEC0 /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = AB241FD9188977AB00E8E03F /* libz.dylib */; };
-		AB4E078D19B6181E0052EEC0 /* libiconv.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = AB0D052D1889E06400F08566 /* libiconv.dylib */; };
-		AB4E078F19B618260052EEC0 /* QTKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AB4E078E19B618260052EEC0 /* QTKit.framework */; };
-		AB4E079019B618360052EEC0 /* libc++.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = AB85BC621875B2E000670905 /* libc++.dylib */; };
-		AB4E079119B618640052EEC0 /* libbz2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = AB241FD21889767500E8E03F /* libbz2.dylib */; };
 		AB5C9AA91BA99B30006B74A6 /* SongAudioCacheTask.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB5C9AA81BA99B30006B74A6 /* SongAudioCacheTask.swift */; };
 		AB5E5DDC1B3BF96F007C6307 /* SongSelectionContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB5E5DDB1B3BF96F007C6307 /* SongSelectionContext.swift */; };
 		AB638F881ADD1A2100D4C8FA /* TGSong.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB638F871ADD1A2100D4C8FA /* TGSong.swift */; };
@@ -43,7 +38,6 @@
 		AB7FFB6119589BF2002D1E63 /* DropViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB7FFB6019589BF2002D1E63 /* DropViewController.swift */; };
 		AB7FFB6319589D1E002D1E63 /* DropView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB7FFB6219589D1E002D1E63 /* DropView.swift */; };
 		AB8182D81A5D5DAA000939F1 /* TGSongAudioCacher.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB8182D71A5D5DAA000939F1 /* TGSongAudioCacher.swift */; };
-		AB85BBD71875AACF00670905 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AB85BBD61875AACF00670905 /* Cocoa.framework */; };
 		AB85BBE11875AACF00670905 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = AB85BBDF1875AACF00670905 /* InfoPlist.strings */; };
 		AB85BBE31875AACF00670905 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = AB85BBE21875AACF00670905 /* main.m */; };
 		AB85BBE71875AACF00670905 /* Credits.rtf in Resources */ = {isa = PBXBuildFile; fileRef = AB85BBE51875AACF00670905 /* Credits.rtf */; };
@@ -66,9 +60,6 @@
 		AB85BC511875AB5200670905 /* TGSweetSpotControl.m in Sources */ = {isa = PBXBuildFile; fileRef = AB85BC311875AB5200670905 /* TGSweetSpotControl.m */; };
 		AB85BC521875AB5200670905 /* TGTimelineBarView.m in Sources */ = {isa = PBXBuildFile; fileRef = AB85BC331875AB5200670905 /* TGTimelineBarView.m */; };
 		AB85BC531875AB5200670905 /* TGTimelineSliderCell.m in Sources */ = {isa = PBXBuildFile; fileRef = AB85BC351875AB5200670905 /* TGTimelineSliderCell.m */; };
-		AB85BC581875ACE200670905 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AB85BC571875ACE200670905 /* AVFoundation.framework */; };
-		AB85BC5A1875AD1500670905 /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AB85BC591875AD1500670905 /* CoreMedia.framework */; };
-		AB85BC5C1875AD3B00670905 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AB85BC5B1875AD3B00670905 /* QuartzCore.framework */; };
 		AB85BC5F1875AD7A00670905 /* TGSongGridScrollView.m in Sources */ = {isa = PBXBuildFile; fileRef = AB85BC5E1875AD7A00670905 /* TGSongGridScrollView.m */; };
 		AB8B54781B4D1C3000C44485 /* CoverCollectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB8B54771B4D1C3000C44485 /* CoverCollectionView.swift */; };
 		AB9479D61B419FF2004B7C82 /* Dictionary+Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB9479D51B419FF2004B7C82 /* Dictionary+Utils.swift */; };
@@ -256,15 +247,6 @@
 			files = (
 				AB43AD021C4971B3001F258F /* libchromaprint.a in Frameworks */,
 				AB43AD001C497184001F258F /* Accelerate.framework in Frameworks */,
-				AB4E079119B618640052EEC0 /* libbz2.dylib in Frameworks */,
-				AB4E079019B618360052EEC0 /* libc++.dylib in Frameworks */,
-				AB4E078F19B618260052EEC0 /* QTKit.framework in Frameworks */,
-				AB4E078D19B6181E0052EEC0 /* libiconv.dylib in Frameworks */,
-				AB4E078C19B618160052EEC0 /* libz.dylib in Frameworks */,
-				AB85BC5C1875AD3B00670905 /* QuartzCore.framework in Frameworks */,
-				AB85BC5A1875AD1500670905 /* CoreMedia.framework in Frameworks */,
-				AB85BC581875ACE200670905 /* AVFoundation.framework in Frameworks */,
-				AB85BBD71875AACF00670905 /* Cocoa.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
