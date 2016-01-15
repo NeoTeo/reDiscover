@@ -38,7 +38,6 @@
 		AB7FFB6119589BF2002D1E63 /* DropViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB7FFB6019589BF2002D1E63 /* DropViewController.swift */; };
 		AB7FFB6319589D1E002D1E63 /* DropView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB7FFB6219589D1E002D1E63 /* DropView.swift */; };
 		AB8182D81A5D5DAA000939F1 /* TGSongAudioCacher.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB8182D71A5D5DAA000939F1 /* TGSongAudioCacher.swift */; };
-		AB85BBE11875AACF00670905 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = AB85BBDF1875AACF00670905 /* InfoPlist.strings */; };
 		AB85BBE31875AACF00670905 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = AB85BBE21875AACF00670905 /* main.m */; };
 		AB85BBE71875AACF00670905 /* Credits.rtf in Resources */ = {isa = PBXBuildFile; fileRef = AB85BBE51875AACF00670905 /* Credits.rtf */; };
 		AB85BBEF1875AACF00670905 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = AB85BBEE1875AACF00670905 /* Images.xcassets */; };
@@ -103,8 +102,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		AB01DB03194F499900368693 /* TGStack.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TGStack.m; path = ../TGStack.m; sourceTree = "<group>"; };
-		AB01DB05194F49B800368693 /* TGStack.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = TGStack.h; path = ../TGStack.h; sourceTree = "<group>"; };
+		AB01DB03194F499900368693 /* TGStack.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TGStack.m; sourceTree = "<group>"; };
+		AB01DB05194F49B800368693 /* TGStack.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TGStack.h; sourceTree = "<group>"; };
 		AB095A7A1B2F12CD009201A2 /* CoverImageView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CoverImageView.swift; sourceTree = "<group>"; };
 		AB1BC13E1976C91E003F02B9 /* ScrollingTextView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScrollingTextView.swift; sourceTree = "<group>"; };
 		AB1D28B11B5006AA006C7FFF /* TGTimelineTransformer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TGTimelineTransformer.swift; sourceTree = "<group>"; };
@@ -131,9 +130,9 @@
 		AB638F871ADD1A2100D4C8FA /* TGSong.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TGSong.swift; sourceTree = "<group>"; };
 		AB663FD71A8AA14700E50596 /* TGSongGridView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = TGSongGridView.xib; sourceTree = "<group>"; };
 		AB71279919407C8D0002B1F8 /* reDiscover-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "reDiscover-Bridging-Header.h"; sourceTree = "<group>"; };
-		AB71279A19407C8E0002B1F8 /* CoverArtArchiveWebFetcher.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CoverArtArchiveWebFetcher.swift; path = reDiscover/CoverArtArchiveWebFetcher.swift; sourceTree = "<group>"; };
-		AB725A391AD91E8C003E94E6 /* SongArtFinder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SongArtFinder.swift; path = reDiscover/SongArtFinder.swift; sourceTree = "<group>"; };
-		AB725A3B1AD92256003E94E6 /* SongArtCache.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SongArtCache.swift; path = reDiscover/SongArtCache.swift; sourceTree = "<group>"; };
+		AB71279A19407C8E0002B1F8 /* CoverArtArchiveWebFetcher.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CoverArtArchiveWebFetcher.swift; sourceTree = "<group>"; };
+		AB725A391AD91E8C003E94E6 /* SongArtFinder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SongArtFinder.swift; sourceTree = "<group>"; };
+		AB725A3B1AD92256003E94E6 /* SongArtCache.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SongArtCache.swift; sourceTree = "<group>"; };
 		AB725A3F1ADA93E9003E94E6 /* SweetSpotController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SweetSpotController.swift; sourceTree = "<group>"; };
 		AB7358EF1A63D6D300E08D5A /* TGSongAudioPlayer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TGSongAudioPlayer.swift; sourceTree = "<group>"; };
 		AB7FFB6019589BF2002D1E63 /* DropViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DropViewController.swift; sourceTree = "<group>"; };
@@ -183,43 +182,43 @@
 		AB85BC5E1875AD7A00670905 /* TGSongGridScrollView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TGSongGridScrollView.m; sourceTree = "<group>"; };
 		AB8B54771B4D1C3000C44485 /* CoverCollectionView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CoverCollectionView.swift; sourceTree = "<group>"; };
 		AB9479D51B419FF2004B7C82 /* Dictionary+Utils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Dictionary+Utils.swift"; sourceTree = "<group>"; };
-		AB9811CE1B87672B00BA75DD /* SongPoolAccessProtocol.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SongPoolAccessProtocol.swift; path = ../SongPoolAccessProtocol.swift; sourceTree = "<group>"; };
-		ABA6D21C1B8CAE13000CEB8C /* NSLock+Operations.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "NSLock+Operations.swift"; path = "reDiscover/NSLock+Operations.swift"; sourceTree = "<group>"; };
+		AB9811CE1B87672B00BA75DD /* SongPoolAccessProtocol.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SongPoolAccessProtocol.swift; sourceTree = "<group>"; };
+		ABA6D21C1B8CAE13000CEB8C /* NSLock+Operations.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSLock+Operations.swift"; sourceTree = "<group>"; };
 		ABAF47811B38590600F13528 /* CoverImage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CoverImage.swift; sourceTree = "<group>"; };
-		ABB2B6611ADEB38F004F9F87 /* NSImage+HashId.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "NSImage+HashId.swift"; path = "reDiscover/NSImage+HashId.swift"; sourceTree = "<group>"; };
+		ABB2B6611ADEB38F004F9F87 /* NSImage+HashId.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSImage+HashId.swift"; sourceTree = "<group>"; };
 		ABB33FEF19C72C3800439A5E /* SweetSpotServerIO.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SweetSpotServerIO.swift; sourceTree = "<group>"; };
 		ABB592E21B2EC63700B57CC5 /* CoverDisplayViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CoverDisplayViewController.swift; sourceTree = "<group>"; };
 		ABB592E71B2ED0A400B57CC5 /* Cover.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = Cover.xib; sourceTree = "<group>"; };
 		ABB592E91B2ED19C00B57CC5 /* TGCollectionCover.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TGCollectionCover.swift; sourceTree = "<group>"; };
-		ABBFC0E31B4AA55F00323C6D /* NSResponder+printResponderChain.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "NSResponder+printResponderChain.swift"; path = "reDiscover/NSResponder+printResponderChain.swift"; sourceTree = "<group>"; };
-		ABBFC0E51B4AA5BC00323C6D /* NSCollectionViewFlowLayout+colsAndRows.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "NSCollectionViewFlowLayout+colsAndRows.swift"; path = "reDiscover/NSCollectionViewFlowLayout+colsAndRows.swift"; sourceTree = "<group>"; };
-		ABC474511B7DFC9700BCB40C /* SongIDProtocol.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SongIDProtocol.swift; path = ../SongIDProtocol.swift; sourceTree = "<group>"; };
+		ABBFC0E31B4AA55F00323C6D /* NSResponder+printResponderChain.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSResponder+printResponderChain.swift"; sourceTree = "<group>"; };
+		ABBFC0E51B4AA5BC00323C6D /* NSCollectionViewFlowLayout+colsAndRows.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSCollectionViewFlowLayout+colsAndRows.swift"; sourceTree = "<group>"; };
+		ABC474511B7DFC9700BCB40C /* SongIDProtocol.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SongIDProtocol.swift; sourceTree = "<group>"; };
 		ABC65CE61B872D50005D344D /* CAKeyframeAnimation+Parametric.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CAKeyframeAnimation+Parametric.swift"; sourceTree = "<group>"; };
 		ABCA1E201B00E988003CFB93 /* AudioFileStore.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AudioFileStore.swift; sourceTree = "<group>"; };
 		ABCA1E221B00EAE9003CFB93 /* LocalAudioFileStore.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocalAudioFileStore.swift; sourceTree = "<group>"; };
-		ABCA1E241B00FFBA003CFB93 /* URLContentType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = URLContentType.swift; sourceTree = "<group>"; };
+		ABCA1E241B00FFBA003CFB93 /* URLContentType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = URLContentType.swift; path = source/URLContentType.swift; sourceTree = "<group>"; };
 		ABCB68E918FD57E4009CF277 /* TEOSong.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = TEOSong.xcdatamodel; sourceTree = "<group>"; };
-		ABDBA6861AF0F5A60069CFFB /* AcoustIDWebService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AcoustIDWebService.swift; sourceTree = "<group>"; };
-		ABE49BB41AE16105008A28B0 /* SongID.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SongID.swift; path = ../SongID.swift; sourceTree = "<group>"; };
-		ABE49BB61AE50991008A28B0 /* Hasher.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Hasher.swift; sourceTree = "<group>"; };
-		ABE49BB81AE50F48008A28B0 /* AlbumCollection.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AlbumCollection.swift; path = ../AlbumCollection.swift; sourceTree = "<group>"; };
-		ABE49BBA1AE50FC2008A28B0 /* Album.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Album.swift; sourceTree = "<group>"; };
+		ABDBA6861AF0F5A60069CFFB /* AcoustIDWebService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AcoustIDWebService.swift; path = source/AcoustIDWebService.swift; sourceTree = "<group>"; };
+		ABE49BB41AE16105008A28B0 /* SongID.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SongID.swift; sourceTree = "<group>"; };
+		ABE49BB61AE50991008A28B0 /* Hasher.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Hasher.swift; path = source/Hasher.swift; sourceTree = "<group>"; };
+		ABE49BB81AE50F48008A28B0 /* AlbumCollection.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AlbumCollection.swift; sourceTree = "<group>"; };
+		ABE49BBA1AE50FC2008A28B0 /* Album.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Album.swift; path = source/Album.swift; sourceTree = "<group>"; };
 		ABEC263C1951C6F200A57CE3 /* Main.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Main.storyboard; sourceTree = "<group>"; };
-		ABEC79D51B02402200CD9F6C /* SongMetaDataStore.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SongMetaDataStore.swift; sourceTree = "<group>"; };
-		ABEC79D71B0242E100CD9F6C /* SongMetaData.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SongMetaData.swift; sourceTree = "<group>"; };
-		ABEC79D91B0243BC00CD9F6C /* SongMetaDataStoreLocal.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SongMetaDataStoreLocal.swift; sourceTree = "<group>"; };
-		ABEC79DB1B025B8D00CD9F6C /* SongGeneratedMetaData.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SongGeneratedMetaData.swift; sourceTree = "<group>"; };
+		ABEC79D51B02402200CD9F6C /* SongMetaDataStore.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SongMetaDataStore.swift; path = source/SongMetaDataStore.swift; sourceTree = "<group>"; };
+		ABEC79D71B0242E100CD9F6C /* SongMetaData.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SongMetaData.swift; path = source/SongMetaData.swift; sourceTree = "<group>"; };
+		ABEC79D91B0243BC00CD9F6C /* SongMetaDataStoreLocal.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SongMetaDataStoreLocal.swift; path = source/SongMetaDataStoreLocal.swift; sourceTree = "<group>"; };
+		ABEC79DB1B025B8D00CD9F6C /* SongGeneratedMetaData.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SongGeneratedMetaData.swift; path = source/SongGeneratedMetaData.swift; sourceTree = "<group>"; };
 		ABEC79DD1B025C6700CD9F6C /* Song.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Song.swift; sourceTree = "<group>"; };
-		ABED8E311AB72F4F005B1403 /* SongCommonMetadata.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SongCommonMetadata.swift; path = reDiscover/SongCommonMetadata.swift; sourceTree = "<group>"; };
-		ABED8E331AB73B6E005B1403 /* SongArt.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SongArt.swift; path = reDiscover/SongArt.swift; sourceTree = "<group>"; };
+		ABED8E311AB72F4F005B1403 /* SongCommonMetadata.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SongCommonMetadata.swift; path = source/SongCommonMetadata.swift; sourceTree = "<group>"; };
+		ABED8E331AB73B6E005B1403 /* SongArt.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SongArt.swift; sourceTree = "<group>"; };
 		ABF767421AEE6D74007C7A12 /* SongPool.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SongPool.swift; sourceTree = "<group>"; };
-		ABF767441AEE82B4007C7A12 /* LocalFileIO.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocalFileIO.swift; sourceTree = "<group>"; };
+		ABF767441AEE82B4007C7A12 /* LocalFileIO.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = LocalFileIO.swift; path = source/LocalFileIO.swift; sourceTree = "<group>"; };
 		ABFB8D671B4F1400006519B0 /* TGSplitViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TGSplitViewController.swift; sourceTree = "<group>"; };
 		ABFC06C31B04A27C00649BBD /* CoreDataStore.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CoreDataStore.swift; sourceTree = "<group>"; };
 		ABFC8B4A1B7CEEC500A92019 /* Fingerprinter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Fingerprinter.swift; sourceTree = "<group>"; };
 		ABFC8EB119C19C630007ECCB /* uploadedSS.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = uploadedSS.plist; sourceTree = "<group>"; };
 		ABFC8EB419C1BCE90007ECCB /* uploadedSS.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = uploadedSS.xcdatamodel; sourceTree = "<group>"; };
-		ABFD9DD31AD4217700718631 /* SongUUID.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SongUUID.swift; path = ../SongUUID.swift; sourceTree = "<group>"; };
+		ABFD9DD31AD4217700718631 /* SongUUID.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SongUUID.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -366,6 +365,7 @@
 				AB71279A19407C8E0002B1F8 /* CoverArtArchiveWebFetcher.swift */,
 			);
 			name = SongArt;
+			path = source;
 			sourceTree = "<group>";
 		};
 		AB725A3E1ADA9311003E94E6 /* SweetSpot */ = {
@@ -375,7 +375,7 @@
 				ABB33FEF19C72C3800439A5E /* SweetSpotServerIO.swift */,
 			);
 			name = SweetSpot;
-			path = reDiscover;
+			path = source;
 			sourceTree = "<group>";
 		};
 		AB85BBCA1875AACF00670905 = {
@@ -425,7 +425,8 @@
 				AB85BBEE1875AACF00670905 /* Images.xcassets */,
 				AB85BBDD1875AACF00670905 /* Supporting Files */,
 			);
-			path = reDiscover;
+			name = reDiscover;
+			path = source;
 			sourceTree = "<group>";
 		};
 		AB85BBDD1875AACF00670905 /* Supporting Files */ = {
@@ -457,7 +458,7 @@
 				AB85BC291875AB5200670905 /* TGSongTimelineView.xib */,
 			);
 			name = GUI;
-			path = reDiscover;
+			path = source;
 			sourceTree = "<group>";
 		};
 		ABC65CE51B87234C005D344D /* Convenience Extensions */ = {
@@ -471,6 +472,7 @@
 				AB9479D51B419FF2004B7C82 /* Dictionary+Utils.swift */,
 			);
 			name = "Convenience Extensions";
+			path = source;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -528,7 +530,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				AB4529391A88EAF300A6B15A /* TGSongUIPopupController.xib in Resources */,
-				AB85BBE11875AACF00670905 /* InfoPlist.strings in Resources */,
 				AB85BC4A1875AB5200670905 /* TGSongInfoView.xib in Resources */,
 				ABB592E81B2ED0A400B57CC5 /* Cover.xib in Resources */,
 				AB85BC4D1875AB5200670905 /* TGSongTimelineView.xib in Resources */,
@@ -739,7 +740,7 @@
 					"$(PROJECT_DIR)",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "reDiscover/reDiscover-Prefix.pch";
+				GCC_PREFIX_HEADER = "source/reDiscover-Prefix.pch";
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"$(inherited)",
 					"COCOAPODS=1",
@@ -750,7 +751,7 @@
 					"/Applications/Xcode-beta.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include",
 					"${PODS_ROOT}/ffmpeg-osx-static/**",
 				);
-				INFOPLIST_FILE = "reDiscover/reDiscover-Info.plist";
+				INFOPLIST_FILE = "source/reDiscover-Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)/**",
@@ -760,7 +761,7 @@
 				OTHER_LDFLAGS = "$(inherited)";
 				PRODUCT_BUNDLE_IDENTIFIER = "TerminalGlow.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_OBJC_BRIDGING_HEADER = "reDiscover/reDiscover-Bridging-Header.h";
+				SWIFT_OBJC_BRIDGING_HEADER = "source/reDiscover-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				USER_HEADER_SEARCH_PATHS = "$(inherited)/**";
 				WRAPPER_EXTENSION = app;
@@ -778,13 +779,13 @@
 					"$(PROJECT_DIR)",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "reDiscover/reDiscover-Prefix.pch";
+				GCC_PREFIX_HEADER = "source/reDiscover-Prefix.pch";
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"/Applications/Xcode-beta.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include",
 					"${PODS_ROOT}/ffmpeg-osx-static/**",
 				);
-				INFOPLIST_FILE = "reDiscover/reDiscover-Info.plist";
+				INFOPLIST_FILE = "source/reDiscover-Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)/**",
@@ -794,7 +795,7 @@
 				OTHER_LDFLAGS = "$(inherited)";
 				PRODUCT_BUNDLE_IDENTIFIER = "TerminalGlow.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_OBJC_BRIDGING_HEADER = "reDiscover/reDiscover-Bridging-Header.h";
+				SWIFT_OBJC_BRIDGING_HEADER = "source/reDiscover-Bridging-Header.h";
 				USER_HEADER_SEARCH_PATHS = "$(inherited)/**";
 				WRAPPER_EXTENSION = app;
 			};
