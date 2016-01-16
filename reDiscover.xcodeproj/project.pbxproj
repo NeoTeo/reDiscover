@@ -41,7 +41,6 @@
 		AB85BBE31875AACF00670905 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = AB85BBE21875AACF00670905 /* main.m */; };
 		AB85BBE71875AACF00670905 /* Credits.rtf in Resources */ = {isa = PBXBuildFile; fileRef = AB85BBE51875AACF00670905 /* Credits.rtf */; };
 		AB85BBEF1875AACF00670905 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = AB85BBEE1875AACF00670905 /* Images.xcassets */; };
-		AB85BC401875AB5200670905 /* TGIdleTimer.m in Sources */ = {isa = PBXBuildFile; fileRef = AB85BC141875AB5200670905 /* TGIdleTimer.m */; };
 		AB85BC431875AB5200670905 /* TGPlaylist.m in Sources */ = {isa = PBXBuildFile; fileRef = AB85BC191875AB5200670905 /* TGPlaylist.m */; };
 		AB85BC441875AB5200670905 /* TGPlaylistView.xib in Resources */ = {isa = PBXBuildFile; fileRef = AB85BC1A1875AB5200670905 /* TGPlaylistView.xib */; };
 		AB85BC451875AB5200670905 /* TGPlaylistViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = AB85BC1C1875AB5200670905 /* TGPlaylistViewController.m */; };
@@ -138,8 +137,6 @@
 		AB85BBE41875AACF00670905 /* reDiscover-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "reDiscover-Prefix.pch"; sourceTree = "<group>"; };
 		AB85BBE61875AACF00670905 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.rtf; name = en; path = en.lproj/Credits.rtf; sourceTree = "<group>"; };
 		AB85BBEE1875AACF00670905 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
-		AB85BC131875AB5200670905 /* TGIdleTimer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TGIdleTimer.h; sourceTree = "<group>"; };
-		AB85BC141875AB5200670905 /* TGIdleTimer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TGIdleTimer.m; sourceTree = "<group>"; };
 		AB85BC181875AB5200670905 /* TGPlaylist.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TGPlaylist.h; sourceTree = "<group>"; };
 		AB85BC191875AB5200670905 /* TGPlaylist.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TGPlaylist.m; sourceTree = "<group>"; };
 		AB85BC1A1875AB5200670905 /* TGPlaylistView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = TGPlaylistView.xib; sourceTree = "<group>"; };
@@ -258,8 +255,6 @@
 				AB8182D71A5D5DAA000939F1 /* TGSongAudioCacher.swift */,
 				AB85BC2E1875AB5200670905 /* TGSongUserData.h */,
 				AB85BC2F1875AB5200670905 /* TGSongUserData.m */,
-				AB85BC131875AB5200670905 /* TGIdleTimer.h */,
-				AB85BC141875AB5200670905 /* TGIdleTimer.m */,
 				AB3FF56119C1D3CE00D6C5EF /* UploadedSSData.h */,
 				AB3FF56219C1D3CE00D6C5EF /* UploadedSSData.m */,
 				AB301E7419050C830093B654 /* TEOSongData.h */,
@@ -561,7 +556,6 @@
 				AB85BBE31875AACF00670905 /* main.m in Sources */,
 				AB5C9AA91BA99B30006B74A6 /* SongAudioCacheTask.swift in Sources */,
 				AB638F881ADD1A2100D4C8FA /* TGSong.swift in Sources */,
-				AB85BC401875AB5200670905 /* TGIdleTimer.m in Sources */,
 				AB1BC13F1976C91E003F02B9 /* ScrollingTextView.swift in Sources */,
 				ABED8E321AB72F4F005B1403 /* SongCommonMetadata.swift in Sources */,
 				AB43ACF91C4963F8001F258F /* SongFingerprinter.swift in Sources */,
