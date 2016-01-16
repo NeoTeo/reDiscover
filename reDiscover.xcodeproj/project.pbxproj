@@ -43,12 +43,10 @@
 		AB85BBEF1875AACF00670905 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = AB85BBEE1875AACF00670905 /* Images.xcassets */; };
 		AB85BC3F1875AB5200670905 /* TGGridCell.m in Sources */ = {isa = PBXBuildFile; fileRef = AB85BC121875AB5200670905 /* TGGridCell.m */; };
 		AB85BC401875AB5200670905 /* TGIdleTimer.m in Sources */ = {isa = PBXBuildFile; fileRef = AB85BC141875AB5200670905 /* TGIdleTimer.m */; };
-		AB85BC421875AB5200670905 /* TGMainViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = AB85BC171875AB5200670905 /* TGMainViewController.m */; };
 		AB85BC431875AB5200670905 /* TGPlaylist.m in Sources */ = {isa = PBXBuildFile; fileRef = AB85BC191875AB5200670905 /* TGPlaylist.m */; };
 		AB85BC441875AB5200670905 /* TGPlaylistView.xib in Resources */ = {isa = PBXBuildFile; fileRef = AB85BC1A1875AB5200670905 /* TGPlaylistView.xib */; };
 		AB85BC451875AB5200670905 /* TGPlaylistViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = AB85BC1C1875AB5200670905 /* TGPlaylistViewController.m */; };
 		AB85BC471875AB5200670905 /* TGSongCellMatrix.m in Sources */ = {isa = PBXBuildFile; fileRef = AB85BC201875AB5200670905 /* TGSongCellMatrix.m */; };
-		AB85BC491875AB5200670905 /* TGSongGridViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = AB85BC231875AB5200670905 /* TGSongGridViewController.m */; };
 		AB85BC4A1875AB5200670905 /* TGSongInfoView.xib in Resources */ = {isa = PBXBuildFile; fileRef = AB85BC241875AB5200670905 /* TGSongInfoView.xib */; };
 		AB85BC4B1875AB5200670905 /* TGSongInfoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = AB85BC261875AB5200670905 /* TGSongInfoViewController.m */; };
 		AB85BC4C1875AB5200670905 /* TGSongPool.m in Sources */ = {isa = PBXBuildFile; fileRef = AB85BC281875AB5200670905 /* TGSongPool.m */; };
@@ -149,8 +147,6 @@
 		AB85BC121875AB5200670905 /* TGGridCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TGGridCell.m; sourceTree = "<group>"; };
 		AB85BC131875AB5200670905 /* TGIdleTimer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TGIdleTimer.h; sourceTree = "<group>"; };
 		AB85BC141875AB5200670905 /* TGIdleTimer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TGIdleTimer.m; sourceTree = "<group>"; };
-		AB85BC161875AB5200670905 /* TGMainViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TGMainViewController.h; sourceTree = "<group>"; };
-		AB85BC171875AB5200670905 /* TGMainViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TGMainViewController.m; sourceTree = "<group>"; };
 		AB85BC181875AB5200670905 /* TGPlaylist.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TGPlaylist.h; sourceTree = "<group>"; };
 		AB85BC191875AB5200670905 /* TGPlaylist.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TGPlaylist.m; sourceTree = "<group>"; };
 		AB85BC1A1875AB5200670905 /* TGPlaylistView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = TGPlaylistView.xib; sourceTree = "<group>"; };
@@ -158,8 +154,6 @@
 		AB85BC1C1875AB5200670905 /* TGPlaylistViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TGPlaylistViewController.m; sourceTree = "<group>"; };
 		AB85BC1F1875AB5200670905 /* TGSongCellMatrix.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TGSongCellMatrix.h; sourceTree = "<group>"; };
 		AB85BC201875AB5200670905 /* TGSongCellMatrix.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TGSongCellMatrix.m; sourceTree = "<group>"; };
-		AB85BC221875AB5200670905 /* TGSongGridViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TGSongGridViewController.h; sourceTree = "<group>"; };
-		AB85BC231875AB5200670905 /* TGSongGridViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TGSongGridViewController.m; sourceTree = "<group>"; };
 		AB85BC241875AB5200670905 /* TGSongInfoView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = TGSongInfoView.xib; sourceTree = "<group>"; };
 		AB85BC251875AB5200670905 /* TGSongInfoViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TGSongInfoViewController.h; sourceTree = "<group>"; };
 		AB85BC261875AB5200670905 /* TGSongInfoViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TGSongInfoViewController.m; sourceTree = "<group>"; };
@@ -253,11 +247,7 @@
 				AB095A7A1B2F12CD009201A2 /* CoverImageView.swift */,
 				ABAF47811B38590600F13528 /* CoverImage.swift */,
 				ABE49BB81AE50F48008A28B0 /* AlbumCollection.swift */,
-				AB85BC161875AB5200670905 /* TGMainViewController.h */,
-				AB85BC171875AB5200670905 /* TGMainViewController.m */,
 				AB4529361A88EAF300A6B15A /* TGSongUIPopupController.swift */,
-				AB85BC221875AB5200670905 /* TGSongGridViewController.h */,
-				AB85BC231875AB5200670905 /* TGSongGridViewController.m */,
 				AB85BC2C1875AB5200670905 /* TGSongUIViewController.h */,
 				AB85BC2D1875AB5200670905 /* TGSongUIViewController.m */,
 				AB85BC111875AB5200670905 /* TGGridCell.h */,
@@ -563,7 +553,6 @@
 				ABB33FF019C72C3800439A5E /* SweetSpotServerIO.swift in Sources */,
 				AB37EC1E1B25B77C00C94597 /* TimelinePopover.swift in Sources */,
 				ABEC79DE1B025C6700CD9F6C /* Song.swift in Sources */,
-				AB85BC491875AB5200670905 /* TGSongGridViewController.m in Sources */,
 				ABFC8EB519C1BCE90007ECCB /* uploadedSS.xcdatamodeld in Sources */,
 				AB85BC4E1875AB5200670905 /* TGSongTimelineViewController.m in Sources */,
 				AB8B54781B4D1C3000C44485 /* CoverCollectionView.swift in Sources */,
@@ -579,7 +568,6 @@
 				ABE49BB51AE16105008A28B0 /* SongID.swift in Sources */,
 				ABE49BB91AE50F48008A28B0 /* AlbumCollection.swift in Sources */,
 				ABB592EA1B2ED19C00B57CC5 /* TGCollectionCover.swift in Sources */,
-				AB85BC421875AB5200670905 /* TGMainViewController.m in Sources */,
 				AB725A401ADA93E9003E94E6 /* SweetSpotController.swift in Sources */,
 				AB7FFB6119589BF2002D1E63 /* DropViewController.swift in Sources */,
 				AB3991EB1AEA8B9F00381CAC /* DebugDisplay.swift in Sources */,
