@@ -124,7 +124,6 @@
 }
 @property (strong)id playerTimerObserver;
 
-@property TGStack* requestedSongStack;
 @property CoverArtArchiveWebFetcher* coverArtWebFetcher;
 
 //@property id<TGMainViewControllerDelegate> delegate;

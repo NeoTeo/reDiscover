@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		AB01DB04194F499900368693 /* TGStack.m in Sources */ = {isa = PBXBuildFile; fileRef = AB01DB03194F499900368693 /* TGStack.m */; };
 		AB095A7B1B2F12CD009201A2 /* CoverImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB095A7A1B2F12CD009201A2 /* CoverImageView.swift */; };
 		AB1BC13F1976C91E003F02B9 /* ScrollingTextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB1BC13E1976C91E003F02B9 /* ScrollingTextView.swift */; };
 		AB1D28B21B5006AA006C7FFF /* TGTimelineTransformer.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB1D28B11B5006AA006C7FFF /* TGTimelineTransformer.swift */; };
@@ -97,8 +96,6 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		AB01DB03194F499900368693 /* TGStack.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TGStack.m; sourceTree = "<group>"; };
-		AB01DB05194F49B800368693 /* TGStack.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TGStack.h; sourceTree = "<group>"; };
 		AB095A7A1B2F12CD009201A2 /* CoverImageView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CoverImageView.swift; sourceTree = "<group>"; };
 		AB1BC13E1976C91E003F02B9 /* ScrollingTextView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScrollingTextView.swift; sourceTree = "<group>"; };
 		AB1D28B11B5006AA006C7FFF /* TGTimelineTransformer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TGTimelineTransformer.swift; sourceTree = "<group>"; };
@@ -259,8 +256,6 @@
 				ABEC79DD1B025C6700CD9F6C /* Song.swift */,
 				AB7358EF1A63D6D300E08D5A /* TGSongAudioPlayer.swift */,
 				AB8182D71A5D5DAA000939F1 /* TGSongAudioCacher.swift */,
-				AB01DB03194F499900368693 /* TGStack.m */,
-				AB01DB05194F49B800368693 /* TGStack.h */,
 				AB85BC2E1875AB5200670905 /* TGSongUserData.h */,
 				AB85BC2F1875AB5200670905 /* TGSongUserData.m */,
 				AB85BC131875AB5200670905 /* TGIdleTimer.h */,
@@ -524,7 +519,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				AB85BC521875AB5200670905 /* TGTimelineBarView.m in Sources */,
-				AB01DB04194F499900368693 /* TGStack.m in Sources */,
 				ABB592E31B2EC63700B57CC5 /* CoverDisplayViewController.swift in Sources */,
 				AB7358F01A63D6D300E08D5A /* TGSongAudioPlayer.swift in Sources */,
 				ABEC79D81B0242E100CD9F6C /* SongMetaData.swift in Sources */,
