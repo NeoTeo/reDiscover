@@ -33,15 +33,3 @@
 - (id<SongIDProtocol>)getNextSongIDToPlay;
 
 @end
-
-// Delegate method declarations.
-//@protocol TGPlaylistViewControllerDelegate <NSObject>
-//
-//// These are all methods defined in the SongPool class.
-//- (NSDictionary *)songDataForSongID:(id<SongIDProtocol>)songID;
-//- (NSURL *)songURLForSongID:(id<SongIDProtocol>)songID;
-//- (NSNumber *)songDurationForSongID:(id<SongIDProtocol>)songID;
-//- (void)requestSongPlayback:(id<SongIDProtocol>)songID
-//     withStartTimeInSeconds:(NSNumber *)time makeSweetSpot:(BOOL)makeSS;
-//
-//@end

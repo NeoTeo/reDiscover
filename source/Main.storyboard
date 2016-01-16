@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="9052" systemVersion="15B17c" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" initialViewController="Nxi-KE-3bM">
+<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="9531" systemVersion="15C50" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" initialViewController="Nxi-KE-3bM">
     <dependencies>
         <deployment identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="9052"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="9531"/>
     </dependencies>
     <scenes>
         <!--Window Controller-->
@@ -17,7 +17,6 @@
                         <view key="contentView" id="kQk-9C-O5w">
                             <rect key="frame" x="0.0" y="0.0" width="300" height="300"/>
                             <autoresizingMask key="autoresizingMask"/>
-                            <animations/>
                         </view>
                     </window>
                     <connections>
@@ -37,7 +36,6 @@
                         <subviews>
                             <imageView horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="P5B-U5-u4f">
                                 <rect key="frame" x="21" y="21" width="259" height="259"/>
-                                <animations/>
                                 <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" image="DropArrow" id="9UV-0o-FxX"/>
                                 <connections>
                                     <segue destination="XiH-xD-SmT" kind="show" identifier="segueToSplitView" id="hRJ-Fb-EFs"/>
@@ -48,7 +46,6 @@
                             <constraint firstAttribute="centerX" secondItem="P5B-U5-u4f" secondAttribute="centerX" id="Qhe-4w-OMf"/>
                             <constraint firstAttribute="centerY" secondItem="P5B-U5-u4f" secondAttribute="centerY" id="YVu-ri-d2C"/>
                         </constraints>
-                        <animations/>
                         <connections>
                             <outlet property="dropArrowImageView" destination="P5B-U5-u4f" id="11R-nO-fYb"/>
                         </connections>
@@ -70,7 +67,6 @@
                     <splitView key="splitView" wantsLayer="YES" dividerStyle="thin" vertical="YES" id="TO9-Bc-PxR">
                         <rect key="frame" x="0.0" y="0.0" width="450" height="300"/>
                         <autoresizingMask key="autoresizingMask"/>
-                        <animations/>
                     </splitView>
                     <connections>
                         <outlet property="coverCollectionSVI" destination="2o7-5d-FlK" id="roA-pP-8It"/>
@@ -100,7 +96,6 @@
                     <subviews>
                         <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="F0x-td-Ipx">
                             <rect key="frame" x="18" y="541" width="130" height="39"/>
-                            <animations/>
                             <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Playlist" id="gHu-ep-aEh">
                                 <font key="font" metaFont="system" size="32"/>
                                 <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
@@ -116,7 +111,6 @@
                                     <tableView identifier="hatArse" verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" selectionHighlightStyle="none" columnSelection="YES" columnResizing="NO" multipleSelection="NO" autosaveColumns="NO" rowHeight="60" rowSizeStyle="automatic" viewBased="YES" id="JdL-Io-maI">
                                         <rect key="frame" x="0.0" y="0.0" width="364" height="471"/>
                                         <autoresizingMask key="autoresizingMask"/>
-                                        <animations/>
                                         <size key="intercellSpacing" width="3" height="4"/>
                                         <color key="backgroundColor" name="windowBackgroundColor" catalog="System" colorSpace="catalog"/>
                                         <color key="gridColor" name="gridColor" catalog="System" colorSpace="catalog"/>
@@ -138,12 +132,11 @@
                                                         <rect key="frame" x="1" y="2" width="361" height="60"/>
                                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                         <subviews>
-                                                            <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="aKF-Xb-zdG">
-                                                                <rect key="frame" x="13" y="37" width="336" height="20"/>
+                                                            <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="aKF-Xb-zdG">
+                                                                <rect key="frame" x="13" y="37" width="336" height="22"/>
                                                                 <constraints>
                                                                     <constraint firstAttribute="width" constant="332" id="8cF-2x-kMf"/>
                                                                 </constraints>
-                                                                <animations/>
                                                                 <textFieldCell key="cell" lineBreakMode="truncatingTail" sendsActionOnEndEditing="YES" title="Title" id="Cy5-MY-5uO">
                                                                     <font key="font" metaFont="system" size="18"/>
                                                                     <color key="textColor" red="0.098039217289999994" green="0.098039217289999994" blue="0.098039217289999994" alpha="1" colorSpace="calibratedRGB"/>
@@ -155,7 +148,6 @@
                                                                 <constraints>
                                                                     <constraint firstAttribute="height" constant="17" id="dqn-pp-Qyy"/>
                                                                 </constraints>
-                                                                <animations/>
                                                                 <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Album" id="LIV-NA-SFQ">
                                                                     <font key="font" metaFont="system" size="14"/>
                                                                     <color key="textColor" red="0.3774513712" green="0.3774513712" blue="0.3774513712" alpha="1" colorSpace="calibratedRGB"/>
@@ -164,7 +156,6 @@
                                                             </textField>
                                                             <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="93Z-VV-Nat">
                                                                 <rect key="frame" x="21" y="-2" width="328" height="20"/>
-                                                                <animations/>
                                                                 <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Artist" id="6ab-KZ-eh0">
                                                                     <font key="font" metaFont="system" size="14"/>
                                                                     <color key="textColor" red="0.57702885839999996" green="0.54761638170000004" blue="0.55698594209999996" alpha="1" colorSpace="calibratedRGB"/>
@@ -183,7 +174,6 @@
                                                             <constraint firstItem="aKF-Xb-zdG" firstAttribute="leading" secondItem="5fA-wP-ipP" secondAttribute="leading" constant="15" id="tqw-Mu-6cm"/>
                                                             <constraint firstAttribute="bottom" secondItem="Ztc-CO-KuG" secondAttribute="bottom" constant="17" id="vda-bk-zSD"/>
                                                         </constraints>
-                                                        <animations/>
                                                         <connections>
                                                             <outlet property="AlbumLabel" destination="Ztc-CO-KuG" id="VKh-BG-fti"/>
                                                             <outlet property="ArtistLabel" destination="93Z-VV-Nat" id="rqu-Ig-Mom"/>
@@ -196,26 +186,20 @@
                                         </tableColumns>
                                     </tableView>
                                 </subviews>
-                                <animations/>
                                 <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
                             </clipView>
-                            <animations/>
                             <scroller key="horizontalScroller" hidden="YES" verticalHuggingPriority="750" horizontal="YES" id="LJE-rq-SLs">
                                 <autoresizingMask key="autoresizingMask"/>
-                                <animations/>
                             </scroller>
                             <scroller key="verticalScroller" hidden="YES" verticalHuggingPriority="750" horizontal="NO" id="kdk-lo-Yuh">
                                 <autoresizingMask key="autoresizingMask"/>
-                                <animations/>
                             </scroller>
                         </scrollView>
                         <progressIndicator fixedFrame="YES" maxValue="100" style="bar" translatesAutoresizingMaskIntoConstraints="NO" id="tIx-mA-Unl">
                             <rect key="frame" x="20" y="498" width="360" height="20"/>
-                            <animations/>
                         </progressIndicator>
                         <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="IsJ-7K-OFq">
                             <rect key="frame" x="34" y="525" width="78" height="16"/>
-                            <animations/>
                             <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="- add to playlist" id="DO4-W3-cfS">
                                 <font key="font" metaFont="cellTitle"/>
                                 <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
@@ -224,7 +208,6 @@
                         </textField>
                         <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="fj4-8C-MOm">
                             <rect key="frame" x="23" y="525" width="18" height="16"/>
-                            <animations/>
                             <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="g" id="FXU-LX-2Q9">
                                 <font key="font" metaFont="cellTitle"/>
                                 <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
@@ -233,7 +216,6 @@
                         </textField>
                         <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="R7u-K5-PHT">
                             <rect key="frame" x="139" y="525" width="67" height="16"/>
-                            <animations/>
                             <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="- save playlist" id="ZEl-jC-LoQ">
                                 <font key="font" metaFont="cellTitle"/>
                                 <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
@@ -242,7 +224,6 @@
                         </textField>
                         <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="ENs-NF-J7G">
                             <rect key="frame" x="128" y="525" width="18" height="16"/>
-                            <animations/>
                             <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="p" id="gxy-4p-qp2">
                                 <font key="font" metaFont="cellTitle"/>
                                 <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
@@ -250,7 +231,6 @@
                             </textFieldCell>
                         </textField>
                     </subviews>
-                    <animations/>
                 </customView>
                 <customObject id="0rr-wt-AEQ" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
             </objects>
@@ -279,7 +259,6 @@
                                     <collectionView id="nge-dg-bzZ" customClass="CoverCollectionView" customModule="reDiscover" customModuleProvider="target">
                                         <rect key="frame" x="0.0" y="0.0" width="598" height="598"/>
                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                                        <animations/>
                                         <collectionViewFlowLayout key="collectionViewLayout" minimumInteritemSpacing="10" minimumLineSpacing="10" id="Ce4-f2-nOG">
                                             <size key="itemSize" width="150" height="150"/>
                                             <edgeInsets key="sectionInset" left="10" right="12" top="10" bottom="10"/>
@@ -291,18 +270,14 @@
                                         </connections>
                                     </collectionView>
                                 </subviews>
-                                <animations/>
                             </clipView>
-                            <animations/>
                             <scroller key="horizontalScroller" hidden="YES" verticalHuggingPriority="750" horizontal="YES" id="Su7-cu-K2j">
                                 <rect key="frame" x="1" y="144" width="233" height="15"/>
                                 <autoresizingMask key="autoresizingMask"/>
-                                <animations/>
                             </scroller>
                             <scroller key="verticalScroller" hidden="YES" verticalHuggingPriority="750" doubleValue="1" horizontal="NO" id="51J-Hg-fr0">
                                 <rect key="frame" x="234" y="1" width="15" height="143"/>
                                 <autoresizingMask key="autoresizingMask"/>
-                                <animations/>
                             </scroller>
                         </scrollView>
                     </subviews>
@@ -312,7 +287,6 @@
                         <constraint firstAttribute="trailing" secondItem="WYY-qs-8nd" secondAttribute="trailing" id="fpq-Se-AiM"/>
                         <constraint firstAttribute="bottom" secondItem="WYY-qs-8nd" secondAttribute="bottom" id="xHN-1E-hzv"/>
                     </constraints>
-                    <animations/>
                 </customView>
                 <customObject id="v21-aR-Fjw" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
             </objects>
@@ -321,7 +295,7 @@
         <!--Song Info View Controller-->
         <scene sceneID="kTc-PP-HBa">
             <objects>
-                <viewController id="Qu5-dm-oTW" customClass="TGSongInfoViewController" sceneMemberID="viewController">
+                <viewController id="Qu5-dm-oTW" customClass="TGSongInfoViewController" customModule="reDiscover" customModuleProvider="target" sceneMemberID="viewController">
                     <connections>
                         <outlet property="albumCover" destination="Ung-wM-ZYA" id="2hi-KV-dQ0"/>
                         <outlet property="albumLabel" destination="enw-ey-muS" id="gZc-Ym-lLf"/>
@@ -336,24 +310,22 @@
                     <rect key="frame" x="0.0" y="0.0" width="400" height="600"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                     <subviews>
-                        <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="b4F-89-PQc">
-                            <rect key="frame" x="18" y="550" width="105" height="30"/>
+                        <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="b4F-89-PQc">
+                            <rect key="frame" x="18" y="550" width="106" height="30"/>
                             <constraints>
                                 <constraint firstAttribute="height" constant="30" id="mHx-K7-IgH"/>
                             </constraints>
-                            <animations/>
                             <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Song title" usesSingleLineMode="YES" id="Jej-ZO-7ck">
                                 <font key="font" metaFont="system" size="24"/>
                                 <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                 <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                             </textFieldCell>
                         </textField>
-                        <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="enw-ey-muS">
-                            <rect key="frame" x="20" y="519" width="105" height="23"/>
+                        <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="enw-ey-muS">
+                            <rect key="frame" x="20" y="519" width="106" height="23"/>
                             <constraints>
                                 <constraint firstAttribute="height" constant="23" id="EHq-sU-bnA"/>
                             </constraints>
-                            <animations/>
                             <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Album name" id="UUM-HQ-ZqZ">
                                 <font key="font" metaFont="system" size="16"/>
                                 <color key="textColor" red="0.41792889030000002" green="0.41792889030000002" blue="0.41792889030000002" alpha="1" colorSpace="calibratedRGB"/>
@@ -362,7 +334,6 @@
                         </textField>
                         <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Hfp-It-yL0">
                             <rect key="frame" x="19" y="493" width="362" height="26"/>
-                            <animations/>
                             <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Artist name" id="FzE-qd-qCW">
                                 <font key="font" metaFont="system"/>
                                 <color key="textColor" red="0.41792889030000002" green="0.41792889030000002" blue="0.41792889030000002" alpha="1" colorSpace="calibratedRGB"/>
@@ -375,12 +346,10 @@
                                 <constraint firstAttribute="width" constant="400" id="8ZN-JJ-LiZ"/>
                                 <constraint firstAttribute="height" constant="400" id="b1d-Oj-y7H"/>
                             </constraints>
-                            <animations/>
                             <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" imageFrameStyle="grayBezel" id="4uf-s4-654"/>
                         </imageView>
                         <customView fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="xy0-ER-8KE" customClass="ScrollingTextView" customModule="reDiscover" customModuleProvider="target">
                             <rect key="frame" x="22" y="430" width="358" height="55"/>
-                            <animations/>
                         </customView>
                     </subviews>
                     <constraints>
@@ -392,7 +361,6 @@
                         <constraint firstItem="b4F-89-PQc" firstAttribute="leading" secondItem="j3q-1s-sFq" secondAttribute="leading" constant="20" id="sca-jo-alc"/>
                         <constraint firstItem="b4F-89-PQc" firstAttribute="top" secondItem="j3q-1s-sFq" secondAttribute="top" constant="20" id="z4Y-v6-xBC"/>
                     </constraints>
-                    <animations/>
                 </customView>
                 <customObject id="1NJ-jk-8UF" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
             </objects>

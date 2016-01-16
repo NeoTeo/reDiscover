@@ -29,6 +29,7 @@ import Foundation
     init(songId: SongIDProtocol, metadata: SongCommonMetaData?, urlString: String?, sweetSpots: Set<SweetSpot>?,
         fingerPrint: String?, selectedSS: SweetSpot?, releases: NSData?, artId: String?, UUId: String?, RelId: String?)
     
-    //func isEqualTo(aSong: TGSong) -> Bool;
+//    func metadataDict() -> [String : AnyObject?]
+    func metadataDict() -> NSDictionary
 }
 

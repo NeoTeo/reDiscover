@@ -458,15 +458,15 @@ static int const kSongPoolStartCapacity = 250;
 }
 
 
-- (NSDictionary *)songDataForSongID:(id<SongIDProtocol>)songID {
-    id<TGSong> song = [self songForID:songID];
-    
-    return @{@"Id": songID,
-             @"Artist": song.metadata.artist,
-             @"Title": song.metadata.title,
-             @"Album": song.metadata.album,
-             @"Genre": song.metadata.genre};
-}
+//- (NSDictionary *)songDataForSongID:(id<SongIDProtocol>)songID {
+//    id<TGSong> song = [self songForID:songID];
+//    
+//    return @{@"Id": songID,
+//             @"Artist": song.metadata.artist,
+//             @"Title": song.metadata.title,
+//             @"Album": song.metadata.album,
+//             @"Genre": song.metadata.genre};
+//}
 
 
 - (BOOL)validSongID:(id<SongIDProtocol>)songID {

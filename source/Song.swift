@@ -99,4 +99,22 @@ extension Song {
         
         return Song(songId: songId, metadata: metadata, urlString: urlString, sweetSpots: sweetspots, fingerPrint: fingerprint, selectedSS: selectedSS, releases: releases, artId: artId, UUId: uuid, RelId: relid)
     }
+    
+//    - (NSDictionary *)songDataForSongID:(id<SongIDProtocol>)songID {
+//    id<TGSong> song = [self songForID:songID];
+//    
+//    return @{@"Id": songID,
+//    @"Artist": song.metadata.artist,
+//    @"Title": song.metadata.title,
+//    @"Album": song.metadata.album,
+//    @"Genre": song.metadata.genre};
+//    }
+    func metadataDict() -> NSDictionary {
+        guard let md = metadata else { return [:] }
+        return [    "Artist" : md.artist,
+                    "Title" : md.title,
+                    "Album" : md.album,
+                    "Genre" : md.genre
+        ]
+    }
 }

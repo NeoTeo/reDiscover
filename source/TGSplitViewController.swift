@@ -161,8 +161,10 @@ extension TGSplitViewController {
     // Notification when a song starts loading/caching. Allows us to update UI to show activity.
     func songDidStartUpdating(notification: NSNotification) {
 //        let songId = notification.object as! SongID
-        let infoPanel = songInfoSVI.viewController as! TGSongInfoViewController
-        infoPanel.setSongCoverImage(SongArt.getFetchingCoverImage())
+        if let infoPanel = songInfoSVI.viewController as? TGSongInfoViewController,
+            let coverImage = SongArt.getFetchingCoverImage() {
+            infoPanel.setCoverImage(coverImage)
+        }
 
     }
     // Called when the song metadata is updated and will in turn call the info panel
@@ -170,8 +172,10 @@ extension TGSplitViewController {
     func songMetaDataWasUpdated(notification: NSNotification) {
         let songId = notification.object as! SongID
         if songId.isEqual(theSongPool?.lastRequestedSongId()),
-            let infoPanel = songInfoSVI.viewController as? TGSongInfoViewController {
-            infoPanel.setSong(theSongPool?.songDataForSongID(songId))
+            let infoPanel = songInfoSVI.viewController as? TGSongInfoViewController,
+            let song = theSongPool?.songForID(songId) {
+                infoPanel.setDisplayStrings(withDisplayStrings: song.metadataDict())
+//            infoPanel.setSong(theSongPool?.songDataForSongID(songId))
         }
     }
     
@@ -184,11 +188,10 @@ extension TGSplitViewController {
                 
                 let infoPanel = songInfoSVI.viewController as! TGSongInfoViewController
                 if let artId = song.artID,
-                    
                     let art = SongArt.getArt(forArtId: artId) {
-                    infoPanel.setSongCoverImage(art)
+                    infoPanel.setCoverImage(art)
                 } else {
-                    infoPanel.setSongCoverImage(SongArt.getNoCoverImage())
+                    infoPanel.setCoverImage(SongArt.getNoCoverImage()!)
                 }
         }
     }
