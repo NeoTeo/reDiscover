@@ -43,7 +43,7 @@ func generateFingerprint(fromSongAtUrl songUrl : NSURL) -> (String, Double)? {
     
     chromaprint_dealloc(chromaprintContext)
 
-    return (String(fingerprintString), duration)
+    return (String(fingerprintString!), duration)
 }
 
 private func decodeAudio(
