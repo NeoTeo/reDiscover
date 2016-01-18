@@ -59,7 +59,7 @@ class SongAudioCacheTask : NSObject {
             dispatch_group_leave(group)
         }
         
-        // Block until all that entered the group have left it.
+        // Block until a new cache is returned.
         dispatch_group_wait(group, DISPATCH_TIME_FOREVER)
         
         return songPlayerCache

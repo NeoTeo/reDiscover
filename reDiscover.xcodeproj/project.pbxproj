@@ -242,9 +242,6 @@
 		AB3E974C187BFD8700BECC09 /* Common */ = {
 			isa = PBXGroup;
 			children = (
-				ABFC8B4A1B7CEEC500A92019 /* Fingerprinter.swift */,
-				AB43ACF81C4963F8001F258F /* SongFingerprinter.swift */,
-				AB43ACFA1C49642E001F258F /* TGSongFingerprinter.swift */,
 				ABFD9DD31AD4217700718631 /* SongUUID.swift */,
 				AB9811CE1B87672B00BA75DD /* SongPoolAccessProtocol.swift */,
 				ABC474511B7DFC9700BCB40C /* SongIDProtocol.swift */,
@@ -327,6 +324,16 @@
 			name = AudioCaching;
 			sourceTree = "<group>";
 		};
+		AB5861F11C4D442500D6A78E /* Fingerprinting */ = {
+			isa = PBXGroup;
+			children = (
+				ABFC8B4A1B7CEEC500A92019 /* Fingerprinter.swift */,
+				AB43ACF81C4963F8001F258F /* SongFingerprinter.swift */,
+				AB43ACFA1C49642E001F258F /* TGSongFingerprinter.swift */,
+			);
+			name = Fingerprinting;
+			sourceTree = "<group>";
+		};
 		AB725A3D1AD922BC003E94E6 /* SongArt */ = {
 			isa = PBXGroup;
 			children = (
@@ -390,6 +397,7 @@
 				AB3E974A187BFC7E00BECC09 /* App start view */,
 				AB3E974B187BFD6000BECC09 /* Song grid panel */,
 				AB5861F01C4BF2F600D6A78E /* AudioCaching */,
+				AB5861F11C4D442500D6A78E /* Fingerprinting */,
 				AB3E974C187BFD8700BECC09 /* Common */,
 				AB3E974D187BFD9200BECC09 /* Playlist panel */,
 				AB3E974E187BFDA700BECC09 /* Song Info panel */,

@@ -173,17 +173,13 @@ final class SongPool : NSObject {
 //        return album
 //    }
     
-//    static func updateFingerPrint(forSongId songId: SongIDProtocol, withFingerPrinter fingerPrinter: OldFingerPrinter) {
     static func updateFingerPrint(forSongId songId: SongIDProtocol) {
         guard let song = songForSongId(songId) else { return }
         
         // If there is no fingerprint, generate one sync'ly - this can be slow!
-//        if song.fingerPrint == nil,
-//            let newFingerPrint = fingerPrinter.fingerprint(forSongId: songId) {
-//            addSong(withChanges: [.Fingerprint : newFingerPrint], forSongId: songId)
-//        }
         if song.fingerPrint == nil,
-            let newFingerPrint = TGSongFingerprinter.fingerprint(forSongId: songId) {
+            let songUrl = URLForSongId(songId),
+            let newFingerPrint = TGSongFingerprinter.fingerprint(forSongUrl: songUrl) {
                 addSong(withChanges: [.Fingerprint : newFingerPrint], forSongId: songId)
         }
         

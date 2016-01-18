@@ -9,17 +9,15 @@
 import Foundation
 
 struct TGSongFingerprinter : SongFingerprinter {
-    static func fingerprint(forSongId songId: SongIDProtocol) -> String? {
-        
-        guard let songUrl = SongPool.URLForSongId(songId) else {
-            print("Error converting Song Id to song Url")
-            return nil
-        }
+
+    static func fingerprint(forSongUrl songUrl: NSURL) -> String? {
+
         guard let (fingerprintString, duration) = generateFingerprint(fromSongAtUrl: songUrl) else {
             print("Error generating fingerprint")
             return nil
         }
-        print("The song duration is \(duration)")
+        
+        print("The song duration is \(duration). Use this instead of getting duration from SongPlayer!")
         return fingerprintString
     }
 

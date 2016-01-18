@@ -123,7 +123,7 @@ static int const kSongPoolStartCapacity = 250;
         //_sweetSpotServerIO.delegate = self;
                 
         // Starting off with an empty songID cache.
-        songIDCache = [[NSMutableSet alloc] init];
+//        songIDCache = [[NSMutableSet alloc] init];
         songLoadUnloadQueue = dispatch_queue_create("song load unload q", NULL);
         
         songPoolQueue = dispatch_queue_create("songPool dictionary access q", DISPATCH_QUEUE_SERIAL);
@@ -916,35 +916,33 @@ static bool debugConcurrentCheck = false;
 
 - (void)debugLogCaches {
 
-    TGLog(TGLOG_DBG,@"The current cache is:");
-    TGLog(TGLOG_DBG,@"+---------------------+");
-    TGLog(TGLOG_DBG,@"%@",songIDCache);
-    TGLog(TGLOG_DBG,@"+---------------------+");
-    TGLog(TGLOG_DBG,@"The selectedSongscache is:");
-    TGLog(TGLOG_DBG,@"+~~~~~~~~~~~~~~~~~~~~~~+");
-    TGLog(TGLOG_DBG,@"%@",selectedSongsCache);
-    TGLog(TGLOG_DBG,@"+~~~~~~~~~~~~~~~~~~~~~~+");
+//    TGLog(TGLOG_DBG,@"%@",songIDCache);
+//    TGLog(TGLOG_DBG,@"+---------------------+");
+//    TGLog(TGLOG_DBG,@"The selectedSongscache is:");
+//    TGLog(TGLOG_DBG,@"+~~~~~~~~~~~~~~~~~~~~~~+");
+//    TGLog(TGLOG_DBG,@"%@",selectedSongsCache);
+//    TGLog(TGLOG_DBG,@"+~~~~~~~~~~~~~~~~~~~~~~+");
     
     TGLog(TGLOG_DBG,@"The callbackQueue count is: %lu",callbackQueue.count);
     
     //FIXME: This may cause an exception because if enumerates the songPoolDictionary whilst it is being changed...
-    for (id<SongIDProtocol>aSongId in songPoolDictionary) {
-        
+//    for (id<SongIDProtocol>aSongId in songPoolDictionary) {
+    
 //        TGSong* aSong = [self songForID:aSongId];
         
-        if ([songIDCache containsObject:aSongId] == NO) {
-            TGLog(TGLOG_DBG,@"Song %@ is ready for playback but is not in the cache!",aSongId);
-            
-            if (![selectedSongsCache containsObject:aSongId]) {
-                TGLog(TGLOG_DBG,@"The songId %@ was loaded but not cached AND not in the selectedSongsCache list!",aSongId);
-            }
-        }
+//        if ([songIDCache containsObject:aSongId] == NO) {
+//            TGLog(TGLOG_DBG,@"Song %@ is ready for playback but is not in the cache!",aSongId);
+//            
+//            if (![selectedSongsCache containsObject:aSongId]) {
+//                TGLog(TGLOG_DBG,@"The songId %@ was loaded but not cached AND not in the selectedSongsCache list!",aSongId);
+//            }
+//        }
         
 //        if (([aSong isReadyForPlayback] == NO) && ([songIDCache containsObject:aSongId] == YES)){
 //            TGLog(TGLOG_DBG, @"The songId %@ was incorrectly marked as cached!",aSongId);
 //        }
-    }
-    
+//    }
+    TGLog(TGLOG_DBG,@"The current cache is:");
     TGLog(TGLOG_DBG,@"+^v^v^v^v^v^v^v^v^v^v^v^v+");
     [songAudioCacher dumpCacheToLog];
     id<TGSong> nowSong = [SongPool songForSongId:currentlyPlayingSongId];

@@ -231,7 +231,11 @@ public class TGCoverDisplayViewController: NSViewController, CoverDisplayViewCon
         
         // Ask the flow layout for an index given a grid position.
         let index = (coverCollectionView.collectionViewLayout as! NSCollectionViewFlowLayout).indexFromGridPos(gridPos)
-        return mappedSongIds[index]
+//        if let index = coverCollectionView.indexPathForItemAtPoint(gridPos) {
+            return mappedSongIds[index]
+//        } else {
+//            return nil
+//        }
     }
     
     func boundsChanged(theEvent: NSEvent) {
