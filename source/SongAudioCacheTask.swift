@@ -10,24 +10,24 @@ import Foundation
 import AVFoundation
 
 /**
-A CacheTask represents a unit of work that will cache a number of songs.
-`TGSongAudioCacheTask` initiates the construction of a cache based on its given
-context and waits for the caching to be done before returning. This is so that
-the caller doesn't set too many tasks in motion that cannot be (as easily)
-cancelled.
+    A CacheTask represents a unit of work that will cache a number of songs.
+    `TGSongAudioCacheTask` initiates the construction of a cache based on its given
+    context and waits for the caching to be done before returning. This is so that
+    the caller doesn't set too many tasks in motion that cannot be (as easily)
+    cancelled.
 
-Eg. if we set 10 tasks going (by moving quickly over that many different
-songs) and we create 10 tasks that return as soon as they have started but before
-having finished caching, we have no (easy) way of interrupting a remote load
-of a resource.
+    Eg. if we set 10 tasks going (by moving quickly over that many different
+    songs) and we create 10 tasks that return as soon as they have started but before
+    having finished caching, we have no (easy) way of interrupting a remote load
+    of a resource.
 
-`TGSongAudioCacheTask` also tries to reuse what it can from the given oldCache
-to avoid re-caching.
+    `TGSongAudioCacheTask` also tries to reuse what it can from the given oldCache
+    to avoid re-caching.
 */
 class SongAudioCacheTask : NSObject {
     
-    typealias VoidVoidClosure           = ()->()
-    typealias PlayerToVoidClosure       = [AVPlayer:VoidVoidClosure]
+    typealias StatusChangeHandler           = ()->()
+    typealias PlayerToStatusChangeHandler   = [AVPlayer : StatusChangeHandler]
   
     // class context variable used by the observer.
     private var myContext = 0
@@ -35,7 +35,7 @@ class SongAudioCacheTask : NSObject {
     var songPoolAPI: SongPoolAccessProtocol?
     
     // holds the not yet ready players awaiting status change
-    var loadingPlayers: PlayerToVoidClosure = PlayerToVoidClosure()
+    var loadingPlayers: PlayerToStatusChangeHandler = PlayerToStatusChangeHandler()
     let loadingPlayersLock = NSLock()
     
     // holds the ready players
@@ -163,11 +163,11 @@ class SongAudioCacheTask : NSObject {
                 // Guards - Don't go lower than 0 or outside the dims of the grid.
                 if row < 0 || col < 0 { continue }
                 if col >= Int(gridDims.x) { break }
-                
+
                 let gridPos = NSPoint(x: col, y: row)
-                
+                print("CACHING - considering \(col),\(row): \(gridPos)")
                 if let songId = songPoolAPI?.songIdFromGridPos(gridPos) {
-                    
+                    print("CACHING - Which is songId \(songId)")
                     wantedCacheCount += 1
                     idHandler(songId)
                 }
@@ -198,7 +198,7 @@ class SongAudioCacheTask : NSObject {
         let thePlayer = AVPlayer()
         
         // The closure we want to have executed upon successful loading. We store this with the player it belongs to.
-        let aClosure: VoidVoidClosure = {
+        let aClosure: StatusChangeHandler = {
             // remove the player's observer since it may be deallocated subsequently.
             thePlayer.removeObserver(self, forKeyPath: "status", context: &self.myContext)
             
@@ -272,7 +272,7 @@ class SongAudioCacheTask : NSObject {
             // so they shouldn't be concurrent. Try to remove and test.
             /// Lock it because performWhenReadyForPlayback may be adding to loadingPlayers in a different thread.
             self.loadingPlayersLock.withCriticalScope {
-                if let completionHandler = self.loadingPlayers.removeValueForKey(playa) as VoidVoidClosure? {
+                if let completionHandler = self.loadingPlayers.removeValueForKey(playa) as StatusChangeHandler? {
                     completionHandler()
                 }
             }

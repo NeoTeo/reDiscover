@@ -252,7 +252,6 @@
 				AB638F871ADD1A2100D4C8FA /* TGSong.swift */,
 				ABEC79DD1B025C6700CD9F6C /* Song.swift */,
 				AB7358EF1A63D6D300E08D5A /* TGSongAudioPlayer.swift */,
-				AB8182D71A5D5DAA000939F1 /* TGSongAudioCacher.swift */,
 				AB85BC2E1875AB5200670905 /* TGSongUserData.h */,
 				AB85BC2F1875AB5200670905 /* TGSongUserData.m */,
 				AB3FF56119C1D3CE00D6C5EF /* UploadedSSData.h */,
@@ -319,6 +318,15 @@
 			path = ..;
 			sourceTree = "<group>";
 		};
+		AB5861F01C4BF2F600D6A78E /* AudioCaching */ = {
+			isa = PBXGroup;
+			children = (
+				AB5C9AA81BA99B30006B74A6 /* SongAudioCacheTask.swift */,
+				AB8182D71A5D5DAA000939F1 /* TGSongAudioCacher.swift */,
+			);
+			name = AudioCaching;
+			sourceTree = "<group>";
+		};
 		AB725A3D1AD922BC003E94E6 /* SongArt */ = {
 			isa = PBXGroup;
 			children = (
@@ -374,7 +382,6 @@
 		AB85BBDC1875AACF00670905 /* reDiscover */ = {
 			isa = PBXGroup;
 			children = (
-				AB5C9AA81BA99B30006B74A6 /* SongAudioCacheTask.swift */,
 				ABFB8D671B4F1400006519B0 /* TGSplitViewController.swift */,
 				AB8B54771B4D1C3000C44485 /* CoverCollectionView.swift */,
 				AB3991E91AEA8B9F00381CAC /* DebugDisplay.swift */,
@@ -382,6 +389,7 @@
 				AB1BC13E1976C91E003F02B9 /* ScrollingTextView.swift */,
 				AB3E974A187BFC7E00BECC09 /* App start view */,
 				AB3E974B187BFD6000BECC09 /* Song grid panel */,
+				AB5861F01C4BF2F600D6A78E /* AudioCaching */,
 				AB3E974C187BFD8700BECC09 /* Common */,
 				AB3E974D187BFD9200BECC09 /* Playlist panel */,
 				AB3E974E187BFDA700BECC09 /* Song Info panel */,
