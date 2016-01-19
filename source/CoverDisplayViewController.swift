@@ -316,6 +316,7 @@ public class TGCoverDisplayViewController: NSViewController, CoverDisplayViewCon
     }
 }
 
+/*
 //MARK: TGSongTimelineViewControllerProtocol methods
 extension TGCoverDisplayViewController: TGSongTimelineViewControllerDelegate {
     
@@ -333,7 +334,7 @@ extension TGCoverDisplayViewController: TGSongTimelineViewControllerDelegate {
     
 
 }
-
+*/
 //MARK: TGSongUIPopupProtocol methods
 extension TGCoverDisplayViewController: TGSongUIPopupProtocol {
     

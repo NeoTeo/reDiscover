@@ -6,10 +6,11 @@
 //  Copyright (c) 2013 Teo Sartori. All rights reserved.
 //
 
+#import "rediscover-swift.h"
 #import "TGTimelineSliderCell.h"
 #import "TGSweetSpotControl.h"
-#import "TGTimelineBarView.h"
-#import "TGSongTimelineViewController.h"
+//#import "TGTimelineBarView.h"
+//#import "TGSongTimelineViewController.h"
 
 @implementation TGTimelineSliderCell
 

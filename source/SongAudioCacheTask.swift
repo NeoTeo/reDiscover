@@ -192,13 +192,19 @@ class SongAudioCacheTask : NSObject {
         
 //        let songAsset: AVURLAsset = AVURLAsset(URL: songURL, options: [AVURLAssetPreferPreciseDurationAndTimingKey : true])
         let songAsset: AVURLAsset = AVURLAsset(URL: songURL, options: nil)
-        
-        print("slow loading AV URL asset")
+        /** TODO: Make initial asset load as fast as possible but as soon as it 
+            has loaded re-initiate the slow version (if we can keep playing the
+            initial in the bg. Otherwise we'll have to do a dupe load and swap).
+            This probably necessitates, unless we can query the asset for its precision,
+            that we store the precision as a flag on the song. 
+            Probably a v.2 feat.
+        */
+        print("Loading AV URL asset")
         
         let thePlayer = AVPlayer()
         
         // The closure we want to have executed upon successful loading. We store this with the player it belongs to.
-        let aClosure: StatusChangeHandler = {
+        let changeHandler: StatusChangeHandler = {
             // remove the player's observer since it may be deallocated subsequently.
             thePlayer.removeObserver(self, forKeyPath: "status", context: &self.myContext)
             
@@ -210,7 +216,7 @@ class SongAudioCacheTask : NSObject {
         // locking access because it may be accessed async'ly by the observeValueForKeyPath observing a status change.
         //FIXME: Find a non locking solution (eg. a queue of execution blocks)
         self.loadingPlayersLock.withCriticalScope {
-            self.loadingPlayers[thePlayer] = aClosure
+            self.loadingPlayers[thePlayer] = changeHandler
         }
         
         // add an observer to get called when the player status changes (to signal completion).

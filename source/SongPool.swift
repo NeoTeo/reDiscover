@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import CoreMedia
 
 typealias SongDictionary = [SongID: Song]
 
