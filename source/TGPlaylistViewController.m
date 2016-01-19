@@ -13,15 +13,15 @@
 #import "TGSongPool.h"
 
 
-@interface TGPlaylistViewController () <TGPlaylistDelegate>
-@end
+//@interface TGPlaylistViewController () <TGPlaylistDelegate>
+//@end
 
 @implementation TGPlaylistViewController
 
 -(void)awakeFromNib {
     if (playlist == NULL) {
         playlist = [[TGPlaylist alloc] init];
-        [playlist setDelegate:self];
+        //[playlist setDelegate:self];
         
         // Set this controller as the playlist table view's delegate and data source.
         [_playlistTableView setDelegate:self];
@@ -53,8 +53,10 @@
 - (NSDictionary *)songDataForSongID:(id<SongIDProtocol>)songID {
     
     // Get a mutable copy so we can add a few bits of data.
-    NSMutableDictionary *songData = [[_songPoolAPI songDataForSongID:songID] mutableCopy];
-    
+    /// FIXME: the song pool does not provide the songDataForSongID any more.
+//    NSMutableDictionary *songData = [[_songPoolAPI songDataForSongID:songID] mutableCopy];
+    id<TGSong> song = [SongPool songForSongId:songID];
+    NSMutableDictionary *songData = [[song metadataDict] mutableCopy];
     // Get the song duration and floor it before adding it to the playlist data (it doesn't really use it)
     double durationDoubleSecs =[[_songPoolAPI songDurationForSongID:songID] doubleValue];
     
@@ -77,7 +79,8 @@
     // Get an existing cell with the MyView identifier if it exists
     TGPlaylistCellView *resultCell = [tableView makeViewWithIdentifier:@"SongCell" owner:self];
     
-    NSDictionary *songData = [_songPoolAPI songDataForSongID:[playlist songIDAtIndex:row]];
+    id<TGSong> song = [SongPool songForSongId:[playlist songIDAtIndex:row]];
+    NSDictionary *songData = [song metadataDict];
     
     // Construct the string for the playlist entry.
 //    resultCell.layer.backgroundColor = (__bridge CGColorRef)([NSColor whiteColor]);

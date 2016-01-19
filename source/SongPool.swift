@@ -16,17 +16,9 @@ final class SongPool : NSObject {
     // Until we've switched TGSongPool over to this class we'll use it as a delegate.
     static var delegate: SongPoolAccessProtocol?
     
-    /** I wanted the fingerPrinter to be a static protocol that I could call without
-        having to instantiate it and without having to know about a specific implementation
-        but although Swift allows static protocols you cannot call them directly; you
-        need a specific class that conforms to the static protocol and then you can call
-        that instead. However, this means we're complected with that specific class which
-        we want to avoid.*/
-//    private static var fingerPrinter: OldFingerPrinter?
     //FIXME: turn these two into protocols!
     private static var albumCollection: AlbumCollection?
     private static var songAudioPlayer: TGSongAudioPlayer?
-    
     
     private static var songPool: SongDictionary?
     private static var songPoolAccessQ: dispatch_queue_t?

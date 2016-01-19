@@ -9,7 +9,8 @@
 #import <Foundation/Foundation.h>
 
 // Protocol forward declarations
-@protocol TGPlaylistDelegate;
+//@protocol TGPlaylistDelegate;
+@protocol TGSongPoolDelegate;
 @protocol SongIDProtocol;
 
 @interface TGPlaylist : NSObject <NSTableViewDataSource> {
@@ -18,7 +19,8 @@
 }
 
 @property NSUInteger posInPlaylist;
-@property id<TGPlaylistDelegate> delegate;
+//@property id<TGPlaylistDelegate> delegate;
+@property id<TGSongPoolDelegate> delegate;
 
 
 - (void)addSong:(id<SongIDProtocol>)aSongID atIndex:(NSUInteger)index;
@@ -32,8 +34,8 @@
 
 
 // Delegate method declarations.
-@protocol TGPlaylistDelegate <NSObject>
-
-- (NSDictionary *)songDataForSongID:(id<SongIDProtocol>)songID;
-
-@end
+//@protocol TGPlaylistDelegate <NSObject>
+//
+//- (NSDictionary *)songDataForSongID:(id<SongIDProtocol>)songID;
+//
+//@end

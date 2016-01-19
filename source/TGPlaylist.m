@@ -7,8 +7,10 @@
 //
 
 #import "TGPlaylist.h"
+#import "rediscover-swift.h"
 
 @protocol SongIDProtocol;
+@protocol TGSong;
 
 @implementation TGPlaylist
 
@@ -81,17 +83,16 @@
     // Start the content off with the header.
     NSString *content = m3uHeader;
     // TEO: Do some error checking here.
-//    for (NSNumber *songID in songList) {
+
     for (id<SongIDProtocol> songID in songList) {
-//        NSInteger sID = [songID integerValue];
-//        NSDictionary *songData = [_delegate songDataForSongID:sID];
-        NSDictionary *songData = [_delegate songDataForSongID:songID];
-        NSInteger sDuration = [[songData valueForKey:@"Duration"] integerValue];
-        NSURL *songURL = [songData valueForKey:@"SongURL"];
-//        NSInteger sDuration = [_delegate songDurationForSongID:sID];
-//        NSURL *songURL = [_delegate songURLForSongID:sID];
-        NSString *info = [NSString stringWithFormat:@"%@%ld,%@ - %@\n",m3uExtInf,sDuration,[songData valueForKey:@"Artist"],[songData valueForKey:@"Title"]];
-        NSString *url = [songURL absoluteString];
+
+        id<TGSong> song = [SongPool songForSongId:songID];
+        NSDictionary *songData  = [song metadataDict];//[_delegate songDataForSongID:songID];
+        NSInteger sDuration     = [[songData valueForKey:@"Duration"] integerValue];
+        NSURL *songURL          = [songData valueForKey:@"SongURL"];
+        NSString *url           = [songURL absoluteString];
+        NSString *info          = [NSString stringWithFormat:@"%@%ld,%@ - %@\n",m3uExtInf,sDuration,[songData valueForKey:@"Artist"],[songData valueForKey:@"Title"]];
+
         
         // Append the new song to the existing content.
         content = [NSString stringWithFormat:@"%@%@%@\n",content,info,url];

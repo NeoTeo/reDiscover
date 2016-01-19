@@ -38,15 +38,5 @@ class SongUUID : NSObject {
             return uuidString
         }
         return nil
-    }
-//    func UUIDForSong(song: SongIDProtocol, duration: UInt, fingerprint: String) -> SongUUID? {
-//    static func lookupUUIDForSong(song: TGSong, duration: UInt, fingerprint: String) -> String {
-//        let theData = AcoustIDWebService.dataDictForFingerprint(duration, fingerprint: fingerprint)
-//        if let uuidString = theData?.objectForKey("id") as? String {
-//            return uuidString
-//        }
-//        return ""
-//    }
-    
-    
+    }    
 }
