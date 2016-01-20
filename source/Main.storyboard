@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="9531" systemVersion="15C50" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" initialViewController="Nxi-KE-3bM">
+<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="9531" systemVersion="15D21" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" initialViewController="Nxi-KE-3bM">
     <dependencies>
         <deployment identifier="macosx"/>
         <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="9531"/>
@@ -60,9 +60,9 @@
             <objects>
                 <splitViewController id="XiH-xD-SmT" customClass="TGSplitViewController" customModule="reDiscover" customModuleProvider="target" sceneMemberID="viewController">
                     <splitViewItems>
-                        <splitViewItem canCollapse="YES" holdingPriority="260" behavior="sidebar" id="W0P-yD-rRt"/>
-                        <splitViewItem holdingPriority="499" id="2o7-5d-FlK"/>
-                        <splitViewItem canCollapse="YES" holdingPriority="260" behavior="sidebar" id="dZ7-As-gBM"/>
+                        <splitViewItem canCollapse="YES" collapsed="YES" id="W0P-yD-rRt"/>
+                        <splitViewItem holdingPriority="251" id="2o7-5d-FlK"/>
+                        <splitViewItem canCollapse="YES" collapsed="YES" id="dZ7-As-gBM"/>
                     </splitViewItems>
                     <splitView key="splitView" wantsLayer="YES" dividerStyle="thin" vertical="YES" id="TO9-Bc-PxR">
                         <rect key="frame" x="0.0" y="0.0" width="450" height="300"/>
@@ -90,9 +90,8 @@
                         <outlet property="view" destination="U4q-eW-vcj" id="ent-OQ-iQr"/>
                     </connections>
                 </viewController>
-                <customView identifier="playlistView" horizontalHuggingPriority="1000" horizontalCompressionResistancePriority="250" placeholderIntrinsicWidth="400" placeholderIntrinsicHeight="600" id="U4q-eW-vcj">
+                <customView identifier="playlistView" translatesAutoresizingMaskIntoConstraints="NO" id="U4q-eW-vcj">
                     <rect key="frame" x="0.0" y="0.0" width="400" height="600"/>
-                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                     <subviews>
                         <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="F0x-td-Ipx">
                             <rect key="frame" x="18" y="541" width="130" height="39"/>
@@ -246,9 +245,8 @@
                         <outlet property="view" destination="gSj-0W-kzU" id="z8T-mZ-Vg1"/>
                     </connections>
                 </viewController>
-                <customView id="gSj-0W-kzU">
+                <customView translatesAutoresizingMaskIntoConstraints="NO" id="gSj-0W-kzU">
                     <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
-                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                     <subviews>
                         <scrollView wantsLayer="YES" autohidesScrollers="YES" horizontalLineScroll="10" horizontalPageScroll="10" verticalLineScroll="10" verticalPageScroll="10" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="WYY-qs-8nd">
                             <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
@@ -306,9 +304,8 @@
                         <outlet property="view" destination="j3q-1s-sFq" id="OKV-KA-g5t"/>
                     </connections>
                 </viewController>
-                <customView identifier="infoView" wantsLayer="YES" horizontalHuggingPriority="1000" id="j3q-1s-sFq">
+                <customView identifier="infoView" wantsLayer="YES" translatesAutoresizingMaskIntoConstraints="NO" id="j3q-1s-sFq">
                     <rect key="frame" x="0.0" y="0.0" width="400" height="600"/>
-                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                     <subviews>
                         <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="b4F-89-PQc">
                             <rect key="frame" x="18" y="550" width="106" height="30"/>

@@ -43,9 +43,7 @@
 		AB85BBE71875AACF00670905 /* Credits.rtf in Resources */ = {isa = PBXBuildFile; fileRef = AB85BBE51875AACF00670905 /* Credits.rtf */; };
 		AB85BBEF1875AACF00670905 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = AB85BBEE1875AACF00670905 /* Images.xcassets */; };
 		AB85BC431875AB5200670905 /* TGPlaylist.m in Sources */ = {isa = PBXBuildFile; fileRef = AB85BC191875AB5200670905 /* TGPlaylist.m */; };
-		AB85BC441875AB5200670905 /* TGPlaylistView.xib in Resources */ = {isa = PBXBuildFile; fileRef = AB85BC1A1875AB5200670905 /* TGPlaylistView.xib */; };
 		AB85BC451875AB5200670905 /* TGPlaylistViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = AB85BC1C1875AB5200670905 /* TGPlaylistViewController.m */; };
-		AB85BC4A1875AB5200670905 /* TGSongInfoView.xib in Resources */ = {isa = PBXBuildFile; fileRef = AB85BC241875AB5200670905 /* TGSongInfoView.xib */; };
 		AB85BC4C1875AB5200670905 /* TGSongPool.m in Sources */ = {isa = PBXBuildFile; fileRef = AB85BC281875AB5200670905 /* TGSongPool.m */; };
 		AB85BC4D1875AB5200670905 /* TGSongTimelineView.xib in Resources */ = {isa = PBXBuildFile; fileRef = AB85BC291875AB5200670905 /* TGSongTimelineView.xib */; };
 		AB85BC501875AB5200670905 /* TGSongUserData.m in Sources */ = {isa = PBXBuildFile; fileRef = AB85BC2F1875AB5200670905 /* TGSongUserData.m */; };
@@ -138,10 +136,8 @@
 		AB85BBEE1875AACF00670905 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = source/Images.xcassets; sourceTree = "<group>"; };
 		AB85BC181875AB5200670905 /* TGPlaylist.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TGPlaylist.h; sourceTree = "<group>"; };
 		AB85BC191875AB5200670905 /* TGPlaylist.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TGPlaylist.m; sourceTree = "<group>"; };
-		AB85BC1A1875AB5200670905 /* TGPlaylistView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = TGPlaylistView.xib; sourceTree = "<group>"; };
 		AB85BC1B1875AB5200670905 /* TGPlaylistViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TGPlaylistViewController.h; sourceTree = "<group>"; };
 		AB85BC1C1875AB5200670905 /* TGPlaylistViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TGPlaylistViewController.m; sourceTree = "<group>"; };
-		AB85BC241875AB5200670905 /* TGSongInfoView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = TGSongInfoView.xib; sourceTree = "<group>"; };
 		AB85BC271875AB5200670905 /* TGSongPool.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TGSongPool.h; path = source/TGSongPool.h; sourceTree = "<group>"; };
 		AB85BC281875AB5200670905 /* TGSongPool.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TGSongPool.m; path = source/TGSongPool.m; sourceTree = "<group>"; };
 		AB85BC291875AB5200670905 /* TGSongTimelineView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = TGSongTimelineView.xib; sourceTree = "<group>"; };
@@ -426,8 +422,6 @@
 				AB3991EA1AEA8B9F00381CAC /* DebugDisplay.xib */,
 				AB4529371A88EAF300A6B15A /* TGSongUIPopupController.xib */,
 				ABB592E71B2ED0A400B57CC5 /* Cover.xib */,
-				AB85BC1A1875AB5200670905 /* TGPlaylistView.xib */,
-				AB85BC241875AB5200670905 /* TGSongInfoView.xib */,
 				AB663FD71A8AA14700E50596 /* TGSongGridView.xib */,
 				AB85BC291875AB5200670905 /* TGSongTimelineView.xib */,
 			);
@@ -504,7 +498,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				AB4529391A88EAF300A6B15A /* TGSongUIPopupController.xib in Resources */,
-				AB85BC4A1875AB5200670905 /* TGSongInfoView.xib in Resources */,
 				ABB592E81B2ED0A400B57CC5 /* Cover.xib in Resources */,
 				AB85BC4D1875AB5200670905 /* TGSongTimelineView.xib in Resources */,
 				ABEC263D1951C6F200A57CE3 /* Main.storyboard in Resources */,
@@ -513,7 +506,6 @@
 				ABFC8EB219C19C630007ECCB /* uploadedSS.plist in Resources */,
 				AB85BBE71875AACF00670905 /* Credits.rtf in Resources */,
 				AB3991EC1AEA8B9F00381CAC /* DebugDisplay.xib in Resources */,
-				AB85BC441875AB5200670905 /* TGPlaylistView.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
