@@ -29,7 +29,6 @@
 		AB5C9AA91BA99B30006B74A6 /* SongAudioCacheTask.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB5C9AA81BA99B30006B74A6 /* SongAudioCacheTask.swift */; };
 		AB5E5DDC1B3BF96F007C6307 /* SongSelectionContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB5E5DDB1B3BF96F007C6307 /* SongSelectionContext.swift */; };
 		AB638F881ADD1A2100D4C8FA /* TGSong.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB638F871ADD1A2100D4C8FA /* TGSong.swift */; };
-		AB663FD81A8AA14700E50596 /* TGSongGridView.xib in Resources */ = {isa = PBXBuildFile; fileRef = AB663FD71A8AA14700E50596 /* TGSongGridView.xib */; };
 		AB6657341C4A889900F9B845 /* TGSongInfoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB6657331C4A889900F9B845 /* TGSongInfoViewController.swift */; };
 		AB71279B19407C8E0002B1F8 /* CoverArtArchiveWebFetcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB71279A19407C8E0002B1F8 /* CoverArtArchiveWebFetcher.swift */; };
 		AB725A3A1AD91E8C003E94E6 /* SongArtFinder.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB725A391AD91E8C003E94E6 /* SongArtFinder.swift */; };
@@ -57,7 +56,6 @@
 		ABB2B6621ADEB38F004F9F87 /* NSImage+HashId.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABB2B6611ADEB38F004F9F87 /* NSImage+HashId.swift */; };
 		ABB33FF019C72C3800439A5E /* SweetSpotServerIO.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABB33FEF19C72C3800439A5E /* SweetSpotServerIO.swift */; };
 		ABB592E31B2EC63700B57CC5 /* CoverDisplayViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABB592E21B2EC63700B57CC5 /* CoverDisplayViewController.swift */; };
-		ABB592E81B2ED0A400B57CC5 /* Cover.xib in Resources */ = {isa = PBXBuildFile; fileRef = ABB592E71B2ED0A400B57CC5 /* Cover.xib */; };
 		ABB592EA1B2ED19C00B57CC5 /* TGCollectionCover.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABB592E91B2ED19C00B57CC5 /* TGCollectionCover.swift */; };
 		ABBFC0E41B4AA55F00323C6D /* NSResponder+printResponderChain.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABBFC0E31B4AA55F00323C6D /* NSResponder+printResponderChain.swift */; };
 		ABBFC0E61B4AA5BC00323C6D /* NSCollectionViewFlowLayout+colsAndRows.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABBFC0E51B4AA5BC00323C6D /* NSCollectionViewFlowLayout+colsAndRows.swift */; };
@@ -80,6 +78,7 @@
 		ABEC79DE1B025C6700CD9F6C /* Song.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABEC79DD1B025C6700CD9F6C /* Song.swift */; };
 		ABED8E321AB72F4F005B1403 /* SongCommonMetadata.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABED8E311AB72F4F005B1403 /* SongCommonMetadata.swift */; };
 		ABED8E341AB73B6E005B1403 /* SongArt.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABED8E331AB73B6E005B1403 /* SongArt.swift */; };
+		ABF05AC31C50026C007AFCE3 /* Cover.xib in Resources */ = {isa = PBXBuildFile; fileRef = ABF05AC21C50026C007AFCE3 /* Cover.xib */; };
 		ABF767431AEE6D74007C7A12 /* SongPool.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABF767421AEE6D74007C7A12 /* SongPool.swift */; };
 		ABF767451AEE82B4007C7A12 /* LocalFileIO.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABF767441AEE82B4007C7A12 /* LocalFileIO.swift */; };
 		ABFB8D681B4F1400006519B0 /* TGSplitViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABFB8D671B4F1400006519B0 /* TGSplitViewController.swift */; };
@@ -116,7 +115,6 @@
 		AB5C9AA81BA99B30006B74A6 /* SongAudioCacheTask.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SongAudioCacheTask.swift; sourceTree = "<group>"; };
 		AB5E5DDB1B3BF96F007C6307 /* SongSelectionContext.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SongSelectionContext.swift; sourceTree = "<group>"; };
 		AB638F871ADD1A2100D4C8FA /* TGSong.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = TGSong.swift; path = source/TGSong.swift; sourceTree = "<group>"; };
-		AB663FD71A8AA14700E50596 /* TGSongGridView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = TGSongGridView.xib; sourceTree = "<group>"; };
 		AB6657331C4A889900F9B845 /* TGSongInfoViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TGSongInfoViewController.swift; sourceTree = "<group>"; };
 		AB71279919407C8D0002B1F8 /* reDiscover-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "reDiscover-Bridging-Header.h"; sourceTree = "<group>"; };
 		AB71279A19407C8E0002B1F8 /* CoverArtArchiveWebFetcher.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CoverArtArchiveWebFetcher.swift; sourceTree = "<group>"; };
@@ -155,7 +153,6 @@
 		ABB2B6611ADEB38F004F9F87 /* NSImage+HashId.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSImage+HashId.swift"; sourceTree = "<group>"; };
 		ABB33FEF19C72C3800439A5E /* SweetSpotServerIO.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SweetSpotServerIO.swift; sourceTree = "<group>"; };
 		ABB592E21B2EC63700B57CC5 /* CoverDisplayViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CoverDisplayViewController.swift; sourceTree = "<group>"; };
-		ABB592E71B2ED0A400B57CC5 /* Cover.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = Cover.xib; sourceTree = "<group>"; };
 		ABB592E91B2ED19C00B57CC5 /* TGCollectionCover.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TGCollectionCover.swift; sourceTree = "<group>"; };
 		ABBFC0E31B4AA55F00323C6D /* NSResponder+printResponderChain.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSResponder+printResponderChain.swift"; sourceTree = "<group>"; };
 		ABBFC0E51B4AA5BC00323C6D /* NSCollectionViewFlowLayout+colsAndRows.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSCollectionViewFlowLayout+colsAndRows.swift"; sourceTree = "<group>"; };
@@ -178,6 +175,7 @@
 		ABEC79DD1B025C6700CD9F6C /* Song.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Song.swift; path = source/Song.swift; sourceTree = "<group>"; };
 		ABED8E311AB72F4F005B1403 /* SongCommonMetadata.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SongCommonMetadata.swift; path = source/SongCommonMetadata.swift; sourceTree = "<group>"; };
 		ABED8E331AB73B6E005B1403 /* SongArt.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SongArt.swift; sourceTree = "<group>"; };
+		ABF05AC21C50026C007AFCE3 /* Cover.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = Cover.xib; sourceTree = "<group>"; };
 		ABF767421AEE6D74007C7A12 /* SongPool.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SongPool.swift; path = source/SongPool.swift; sourceTree = "<group>"; };
 		ABF767441AEE82B4007C7A12 /* LocalFileIO.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = LocalFileIO.swift; path = source/LocalFileIO.swift; sourceTree = "<group>"; };
 		ABFB8D671B4F1400006519B0 /* TGSplitViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = TGSplitViewController.swift; path = source/TGSplitViewController.swift; sourceTree = "<group>"; };
@@ -421,8 +419,7 @@
 				ABEC263C1951C6F200A57CE3 /* Main.storyboard */,
 				AB3991EA1AEA8B9F00381CAC /* DebugDisplay.xib */,
 				AB4529371A88EAF300A6B15A /* TGSongUIPopupController.xib */,
-				ABB592E71B2ED0A400B57CC5 /* Cover.xib */,
-				AB663FD71A8AA14700E50596 /* TGSongGridView.xib */,
+				ABF05AC21C50026C007AFCE3 /* Cover.xib */,
 				AB85BC291875AB5200670905 /* TGSongTimelineView.xib */,
 			);
 			name = GUI;
@@ -498,11 +495,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				AB4529391A88EAF300A6B15A /* TGSongUIPopupController.xib in Resources */,
-				ABB592E81B2ED0A400B57CC5 /* Cover.xib in Resources */,
+				ABF05AC31C50026C007AFCE3 /* Cover.xib in Resources */,
 				AB85BC4D1875AB5200670905 /* TGSongTimelineView.xib in Resources */,
 				ABEC263D1951C6F200A57CE3 /* Main.storyboard in Resources */,
 				AB85BBEF1875AACF00670905 /* Images.xcassets in Resources */,
-				AB663FD81A8AA14700E50596 /* TGSongGridView.xib in Resources */,
 				ABFC8EB219C19C630007ECCB /* uploadedSS.plist in Resources */,
 				AB85BBE71875AACF00670905 /* Credits.rtf in Resources */,
 				AB3991EC1AEA8B9F00381CAC /* DebugDisplay.xib in Resources */,
