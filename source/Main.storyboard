@@ -90,7 +90,7 @@
                         <outlet property="view" destination="U4q-eW-vcj" id="ent-OQ-iQr"/>
                     </connections>
                 </viewController>
-                <customView identifier="playlistView" placeholderIntrinsicWidth="400" placeholderIntrinsicHeight="600" id="U4q-eW-vcj">
+                <customView identifier="playlistView" horizontalHuggingPriority="1000" horizontalCompressionResistancePriority="250" placeholderIntrinsicWidth="400" placeholderIntrinsicHeight="600" id="U4q-eW-vcj">
                     <rect key="frame" x="0.0" y="0.0" width="400" height="600"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                     <subviews>

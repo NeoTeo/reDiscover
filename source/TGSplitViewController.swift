@@ -8,13 +8,13 @@
 
 import Foundation
 
-final public class TGSplitViewController: NSSplitViewController {//, TGMainViewControllerDelegate {
+final public class TGSplitViewController: NSSplitViewController {
  
     @IBOutlet weak var playlistSplitViewItem: NSSplitViewItem!
     @IBOutlet weak var coverCollectionSVI: NSSplitViewItem!
     @IBOutlet weak var songInfoSVI: NSSplitViewItem!
     
-    // Shadow the above SplitViewItems' viewControllers
+    // Shadow the above SplitViewItems' viewControllers because...?
     private var playlistPanelCtrlr: TGPlaylistViewController!
     private var coversPanelCtrlr: TGCoverDisplayViewController!
     private var infoPanelCtrlr: TGSongInfoViewController!
@@ -52,6 +52,11 @@ extension TGSplitViewController {
         setupBindings()
     }
     
+    
+    /**
+        Set up KVO bindings between elements that need to know when songs are playing
+        and how far along they are.
+    */
     func setupBindings() {
         
         if objectController == nil {
@@ -69,7 +74,6 @@ extension TGSplitViewController {
             withKeyPath: "playheadPos",
             options: [NSValueTransformerNameBindingOption : "TimelineTransformer"])
         
-        
         // Bind the timeline nsslider (timelineBar) to observe the requestedPlayheadPosition 
         // of the currently playing song via the objectcontroller using the TimelineTransformer.
         coversPanelCtrlr.songTimelineController?.timelineBar?.bind("value",
@@ -83,8 +87,6 @@ extension TGSplitViewController {
             toObject: objectController!,
             withKeyPath: "selection.playheadPos",
             options: [NSValueTransformerNameBindingOption : "TimelineTransformer"])
-
-
     }
     
     func registerNotifications() {
@@ -106,10 +108,32 @@ extension TGSplitViewController {
         infoPanelCtrlr = songInfoSVI.viewController as! TGSongInfoViewController
         
         playlistPanelCtrlr.songPoolAPI = theSongPool
-//        playlistPanelCtrlr.delegate = self
-
     }
     
+    private func setupPanels() {
+        // Start off with the side panels collapsed.
+        /// TODO: briefly animate the panels to show they exist, highlighting the
+        /// buttons that will toggle them.
+        playlistSplitViewItem.collapsed = true
+        songInfoSVI.collapsed           = true
+        
+    }
+    
+    func togglePanel(panelID: Int) {
+        let splitViewItem = self.splitViewItems[panelID]
+        
+        // Anchor the appropriate window edge before letting the splitview animate.
+        let anchor: NSLayoutAttribute = (panelID == 0) ? .Trailing : .Leading
+        
+        self.view.window?.setAnchorAttribute(anchor, forOrientation: .Horizontal)
+        
+        splitViewItem.animator().collapsed = !splitViewItem.collapsed
+        
+    }
+
+//    private func toggleSidebar(sender: AnyObject?) {
+//        <#code#>
+//    }
     public override func keyDown(theEvent: NSEvent) {
 
         let string = theEvent.characters!
@@ -118,13 +142,18 @@ extension TGSplitViewController {
             switch character {
             case "[":
                 print("Left panel")
-                playlistSplitViewItem.animator().collapsed = !playlistSplitViewItem.collapsed
+                //playlistSplitViewItem.animator().collapsed = !playlistSplitViewItem.collapsed
+                togglePanel(0)
             case "]":
                 print("Right panel")
-                songInfoSVI.animator().collapsed = !songInfoSVI.collapsed
+//                songInfoSVI.animator().collapsed = !songInfoSVI.collapsed
+                togglePanel(2)
             case "d":
                 print("Dump debug")
                 theSongPool?.debugLogCaches()
+                case "t":
+                print("Toggle sidebar")
+                toggleSidebar(self)
             default:
                 break
             }
