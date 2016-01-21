@@ -56,6 +56,7 @@ extension TGSplitViewController {
         
         /// Figure out what this window's content hugging priority and 
         /// content compression resistance priorities are.
+        print("This view is \(self.view)")
         print("This view's horizontal compression resistance: \(self.view.contentCompressionResistancePriorityForOrientation(.Horizontal))")
         print("This view's horizontal hugging priority: \(self.view.contentHuggingPriorityForOrientation(.Horizontal))")
 
