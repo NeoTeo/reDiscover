@@ -53,6 +53,12 @@ extension TGSplitViewController {
         if let layoutAttribute = self.view.window?.anchorAttributeForOrientation(.Horizontal) {
             print("Horizontal anchor? \(layoutAttribute.rawValue)")
         }
+        
+        /// Figure out what this window's content hugging priority and 
+        /// content compression resistance priorities are.
+        print("This view's horizontal compression resistance: \(self.view.contentCompressionResistancePriorityForOrientation(.Horizontal))")
+        print("This view's horizontal hugging priority: \(self.view.contentHuggingPriorityForOrientation(.Horizontal))")
+
         theSongPool = TGSongPool()
         theSongPool!.loadFromURL(theURL)
         theSongPool!.coverDisplayAccessAPI = coversPanelCtrlr
