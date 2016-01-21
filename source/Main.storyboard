@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="9531" systemVersion="15D21" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" initialViewController="Nxi-KE-3bM">
+<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="9531" systemVersion="15D21" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" initialViewController="1rG-hg-cjj">
     <dependencies>
         <deployment identifier="macosx"/>
         <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="9531"/>
@@ -79,7 +79,7 @@
                 </splitViewController>
                 <customObject id="rrN-I8-baz" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1514" y="101"/>
+            <point key="canvasLocation" x="918" y="417"/>
         </scene>
         <!--Playlist View Controller-->
         <scene sceneID="BNq-Gw-90r">
@@ -233,7 +233,7 @@
                 </customView>
                 <customObject id="0rr-wt-AEQ" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1051" y="546"/>
+            <point key="canvasLocation" x="455" y="892"/>
         </scene>
         <!--Cover Display View Controller-->
         <scene sceneID="nXq-Px-rb6">
@@ -288,7 +288,7 @@
                 </customView>
                 <customObject id="v21-aR-Fjw" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1514" y="546"/>
+            <point key="canvasLocation" x="918" y="892"/>
         </scene>
         <!--Song Info View Controller-->
         <scene sceneID="kTc-PP-HBa">
@@ -361,7 +361,7 @@
                 </customView>
                 <customObject id="1NJ-jk-8UF" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1981" y="546"/>
+            <point key="canvasLocation" x="1385" y="892"/>
         </scene>
         <!--Application-->
         <scene sceneID="x5Z-Oz-JLm">

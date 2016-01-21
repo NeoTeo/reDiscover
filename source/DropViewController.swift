@@ -17,6 +17,16 @@ class DropViewController : NSViewController, DropViewDelegate {
         super.viewDidLoad()
         
         // Do any additional setup after loading the view.
+        /// Skip the drop to speed up debugging of main app
+    }
+    
+    override func viewDidAppear() {
+        #if DEBUG
+            droppedURL = NSURL(fileURLWithPath: "/Users/teo/Desktop/50 Cent")
+            if droppedURL != nil  {
+                dropViewDidReceiveURL(droppedURL!)
+            }
+        #endif
     }
     
     override var representedObject: AnyObject? {
@@ -26,19 +36,19 @@ class DropViewController : NSViewController, DropViewDelegate {
     }
 
     override func awakeFromNib() {
+        
         let dropView = self.view as! DropView
         dropView.delegate = self
         
-        // We need this to bring the window to the front on app start.
-//        NSApp.activateIgnoringOtherApps(true)
-
     }
    
+    /** Called by performSegueWithIdentifier and gives us a chance to set things 
+        up before the segue happens. In this case we're closing and releasing the
+        drop window before TGSplitViewController's viewDidAppear is called.
+    */
     override func prepareForSegue(segue: NSStoryboardSegue, sender: AnyObject!) {
         print("Drop View Controller preparing for segue")
 
-//        let mainVC = segue.destinationController as MainViewController
-//        let mainVC = segue.destinationController as! TGMainViewController
       let splitViewCtrlr = segue.destinationController as! TGSplitViewController
         
         if droppedURL == nil {
@@ -48,19 +58,24 @@ class DropViewController : NSViewController, DropViewDelegate {
         
         //REFAC better way of passing the url?
         splitViewCtrlr.theURL = droppedURL
+        
+        /// close and release the drop window.
+        //print("The window we're about to close: \(self.view.window)")
+        self.view.window?.releasedWhenClosed = true
+        self.view.window?.close()
 
     }
+    
     
     func dropViewDidReceiveURL(theURL: NSURL) {
         if validateURL(theURL) {
             droppedURL = theURL
-
 //            performSegueWithIdentifier("oldStyleSegue", sender: self)
             performSegueWithIdentifier("segueToSplitView", sender: self)            
             // We need to do this again because the app is deactivated when the user clicks a folder
             // in Finder to drag onto here.
+
             NSApp.activateIgnoringOtherApps(true)
-            self.view.window?.close()
         }
     }
 

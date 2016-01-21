@@ -29,6 +29,10 @@ final public class TGSplitViewController: NSSplitViewController {
 
 extension TGSplitViewController {
     
+    /** This view appears as a consequence of a segue from the drop view controller.
+        Since the initial window is closed and a new one is created to hold this 
+        view we must set it up from here.
+    */
     public override func viewDidAppear() {
 //        print("TGSplitView did appear. Let's have a look at the views.")
 //        view.printAllSubviews()
@@ -37,10 +41,18 @@ extension TGSplitViewController {
 //        print("coverCollection \(coverCollectionSVI.viewController)")
 //        print("songInfo \(songInfoSVI.viewController)")
         connectControllers()
-        
+        self.view.window?.makeKeyAndOrderFront(self)
         // make this the first responder.
         self.view.window?.makeFirstResponder(self)
-        
+                print("This window: \(self.view.window)")
+        print("Is this the window visible \(self.view.window?.visible)")
+        print("Does this window have a title bar? \(self.view.window?.hasTitleBar)")
+        print("Could this window be a main window? \(self.view.window?.canBecomeMainWindow)")
+        self.view.window?.makeMainWindow()
+        print("Is this the main window? \(self.view.window?.mainWindow)")
+        if let layoutAttribute = self.view.window?.anchorAttributeForOrientation(.Horizontal) {
+            print("Horizontal anchor? \(layoutAttribute.rawValue)")
+        }
         theSongPool = TGSongPool()
         theSongPool!.loadFromURL(theURL)
         theSongPool!.coverDisplayAccessAPI = coversPanelCtrlr
