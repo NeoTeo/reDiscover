@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="9531" systemVersion="15D21" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" initialViewController="1rG-hg-cjj">
+<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="9531" systemVersion="15E27e" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" initialViewController="1rG-hg-cjj">
     <dependencies>
         <deployment identifier="macosx"/>
         <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="9531"/>
@@ -60,9 +60,9 @@
             <objects>
                 <splitViewController id="XiH-xD-SmT" customClass="TGSplitViewController" customModule="reDiscover" customModuleProvider="target" sceneMemberID="viewController">
                     <splitViewItems>
-                        <splitViewItem canCollapse="YES" collapsed="YES" id="W0P-yD-rRt"/>
+                        <splitViewItem canCollapse="YES" collapsed="YES" holdingPriority="750" id="W0P-yD-rRt"/>
                         <splitViewItem holdingPriority="1000" id="2o7-5d-FlK"/>
-                        <splitViewItem canCollapse="YES" collapsed="YES" id="dZ7-As-gBM"/>
+                        <splitViewItem canCollapse="YES" collapsed="YES" holdingPriority="750" id="dZ7-As-gBM"/>
                     </splitViewItems>
                     <splitView key="splitView" wantsLayer="YES" dividerStyle="thin" vertical="YES" id="TO9-Bc-PxR">
                         <rect key="frame" x="0.0" y="0.0" width="450" height="300"/>
@@ -90,7 +90,7 @@
                         <outlet property="view" destination="U4q-eW-vcj" id="ent-OQ-iQr"/>
                     </connections>
                 </viewController>
-                <customView identifier="playlistView" translatesAutoresizingMaskIntoConstraints="NO" id="U4q-eW-vcj">
+                <customView identifier="playlistView" horizontalHuggingPriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="U4q-eW-vcj">
                     <rect key="frame" x="0.0" y="0.0" width="400" height="600"/>
                     <subviews>
                         <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="F0x-td-Ipx">
@@ -304,7 +304,7 @@
                         <outlet property="view" destination="j3q-1s-sFq" id="OKV-KA-g5t"/>
                     </connections>
                 </viewController>
-                <customView identifier="infoView" wantsLayer="YES" translatesAutoresizingMaskIntoConstraints="NO" id="j3q-1s-sFq">
+                <customView identifier="infoView" wantsLayer="YES" horizontalHuggingPriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="j3q-1s-sFq">
                     <rect key="frame" x="0.0" y="0.0" width="400" height="600"/>
                     <subviews>
                         <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="b4F-89-PQc">
