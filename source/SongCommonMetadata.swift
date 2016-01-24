@@ -20,18 +20,25 @@ class SongCommonMetaData : NSObject, NSCopying {
     let artist:             String
     let year:               UInt
     let genre:              String
-    
+    let duration:           Double
 
-    init(title: String?, album: String?,artist: String?, year: UInt, genre: String?) {
-        self.title          = title == nil ? "No title" : title!
-        self.album          = album == nil ? "No album" : album!
-        self.artist         = artist == nil ? "No artist" : artist!
+    init(title: String     = "No title",
+        album: String      = "No album",
+        artist: String     = "No artist",
+        year: UInt         = 0,
+        genre: String      = "No genre",
+        duration: Double   = 0.0) {
+            
+        self.title          = title// == nil ? "No title" : title!
+        self.album          = album// == nil ? "No album" : album!
+        self.artist         = artist// == nil ? "No artist" : artist!
         self.year           = year
-        self.genre          = genre == nil ? "No genre" : genre!
+        self.genre          = genre// == nil ? "No genre" : genre!
+        self.duration       = duration
     }
     
     func copyWithZone(zone: NSZone) -> AnyObject {
-        return SongCommonMetaData(title: title, album: album, artist: artist, year: year, genre: genre)
+        return SongCommonMetaData(title: title, album: album, artist: artist, year: year, genre: genre, duration: duration)
     }
 }
 

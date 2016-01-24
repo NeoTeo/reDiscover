@@ -264,9 +264,10 @@ static int const kSongPoolStartCapacity = 250;
 
 
 - (NSNumber *)songDurationForSongID:(id<SongIDProtocol>)songID {
+    
+    /// FIXME: change to use the duration returned by the fingerprinter.
     CMTime songDuration = [songAudioPlayer songDuration];
     float secs = CMTimeGetSeconds(songDuration);
-//    float secs = CMTimeGetSeconds([[self songForID:songID] songDuration]);
     return [NSNumber numberWithDouble:secs];
 }
 

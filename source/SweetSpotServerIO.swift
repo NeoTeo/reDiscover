@@ -25,9 +25,11 @@ class SweetSpotServerIO: NSObject {
 //    let opQueue: NSOperationQueue?
     // The delegate to communicate with song pool
     // Should this be lazy?
+    private static var hostName = "192.168.5.9" /// currently the server addr.
+    private static var hostPort = "6969"
     
     // The location of the SweetSpotServer. For now it's just localhost.
-    private static let hostNameAndPort = "localhost:6969"
+    private static let hostNameAndPort = hostName+":"+hostPort //"localhost:6969"
     
     private static var uploadedSweetSpots: Dictionary<String,UploadedSSData> = [String:UploadedSSData]()
     private static var uploadedSweetSpotsMOC: NSManagedObjectContext?

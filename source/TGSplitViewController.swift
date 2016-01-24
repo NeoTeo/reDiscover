@@ -139,6 +139,17 @@ extension TGSplitViewController {
     }
     
     func togglePanel(panelID: Int) {
+        
+        /** First temporarily set the coverCollectionSplitViewItem's holding priority
+            to > 500 (which is the window resize threshold) so that the expanding side
+            panels resize the window rather than the central view.
+    */
+
+        let prevPriority = coverCollectionSVI.holdingPriority
+        print("Before toggle, coverCollectionSVI holding priority: \(coverCollectionSVI.holdingPriority)")
+        coverCollectionSVI.holdingPriority = 502
+
+        print("coverCollectionSVI holding priority: \(coverCollectionSVI.holdingPriority)")
         let splitViewItem = self.splitViewItems[panelID]
         
         // Anchor the appropriate window edge before letting the splitview animate.
@@ -148,6 +159,9 @@ extension TGSplitViewController {
         
         splitViewItem.animator().collapsed = !splitViewItem.collapsed
         
+        /// return the coverCollectionSplitViewItem's holding priority to its previous value
+        coverCollectionSVI.holdingPriority = prevPriority
+        print("Done toggle, coverCollectionSVI holding priority: \(coverCollectionSVI.holdingPriority)")
     }
 
 //    private func toggleSidebar(sender: AnyObject?) {

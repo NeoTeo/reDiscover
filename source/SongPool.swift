@@ -35,7 +35,13 @@ final class SongPool : NSObject {
     
     
     static func durationForSongId(songId: SongID) -> NSNumber {
-        return delegate!.songDurationForSongID(songId)
+        let song = SongPool.songForSongId(songId)
+        let duration = song?.metadata?.duration
+        if duration == 0.0 {
+            return delegate!.songDurationForSongID(songId)
+        } else {
+            return NSNumber(double: duration!)
+        }
     }
     
     
@@ -172,8 +178,10 @@ final class SongPool : NSObject {
         // If there is no fingerprint, generate one sync'ly - this can be slow!
         if song.fingerPrint == nil,
             let songUrl = URLForSongId(songId),
-            let newFingerPrint = TGSongFingerprinter.fingerprint(forSongUrl: songUrl) {
-                addSong(withChanges: [.Fingerprint : newFingerPrint], forSongId: songId)
+            let (newFingerPrint, duration) = TGSongFingerprinter.fingerprint(forSongUrl: songUrl) {
+                let metadata = SongCommonMetaData(duration: duration)
+                
+                addSong(withChanges: [.Fingerprint : newFingerPrint, .Metadata : metadata], forSongId: songId)
         }
         
     }
@@ -207,7 +215,7 @@ final class SongPool : NSObject {
             //println("songURL \(songURL)")
             let songString = songURL.absoluteString
             let songId = SongID(string: songString)
-            let songCommonMetaData = SongCommonMetaData(title: nil, album: nil, artist: nil, year: 1071, genre: nil)
+            let songCommonMetaData = SongCommonMetaData()
             let newSong = Song(songId: songId, metadata: songCommonMetaData, urlString: songString, sweetSpots: nil, fingerPrint: nil, selectedSS: nil, releases: nil, artId: nil, UUId: nil, RelId: nil)
             
             //songPool[songId] = newSong

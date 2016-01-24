@@ -9,5 +9,6 @@
 import Foundation
 
 protocol SongFingerprinter {
-    static func fingerprint(forSongUrl songUrl: NSURL) -> String?
+//    static func fingerprint(forSongUrl songUrl: NSURL) -> String?
+        static func fingerprint(forSongUrl songUrl: NSURL) -> (String, Double)?
 }

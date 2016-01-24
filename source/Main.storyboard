@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="9531" systemVersion="15E27e" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" initialViewController="1rG-hg-cjj">
+<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="9531" systemVersion="15D21" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" initialViewController="1rG-hg-cjj">
     <dependencies>
         <deployment identifier="macosx"/>
         <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="9531"/>
@@ -60,13 +60,16 @@
             <objects>
                 <splitViewController id="XiH-xD-SmT" customClass="TGSplitViewController" customModule="reDiscover" customModuleProvider="target" sceneMemberID="viewController">
                     <splitViewItems>
-                        <splitViewItem canCollapse="YES" collapsed="YES" holdingPriority="750" id="W0P-yD-rRt"/>
-                        <splitViewItem holdingPriority="1000" id="2o7-5d-FlK"/>
-                        <splitViewItem canCollapse="YES" collapsed="YES" holdingPriority="750" id="dZ7-As-gBM"/>
+                        <splitViewItem canCollapse="YES" collapsed="YES" holdingPriority="502" id="W0P-yD-rRt"/>
+                        <splitViewItem holdingPriority="501" id="2o7-5d-FlK"/>
+                        <splitViewItem canCollapse="YES" collapsed="YES" holdingPriority="502" id="dZ7-As-gBM"/>
                     </splitViewItems>
                     <splitView key="splitView" wantsLayer="YES" dividerStyle="thin" vertical="YES" id="TO9-Bc-PxR">
                         <rect key="frame" x="0.0" y="0.0" width="450" height="300"/>
                         <autoresizingMask key="autoresizingMask"/>
+                        <connections>
+                            <outlet property="delegate" destination="XiH-xD-SmT" id="ggQ-tp-k3C"/>
+                        </connections>
                     </splitView>
                     <connections>
                         <outlet property="coverCollectionSVI" destination="2o7-5d-FlK" id="roA-pP-8It"/>
@@ -90,7 +93,7 @@
                         <outlet property="view" destination="U4q-eW-vcj" id="ent-OQ-iQr"/>
                     </connections>
                 </viewController>
-                <customView identifier="playlistView" horizontalHuggingPriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="U4q-eW-vcj">
+                <customView identifier="playlistView" translatesAutoresizingMaskIntoConstraints="NO" id="U4q-eW-vcj">
                     <rect key="frame" x="0.0" y="0.0" width="400" height="600"/>
                     <subviews>
                         <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="F0x-td-Ipx">
@@ -101,7 +104,7 @@
                                 <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                             </textFieldCell>
                         </textField>
-                        <scrollView fixedFrame="YES" borderType="none" autohidesScrollers="YES" horizontalLineScroll="64" horizontalPageScroll="10" verticalLineScroll="64" verticalPageScroll="10" hasHorizontalScroller="NO" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Z3C-SG-K7i">
+                        <scrollView ambiguous="YES" misplaced="YES" borderType="none" autohidesScrollers="YES" horizontalLineScroll="64" horizontalPageScroll="10" verticalLineScroll="64" verticalPageScroll="10" hasHorizontalScroller="NO" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Z3C-SG-K7i">
                             <rect key="frame" x="20" y="20" width="360" height="471"/>
                             <clipView key="contentView" ambiguous="YES" placeholderIntrinsicWidth="360" placeholderIntrinsicHeight="471" drawsBackground="NO" copiesOnScroll="NO" id="MnJ-We-wEW">
                                 <rect key="frame" x="0.0" y="0.0" width="360" height="471"/>
@@ -187,6 +190,9 @@
                                 </subviews>
                                 <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
                             </clipView>
+                            <constraints>
+                                <constraint firstAttribute="width" constant="360" id="hoT-mC-td5"/>
+                            </constraints>
                             <scroller key="horizontalScroller" hidden="YES" verticalHuggingPriority="750" horizontal="YES" id="LJE-rq-SLs">
                                 <autoresizingMask key="autoresizingMask"/>
                             </scroller>
@@ -230,6 +236,10 @@
                             </textFieldCell>
                         </textField>
                     </subviews>
+                    <constraints>
+                        <constraint firstItem="Z3C-SG-K7i" firstAttribute="leading" secondItem="U4q-eW-vcj" secondAttribute="leading" constant="20" id="MHg-5O-DO6"/>
+                        <constraint firstAttribute="trailing" secondItem="Z3C-SG-K7i" secondAttribute="trailing" constant="20" id="g8y-HB-now"/>
+                    </constraints>
                 </customView>
                 <customObject id="0rr-wt-AEQ" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
             </objects>
@@ -245,7 +255,7 @@
                         <outlet property="view" destination="gSj-0W-kzU" id="z8T-mZ-Vg1"/>
                     </connections>
                 </viewController>
-                <customView translatesAutoresizingMaskIntoConstraints="NO" id="gSj-0W-kzU">
+                <customView horizontalCompressionResistancePriority="501" translatesAutoresizingMaskIntoConstraints="NO" id="gSj-0W-kzU">
                     <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                     <subviews>
                         <scrollView wantsLayer="YES" autohidesScrollers="YES" horizontalLineScroll="10" horizontalPageScroll="10" verticalLineScroll="10" verticalPageScroll="10" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="WYY-qs-8nd">
@@ -304,7 +314,7 @@
                         <outlet property="view" destination="j3q-1s-sFq" id="OKV-KA-g5t"/>
                     </connections>
                 </viewController>
-                <customView identifier="infoView" wantsLayer="YES" horizontalHuggingPriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="j3q-1s-sFq">
+                <customView identifier="infoView" wantsLayer="YES" horizontalHuggingPriority="502" horizontalCompressionResistancePriority="749" translatesAutoresizingMaskIntoConstraints="NO" id="j3q-1s-sFq">
                     <rect key="frame" x="0.0" y="0.0" width="400" height="600"/>
                     <subviews>
                         <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="b4F-89-PQc">
