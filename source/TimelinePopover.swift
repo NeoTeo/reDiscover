@@ -51,10 +51,10 @@ extension TimelinePopover {
         let theCell = timelineBar?.cell as! TGTimelineSliderCell
         theCell.theController = self
         let songDuration = SongPool.durationForSongId(songId)
-        let songSweetSpots = SweetSpotController.sweetSpots(forSongId: songId)
         
-//        theCell.makeMarkersFromSweetSpots(songSweetSpots as [AnyObject], forSongDuration: songDuration)
-        theCell.makeMarkersFromSweetSpots(songSweetSpots, forSongDuration: songDuration)        
+        if let songSweetSpots = SweetSpotController.sweetSpots(forSongId: songId) {
+            theCell.makeMarkersFromSweetSpots(songSweetSpots, forSongDuration: songDuration)
+        }
     }
     
     func togglePopoverRelativeToBounds(theBounds: CGRect, ofView theView: NSView) {

@@ -25,7 +25,7 @@
             <subviews>
                 <slider verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="oVK-ar-APo">
                     <rect key="frame" x="18" y="18" width="619" height="20"/>
-                    <sliderCell key="cell" continuous="YES" alignment="left" maxValue="100" doubleValue="16.856317934782609" tickMarkPosition="above" sliderType="linear" id="6C3-ti-ZBr" customClass="TGTimelineSliderCell"/>
+                    <sliderCell key="cell" continuous="YES" alignment="left" maxValue="100" doubleValue="16.856317934782609" tickMarkPosition="above" sliderType="linear" id="6C3-ti-ZBr" customClass="TGTimelineSliderCell" customModule="reDiscover" customModuleProvider="target"/>
                 </slider>
             </subviews>
         </customView>

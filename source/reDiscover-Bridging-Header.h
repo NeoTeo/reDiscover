@@ -16,6 +16,6 @@
 #import <CommonCrypto/CommonCrypto.h>
 
 // Used by TimelinePopover
-#import "TGTimelineSliderCell.h"
+//#import "TGTimelineSliderCell.h"
 
 #import <chromaprint.h>
