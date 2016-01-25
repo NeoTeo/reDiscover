@@ -133,8 +133,39 @@ class TGTimelineSliderCell : NSSliderCell {
         /// Adding and removing subviews needs to happen on the main thread.
         dispatch_async(dispatch_get_main_queue()) {
             var spotIndex = 0
+            
             /// Clear out the existing sweet spot markers from the sweetSpotsView
             self.sweetSpotsView.subviews.forEach { $0.removeFromSuperview() }
+            
+            /// Add the new sweet spot markers
+            for ss in sweetSpots {
+                guard duration.doubleValue != 0 else {
+                    print("ERROR: Song duration is 0")
+                    continue
+                }
+                
+                let ssXPos = CGRectGetWidth(self.barRect!) / CGFloat(duration.doubleValue * ss.doubleValue)
+                
+                if isnan(ssXPos) || !isfinite(ssXPos) {
+                    print("ERROR: Something is wrong with sweet spot duration.")
+                }
+                
+                /** Each sweet spot is a control that calls userSelectedExistingSweetSpot
+                    when clicked. */
+                let val = CGFloat(self.SweetSpotMarkerHeight)
+                let aSSControl = TGSweetSpotControl(frame: NSMakeRect(ssXPos,
+                                                                        val,
+                                                                        val,
+                                                                        val))
+                aSSControl.tag    = spotIndex
+                aSSControl.target = self.theController
+                aSSControl.action = "userSelectedExistingSweetSpot:"
+                aSSControl.image  = self.knobImage
+                
+                self.sweetSpotsView.addSubview(aSSControl)
+                
+                spotIndex         = spotIndex + 1
+            }
         }
     }
     
