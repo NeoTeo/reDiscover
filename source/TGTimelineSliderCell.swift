@@ -139,8 +139,14 @@ class TGTimelineSliderCell : NSSliderCell {
             
             /// Add the new sweet spot markers
             for ss in sweetSpots {
+                
                 guard duration.doubleValue != 0 else {
-                    print("ERROR: Song duration is 0")
+                    print("Song duration is 0. Skipping.")
+                    continue
+                }
+                
+                guard ss != 0 else {
+                    print("Sweet spot is 0. Skipping.")
                     continue
                 }
                 
@@ -158,6 +164,14 @@ class TGTimelineSliderCell : NSSliderCell {
                                                                         val,
                                                                         val,
                                                                         val))
+                /** So the issue here is that the target is the TimelinePopoverViewController
+                    but the method itself should be defined in the CoverDisplayViewController
+                    ...I think. But why? Because it needs access to various Song 
+                    Pool methods. But haven't many of those been made static? Not 
+                    those I think. So perhaps the static Song Pool should be able
+                    to return a handle to the Song Pool instance so anyone can get
+                    to it.
+                */
                 aSSControl.tag    = spotIndex
                 aSSControl.target = self.theController
                 aSSControl.action = "userSelectedExistingSweetSpot:"

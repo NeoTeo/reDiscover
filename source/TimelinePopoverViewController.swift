@@ -67,4 +67,9 @@ extension TimelinePopoverViewController {
             pop.showRelativeToRect(theBounds, ofView: theView, preferredEdge: .MaxY)
         }
     }
+    
+    public func userSelectedExistingSweetSpot(sender: AnyObject!) {
+        print("user selected existing sweet spot")
+    }
+
 }

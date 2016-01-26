@@ -274,9 +274,9 @@
 		AB3E974F187BFDC700BECC09 /* song timeline */ = {
 			isa = PBXGroup;
 			children = (
+				AB37EC1D1B25B77C00C94597 /* TimelinePopoverViewController.swift */,
 				AB1F37511C56249300A7D1CC /* TGTimelineSliderCell.swift */,
 				AB1F374F1C55540700A7D1CC /* TGSweetSpotControl.swift */,
-				AB37EC1D1B25B77C00C94597 /* TimelinePopoverViewController.swift */,
 				AB5861F31C4D4FD800D6A78E /* TGTimelineBarView.swift */,
 				AB1D28B11B5006AA006C7FFF /* TGTimelineTransformer.swift */,
 			);
