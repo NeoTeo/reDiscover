@@ -133,7 +133,7 @@ class TGTimelineSliderCell : NSSliderCell {
         /// Adding and removing subviews needs to happen on the main thread.
         dispatch_async(dispatch_get_main_queue()) {
             var spotIndex = 0
-            
+
             /// Clear out the existing sweet spot markers from the sweetSpotsView
             self.sweetSpotsView.subviews.forEach { $0.removeFromSuperview() }
             
@@ -150,7 +150,7 @@ class TGTimelineSliderCell : NSSliderCell {
                     continue
                 }
                 
-                let ssXPos = CGRectGetWidth(self.barRect!) / CGFloat(duration.doubleValue * ss.doubleValue)
+                let ssXPos = CGRectGetWidth(self.barRect!) / CGFloat(duration.doubleValue) * CGFloat(ss.doubleValue)
                 
                 if isnan(ssXPos) || !isfinite(ssXPos) {
                     print("ERROR: Something is wrong with sweet spot duration.")
@@ -159,20 +159,14 @@ class TGTimelineSliderCell : NSSliderCell {
                 
                 /** Each sweet spot is a control that calls userSelectedExistingSweetSpot
                     when clicked. */
+                print("Setting sweet spot marker at position \(ssXPos)")
                 let val = CGFloat(self.SweetSpotMarkerHeight)
                 let aSSControl = TGSweetSpotControl(frame: NSMakeRect(ssXPos,
                                                                         val,
                                                                         val,
                                                                         val))
-                /** So the issue here is that the target is the TimelinePopoverViewController
-                    but the method itself should be defined in the CoverDisplayViewController
-                    ...I think. But why? Because it needs access to various Song 
-                    Pool methods. But haven't many of those been made static? Not 
-                    those I think. So perhaps the static Song Pool should be able
-                    to return a handle to the Song Pool instance so anyone can get
-                    to it.
-                */
-                aSSControl.tag    = spotIndex
+
+                aSSControl.tag    = spotIndex//sweetSpots.indexOf(<#T##member: SweetSpot##SweetSpot#>)
                 aSSControl.target = self.theController
                 aSSControl.action = "userSelectedExistingSweetSpot:"
                 aSSControl.image  = self.knobImage

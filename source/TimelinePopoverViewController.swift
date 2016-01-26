@@ -70,6 +70,18 @@ extension TimelinePopoverViewController {
     
     public func userSelectedExistingSweetSpot(sender: AnyObject!) {
         print("user selected existing sweet spot")
+        guard let songPoolInstance = SongPool.delegate else {
+            print("ERROR: No Song Pool instance found")
+            return
+        }
+        
+        let playingSong = songPoolInstance.currentlyPlayingSongId()
+        let songSweetspots = SweetSpotController.sweetSpots(forSongId: playingSong)
+        //mySet[mySet.startIndex.advancedBy(2)]
+        let index = sender.tag()
+        if let sweetSpotTime = songSweetspots?[(songSweetspots?.startIndex.advancedBy(index))!] {
+            SongPool.delegate?.setRequestedPlayheadPosition(sweetSpotTime)
+        }
     }
 
 }

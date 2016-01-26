@@ -21,4 +21,6 @@ import Foundation
     func cacheWithContext(cacheContext: SongSelectionContext)
     func debugLogSongWithId(songId: SongIDProtocol)
     func debugLogCaches()
+    
+    func setRequestedPlayheadPosition(newPosition : NSNumber)
 }

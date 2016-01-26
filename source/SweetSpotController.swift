@@ -23,7 +23,7 @@ class SweetSpotController : NSObject {
     }
     
     static func selectedSweetSpotForSong(song: TGSong) -> SweetSpot? {
-
+        
         return song.selectedSweetSpot
         // Add request to sweetSpotServerIO (once rewritten) to check the server at some appropriate interval for
         // sweet spots for this song. The server may receive them at any time.
