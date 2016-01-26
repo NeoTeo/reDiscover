@@ -148,6 +148,7 @@ class TGTimelineSliderCell : NSSliderCell {
                 
                 if isnan(ssXPos) || !isfinite(ssXPos) {
                     print("ERROR: Something is wrong with sweet spot duration.")
+                    fatalError()
                 }
                 
                 /** Each sweet spot is a control that calls userSelectedExistingSweetSpot
