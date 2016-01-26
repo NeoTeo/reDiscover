@@ -13,7 +13,7 @@
 		AB1F37501C55540700A7D1CC /* TGSweetSpotControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB1F374F1C55540700A7D1CC /* TGSweetSpotControl.swift */; };
 		AB1F37521C56249300A7D1CC /* TGTimelineSliderCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB1F37511C56249300A7D1CC /* TGTimelineSliderCell.swift */; };
 		AB301E7619050C830093B654 /* TEOSongData.m in Sources */ = {isa = PBXBuildFile; fileRef = AB301E7519050C830093B654 /* TEOSongData.m */; };
-		AB37EC1E1B25B77C00C94597 /* TimelinePopover.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB37EC1D1B25B77C00C94597 /* TimelinePopover.swift */; };
+		AB37EC1E1B25B77C00C94597 /* TimelinePopoverViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB37EC1D1B25B77C00C94597 /* TimelinePopoverViewController.swift */; };
 		AB3991EB1AEA8B9F00381CAC /* DebugDisplay.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB3991E91AEA8B9F00381CAC /* DebugDisplay.swift */; };
 		AB3991EC1AEA8B9F00381CAC /* DebugDisplay.xib in Resources */ = {isa = PBXBuildFile; fileRef = AB3991EA1AEA8B9F00381CAC /* DebugDisplay.xib */; };
 		AB3E9752187C20D600BECC09 /* TGPlaylistCellView.m in Sources */ = {isa = PBXBuildFile; fileRef = AB3E9751187C20D600BECC09 /* TGPlaylistCellView.m */; };
@@ -97,7 +97,7 @@
 		AB1F37511C56249300A7D1CC /* TGTimelineSliderCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TGTimelineSliderCell.swift; sourceTree = "<group>"; };
 		AB301E7419050C830093B654 /* TEOSongData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TEOSongData.h; sourceTree = "<group>"; };
 		AB301E7519050C830093B654 /* TEOSongData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TEOSongData.m; sourceTree = "<group>"; };
-		AB37EC1D1B25B77C00C94597 /* TimelinePopover.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TimelinePopover.swift; sourceTree = "<group>"; };
+		AB37EC1D1B25B77C00C94597 /* TimelinePopoverViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TimelinePopoverViewController.swift; sourceTree = "<group>"; };
 		AB3991E91AEA8B9F00381CAC /* DebugDisplay.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = DebugDisplay.swift; path = source/DebugDisplay.swift; sourceTree = "<group>"; };
 		AB3991EA1AEA8B9F00381CAC /* DebugDisplay.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = DebugDisplay.xib; sourceTree = "<group>"; };
 		AB3E9750187C20D600BECC09 /* TGPlaylistCellView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TGPlaylistCellView.h; sourceTree = "<group>"; };
@@ -276,7 +276,7 @@
 			children = (
 				AB1F37511C56249300A7D1CC /* TGTimelineSliderCell.swift */,
 				AB1F374F1C55540700A7D1CC /* TGSweetSpotControl.swift */,
-				AB37EC1D1B25B77C00C94597 /* TimelinePopover.swift */,
+				AB37EC1D1B25B77C00C94597 /* TimelinePopoverViewController.swift */,
 				AB5861F31C4D4FD800D6A78E /* TGTimelineBarView.swift */,
 				AB1D28B11B5006AA006C7FFF /* TGTimelineTransformer.swift */,
 			);
@@ -517,7 +517,7 @@
 				AB095A7B1B2F12CD009201A2 /* CoverImageView.swift in Sources */,
 				ABE49BB71AE50991008A28B0 /* Hasher.swift in Sources */,
 				ABB33FF019C72C3800439A5E /* SweetSpotServerIO.swift in Sources */,
-				AB37EC1E1B25B77C00C94597 /* TimelinePopover.swift in Sources */,
+				AB37EC1E1B25B77C00C94597 /* TimelinePopoverViewController.swift in Sources */,
 				ABEC79DE1B025C6700CD9F6C /* Song.swift in Sources */,
 				ABFC8EB519C1BCE90007ECCB /* uploadedSS.xcdatamodeld in Sources */,
 				AB8B54781B4D1C3000C44485 /* CoverCollectionView.swift in Sources */,

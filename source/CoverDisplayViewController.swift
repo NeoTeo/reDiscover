@@ -36,7 +36,7 @@ public class TGCoverDisplayViewController: NSViewController, CoverDisplayViewCon
     private var currentTrackingArea: NSTrackingArea?
     private var currentIdxPath: NSIndexPath?
     private var songUIController: TGSongUIPopupController?
-    public var songTimelineController: TimelinePopover?
+    public var songTimelineController: TimelinePopoverViewController?
 //    public var songTimelineController: TGSongTimelineViewController?
     
     private var collectionAccessQ: dispatch_queue_t = dispatch_queue_create("collectionAccessQ", DISPATCH_QUEUE_SERIAL)
@@ -84,7 +84,7 @@ public class TGCoverDisplayViewController: NSViewController, CoverDisplayViewCon
     
     func initializeTimelinePopover() {
         //songTimelineController = TGSongTimelineViewController(nibName: "TGSongTimelineView", bundle: nil)
-        songTimelineController = TimelinePopover(nibName: "TGSongTimelineView", bundle: nil)
+        songTimelineController = TimelinePopoverViewController(nibName: "TGSongTimelineView", bundle: nil)
         
         songTimelineController!.delegate = self
         

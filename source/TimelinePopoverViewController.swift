@@ -1,5 +1,5 @@
 //
-//  TimelinePopover.swift
+//  TimelinePopoverViewController.swift
 //  reDiscover
 //
 //  Created by Teo on 08/06/15.
@@ -12,7 +12,7 @@ protocol TimelinePopoverDelegateProtocol {
     //func userCreatedNewSweetSpot
 }
 
-public class TimelinePopover : NSViewController {//, TimelinePopoverDelegateProtocol {
+public class TimelinePopoverViewController : NSViewController {//, TimelinePopoverDelegateProtocol {
     
     var delegate: TimelinePopoverDelegateProtocol?
     
@@ -28,7 +28,7 @@ public class TimelinePopover : NSViewController {//, TimelinePopoverDelegateProt
     }
 }
 
-extension TimelinePopover {
+extension TimelinePopoverViewController {
     
     public override func awakeFromNib() {
         
