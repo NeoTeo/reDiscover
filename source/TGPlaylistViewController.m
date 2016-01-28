@@ -9,7 +9,7 @@
 #import "rediscover-swift.h"
 #import "TGPlaylistViewController.h"
 #import "TGPlaylistCellView.h"
-#import "TGPlaylist.h"
+//#import "TGPlaylist.h"
 #import "TGSongPool.h"
 
 
@@ -31,7 +31,8 @@
 }
 
 -(void)addSongToPlaylist:(id<SongIDProtocol>)aSongID {
-    [playlist addSong:aSongID atIndex:0];
+    //[playlist addSong:aSongID atIndex:0];
+    [playlist addSongWithId:aSongID atIndex:0];
     [_playlistTableView reloadData];
 }
 
@@ -42,7 +43,8 @@
 }
 
 - (id)getNextSongIDToPlay {
-    return [playlist getNextSongIDToPlay];
+    //return [playlist getNextSongIDToPlay];
+    return [playlist getNextSongIdToPlay];
 }
 
 - (void)storePlaylistWithName:(NSString *)theName {
@@ -79,7 +81,8 @@
     // Get an existing cell with the MyView identifier if it exists
     TGPlaylistCellView *resultCell = [tableView makeViewWithIdentifier:@"SongCell" owner:self];
     
-    id<TGSong> song = [SongPool songForSongId:[playlist songIDAtIndex:row]];
+//    id<TGSong> song = [SongPool songForSongId:[playlist songIDAtIndex:row]];
+    id<TGSong> song = [SongPool songForSongId:[playlist getSongIdAtIndex:row]];
     NSDictionary *songData = [song metadataDict];
     
     // Construct the string for the playlist entry.
@@ -100,8 +103,11 @@
    
     // Set it if it is a valid position.
     if (selectedRow >=0) {
-        [playlist setPosInPlaylist:selectedRow];
-        id<SongIDProtocol> newSongID = [playlist songIDAtIndex:selectedRow];
+//        [playlist setPosInPlaylist:selectedRow];
+        [playlist setPositionInPlaylist:selectedRow];
+//        id<SongIDProtocol> newSongID = [playlist songIDAtIndex:selectedRow];
+        id<SongIDProtocol> newSongID = [playlist getSongIdAtIndex:selectedRow];
+
 //        [_songPoolAPI requestSongPlayback:newSongID withStartTimeInSeconds:[NSNumber numberWithFloat:0] makeSweetSpot:NO];
         [_songPoolAPI requestSongPlayback:newSongID withStartTimeInSeconds:[NSNumber numberWithFloat:0]];
 

@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		AB095A7B1B2F12CD009201A2 /* CoverImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB095A7A1B2F12CD009201A2 /* CoverImageView.swift */; };
+		AB1385CA1C5A7F3C005352D9 /* TGPlaylist.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB1385C91C5A7F3C005352D9 /* TGPlaylist.swift */; };
 		AB1BC13F1976C91E003F02B9 /* ScrollingTextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB1BC13E1976C91E003F02B9 /* ScrollingTextView.swift */; };
 		AB1D28B21B5006AA006C7FFF /* TGTimelineTransformer.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB1D28B11B5006AA006C7FFF /* TGTimelineTransformer.swift */; };
 		AB1F37501C55540700A7D1CC /* TGSweetSpotControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB1F374F1C55540700A7D1CC /* TGSweetSpotControl.swift */; };
@@ -43,7 +44,6 @@
 		AB85BBE31875AACF00670905 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = AB85BBE21875AACF00670905 /* main.m */; };
 		AB85BBE71875AACF00670905 /* Credits.rtf in Resources */ = {isa = PBXBuildFile; fileRef = AB85BBE51875AACF00670905 /* Credits.rtf */; };
 		AB85BBEF1875AACF00670905 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = AB85BBEE1875AACF00670905 /* Images.xcassets */; };
-		AB85BC431875AB5200670905 /* TGPlaylist.m in Sources */ = {isa = PBXBuildFile; fileRef = AB85BC191875AB5200670905 /* TGPlaylist.m */; };
 		AB85BC451875AB5200670905 /* TGPlaylistViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = AB85BC1C1875AB5200670905 /* TGPlaylistViewController.m */; };
 		AB85BC4C1875AB5200670905 /* TGSongPool.m in Sources */ = {isa = PBXBuildFile; fileRef = AB85BC281875AB5200670905 /* TGSongPool.m */; };
 		AB85BC4D1875AB5200670905 /* TGSongTimelineView.xib in Resources */ = {isa = PBXBuildFile; fileRef = AB85BC291875AB5200670905 /* TGSongTimelineView.xib */; };
@@ -91,6 +91,7 @@
 
 /* Begin PBXFileReference section */
 		AB095A7A1B2F12CD009201A2 /* CoverImageView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CoverImageView.swift; sourceTree = "<group>"; };
+		AB1385C91C5A7F3C005352D9 /* TGPlaylist.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TGPlaylist.swift; sourceTree = "<group>"; };
 		AB1BC13E1976C91E003F02B9 /* ScrollingTextView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScrollingTextView.swift; sourceTree = "<group>"; };
 		AB1D28B11B5006AA006C7FFF /* TGTimelineTransformer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TGTimelineTransformer.swift; sourceTree = "<group>"; };
 		AB1F374F1C55540700A7D1CC /* TGSweetSpotControl.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TGSweetSpotControl.swift; sourceTree = "<group>"; };
@@ -134,8 +135,6 @@
 		AB85BBE41875AACF00670905 /* reDiscover-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "reDiscover-Prefix.pch"; sourceTree = "<group>"; };
 		AB85BBE61875AACF00670905 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.rtf; name = en; path = en.lproj/Credits.rtf; sourceTree = "<group>"; };
 		AB85BBEE1875AACF00670905 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = source/Images.xcassets; sourceTree = "<group>"; };
-		AB85BC181875AB5200670905 /* TGPlaylist.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TGPlaylist.h; sourceTree = "<group>"; };
-		AB85BC191875AB5200670905 /* TGPlaylist.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TGPlaylist.m; sourceTree = "<group>"; };
 		AB85BC1B1875AB5200670905 /* TGPlaylistViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TGPlaylistViewController.h; sourceTree = "<group>"; };
 		AB85BC1C1875AB5200670905 /* TGPlaylistViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TGPlaylistViewController.m; sourceTree = "<group>"; };
 		AB85BC271875AB5200670905 /* TGSongPool.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TGSongPool.h; path = source/TGSongPool.h; sourceTree = "<group>"; };
@@ -250,8 +249,7 @@
 		AB3E974D187BFD9200BECC09 /* Playlist panel */ = {
 			isa = PBXGroup;
 			children = (
-				AB85BC181875AB5200670905 /* TGPlaylist.h */,
-				AB85BC191875AB5200670905 /* TGPlaylist.m */,
+				AB1385C91C5A7F3C005352D9 /* TGPlaylist.swift */,
 				AB85BC1B1875AB5200670905 /* TGPlaylistViewController.h */,
 				AB85BC1C1875AB5200670905 /* TGPlaylistViewController.m */,
 				AB3E9750187C20D600BECC09 /* TGPlaylistCellView.h */,
@@ -510,6 +508,7 @@
 			files = (
 				ABB592E31B2EC63700B57CC5 /* CoverDisplayViewController.swift in Sources */,
 				AB7358F01A63D6D300E08D5A /* TGSongAudioPlayer.swift in Sources */,
+				AB1385CA1C5A7F3C005352D9 /* TGPlaylist.swift in Sources */,
 				ABEC79D81B0242E100CD9F6C /* SongMetaData.swift in Sources */,
 				ABF767451AEE82B4007C7A12 /* LocalFileIO.swift in Sources */,
 				AB3FF56319C1D3CE00D6C5EF /* UploadedSSData.m in Sources */,
@@ -565,7 +564,6 @@
 				ABAF47821B38590600F13528 /* CoverImage.swift in Sources */,
 				AB4529661A895B4100A6B15A /* TGAppDelegate.swift in Sources */,
 				ABA6D21D1B8CAE13000CEB8C /* NSLock+Operations.swift in Sources */,
-				AB85BC431875AB5200670905 /* TGPlaylist.m in Sources */,
 				AB85BC4C1875AB5200670905 /* TGSongPool.m in Sources */,
 				AB4529381A88EAF300A6B15A /* TGSongUIPopupController.swift in Sources */,
 				AB1D28B21B5006AA006C7FFF /* TGTimelineTransformer.swift in Sources */,
