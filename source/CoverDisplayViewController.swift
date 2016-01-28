@@ -7,7 +7,7 @@
 //
 
 import Foundation
-
+import Cocoa
 
 @objc
 public protocol CoverDisplayViewController {

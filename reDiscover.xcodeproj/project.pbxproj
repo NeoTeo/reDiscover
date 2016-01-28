@@ -10,6 +10,7 @@
 		AB095A7B1B2F12CD009201A2 /* CoverImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB095A7A1B2F12CD009201A2 /* CoverImageView.swift */; };
 		AB1385CA1C5A7F3C005352D9 /* TGPlaylist.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB1385C91C5A7F3C005352D9 /* TGPlaylist.swift */; };
 		AB1385CC1C5A829B005352D9 /* TGPlaylistCellView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB1385CB1C5A829B005352D9 /* TGPlaylistCellView.swift */; };
+		AB1385CE1C5A84E0005352D9 /* TGPlaylistViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB1385CD1C5A84E0005352D9 /* TGPlaylistViewController.swift */; };
 		AB1BC13F1976C91E003F02B9 /* ScrollingTextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB1BC13E1976C91E003F02B9 /* ScrollingTextView.swift */; };
 		AB1D28B21B5006AA006C7FFF /* TGTimelineTransformer.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB1D28B11B5006AA006C7FFF /* TGTimelineTransformer.swift */; };
 		AB1F37501C55540700A7D1CC /* TGSweetSpotControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB1F374F1C55540700A7D1CC /* TGSweetSpotControl.swift */; };
@@ -44,7 +45,6 @@
 		AB85BBE31875AACF00670905 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = AB85BBE21875AACF00670905 /* main.m */; };
 		AB85BBE71875AACF00670905 /* Credits.rtf in Resources */ = {isa = PBXBuildFile; fileRef = AB85BBE51875AACF00670905 /* Credits.rtf */; };
 		AB85BBEF1875AACF00670905 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = AB85BBEE1875AACF00670905 /* Images.xcassets */; };
-		AB85BC451875AB5200670905 /* TGPlaylistViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = AB85BC1C1875AB5200670905 /* TGPlaylistViewController.m */; };
 		AB85BC4C1875AB5200670905 /* TGSongPool.m in Sources */ = {isa = PBXBuildFile; fileRef = AB85BC281875AB5200670905 /* TGSongPool.m */; };
 		AB85BC4D1875AB5200670905 /* TGSongTimelineView.xib in Resources */ = {isa = PBXBuildFile; fileRef = AB85BC291875AB5200670905 /* TGSongTimelineView.xib */; };
 		AB85BC501875AB5200670905 /* TGSongUserData.m in Sources */ = {isa = PBXBuildFile; fileRef = AB85BC2F1875AB5200670905 /* TGSongUserData.m */; };
@@ -93,6 +93,7 @@
 		AB095A7A1B2F12CD009201A2 /* CoverImageView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CoverImageView.swift; sourceTree = "<group>"; };
 		AB1385C91C5A7F3C005352D9 /* TGPlaylist.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TGPlaylist.swift; sourceTree = "<group>"; };
 		AB1385CB1C5A829B005352D9 /* TGPlaylistCellView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TGPlaylistCellView.swift; sourceTree = "<group>"; };
+		AB1385CD1C5A84E0005352D9 /* TGPlaylistViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TGPlaylistViewController.swift; sourceTree = "<group>"; };
 		AB1BC13E1976C91E003F02B9 /* ScrollingTextView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScrollingTextView.swift; sourceTree = "<group>"; };
 		AB1D28B11B5006AA006C7FFF /* TGTimelineTransformer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TGTimelineTransformer.swift; sourceTree = "<group>"; };
 		AB1F374F1C55540700A7D1CC /* TGSweetSpotControl.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TGSweetSpotControl.swift; sourceTree = "<group>"; };
@@ -134,8 +135,6 @@
 		AB85BBE41875AACF00670905 /* reDiscover-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "reDiscover-Prefix.pch"; sourceTree = "<group>"; };
 		AB85BBE61875AACF00670905 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.rtf; name = en; path = en.lproj/Credits.rtf; sourceTree = "<group>"; };
 		AB85BBEE1875AACF00670905 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = source/Images.xcassets; sourceTree = "<group>"; };
-		AB85BC1B1875AB5200670905 /* TGPlaylistViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TGPlaylistViewController.h; sourceTree = "<group>"; };
-		AB85BC1C1875AB5200670905 /* TGPlaylistViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TGPlaylistViewController.m; sourceTree = "<group>"; };
 		AB85BC271875AB5200670905 /* TGSongPool.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TGSongPool.h; path = source/TGSongPool.h; sourceTree = "<group>"; };
 		AB85BC281875AB5200670905 /* TGSongPool.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TGSongPool.m; path = source/TGSongPool.m; sourceTree = "<group>"; };
 		AB85BC291875AB5200670905 /* TGSongTimelineView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = TGSongTimelineView.xib; sourceTree = "<group>"; };
@@ -249,8 +248,7 @@
 			isa = PBXGroup;
 			children = (
 				AB1385C91C5A7F3C005352D9 /* TGPlaylist.swift */,
-				AB85BC1B1875AB5200670905 /* TGPlaylistViewController.h */,
-				AB85BC1C1875AB5200670905 /* TGPlaylistViewController.m */,
+				AB1385CD1C5A84E0005352D9 /* TGPlaylistViewController.swift */,
 				AB1385CB1C5A829B005352D9 /* TGPlaylistCellView.swift */,
 			);
 			name = "Playlist panel";
@@ -553,9 +551,9 @@
 				ABBFC0E61B4AA5BC00323C6D /* NSCollectionViewFlowLayout+colsAndRows.swift in Sources */,
 				ABDBA6871AF0F5A60069CFFB /* AcoustIDWebService.swift in Sources */,
 				ABEC79D61B02402200CD9F6C /* SongMetaDataStore.swift in Sources */,
-				AB85BC451875AB5200670905 /* TGPlaylistViewController.m in Sources */,
 				AB5E5DDC1B3BF96F007C6307 /* SongSelectionContext.swift in Sources */,
 				AB725A3A1AD91E8C003E94E6 /* SongArtFinder.swift in Sources */,
+				AB1385CE1C5A84E0005352D9 /* TGPlaylistViewController.swift in Sources */,
 				AB725A3C1AD92256003E94E6 /* SongArtCache.swift in Sources */,
 				ABFC8B4B1B7CEEC500A92019 /* Fingerprinter.swift in Sources */,
 				ABAF47821B38590600F13528 /* CoverImage.swift in Sources */,

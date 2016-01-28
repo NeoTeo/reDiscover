@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import Cocoa
 
 final class CoverImage : NSObject {
     // The dynamic keyword signals that we want access to be dynamically dispatched

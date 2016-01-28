@@ -8,7 +8,10 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "TGPlaylistViewController.h"
+#import <CoreData/CoreData.h>
+#import <Cocoa/Cocoa.h>
+
+//#import "TGPlaylistViewController.h"
 
 #import "NSMutableArray+QueueAdditions.h"
 
@@ -30,6 +33,7 @@
 @protocol SongSelectionContext;
 @protocol SongPoolAccessProtocol;
 @protocol CoverDisplayViewController;
+@protocol SongIDProtocol;
 
 // The public interface declaration doesn't implement the TGSongDelegate. The private interface declaration in the .m will.
 /**

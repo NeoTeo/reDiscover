@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import Cocoa
 
 final public class TGSplitViewController: NSSplitViewController {
  
@@ -126,7 +127,7 @@ extension TGSplitViewController {
         coversPanelCtrlr = coverCollectionSVI.viewController as! TGCoverDisplayViewController
         infoPanelCtrlr = songInfoSVI.viewController as! TGSongInfoViewController
         
-        playlistPanelCtrlr.songPoolAPI = theSongPool
+//        playlistPanelCtrlr.songPoolAPI = theSongPool
     }
     
     private func setupPanels() {

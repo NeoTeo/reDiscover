@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import Cocoa
 
 typealias KeyframeParametricBlock = (time: Double) -> Double
 

@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import Cocoa
 
 //: Extend the flow layout to provide column and row coordinates of its layout.
 extension NSCollectionViewFlowLayout {

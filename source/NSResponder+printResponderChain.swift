@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import Cocoa
 
 extension NSResponder {
     static func printResponderChain(responder: NSResponder?) {

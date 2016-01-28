@@ -87,8 +87,10 @@
         <!--Playlist View Controller-->
         <scene sceneID="BNq-Gw-90r">
             <objects>
-                <viewController id="ZAZ-MP-QmW" customClass="TGPlaylistViewController" sceneMemberID="viewController">
+                <viewController id="ZAZ-MP-QmW" customClass="TGPlaylistViewController" customModule="reDiscover" customModuleProvider="target" sceneMemberID="viewController">
                     <connections>
+                        <outlet property="playlistProgress" destination="tIx-mA-Unl" id="wIQ-Zb-S5J"/>
+                        <outlet property="playlistTableView" destination="JdL-Io-maI" id="hY8-Y9-f1g"/>
                         <outlet property="sourceItemView" destination="U4q-eW-vcj" id="Z1x-ds-yAs"/>
                         <outlet property="view" destination="U4q-eW-vcj" id="ent-OQ-iQr"/>
                     </connections>
