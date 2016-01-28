@@ -25,8 +25,8 @@ class SweetSpotServerIO: NSObject {
 //    let opQueue: NSOperationQueue?
     // The delegate to communicate with song pool
     // Should this be lazy?
-    private static var hostName = "192.168.5.9" /// currently the server addr.
-    private static var hostPort = "6969"
+    private static var hostName = "193.106.167.30"//"192.168.5.9" /// currently the server addr.
+    private static var hostPort = "6684"//"6969"
     
     // The location of the SweetSpotServer. For now it's just localhost.
     private static let hostNameAndPort = hostName+":"+hostPort //"localhost:6969"
@@ -240,9 +240,15 @@ class SweetSpotServerIO: NSObject {
     Solution: Don't use songs but song ids and look up the song at the time the
     closure is called - eg 4) make a new song with the song we get from the id which
     will contain the sweet spots added in step 3 and the new meta data.
+    So, consequently, the returned array will always be nil.
     */
     static func requestSweetSpotsForSongID(songID: SongIDProtocol) -> NSArray? {
-
+        let envVars = NSProcessInfo.processInfo().environment
+        if let _ = envVars["NO_SSSERVER"] {
+            self.mock(songID)
+            return nil
+        }
+        
         guard let songUUID = SongUUID.getUUIDForSongId(songID) else { return nil }
         guard let theURL = NSURL(string: "http://\(hostNameAndPort)/lookup?songUUID=\(songUUID.utf8)") else { return nil }
 
@@ -302,5 +308,18 @@ class SweetSpotServerIO: NSObject {
 
         task.resume()
         return nil;
+    }
+    
+    /** Mock fetch sweetspots and selected sweet spot when there is not network connection.
+    */
+    static func mock(songId: SongIDProtocol) {
+        let newSSs : Set<SweetSpot> = [30, 60, 120, 240]
+        let selectedSS : SweetSpot = 60
+        
+        SongPool.addSong(withChanges: [.SweetSpots : newSSs, .SelectedSS : selectedSS], forSongId: songId)
+        
+        // Let any listeners know we've updated the sweetspots of songID
+        NSNotificationCenter.defaultCenter().postNotificationName("SweetSpotsUpdated", object: songId)
+
     }
 }

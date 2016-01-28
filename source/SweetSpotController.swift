@@ -15,6 +15,12 @@ typealias SweetSpot = NSNumber //Float
 // The methods of this class should act on songs and for those methods that modify
 // a song (eg. add a new sweet spot) they should create and return a new song
 // with the new sweetspot.
+/**
+    Perhaps it would be better if this class (which might as well be a struct since
+    everything is static) kept a map of songIds to selected sweet spots. To avoid
+    concurrency issues it would control access through a queue. The downside is 
+    that storing it would be more work than if everything just resided in the song.
+*/
 class SweetSpotController : NSObject {
     
     /// Add, to the song pool, a new sweet spot to an existing song given by the songId.
@@ -25,6 +31,7 @@ class SweetSpotController : NSObject {
     static func selectedSweetSpotForSong(song: TGSong) -> SweetSpot? {
         
         return song.selectedSweetSpot
+        /// FIXME:
         // Add request to sweetSpotServerIO (once rewritten) to check the server at some appropriate interval for
         // sweet spots for this song. The server may receive them at any time.
         //return 0.0

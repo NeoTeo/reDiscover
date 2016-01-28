@@ -48,6 +48,7 @@ extension TimelinePopoverViewController {
     }
     
     func setCurrentSongId(songId: SongID) {
+        
         let theCell = timelineBar?.cell as! TGTimelineSliderCell
         theCell.theController = self
         let songDuration = SongPool.durationForSongId(songId)
@@ -75,12 +76,14 @@ extension TimelinePopoverViewController {
             return
         }
         
-        let playingSong = songPoolInstance.currentlyPlayingSongId()
-        let songSweetspots = SweetSpotController.sweetSpots(forSongId: playingSong)
+        let playingSongId = songPoolInstance.currentlyPlayingSongId()
+        let songSweetspots = SweetSpotController.sweetSpots(forSongId: playingSongId)
         //mySet[mySet.startIndex.advancedBy(2)]
-        let index = sender.tag()
-        if let sweetSpotTime = songSweetspots?[(songSweetspots?.startIndex.advancedBy(index))!] {
+        let selectedSweetSpotIndex = sender.tag()
+        if let sweetSpotTime = songSweetspots?[(songSweetspots?.startIndex.advancedBy(selectedSweetSpotIndex))!] {
             SongPool.delegate?.setRequestedPlayheadPosition(sweetSpotTime)
+
+            SongPool.addSong(withChanges: [.SelectedSS : sweetSpotTime], forSongId: playingSongId)
         }
     }
 

@@ -49,8 +49,8 @@ class TGTimelineSliderCell : NSSliderCell {
     var theController : AnyObject!
 
     required init?(coder aDecoder: NSCoder) {
-        playheadPositionInPercent    = 0
-        currentSongDuration                 = 0
+        playheadPositionInPercent   = 0
+        currentSongDuration         = 0
         super.init(coder: aDecoder)
     }
 
@@ -128,6 +128,7 @@ class TGTimelineSliderCell : NSSliderCell {
         timelineBarView.animator().frame = barFrame!
     }
     
+    
     func makeMarkersFromSweetSpots(sweetSpots: Set<SweetSpot>, forSongDuration duration: NSNumber) {
         
         /// Adding and removing subviews needs to happen on the main thread.
@@ -159,7 +160,7 @@ class TGTimelineSliderCell : NSSliderCell {
                 
                 /** Each sweet spot is a control that calls userSelectedExistingSweetSpot
                     when clicked. */
-                print("Setting sweet spot marker at position \(ssXPos)")
+                //print("Setting sweet spot marker at position \(ssXPos)")
                 let val = CGFloat(self.SweetSpotMarkerHeight)
                 let aSSControl = TGSweetSpotControl(frame: NSMakeRect(ssXPos,
                                                                         val,
