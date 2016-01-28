@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="9531" systemVersion="15E27e" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" initialViewController="1rG-hg-cjj">
+<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="9531" systemVersion="15D21" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" initialViewController="1rG-hg-cjj">
     <dependencies>
         <deployment identifier="macosx"/>
         <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="9531"/>
@@ -130,7 +130,7 @@
                                                 </textFieldCell>
                                                 <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
                                                 <prototypeCellViews>
-                                                    <tableCellView identifier="SongCell" id="5fA-wP-ipP" customClass="TGPlaylistCellView">
+                                                    <tableCellView identifier="SongCell" id="5fA-wP-ipP" customClass="TGPlaylistCellView" customModule="reDiscover" customModuleProvider="target">
                                                         <rect key="frame" x="1" y="2" width="361" height="60"/>
                                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                         <subviews>
@@ -180,7 +180,10 @@
                                                             <outlet property="AlbumLabel" destination="Ztc-CO-KuG" id="VKh-BG-fti"/>
                                                             <outlet property="ArtistLabel" destination="93Z-VV-Nat" id="rqu-Ig-Mom"/>
                                                             <outlet property="TitleLabel" destination="aKF-Xb-zdG" id="f5p-Qy-wg0"/>
+                                                            <outlet property="albumLabel" destination="Ztc-CO-KuG" id="5qn-MF-YWc"/>
+                                                            <outlet property="artistLabel" destination="93Z-VV-Nat" id="O1X-4V-UrL"/>
                                                             <outlet property="textField" destination="aKF-Xb-zdG" id="0Tw-LL-SpV"/>
+                                                            <outlet property="titleLabel" destination="aKF-Xb-zdG" id="LY3-Z9-zV0"/>
                                                         </connections>
                                                     </tableCellView>
                                                 </prototypeCellViews>

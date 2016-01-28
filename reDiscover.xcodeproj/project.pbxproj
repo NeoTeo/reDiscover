@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		AB095A7B1B2F12CD009201A2 /* CoverImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB095A7A1B2F12CD009201A2 /* CoverImageView.swift */; };
 		AB1385CA1C5A7F3C005352D9 /* TGPlaylist.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB1385C91C5A7F3C005352D9 /* TGPlaylist.swift */; };
+		AB1385CC1C5A829B005352D9 /* TGPlaylistCellView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB1385CB1C5A829B005352D9 /* TGPlaylistCellView.swift */; };
 		AB1BC13F1976C91E003F02B9 /* ScrollingTextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB1BC13E1976C91E003F02B9 /* ScrollingTextView.swift */; };
 		AB1D28B21B5006AA006C7FFF /* TGTimelineTransformer.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB1D28B11B5006AA006C7FFF /* TGTimelineTransformer.swift */; };
 		AB1F37501C55540700A7D1CC /* TGSweetSpotControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB1F374F1C55540700A7D1CC /* TGSweetSpotControl.swift */; };
@@ -17,7 +18,6 @@
 		AB37EC1E1B25B77C00C94597 /* TimelinePopoverViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB37EC1D1B25B77C00C94597 /* TimelinePopoverViewController.swift */; };
 		AB3991EB1AEA8B9F00381CAC /* DebugDisplay.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB3991E91AEA8B9F00381CAC /* DebugDisplay.swift */; };
 		AB3991EC1AEA8B9F00381CAC /* DebugDisplay.xib in Resources */ = {isa = PBXBuildFile; fileRef = AB3991EA1AEA8B9F00381CAC /* DebugDisplay.xib */; };
-		AB3E9752187C20D600BECC09 /* TGPlaylistCellView.m in Sources */ = {isa = PBXBuildFile; fileRef = AB3E9751187C20D600BECC09 /* TGPlaylistCellView.m */; };
 		AB3FF56319C1D3CE00D6C5EF /* UploadedSSData.m in Sources */ = {isa = PBXBuildFile; fileRef = AB3FF56219C1D3CE00D6C5EF /* UploadedSSData.m */; };
 		AB43ACF51C4962DD001F258F /* dummy.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AB43ACF41C4962DD001F258F /* dummy.cpp */; };
 		AB43ACF91C4963F8001F258F /* SongFingerprinter.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB43ACF81C4963F8001F258F /* SongFingerprinter.swift */; };
@@ -92,6 +92,7 @@
 /* Begin PBXFileReference section */
 		AB095A7A1B2F12CD009201A2 /* CoverImageView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CoverImageView.swift; sourceTree = "<group>"; };
 		AB1385C91C5A7F3C005352D9 /* TGPlaylist.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TGPlaylist.swift; sourceTree = "<group>"; };
+		AB1385CB1C5A829B005352D9 /* TGPlaylistCellView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TGPlaylistCellView.swift; sourceTree = "<group>"; };
 		AB1BC13E1976C91E003F02B9 /* ScrollingTextView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScrollingTextView.swift; sourceTree = "<group>"; };
 		AB1D28B11B5006AA006C7FFF /* TGTimelineTransformer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TGTimelineTransformer.swift; sourceTree = "<group>"; };
 		AB1F374F1C55540700A7D1CC /* TGSweetSpotControl.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TGSweetSpotControl.swift; sourceTree = "<group>"; };
@@ -101,8 +102,6 @@
 		AB37EC1D1B25B77C00C94597 /* TimelinePopoverViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TimelinePopoverViewController.swift; sourceTree = "<group>"; };
 		AB3991E91AEA8B9F00381CAC /* DebugDisplay.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = DebugDisplay.swift; path = source/DebugDisplay.swift; sourceTree = "<group>"; };
 		AB3991EA1AEA8B9F00381CAC /* DebugDisplay.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = DebugDisplay.xib; sourceTree = "<group>"; };
-		AB3E9750187C20D600BECC09 /* TGPlaylistCellView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TGPlaylistCellView.h; sourceTree = "<group>"; };
-		AB3E9751187C20D600BECC09 /* TGPlaylistCellView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TGPlaylistCellView.m; sourceTree = "<group>"; };
 		AB3FF56119C1D3CE00D6C5EF /* UploadedSSData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UploadedSSData.h; sourceTree = "<group>"; };
 		AB3FF56219C1D3CE00D6C5EF /* UploadedSSData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UploadedSSData.m; sourceTree = "<group>"; };
 		AB43ACF41C4962DD001F258F /* dummy.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = dummy.cpp; sourceTree = "<group>"; };
@@ -252,8 +251,7 @@
 				AB1385C91C5A7F3C005352D9 /* TGPlaylist.swift */,
 				AB85BC1B1875AB5200670905 /* TGPlaylistViewController.h */,
 				AB85BC1C1875AB5200670905 /* TGPlaylistViewController.m */,
-				AB3E9750187C20D600BECC09 /* TGPlaylistCellView.h */,
-				AB3E9751187C20D600BECC09 /* TGPlaylistCellView.m */,
+				AB1385CB1C5A829B005352D9 /* TGPlaylistCellView.swift */,
 			);
 			name = "Playlist panel";
 			path = source;
@@ -542,7 +540,6 @@
 				AB5861F41C4D4FD800D6A78E /* TGTimelineBarView.swift in Sources */,
 				AB43ACFB1C49642E001F258F /* TGSongFingerprinter.swift in Sources */,
 				ABFB8D681B4F1400006519B0 /* TGSplitViewController.swift in Sources */,
-				AB3E9752187C20D600BECC09 /* TGPlaylistCellView.m in Sources */,
 				ABFC06C41B04A27C00649BBD /* CoreDataStore.swift in Sources */,
 				AB71279B19407C8E0002B1F8 /* CoverArtArchiveWebFetcher.swift in Sources */,
 				AB8182D81A5D5DAA000939F1 /* TGSongAudioCacher.swift in Sources */,
@@ -575,6 +572,7 @@
 				ABB2B6621ADEB38F004F9F87 /* NSImage+HashId.swift in Sources */,
 				AB43ACFF1C4966D9001F258F /* DelMe.swift in Sources */,
 				AB9811CF1B87672B00BA75DD /* SongPoolAccessProtocol.swift in Sources */,
+				AB1385CC1C5A829B005352D9 /* TGPlaylistCellView.swift in Sources */,
 				AB9479D61B419FF2004B7C82 /* Dictionary+Utils.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

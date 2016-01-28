@@ -8,7 +8,7 @@
 
 #import "rediscover-swift.h"
 #import "TGPlaylistViewController.h"
-#import "TGPlaylistCellView.h"
+//#import "TGPlaylistCellView.h"
 //#import "TGPlaylist.h"
 #import "TGSongPool.h"
 
@@ -87,9 +87,9 @@
     
     // Construct the string for the playlist entry.
 //    resultCell.layer.backgroundColor = (__bridge CGColorRef)([NSColor whiteColor]);
-    resultCell.TitleLabel.stringValue = [songData valueForKey:@"Title"];
-    resultCell.AlbumLabel.stringValue = [songData valueForKey:@"Album"];
-    resultCell.ArtistLabel.stringValue = [songData valueForKey:@"Artist"];
+    resultCell.titleLabel.stringValue = [songData valueForKey:@"Title"];
+    resultCell.albumLabel.stringValue = [songData valueForKey:@"Album"];
+    resultCell.artistLabel.stringValue = [songData valueForKey:@"Artist"];
     
     return resultCell;
 }
