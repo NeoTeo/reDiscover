@@ -100,6 +100,11 @@ extension Song {
         return Song(songId: songId, metadata: metadata, urlString: urlString, sweetSpots: sweetspots, fingerPrint: fingerprint, selectedSS: selectedSS, releases: releases, artId: artId, UUId: uuid, RelId: relid)
     }
     
+    func duration() -> NSNumber? {
+        guard let dur = metadata?.duration else { return nil }
+        return NSNumber(double: dur)
+    }
+    
     func metadataDict() -> NSDictionary {
         guard let md = metadata else { return [:] }
         return [    "Artist" : md.artist,

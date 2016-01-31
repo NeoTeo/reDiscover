@@ -8,6 +8,7 @@
 
 import Foundation
 import CoreMedia
+import AVFoundation
 
 typealias SongDictionary = [SongID: Song]
 
@@ -25,25 +26,49 @@ final class SongPool : NSObject {
     
     private static let songDataUpdaterOpQ = NSOperationQueue()
     
+    private static var lastRequestedSongId : SongIDProtocol?
+    private static var currentlyPlayingSongId : SongIDProtocol?
+    private static var songAudioCacher = TGSongAudioCacher()
+    private static var currentSongDuration : NSNumber?
+    private static var requestedPlayheadPosition : NSNumber?
+    /// Being observed?
+    private static var playheadPos : NSNumber?
+    
     /** Bodgy type method to set the instances of the things we haven't yet turned
         into static classes/structs */
 //    static func setVarious(theFingerPrinter: OldFingerPrinter, audioPlayer: TGSongAudioPlayer) {
     static func setVarious( audioPlayer: TGSongAudioPlayer) {
         albumCollection = AlbumCollection()
         songAudioPlayer = audioPlayer
+        songAudioCacher.songPoolAPI = delegate
     }
     
-    
-    static func durationForSongId(songId: SongID) -> NSNumber {
+    static func cacheWithContext(cacheContext : SongSelectionContext) {
+        
+        /// Cache songs using the context
+        songAudioCacher.cacheWithContext(cacheContext)
+        
+        /// Update the last requestedSongId.
+        lastRequestedSongId = cacheContext.selectedSongId
+        
+        /// Request updated data for the selecrted song.
+        requestUpdatedData(forSongId: lastRequestedSongId!)
+    }
+
+//    static func durationForSongId(songId: SongID) -> NSNumber {
+    /* Duration is now only obtained from the song itself
+    static func durationForSongId(songId: SongIDProtocol) -> NSNumber {
+        
         let song = SongPool.songForSongId(songId)
         let duration = song?.metadata?.duration
+        
         if duration == 0.0 {
             return delegate!.songDurationForSongID(songId)
         } else {
             return NSNumber(double: duration!)
         }
     }
-    
+    */
     
     /// Request the song for the given id and return a copy of it.
     static func songForSongId(songId: SongIDProtocol) -> TGSong? {
@@ -60,12 +85,137 @@ final class SongPool : NSObject {
         guard let song = SongPool.songForSongId(songId) else { return }
         
         let startTime = SweetSpotController.selectedSweetSpotForSong(song)
-        delegate!.requestSongPlayback(songId, withStartTimeInSeconds: startTime)
-        
+        //delegate!.requestSongPlayback(songId, withStartTimeInSeconds: startTime)
+        requestSongPlayback(songId, withStartTimeInSeconds: startTime)
     }
     
-    /** Set up a chain of operations each dependent on the previous that update 
-        various data associated with a song; 
+    static func requestSongPlayback(songId : SongIDProtocol, withStartTimeInSeconds time : NSNumber?) {
+        
+        lastRequestedSongId = songId
+        
+        songAudioCacher.performWhenPlayerIsAvailableForSongId(songId) { player in
+            
+            guard (self.lastRequestedSongId != nil) && self.lastRequestedSongId!.isEqual(songId) else { return }
+            
+            setSongPlaybackObserver(player)
+            let song = songForSongId(songId)
+            let startTime = time ?? SweetSpotController.selectedSweetSpotForSong(song!) ?? NSNumber(double: 0)
+            
+            songAudioPlayer?.playAtTime(startTime.doubleValue)
+            currentlyPlayingSongId = songId
+            
+            guard let duration = song?.duration() else {
+                fatalError("Song has no duration!")
+            }
+            /** The following crashes at runtime because this is using a reference to
+                an instance of this class (self) to set the value of a static 
+                //self.setValue(duration, forKey: "currentSongDuration")
+            
+                Presumably the following won't have the desired effects since we want to set the
+                currentSongDuration in a KVO compliant fashion. Not sure what that is
+                in Swift. It seems you have to add the dynamic keyword to the properties
+                you want to observe.
+                This and playheadPos are being bound in TGSplitViewController setupBindings()
+                I need to change that to refer to these instead of the ObjC properties
+                in the songPool.m
+            */
+            SongPool.currentSongDuration = duration
+            
+            SongPool.setRequestedPlayheadPosition(startTime)
+        }
+    }
+    
+    /**
+    This method sets the requestedPlayheadPosition (which represents the position the user has manually set with a slider)
+    of the currently playing song to newPosition and sets a sweet spot for the song which gets stored on next save.
+    The requestedPlayheadPosition should only result in a sweet spot when the user releases the slider.
+    */
+    static func setRequestedPlayheadPosition(newPosition : NSNumber) {
+    
+        requestedPlayheadPosition = newPosition
+        
+        /// Set the current playback time and the currently selected sweet spot to the new position.
+        songAudioPlayer?.currentPlayTime = newPosition.doubleValue
+    }
+
+    /**
+    - (void)requestSongPlayback:(id<SongIDProtocol>)songID withStartTimeInSeconds:(NSNumber *)time {
+     
+        id<TGSong> aSong = [self songForID:songID];
+        if (aSong == NULL) {
+            TGLog(TGLOG_ALL,@"Nope, the requested ID %@ is not in the song pool.",songID);
+            return;
+        }
+     
+        lastRequestedSongId = songID;
+     
+        //NUCACHE
+        [songAudioCacher performWhenPlayerIsAvailableForSongId:songID callBack:^(AVPlayer* thePlayer){
+     
+            if (songID == lastRequestedSongId) {
+                 
+                // Start observing the new player.
+                [self setSongPlaybackObserver:thePlayer];
+                 
+                 id<TGSong> song = [self songForID:songID];
+                 
+                 /** If there's no start time, check the sweet spot server for one.
+                 If one is found set the startTime to it, else set it to the beginning. */
+                 NSNumber* startTime = time;
+         
+                 if (startTime == nil) {
+         
+                     // At this point we really ought to make sure we have a song uuid generated from the fingerprint.
+                     startTime = [SweetSpotController selectedSweetSpotForSong:song];
+                     if (startTime == nil) {
+                        startTime = [NSNumber numberWithDouble:0.0];
+                    }
+                }
+         
+                [songAudioPlayer playAtTime:[startTime floatValue]];
+                currentlyPlayingSongId = songID;
+         
+                TGLog(TGLOG_TMP, @"currentSongDuration %f",CMTimeGetSeconds([songAudioPlayer songDuration]));
+         
+                [self setValue:[NSNumber numberWithFloat:CMTimeGetSeconds([songAudioPlayer songDuration])] forKey:@"currentSongDuration"];
+         
+                [self setRequestedPlayheadPosition:startTime];
+            }
+        }];
+    }
+    */
+    
+    static func setSongPlaybackObserver(songPlayer : AVPlayer) {
+        
+        let timerObserver = { (time : CMTime) -> () in
+            let currentPlaybackTime = songPlayer.currentTime()
+            self.songDidUpdatePlayheadPosition(NSNumber(double: CMTimeGetSeconds(currentPlaybackTime)))
+        }
+        songAudioPlayer?.setSongPlayer(songPlayer, block: timerObserver)
+
+        /**
+        // Make a weakly retained self and songPlayer for use inside the block to avoid retain cycle.
+        __unsafe_unretained typeof(self) weakSelf = self;
+        __unsafe_unretained AVPlayer* weakSongPlayer = songPlayer;
+        
+        void (^timerObserverBlock)(CMTime) = ^void(CMTime time) {
+        
+            CMTime currentPlaybackTime = [weakSongPlayer currentTime];
+            [weakSelf songDidUpdatePlayheadPosition:[NSNumber numberWithDouble:CMTimeGetSeconds(currentPlaybackTime)]];
+        };
+        [songAudioPlayer setSongPlayer:songPlayer block:timerObserverBlock];
+        
+        */
+    }
+    
+    static func songDidUpdatePlayheadPosition(playheadPosition : NSNumber) {
+        ///self.setValue(playheadPosition, forKey: "playheadPos")
+        /// Will this work for KVO?
+        SongPool.playheadPos = playheadPosition
+    }
+    
+    /** Set up a chain of operations each dependent on the previous that update
+        various data associated with a song;
         1) Loading its embedded file metadata,
         2) Generating an acoustic fingerprint of the song's audio,
         3) Looking up additional data such as an UUID using the fingerprint,
@@ -132,8 +282,10 @@ final class SongPool : NSObject {
     
     static func updateMetadata(forSongId songId: SongIDProtocol) {
         
+        /// Check that the song doesn't already have metadata.
+        if SongPool.songForSongId(songId)?.metadata != nil { return }
         guard let metadata = SongCommonMetaData.loadedMetaDataForSongId(songId) else { return }
-        
+        /// We need to handle the case where metadata already exists!
         addSong(withChanges: [.Metadata : metadata], forSongId: songId)
         
         /// Let anyone listening know that we've updated the metadata for the songId.
@@ -215,7 +367,7 @@ final class SongPool : NSObject {
             //println("songURL \(songURL)")
             let songString = songURL.absoluteString
             let songId = SongID(string: songString)
-            let songCommonMetaData = SongCommonMetaData()
+            let songCommonMetaData : SongCommonMetaData? = nil//SongCommonMetaData()
             let newSong = Song(songId: songId, metadata: songCommonMetaData, urlString: songString, sweetSpots: nil, fingerPrint: nil, selectedSS: nil, releases: nil, artId: nil, UUId: nil, RelId: nil)
             
             //songPool[songId] = newSong
@@ -253,6 +405,10 @@ final class SongPool : NSObject {
             // Then we create a new song from the old song and the new metadata (want crash if oldSong is nil)
             let newSong = Song.songWithChanges(oldSong!, changes: changes)
             
+            if let md = changes[.Metadata] as? SongCommonMetaData {
+                print("metadata change \(md.duration)")
+            }
+            print("addSong withChanges has duration \(newSong.duration())")
             // Then we add that new song to the song pool using the songId
             SongPool.songPool![songId as! SongID] = newSong as? Song
         }

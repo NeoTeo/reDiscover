@@ -128,9 +128,14 @@ class TGTimelineSliderCell : NSSliderCell {
         timelineBarView.animator().frame = barFrame!
     }
     
-    
-    func makeMarkersFromSweetSpots(sweetSpots: Set<SweetSpot>, forSongDuration duration: NSNumber) {
-        
+    /// FIXME: Change to makeMarkers(sweetSpots : Set<SweetSpot>, duration : NSNumber)
+    func makeMarkers(sweetSpots: Set<SweetSpot>, duration: NSNumber) {
+
+        guard duration.doubleValue != 0 else {
+            print("Dropping out of makeMarkersFromSweetSpots because song duration is 0.")
+            return
+        }
+
         /// Adding and removing subviews needs to happen on the main thread.
         dispatch_async(dispatch_get_main_queue()) {
             var spotIndex = 0
@@ -140,11 +145,6 @@ class TGTimelineSliderCell : NSSliderCell {
             
             /// Add the new sweet spot markers
             for ss in sweetSpots {
-                
-                guard duration.doubleValue != 0 else {
-                    print("Song duration is 0. Skipping.")
-                    continue
-                }
                 
                 guard ss != 0 else {
                     print("Sweet spot is 0. Skipping.")

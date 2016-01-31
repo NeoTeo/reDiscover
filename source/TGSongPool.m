@@ -62,14 +62,6 @@ static int const kSongPoolStartCapacity = 250;
         timelineUpdateQueue = dispatch_queue_create("timeline GUI updater queue", NULL);
         
         
-        //[self initBasicCovers];
-        
-        // Create and hook up the song fingerprinter.
-//        songFingerPrinter = [[TGFingerPrinter alloc] init];
-//        [songFingerPrinter setDelegate:self];
-        
-//        songUUIDMaker = [[UUIDMaker alloc] init];
-//        artCache = [[SongArtCache alloc] init];
         /* cdfix
         // Core Data initialization.
         {
@@ -93,11 +85,6 @@ static int const kSongPoolStartCapacity = 250;
         
         // Get any user metadata from the local Core Data store.
         //cdfix [self fetchMetadataFromLocalStore];
-/* REFAC
-        // Register to be notified of idle time starting and ending.
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(idleTimeBegins) name:@"TGIdleTimeBegins" object:nil];
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(idleTimeEnds) name:@"TGIdleTimeEnds" object:nil];
-*/
         //FIXME: Change the delegate to actually passing the artForSong method the required params.
         [SongPool setDelegate:self];
 
@@ -105,33 +92,14 @@ static int const kSongPoolStartCapacity = 250;
         [songAudioPlayer setVolume:0.2];
         
         /// Make sure the SongPool is set up with various instances
-//        [SongPool setVarious:[[TGFingerPrinter alloc] init] audioPlayer:songAudioPlayer];
         [SongPool setVarious: songAudioPlayer];
-        
-        //albumCollection = [[AlbumCollection alloc] init];
-        
-        /// The CoverArtArchiveWebFetcher handles all comms with the remote cover art archive.
-//MARK: REFAC
-//        _coverArtWebFetcher = [[CoverArtArchiveWebFetcher alloc] init];
-//        _coverArtWebFetcher.delegate = self;
         
         // Set up TEOSongData
         [self setupManagedObjectContext];
         
-        // The sweetSpotServerIO object handles all comms with the remote sweet spot server.
-//        _sweetSpotServerIO = [[SweetSpotServerIO alloc] init];
-        //_sweetSpotServerIO.delegate = self;
-                
         // Starting off with an empty songID cache.
-//        songIDCache = [[NSMutableSet alloc] init];
         songLoadUnloadQueue = dispatch_queue_create("song load unload q", NULL);
-        
         songPoolQueue = dispatch_queue_create("songPool dictionary access q", DISPATCH_QUEUE_SERIAL);
-        
-        // Register to be notified of song uuid being fetched
-//        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleFetchedUUId:) name:@"TGUUIdWasFetched" object:nil];
-//        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(songCoverWasFetched:) name:@"webSongCoverFetcherDidFetch" object:nil];
-//        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(songIsReadyForPlayback:) name:@"songStatusNowReady" object:nil];
         
         //CACH2 start the cachequeue off with an empty cache
         selectedSongsCache = [[NSMutableSet alloc] init];
@@ -140,17 +108,12 @@ static int const kSongPoolStartCapacity = 250;
         callbackQueueLock = [[NSLock alloc] init];
         selectedSongsCacheLock = [[NSLock alloc] init];
         
-//        cacheQueue = [[NSMutableArray alloc] init];
-//        [cacheQueue enqueue:[NSMutableSet setWithCapacity:0]];
         callbackQueue = [[NSMutableArray alloc] init];
         
         //NUCACHE
         songAudioCacher = [[TGSongAudioCacher alloc] init];
         songAudioCacher.songPoolAPI = self;
-        
-//        songAudioPlayer = [[TGSongAudioPlayer alloc] init];
-//        [songAudioPlayer setVolume:0.2];
-    }
+}
     
     return self;
 }
@@ -262,7 +225,7 @@ static int const kSongPoolStartCapacity = 250;
     TGLog(TGLOG_ALL,@"songCoverWasFetched with %@",song);
 }
 
-
+/*
 - (NSNumber *)songDurationForSongID:(id<SongIDProtocol>)songID {
     
     /// FIXME: change to use the duration returned by the fingerprinter.
@@ -270,7 +233,7 @@ static int const kSongPoolStartCapacity = 250;
     float secs = CMTimeGetSeconds(songDuration);
     return [NSNumber numberWithDouble:secs];
 }
-
+*/
 - (NSURL *)songURLForSongID:(id<SongIDProtocol>)songID {
     id<TGSong> aSong = [self songForID:songID];
     
@@ -727,7 +690,9 @@ static int const kSongPoolStartCapacity = 250;
 static bool debugConcurrentCheck = false;
 
 - (void)cacheWithContext:(id<SongSelectionContext>)cacheContext {
-
+    
+    [SongPool cacheWithContext:cacheContext];
+    
     NSAssert(debugConcurrentCheck == false, @"Called before done!");
     debugConcurrentCheck = YES;
     

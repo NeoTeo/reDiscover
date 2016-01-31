@@ -52,10 +52,13 @@ extension TimelinePopoverViewController {
         
         let theCell = timelineBar?.cell as! TGTimelineSliderCell
         theCell.theController = self
-        let songDuration = SongPool.durationForSongId(songId)
         
+//        let songDuration = SongPool.durationForSongId(songId)
+        /// We get the duration straight from the song.
+        let songDuration = SongPool.songForSongId(songId)?.duration() ?? NSNumber(double: 0)
+        print("Song with id \(songId) has duration \(songDuration)")
         if let songSweetSpots = SweetSpotController.sweetSpots(forSongId: songId) {
-            theCell.makeMarkersFromSweetSpots(songSweetSpots, forSongDuration: songDuration)
+            theCell.makeMarkers(songSweetSpots, duration: songDuration)
         }
     }
     

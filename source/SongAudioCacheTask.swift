@@ -165,9 +165,9 @@ class SongAudioCacheTask : NSObject {
                 if col >= Int(gridDims.x) { break }
 
                 let gridPos = NSPoint(x: col, y: row)
-                print("CACHING - considering \(col),\(row): \(gridPos)")
+//                print("CACHING - considering \(col),\(row): \(gridPos)")
                 if let songId = songPoolAPI?.songIdFromGridPos(gridPos) {
-                    print("CACHING - Which is songId \(songId)")
+//                    print("CACHING - Which is songId \(songId)")
                     wantedCacheCount += 1
                     idHandler(songId)
                 }

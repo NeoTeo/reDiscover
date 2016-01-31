@@ -35,19 +35,22 @@ public class TGPlaylistViewController : NSViewController, NSTableViewDataSource,
     }
     
     func storePlaylist(withName fileName : String) {
-        
+        playlist.store(withName: fileName)
     }
     
     func addToPlaylist(songWithId songId : SongIDProtocol) {
-        
+        playlist.addSong(withId: songId, atIndex: 0)
+        /// TODO: Consider reloading only the changed row
+        playlistTableView.reloadData()
     }
     
     func removeFromPlaylist(songWithId songId : SongIDProtocol) {
-        
+        playlist.removeSong(songId)
+        playlistTableView.reloadData()
     }
     
     func getNextSongIdToPlay() -> SongIDProtocol? {
-        return nil
+        return playlist.getNextSongIdToPlay()
     }
 }
 
@@ -63,11 +66,25 @@ public class TGPlaylistViewController : NSViewController, NSTableViewDataSource,
 extension TGPlaylistViewController {
     
     public func numberOfRowsInTableView(tableview : NSTableView) -> Int {
-        return 0
+        return playlist.songsInPlaylist()
     }
     
     public func tableView(tableView: NSTableView, viewForTableColumn tableColumn: NSTableColumn?, row: Int) -> NSView? {
-        return nil
+        
+        guard let resultCell  = tableView.makeViewWithIdentifier("SongCell", owner: self) as? TGPlaylistCellView,
+            let id = playlist.getSongId(atIndex: row),
+            let song = SongPool.songForSongId(id) else {
+                return nil
+        }
+        
+        let songData = song.metadataDict()
+        guard songData.count > 0 else { return nil }
+        
+        resultCell.titleLabel.stringValue   = songData["Title"] as! String
+        resultCell.albumLabel.stringValue   = songData["Album"] as! String
+        resultCell.artistLabel.stringValue  = songData["Artist"] as! String
+        
+        return resultCell
     }
 }
 
@@ -75,6 +92,16 @@ extension TGPlaylistViewController {
 extension TGPlaylistViewController {
     
     public func tableViewSelectionDidChange(notification: NSNotification) {
-        
+        let selectedRow = playlistTableView.selectedRow
+        if selectedRow >= 0 {
+            playlist.positionInPlaylist = selectedRow
+            
+            if let songId = playlist.getSongId(atIndex: selectedRow) {
+                SongPool.requestSongPlayback(songId, withStartTimeInSeconds: 0)
+            }
+            playlistTableView.deselectRow(selectedRow)
+            /// FIXME: Not sure the responder should be self. Used to be _delegate
+            self.view.window?.makeFirstResponder(self)
+        }
     }
 }

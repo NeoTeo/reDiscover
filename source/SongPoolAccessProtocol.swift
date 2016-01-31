@@ -14,7 +14,7 @@ import Foundation
     func songURLForSongID(songID: SongIDProtocol) -> NSURL
     func requestSongPlayback(songID: SongIDProtocol)
     func requestSongPlayback(songID: SongIDProtocol, withStartTimeInSeconds time: NSNumber?)
-    func songDurationForSongID(songID: SongIDProtocol) -> NSNumber
+//    func songDurationForSongID(songID: SongIDProtocol) -> NSNumber
     func songIdFromGridPos(gridPosition: NSPoint) -> SongIDProtocol
     func lastRequestedSongId() -> SongIDProtocol
     func currentlyPlayingSongId() -> SongIDProtocol
