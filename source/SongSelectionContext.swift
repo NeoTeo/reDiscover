@@ -9,8 +9,8 @@
 import Foundation
 
 
-@objc public protocol SongSelectionContext {
-    var selectedSongId: SongIDProtocol { get }
+public protocol SongSelectionContext {
+    var selectedSongId: SongId { get }
     var speedVector: NSPoint { get }
     var selectionPos: NSPoint { get }
     var gridDimensions: NSPoint { get }
@@ -19,13 +19,13 @@ import Foundation
 
 //struct TGSongSelectionContext : SongSelectionContext {
 final class TGSongSelectionContext : NSObject, SongSelectionContext {
-    let selectedSongId: SongIDProtocol
+    let selectedSongId: SongId
     let speedVector: NSPoint
     let selectionPos: NSPoint
     let gridDimensions: NSPoint
     let cachingMethod: CachingMethod
     
-    init(selectedSongId: SongIDProtocol,
+    init(selectedSongId: SongId,
         speedVector: NSPoint,
         selectionPos: NSPoint,
         gridDimensions: NSPoint,

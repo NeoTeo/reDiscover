@@ -23,7 +23,7 @@ class DropViewController : NSViewController, DropViewDelegate {
     override func viewDidAppear() {
         let envVars = NSProcessInfo.processInfo().environment
         if let _ = envVars["NO_DROP"] {
-            droppedURL = NSURL(fileURLWithPath: "/Users/teo/Desktop/50 Cent")
+            droppedURL = NSURL(fileURLWithPath: "/Users/teo/Desktop/songs")
             if droppedURL != nil  {
                 dropViewDidReceiveURL(droppedURL!)
             }

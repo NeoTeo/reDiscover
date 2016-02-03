@@ -10,8 +10,8 @@ import Foundation
 import AVFoundation
 
 protocol SongAudioCacheTaskDelegate {
-    func getSongURL(songId : SongIDProtocol) -> NSURL?
-    func getSongId(gridPos : NSPoint) -> SongIDProtocol?
+    func getSongURL(songId : SongId) -> NSURL?
+    func getSongId(gridPos : NSPoint) -> SongId?
 }
 /**
     A CacheTask represents a unit of work that will cache a number of songs.
@@ -109,8 +109,8 @@ class SongAudioCacheTask : NSObject {
             print("completion block for generateWantedSongIds.")
             // This is a handler that is passed a songId of a song that needs caching.
             // If the song was already in the old cache, copy it to the new cache.
-            if let oldPlayer = oldCache[songId.hash] {
-                print("found a cached player for song id",songId.hash)
+            if let oldPlayer = oldCache[songId.hashValue] {
+                print("found a cached player for song id",songId.hashValue)
                 /**
                 Since oldCache is a deep copy of the actual cache we are effectively
                 copying the asset. We need to lock it during access because it
@@ -120,19 +120,19 @@ class SongAudioCacheTask : NSObject {
                 */
                 
                 newCacheLock.withCriticalScope {
-                    newCache[songId.hash] = oldPlayer
+                    newCache[songId.hashValue] = oldPlayer
                 }
                 
             } else {
-                print("No cached player found for song id",songId.hash,"so call performWhenReadyForPlayback")
+                print("No cached player found for song id",songId.hashValue,"so call performWhenReadyForPlayback")
                 /// Song player had not been previously cached.
                 /// Do it now and add it to the newCache when it's ready.
                 self.performWhenReadyForPlayback(songId){ songPlayer in
-                    print("This is the completion block for performWhenReadyForPlayback for song",songId.hash)
+                    print("This is the completion block for performWhenReadyForPlayback for song",songId.hashValue)
                     print("Add the song to the new cache")
                     /// This can get called some time after
                     newCacheLock.withCriticalScope {
-                        newCache[songId.hash] = songPlayer
+                        newCache[songId.hashValue] = songPlayer
                     }
                 }
             }
@@ -158,7 +158,7 @@ class SongAudioCacheTask : NSObject {
     Future improvements will take a caching algo to allow for different
     types of caching selections.
     */
-    func generateWantedSongIds(theContext: SongSelectionContext, operationBlock: NSBlockOperation?, idHandler: (SongIDProtocol)->()) -> Int {
+    func generateWantedSongIds(theContext: SongSelectionContext, operationBlock: NSBlockOperation?, idHandler: (SongId)->()) -> Int {
         
         let selectionPos    = theContext.selectionPos
         let gridDims        = theContext.gridDimensions
@@ -193,7 +193,7 @@ class SongAudioCacheTask : NSObject {
             and has an associated AVPlayer with which to play back the song that 
             the id refers to.
     */
-    func performWhenReadyForPlayback(songId: SongIDProtocol, readySongHandler: (AVPlayer)->()) {
+    func performWhenReadyForPlayback(songId: SongId, readySongHandler: (AVPlayer)->()) {
         
 //         At this point we don't know if the url is for the local file system or streaming.
         guard let songURL = delegate?.getSongURL(songId) else {

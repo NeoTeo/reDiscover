@@ -11,9 +11,9 @@
 import Foundation
 
 
-@objc public protocol TGSong {
+public protocol TGSong {
     
-    var songID: SongIDProtocol { get }
+    var songId: SongId { get }
     var urlString: String? { get }
     var selectedSweetSpot: NSNumber? { get }
     var sweetSpots: Set<SweetSpot>? { get }
@@ -24,7 +24,7 @@ import Foundation
     var UUId: String? { get }
     var RelId: String? { get }
     
-    init(songId: SongIDProtocol, metadata: SongCommonMetaData?, urlString: String?, sweetSpots: Set<SweetSpot>?,
+    init(songId: SongId, metadata: SongCommonMetaData?, urlString: String?, sweetSpots: Set<SweetSpot>?,
         fingerPrint: String?, selectedSS: SweetSpot?, releases: NSData?, artId: String?, UUId: String?, RelId: String?)
     
     func metadataDict() -> NSDictionary

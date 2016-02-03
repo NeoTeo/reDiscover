@@ -9,7 +9,7 @@
 import Foundation
 
 // An album is a set of song ids.
-// We'd like to define it as such, but the SongIDProtocol, by necessity,
+// We'd like to define it as such, but the SongId, by necessity,
 // needs to be defined as an Obj-C protocol. Since Obj-C protocols cannot inherit
 // the Swift Hashable protocol it cannot be used as a type in a Swift Set or
 // Dictionary.
@@ -18,9 +18,9 @@ typealias AlbumId = String
 class Album : NSObject {
     
     let id: AlbumId
-    let songIds: NSSet
+    var songIds: Set<SongId>
     
-    init(albumId: AlbumId, songIds: NSSet){
+    init(albumId: AlbumId, songIds: Set<SongId>){
         id = albumId
         self.songIds = songIds
     }
@@ -41,7 +41,10 @@ extension Album {
     */
     static func albumWithAddedSong(song: TGSong,oldAlbum: Album) -> Album {
         if let aId = Album.albumIdForSong(song) {
-            return Album(albumId: aId, songIds: oldAlbum.songIds.setByAddingObject(song.songID))
+            /// FIXME : This mutates and probably shouldn't
+            var newSongIds = oldAlbum.songIds
+            newSongIds.insert(song.songId)
+            return Album(albumId: aId, songIds: newSongIds )
         }
         print("Album.albumWithAddedSong returned the old album without changes.")
         return oldAlbum

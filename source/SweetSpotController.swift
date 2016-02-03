@@ -9,8 +9,8 @@
 import Foundation
 
 protocol SweetSpotControllerDelegate {
-    func addSong(withChanges changes: [SongProperty : AnyObject], forSongId songId: SongIDProtocol)
-    func getSong(songId : SongIDProtocol) -> TGSong?
+    func addSong(withChanges changes: [SongProperty : AnyObject], forSongId songId: SongId)
+    func getSong(songId : SongId) -> TGSong?
 }
 
 public typealias SweetSpot = NSNumber //Float
@@ -31,7 +31,7 @@ public class SweetSpotController : NSObject {
     var delegate : SweetSpotControllerDelegate?
     
     /// Add, to the song pool, a new sweet spot to an existing song given by the songId.
-    func addSweetSpot(atTime time: SweetSpot, forSongId songId: SongIDProtocol) {
+    func addSweetSpot(atTime time: SweetSpot, forSongId songId: SongId) {
         delegate?.addSong(withChanges: [.SelectedSS : time], forSongId: songId)
     }
     
@@ -44,7 +44,7 @@ public class SweetSpotController : NSObject {
         //return 0.0
     }
 
-    func sweetSpots(forSongId songId: SongIDProtocol) -> Set<SweetSpot>? {
+    func sweetSpots(forSongId songId: SongId) -> Set<SweetSpot>? {
         
         guard let song = delegate?.getSong(songId) else { return nil }
 

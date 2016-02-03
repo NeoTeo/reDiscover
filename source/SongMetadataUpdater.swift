@@ -9,8 +9,8 @@
 import Foundation
 
 protocol SongMetadataUpdaterDelegate {
-    func getSong(songId : SongIDProtocol) -> TGSong?
-    func addSong(withChanges changes: [SongProperty : AnyObject], forSongId songId: SongIDProtocol)
+    func getSong(songId : SongId) -> TGSong?
+    func addSong(withChanges changes: [SongProperty : AnyObject], forSongId songId: SongId)
 }
 
 public class SongMetadataUpdater {
@@ -34,7 +34,7 @@ public class SongMetadataUpdater {
      4) Maintaining and updating the local album collection data.
      5) Looking for cover art in a large variety of places (including a web service).
      */
-    func requestUpdatedData(forSongId songId: SongIDProtocol) {
+    func requestUpdatedData(forSongId songId: SongId) {
         
         /// Let any interested parties know we've started updating the current song.
         NSNotificationCenter.defaultCenter().postNotificationName("songDidStartUpdating", object: songId)
@@ -95,7 +95,7 @@ public class SongMetadataUpdater {
             fetchSweetspotsOp], waitUntilFinished: false)
     }
 
-    func updateMetadata(forSongId songId: SongIDProtocol) {
+    func updateMetadata(forSongId songId: SongId) {
         
         /// Check that the song doesn't already have metadata.
         guard let song = delegate?.getSong(songId) else { return }
@@ -108,7 +108,7 @@ public class SongMetadataUpdater {
         NSNotificationCenter.defaultCenter().postNotificationName("songMetaDataUpdated", object: songId)
     }
     
-    func updateRemoteData(forSongId songId: SongIDProtocol, withDuration duration: NSNumber) {
+    func updateRemoteData(forSongId songId: SongId, withDuration duration: NSNumber) {
         
         guard let song = delegate?.getSong(songId) else { return }
         guard let fingerprint = song.fingerPrint else { return }
@@ -126,7 +126,7 @@ public class SongMetadataUpdater {
         }
     }
     
-    func updateFingerPrint(forSongId songId: SongIDProtocol) {
+    func updateFingerPrint(forSongId songId: SongId) {
         
         guard let song = delegate?.getSong(songId) else { return }
         
@@ -142,7 +142,7 @@ public class SongMetadataUpdater {
         
     }
     
-    func checkForArt(forSongId songId: SongIDProtocol, inAlbumCollection collection: AlbumCollection) {
+    func checkForArt(forSongId songId: SongId, inAlbumCollection collection: AlbumCollection) {
         guard let song = delegate?.getSong(songId) else { return }
         
         // Change artForSong to take a songId
@@ -162,7 +162,7 @@ public class SongMetadataUpdater {
 /// let's see if any other requirements surface.
 extension SongMetadataUpdater : AlbumCollectionDelegate {
     
-    func getSong(songId : SongIDProtocol) -> TGSong? {
+    func getSong(songId : SongId) -> TGSong? {
         return delegate?.getSong(songId)
     }
 }

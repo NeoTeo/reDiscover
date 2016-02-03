@@ -18,7 +18,7 @@ different ways:
 */
 class SongArtFinder: NSObject {
     
-    @objc class func findArtForSong(song: TGSong, collection: AlbumCollection) -> NSImage? {
+    class func findArtForSong(song: TGSong, collection: AlbumCollection) -> NSImage? {
         // No existing artID. Try looking in the metadata.
         let arts = SongCommonMetaData.getCoverArtForSong(song)
         if arts.count > 0 {

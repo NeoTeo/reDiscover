@@ -15,7 +15,7 @@ Includes fingerprint, UUId, Sweetspots, selected Sweetspot, etc.
 struct SongGeneratedMetaData {
     let UUId: String?
     let URLString: String
-//    let songID: SongIDProtocol
+//    let songID: SongId
 //    let selectedSweetSpot: Float
 //    let sweetSpots: [SweetSpot]?
 //    let metadata: SongCommonMetaData?

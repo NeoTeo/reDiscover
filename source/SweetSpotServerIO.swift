@@ -143,7 +143,7 @@ class SweetSpotServerIO: NSObject {
     }
     
     
-    static func sweetSpotHasBeenUploaded(theSS: Double, theSongID: SongIDProtocol) -> Bool {
+    static func sweetSpotHasBeenUploaded(theSS: Double, theSongID: SongId) -> Bool {
 //        if  let songUUID = delegate?.UUIDStringForSongID(theSongID),
         if let song = songPoolAPI?.songForSongId(theSongID),
             let songUUID = SongUUID.getUUIDForSong(song),
@@ -156,7 +156,7 @@ class SweetSpotServerIO: NSObject {
     }
     
     //MARK: Below here belongs in the sweetspotserver class
-    static func uploadSweetSpotsForSongID(songID: SongIDProtocol) -> Bool {
+    static func uploadSweetSpotsForSongID(songID: SongId) -> Bool {
         // First get the song's uuid
 
         guard let song = songPoolAPI?.songForSongId(songID),
@@ -219,7 +219,7 @@ class SweetSpotServerIO: NSObject {
         return true;
     }
     
-//    func uploadSweetSpotForSongID(sweetSpot: NSNumber, songID: SongIDProtocol) -> Bool {
+//    func uploadSweetSpotForSongID(sweetSpot: NSNumber, songID: SongId) -> Bool {
 //        return true;
 //    }
     
@@ -246,7 +246,7 @@ class SweetSpotServerIO: NSObject {
     will contain the sweet spots added in step 3 and the new meta data.
     So, consequently, the returned array will always be nil.
     */
-    static func requestSweetSpotsForSongID(songID: SongIDProtocol) -> NSArray? {
+    static func requestSweetSpotsForSongID(songID: SongId) -> NSArray? {
         let envVars = NSProcessInfo.processInfo().environment
         if let _ = envVars["NO_SSSERVER"] {
             self.mock(songID)
@@ -317,7 +317,7 @@ class SweetSpotServerIO: NSObject {
     
     /** Mock fetch sweetspots and selected sweet spot when there is not network connection.
     */
-    static func mock(songId: SongIDProtocol) {
+    static func mock(songId: SongId) {
         let newSSs : Set<SweetSpot> = [30, 60, 120, 240]
         let selectedSS : SweetSpot = 60
         

@@ -9,8 +9,8 @@
 import Cocoa
 
 protocol PlaylistViewControllerDelegate {
-    func getSong(songId : SongIDProtocol) -> TGSong?
-    func requestPlayback(songId: SongIDProtocol, startTimeInSeconds: NSNumber)
+    func getSong(songId : SongId) -> TGSong?
+    func requestPlayback(songId: SongId, startTimeInSeconds: NSNumber)
 }
 
 public class TGPlaylistViewController : NSViewController, NSTableViewDataSource, NSTableViewDelegate {
@@ -45,18 +45,18 @@ public class TGPlaylistViewController : NSViewController, NSTableViewDataSource,
         playlist.store(withName: fileName)
     }
     
-    func addToPlaylist(songWithId songId : SongIDProtocol) {
+    func addToPlaylist(songWithId songId : SongId) {
         playlist.addSong(withId: songId, atIndex: 0)
         /// TODO: Consider reloading only the changed row
         playlistTableView.reloadData()
     }
     
-    func removeFromPlaylist(songWithId songId : SongIDProtocol) {
+    func removeFromPlaylist(songWithId songId : SongId) {
         playlist.removeSong(songId)
         playlistTableView.reloadData()
     }
     
-    func getNextSongIdToPlay() -> SongIDProtocol? {
+    func getNextSongIdToPlay() -> SongId? {
         return playlist.getNextSongIdToPlay()
     }
 }
@@ -64,7 +64,7 @@ public class TGPlaylistViewController : NSViewController, NSTableViewDataSource,
 /// TGPlaylistDelegate methods ?
 //extension TGPlaylistViewController {
 //    
-//    func songData(forSongId songId : SongIDProtocol) -> NSDictionary {
+//    func songData(forSongId songId : SongId) -> NSDictionary {
 //        
 //    }
 //}
@@ -114,7 +114,7 @@ extension TGPlaylistViewController {
 }
 
 extension TGPlaylistViewController : PlaylistDelegate {
-    func getSong(songId : SongIDProtocol) -> TGSong? {
+    func getSong(songId : SongId) -> TGSong? {
         return delegate?.getSong(songId)
     }
 }

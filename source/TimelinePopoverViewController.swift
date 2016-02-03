@@ -9,8 +9,8 @@
 import Cocoa
 
 protocol TimelinePopoverViewControllerDelegate {
-    func getSongDuration(songId : SongIDProtocol) -> NSNumber?
-    func getSweetSpots(songId: SongIDProtocol) -> Set<SweetSpot>?
+    func getSongDuration(songId : SongId) -> NSNumber?
+    func getSweetSpots(songId: SongId) -> Set<SweetSpot>?
     func userSelectedSweetSpot(index : Int)
 }
 
@@ -45,12 +45,12 @@ extension TimelinePopoverViewController {
     
     func updateTimelineSweetSpots(notification: NSNotification) {
         
-        if let songId = notification.object as? SongID {
+        if let songId = notification.object as? SongId {
             setCurrentSongId(songId)
         }
     }
     
-    func setCurrentSongId(songId: SongID) {
+    func setCurrentSongId(songId: SongId) {
         
         let theCell = timelineBar?.cell as! TGTimelineSliderCell
         theCell.theController = self

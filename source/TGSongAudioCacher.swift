@@ -9,7 +9,7 @@
 import Cocoa
 import AVFoundation
 
-@objc public enum CachingMethod : Int {
+public enum CachingMethod : Int {
     case None
     case All
     case Square
@@ -18,8 +18,8 @@ import AVFoundation
 
 protocol SongAudioCacherDelegate {
 
-        func getSongURL(songId : SongIDProtocol) -> NSURL?
-        func getSongId(gridPos : NSPoint) -> SongIDProtocol?
+        func getSongURL(songId : SongId) -> NSURL?
+        func getSongId(gridPos : NSPoint) -> SongId?
 }
 
 typealias HashToPlayerDictionary    = [Int:AVPlayer]
@@ -29,7 +29,7 @@ final class TGSongAudioCacher : NSObject {
     typealias PlayerRequestBlock = (AVPlayer)->()
 
     struct SongIdToPlayerRequestBlock {
-        var songId: SongIDProtocol
+        var songId: SongId
         var callBack: PlayerRequestBlock
     }
     
@@ -98,7 +98,7 @@ final class TGSongAudioCacher : NSObject {
             if let pp = self.pendingPlayerRequestCallback {
                 
                 // Check if the pending player request is in this new cache
-                if let player = self.songPlayerCache[pp.songId.hash] {
+                if let player = self.songPlayerCache[pp.songId.hashValue] {
                     pp.callBack(player)
                     self.pendingPlayerRequestCallback = nil
                 }
@@ -134,10 +134,10 @@ final class TGSongAudioCacher : NSObject {
             instance variable. Any existing pending request is overwritten because
             it has been overridden by this more recent request.
     */
-    func performWhenPlayerIsAvailableForSongId(songId: SongIDProtocol, callBack: (AVPlayer)->()) {
+    func performWhenPlayerIsAvailableForSongId(songId: SongId, callBack: (AVPlayer)->()) {
         
         // If the requested Player is already in the cache, execute callback immediately.
-        if let player = songPlayerCache[songId.hash] {
+        if let player = songPlayerCache[songId.hashValue] {
             callBack(player)
         } else {
             // Add the callback to a dictionary where it's associated with the songId.
@@ -153,11 +153,11 @@ final class TGSongAudioCacher : NSObject {
 
 extension TGSongAudioCacher : SongAudioCacheTaskDelegate {
     
-    func getSongURL(songId : SongIDProtocol) -> NSURL? {
+    func getSongURL(songId : SongId) -> NSURL? {
         return delegate?.getSongURL(songId)
     }
     
-    func getSongId(gridPos : NSPoint) -> SongIDProtocol? {
+    func getSongId(gridPos : NSPoint) -> SongId? {
         return delegate?.getSongId(gridPos)
     }
 }

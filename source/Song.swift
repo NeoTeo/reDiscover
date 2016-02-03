@@ -11,7 +11,7 @@ import Foundation
 
 class Song : NSObject, TGSong {
     
-    let songID: SongIDProtocol
+    let songId: SongId
     let urlString: String?
     let selectedSweetSpot: NSNumber? //Float
 //    let sweetSpots: [SweetSpot]?
@@ -23,11 +23,11 @@ class Song : NSObject, TGSong {
     let UUId: String?
     let RelId: String?
     
-//    required init(songId: SongIDProtocol, metadata: SongCommonMetaData?, urlString: String?, sweetSpots: [SweetSpot]?,
-    required init(songId: SongIDProtocol, metadata: SongCommonMetaData?, urlString: String?, sweetSpots: Set<SweetSpot>?,
+//    required init(SongId: SongId, metadata: SongCommonMetaData?, urlString: String?, sweetSpots: [SweetSpot]?,
+    required init(songId: SongId, metadata: SongCommonMetaData?, urlString: String?, sweetSpots: Set<SweetSpot>?,
         fingerPrint: String?, selectedSS: SweetSpot?, releases: NSData?, artId: String?, UUId: String?, RelId: String?) {
             
-            self.songID              = songId
+            self.songId              = songId
             self.urlString           = urlString
             self.selectedSweetSpot   = selectedSS
             self.sweetSpots          = sweetSpots
@@ -61,7 +61,7 @@ extension Song {
     
     static func songWithChanges(theSong: TGSong, changes: [SongProperty : AnyObject]) -> TGSong {
         
-        var songId      = theSong.songID
+        var songId      = theSong.songId
         var metadata    = theSong.metadata
         var urlString   = theSong.urlString
         var sweetspots  = theSong.sweetSpots
@@ -75,7 +75,7 @@ extension Song {
         for (change, obj) in changes {
             switch change {
             case .Id:
-                songId = obj as! SongIDProtocol
+                songId = obj as! SongId
             case .Metadata:
                 metadata = obj as? SongCommonMetaData
             case .UrlString:

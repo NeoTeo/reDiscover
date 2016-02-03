@@ -9,7 +9,6 @@
 import Cocoa
 
 
-@objc
 protocol TGSongUIPopupProtocol {
     func songUIPlusButtonWasPressed()
     func songUITimelineButtonWasPressed()

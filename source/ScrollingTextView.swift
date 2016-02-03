@@ -8,7 +8,6 @@
 
 import Cocoa
 
-@objc
 class ScrollingTextView: NSView {
 
     var scrollText:NSString = ""

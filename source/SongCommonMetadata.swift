@@ -96,7 +96,7 @@ extension SongCommonMetaData {
         return nil
     }
     /*
-    static func songWithLoadedMetaData(songId: SongIDProtocol) -> TGSong? {
+    static func songWithLoadedMetaData(songId: SongId) -> TGSong? {
         if let rawMetadata = SongCommonMetaData.commonMetadataForSong(songId),
             let song = SongPool.songForSongId(songId) {
             return Song(songId: song.songID,

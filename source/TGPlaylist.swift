@@ -18,24 +18,24 @@ NSMutableArray *songList;
 @property id<TGSongPoolDelegate> delegate;
 
 
-- (void)addSong:(id<SongIDProtocol>)aSongID atIndex:(NSUInteger)index;
+- (void)addSong:(id<SongId>)aSongID atIndex:(NSUInteger)index;
 - (void)removeSongAtIndex:(NSUInteger)index;
-- (void)removeSong:(id<SongIDProtocol>)aSong;
-- (id<SongIDProtocol>)getNextSongIDToPlay;
+- (void)removeSong:(id<SongId>)aSong;
+- (id<SongId>)getNextSongIDToPlay;
 - (void)storeWithName:(NSString *)theName;
 - (NSUInteger)songsInPlaylist;
-- (id<SongIDProtocol>)songIDAtIndex:(NSUInteger)index;
+- (id<SongId>)songIDAtIndex:(NSUInteger)index;
 @end
 */
 
 protocol PlaylistDelegate {
-    func getSong(songId : SongIDProtocol) -> TGSong?
+    func getSong(songId : SongId) -> TGSong?
 }
 
 class TGPlaylist : NSObject, NSTableViewDataSource {
     
     /// A list of song ids.
-    var songList = [SongIDProtocol]()
+    var songList = [SongId]()
     var positionInPlaylist = 0
     
     //var songPoolAPI : SongPoolAccessProtocol?
@@ -49,7 +49,7 @@ class TGPlaylist : NSObject, NSTableViewDataSource {
         return songList.count
     }
     
-    func getSongId(atIndex index : Int) -> SongIDProtocol? {
+    func getSongId(atIndex index : Int) -> SongId? {
         
         guard index < songList.count else {
             print("ERROR: TGPlaylist getSongId index is out of bounds.")
@@ -66,9 +66,10 @@ class TGPlaylist : NSObject, NSTableViewDataSource {
         songList.removeAtIndex(index)
     }
     
-    func removeSong(songId : SongIDProtocol) {
+    func removeSong(songId : SongId) {
         
-        if let idx = songList.indexOf( { songId.isEqual($0) }) {
+//        if let idx = songList.indexOf( { SongId.isEqual($0) }) {
+        if let idx = songList.indexOf( { songId == $0 }) {
             songList.removeAtIndex(idx)
         }
     }
@@ -76,7 +77,7 @@ class TGPlaylist : NSObject, NSTableViewDataSource {
     /** Adding to the song list is not a concurrent task so no need to them queue up.
         (for now)
     */
-    func addSong(withId songId : SongIDProtocol, atIndex index : Int) {
+    func addSong(withId songId : SongId, atIndex index : Int) {
         guard index < songList.count else {
             print("ERROR: TGPlaylist addSong index is out of bounds.")
             return
@@ -85,7 +86,7 @@ class TGPlaylist : NSObject, NSTableViewDataSource {
         songList.insert(songId, atIndex: index)
     }
     
-    func getNextSongIdToPlay() -> SongIDProtocol? {
+    func getNextSongIdToPlay() -> SongId? {
         let songCount = songList.count
         guard songCount > 0 else { return nil }
         

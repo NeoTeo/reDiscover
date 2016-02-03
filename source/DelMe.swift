@@ -18,6 +18,6 @@ import Foundation
 
 import Foundation
 
-@objc protocol OldFingerPrinter {
-    func fingerprint(forSongId songId: SongIDProtocol) -> String?
+protocol OldFingerPrinter {
+    func fingerprint(forSongId songId: SongId) -> String?
 }

@@ -13,12 +13,12 @@ import Cocoa
 public protocol CoverDisplayViewControllerDelegate {
     
     /// For TGCoverDisplayViewController
-    func getSong(songId : SongIDProtocol) -> TGSong?
+    func getSong(songId : SongId) -> TGSong?
     func getArt(artId : String) -> NSImage?
     
     /// For TimelinePopoverViewControllerDelegate
-    func getSongDuration(songId : SongIDProtocol) -> NSNumber?
-    func getSweetSpots(songId : SongIDProtocol) -> Set<SweetSpot>?
+    func getSongDuration(songId : SongId) -> NSNumber?
+    func getSweetSpots(songId : SongId) -> Set<SweetSpot>?
     func userSelectedSweetSpot(index : Int)
 }
 
@@ -26,8 +26,8 @@ public class TGCoverDisplayViewController: NSViewController, NSCollectionViewDel
     
     @IBOutlet weak var coverCollectionView: CoverCollectionView!
     
-    private var unmappedSongIdArray: [SongIDProtocol] = []
-    private var mappedSongIds: [Int:SongIDProtocol] = [:]
+    private var unmappedSongIdArray: [SongId] = []
+    private var mappedSongIds: [Int:SongId] = [:]
     private var songCount = 0
 
     private var currentTrackingArea: NSTrackingArea?
@@ -187,7 +187,7 @@ public class TGCoverDisplayViewController: NSViewController, NSCollectionViewDel
         }
     }
     
-    func postNotificationOfSelection(songId: SongIDProtocol, atIndex idx: Int) {
+    func postNotificationOfSelection(songId: SongId, atIndex idx: Int) {
         // 1) Package the context in a data structure.
         // 2) post notification with the context.
         //FIXME: For now we bodge the speed vector.
@@ -224,7 +224,7 @@ public class TGCoverDisplayViewController: NSViewController, NSCollectionViewDel
         Not that if a cover at the given grid position hasn't been mapped to a song
         the method will return an empty optional.
     */
-    public func songIdFromGridPos(gridPos: NSPoint) -> SongIDProtocol? {
+    public func songIdFromGridPos(gridPos: NSPoint) -> SongId? {
         
         // Ask the flow layout for an index given a grid position.
         let index = (coverCollectionView.collectionViewLayout as! NSCollectionViewFlowLayout).indexFromGridPos(gridPos)
@@ -249,9 +249,9 @@ public class TGCoverDisplayViewController: NSViewController, NSCollectionViewDel
         This is done via an access queue.
     */
     func updateSongs(notification: NSNotification) {
-        if let songId = notification.object as? SongIDProtocol {
+        if let songId = notification.object as? SongId {
             // Internally (from methods) it's ok to mutate the array.
-            // How can we know if the songIDProtocol object is value or reference type?
+            // How can we know if the SongId object is value or reference type?
             // And so how can we know if the unmappedSongIdArray is value or reference based?
             //FIXME:
             // queue the access to the collection up serially.
@@ -294,7 +294,7 @@ public class TGCoverDisplayViewController: NSViewController, NSCollectionViewDel
         // For the default nine item grid it is probably just as fast to just reload all 
         // the visible items, but it doesn't scale well if we decided to allow arbitrary
         // sizes of grids.
-        if let songId = notification.object as? SongIDProtocol {
+        if let songId = notification.object as? SongId {
             let mappedSongIdArray = mappedSongIds.filter { $1.isEqual(songId) }.map { return $0.0 }
             if mappedSongIdArray.count == 1 {
                 let idx = mappedSongIdArray[0]
@@ -415,11 +415,11 @@ extension TGCoverDisplayViewController: NSCollectionViewDataSource {
 
 extension TGCoverDisplayViewController : TimelinePopoverViewControllerDelegate {
 
-    func getSongDuration(songId : SongIDProtocol) -> NSNumber? {
+    func getSongDuration(songId : SongId) -> NSNumber? {
         return delegate?.getSongDuration(songId)
     }
     
-    func getSweetSpots(songId: SongIDProtocol) -> Set<SweetSpot>? {
+    func getSweetSpots(songId: SongId) -> Set<SweetSpot>? {
         return delegate?.getSweetSpots(songId)
     }
     

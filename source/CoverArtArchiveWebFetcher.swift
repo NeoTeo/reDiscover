@@ -10,7 +10,6 @@ import Foundation
 import AppKit
 
 
-@objc
 class CoverArtArchiveWebFetcher : NSObject {
     
     class func artForSong(song: TGSong) -> NSImage? {

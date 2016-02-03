@@ -9,7 +9,7 @@
 import Cocoa
 
 protocol AlbumCollectionDelegate {
-    func getSong(songId : SongIDProtocol) -> TGSong?
+    func getSong(songId : SongId) -> TGSong?
 }
 
 
@@ -37,7 +37,7 @@ extension AlbumCollection {
 //        return nil
     }
     
-    func update(albumContainingSongId songId: SongIDProtocol, usingOldCollection albums: AlbumCollection) -> AlbumCollection {
+    func update(albumContainingSongId songId: SongId, usingOldCollection albums: AlbumCollection) -> AlbumCollection {
 
         /// Only make a new album if we have a valid song and albumId
         if let song = delegate?.getSong(songId),
@@ -49,7 +49,7 @@ extension AlbumCollection {
                 /// If an album was found make a copy of it with the song added to
                 /// it, otherwise make a new album.
                 if album == nil {
-                    album = Album(albumId: albumId, songIds: Set(arrayLiteral: songId as! SongID))
+                    album = Album(albumId: albumId, songIds: Set(arrayLiteral: songId ))
                 } else {
                     album = Album.albumWithAddedSong(song, oldAlbum: album!)
                 }
@@ -69,10 +69,9 @@ extension AlbumCollection {
     }
     
     func artForAlbum(album: Album, inCollection: AlbumCollection) -> NSImage? {
-        let songIds = album.songIds.allObjects
-//        var albumArts = [NSImage?]()
+        let songIds = Array(album.songIds)
         
-        for songId in songIds as! [SongIDProtocol] {
+        for songId in songIds {
             if let song = delegate?.getSong(songId),
                 let artId = song.artID,
                 let songArt = SongArt.getArt(forArtId: artId) {

@@ -30,7 +30,8 @@ class LocalFileIO: NSObject {
             if imageURLs.count > 0 {
                 return imageURLs
             }
-        } catch _ {
+        } catch {
+            print("Error: \(error)")
         }
         
         return nil

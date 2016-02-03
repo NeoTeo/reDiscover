@@ -38,8 +38,8 @@ final public class TGSplitViewController: NSSplitViewController, SongPlaybackPro
     /** Should these be moved to a song player controller/DJ class that tracks
     what song is currently playing, what is requested, etc. ?
     */
-    private var lastRequestedSongId : SongIDProtocol?
-    private var currentlyPlayingSongId : SongIDProtocol?
+    private var lastRequestedSongId : SongId?
+    private var currentlyPlayingSongId : SongId?
     private dynamic var currentSongDuration : NSNumber?
     /** Playhead stuff. Consider moving to separate class/struct */
     private dynamic var playheadPos : NSNumber?
@@ -283,7 +283,7 @@ extension TGSplitViewController {
         songMetadataUpdater?.requestUpdatedData(forSongId: lastRequestedSongId!)
     }
     
-    func requestPlayback(songId: SongIDProtocol, startTimeInSeconds: NSNumber) {
+    func requestPlayback(songId: SongId, startTimeInSeconds: NSNumber) {
         /** FIXME : Just do this directly once we're sure everyone is calling
             requestPlayback instead of requestSongPlayback
         */
@@ -296,7 +296,7 @@ extension TGSplitViewController {
      just play the song from the start.
      :params: songID The id of the song to play.
      */
-    func requestSongPlayback(songId: SongIDProtocol) {
+    func requestSongPlayback(songId: SongId) {
         guard let song = theSongPool?.songForSongId(songId) else { return }
         
         let startTime = SweetSpotController.selectedSweetSpotForSong(song)
@@ -304,13 +304,13 @@ extension TGSplitViewController {
         requestSongPlayback(songId, withStartTimeInSeconds: startTime)
     }
     
-    func requestSongPlayback(songId : SongIDProtocol, withStartTimeInSeconds time : NSNumber?) {
+    func requestSongPlayback(songId : SongId, withStartTimeInSeconds time : NSNumber?) {
         
         lastRequestedSongId = songId
         
         songAudioCacher.performWhenPlayerIsAvailableForSongId(songId) { player in
             
-            guard (self.lastRequestedSongId != nil) && self.lastRequestedSongId!.isEqual(songId) else { return }
+            guard (self.lastRequestedSongId != nil) && (self.lastRequestedSongId! == songId) else { return }
             
             self.setSongPlaybackObserver(player)
             let song = self.theSongPool?.songForSongId(songId)
@@ -340,7 +340,7 @@ extension TGSplitViewController {
         }
     }
     /**
-     - (void)requestSongPlayback:(id<SongIDProtocol>)songID withStartTimeInSeconds:(NSNumber *)time {
+     - (void)requestSongPlayback:(id<SongId>)songID withStartTimeInSeconds:(NSNumber *)time {
      
      id<TGSong> aSong = [self songForID:songID];
      if (aSong == NULL) {
@@ -435,7 +435,7 @@ extension TGSplitViewController {
     
     // Notification when a song starts loading/caching. Allows us to update UI to show activity.
     func songDidStartUpdating(notification: NSNotification) {
-//        let songId = notification.object as! SongID
+//        let songId = notification.object as! SongId
         if let infoPanel = songInfoSVI.viewController as? TGSongInfoViewController,
             let coverImage = SongArt.getFetchingCoverImage() {
             infoPanel.setCoverImage(coverImage)
@@ -445,8 +445,8 @@ extension TGSplitViewController {
     // Called when the song metadata is updated and will in turn call the info panel
     // to update its data.
     func songMetaDataWasUpdated(notification: NSNotification) {
-        let songId = notification.object as! SongID
-        if songId.isEqual(lastRequestedSongId),
+        let songId = notification.object as! SongId
+        if songId == lastRequestedSongId,
             let infoPanel = songInfoSVI.viewController as? TGSongInfoViewController,
             let song = theSongPool?.songForSongId(songId) {
                 infoPanel.setDisplayStrings(withDisplayStrings: song.metadataDict())
@@ -455,10 +455,10 @@ extension TGSplitViewController {
     
     func songCoverWasUpdated(notification: NSNotification) {
         
-        let songId = notification.object as! SongID
+        let songId = notification.object as! SongId
         
 
-        if songId.isEqual(lastRequestedSongId),
+        if songId == lastRequestedSongId,
             let song = theSongPool?.songForSongId(songId){
                 let infoPanel = songInfoSVI.viewController as! TGSongInfoViewController
                 if let artId = song.artID,
@@ -483,7 +483,7 @@ extension TGSplitViewController {
 extension TGSplitViewController : CoverDisplayViewControllerDelegate {
  
     /// For TGCoverDisplayViewController
-    public func getSong(songId : SongIDProtocol) -> TGSong? {
+    public func getSong(songId : SongId) -> TGSong? {
         return theSongPool?.songForSongId(songId)
     }
     
@@ -493,11 +493,11 @@ extension TGSplitViewController : CoverDisplayViewControllerDelegate {
     }
  
     /// For TimelinePopoverViewControllerDelegate
-    public func getSongDuration(songId : SongIDProtocol) -> NSNumber? {
+    public func getSongDuration(songId : SongId) -> NSNumber? {
         return theSongPool?.songForSongId(songId)?.duration()
     }
     
-    public func getSweetSpots(songId : SongIDProtocol) -> Set<SweetSpot>? {
+    public func getSweetSpots(songId : SongId) -> Set<SweetSpot>? {
         return theSongPool?.songForSongId(songId)?.sweetSpots
     }
     
@@ -513,17 +513,17 @@ extension TGSplitViewController : CoverDisplayViewControllerDelegate {
 }
 
 extension TGSplitViewController : SongAudioCacherDelegate {
-    func getSongURL(songId : SongIDProtocol) -> NSURL? {
+    func getSongURL(songId : SongId) -> NSURL? {
         return theSongPool?.getUrl(songId)
     }
     
-    func getSongId(gridPos : NSPoint) -> SongIDProtocol? {
+    func getSongId(gridPos : NSPoint) -> SongId? {
         return coversPanelCtrlr.songIdFromGridPos(gridPos)
     }
 }
 
 extension TGSplitViewController : SweetSpotControllerDelegate {
-    func addSong(withChanges changes: [SongProperty : AnyObject], forSongId songId: SongIDProtocol) {
+    func addSong(withChanges changes: [SongProperty : AnyObject], forSongId songId: SongId) {
         theSongPool?.addSong(withChanges: changes, forSongId: songId)
     }    
 }

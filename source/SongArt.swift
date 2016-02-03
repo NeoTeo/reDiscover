@@ -11,7 +11,7 @@ import AVFoundation
 
 typealias SongArtId = NSString
 
-@objc enum DefaultImage: Int {
+enum DefaultImage: Int {
     case None
     case Blank
     case Fetching

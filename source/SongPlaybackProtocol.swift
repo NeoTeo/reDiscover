@@ -9,6 +9,6 @@
 import Foundation
 
 protocol SongPlaybackProtocol {
-//- (void)requestSongPlayback:(id<SongIDProtocol>)songID withStartTimeInSeconds:(NSNumber *)time {
-    func requestPlayback(songId : SongIDProtocol, startTimeInSeconds : NSNumber) 
+//- (void)requestSongPlayback:(id<SongId>)songID withStartTimeInSeconds:(NSNumber *)time {
+    func requestPlayback(songId : SongId, startTimeInSeconds : NSNumber) 
 }
