@@ -26,7 +26,7 @@ public typealias SweetSpot = NSNumber //Float
     concurrency issues it would control access through a queue. The downside is 
     that storing it would be more work than if everything just resided in the song.
 */
-class SweetSpotController : NSObject {
+public class SweetSpotController : NSObject {
     
     var delegate : SweetSpotControllerDelegate?
     

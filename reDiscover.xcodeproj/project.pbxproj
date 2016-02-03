@@ -27,6 +27,7 @@
 		AB43ACFF1C4966D9001F258F /* DelMe.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB43ACFE1C4966D9001F258F /* DelMe.swift */; };
 		AB43AD041C49AB6A001F258F /* Accelerate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AB43AD031C49AB6A001F258F /* Accelerate.framework */; };
 		AB43AD061C49ABC9001F258F /* libchromaprint.a in Frameworks */ = {isa = PBXBuildFile; fileRef = AB43AD051C49ABC9001F258F /* libchromaprint.a */; };
+		AB44D0661C6250C2001194DF /* TGSongUserData.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB44D0651C6250C2001194DF /* TGSongUserData.swift */; };
 		AB4529381A88EAF300A6B15A /* TGSongUIPopupController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB4529361A88EAF300A6B15A /* TGSongUIPopupController.swift */; };
 		AB4529391A88EAF300A6B15A /* TGSongUIPopupController.xib in Resources */ = {isa = PBXBuildFile; fileRef = AB4529371A88EAF300A6B15A /* TGSongUIPopupController.xib */; };
 		AB4529661A895B4100A6B15A /* TGAppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB4529651A895B4100A6B15A /* TGAppDelegate.swift */; };
@@ -113,6 +114,7 @@
 		AB43ACFE1C4966D9001F258F /* DelMe.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DelMe.swift; sourceTree = "<group>"; };
 		AB43AD031C49AB6A001F258F /* Accelerate.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accelerate.framework; path = System/Library/Frameworks/Accelerate.framework; sourceTree = SDKROOT; };
 		AB43AD051C49ABC9001F258F /* libchromaprint.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libchromaprint.a; path = ChromaprintLib/libchromaprint.a; sourceTree = "<group>"; };
+		AB44D0651C6250C2001194DF /* TGSongUserData.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TGSongUserData.swift; sourceTree = "<group>"; };
 		AB4529361A88EAF300A6B15A /* TGSongUIPopupController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TGSongUIPopupController.swift; sourceTree = "<group>"; };
 		AB4529371A88EAF300A6B15A /* TGSongUIPopupController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = TGSongUIPopupController.xib; sourceTree = "<group>"; };
 		AB4529651A895B4100A6B15A /* TGAppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TGAppDelegate.swift; sourceTree = "<group>"; };
@@ -241,6 +243,7 @@
 				ABC474511B7DFC9700BCB40C /* SongIDProtocol.swift */,
 				AB7358EF1A63D6D300E08D5A /* TGSongAudioPlayer.swift */,
 				AB85BC2E1875AB5200670905 /* TGSongUserData.h */,
+				AB44D0651C6250C2001194DF /* TGSongUserData.swift */,
 				AB85BC2F1875AB5200670905 /* TGSongUserData.m */,
 				AB3FF56119C1D3CE00D6C5EF /* UploadedSSData.h */,
 				AB3FF56219C1D3CE00D6C5EF /* UploadedSSData.m */,
@@ -570,6 +573,7 @@
 				ABAF47821B38590600F13528 /* CoverImage.swift in Sources */,
 				AB4529661A895B4100A6B15A /* TGAppDelegate.swift in Sources */,
 				ABA6D21D1B8CAE13000CEB8C /* NSLock+Operations.swift in Sources */,
+				AB44D0661C6250C2001194DF /* TGSongUserData.swift in Sources */,
 				AB4529381A88EAF300A6B15A /* TGSongUIPopupController.swift in Sources */,
 				AB1D28B21B5006AA006C7FFF /* TGTimelineTransformer.swift in Sources */,
 				AB7FFB6319589D1E002D1E63 /* DropView.swift in Sources */,

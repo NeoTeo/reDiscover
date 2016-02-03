@@ -168,6 +168,8 @@ extension TGSplitViewController {
         coversPanelCtrlr = coverCollectionSVI.viewController as! TGCoverDisplayViewController
         infoPanelCtrlr = songInfoSVI.viewController as! TGSongInfoViewController
         
+        sweetSpotController = SweetSpotController()
+        sweetSpotController.delegate = self
 //        playlistPanelCtrlr.songPoolAPI = theSongPool
         /// Rhe coversPanelCtrlr provides the song audio cacher with a way to map 
         /// a position to a song id.
@@ -205,7 +207,7 @@ extension TGSplitViewController {
 
         let prevPriority = coverCollectionSVI.holdingPriority
         print("Before toggle, coverCollectionSVI holding priority: \(coverCollectionSVI.holdingPriority)")
-        coverCollectionSVI.holdingPriority = 502
+        coverCollectionSVI.holdingPriority = 501
 
         print("coverCollectionSVI holding priority: \(coverCollectionSVI.holdingPriority)")
         let splitViewItem = self.splitViewItems[panelID]
@@ -317,9 +319,10 @@ extension TGSplitViewController {
             self.songAudioPlayer.playAtTime(startTime.doubleValue)
             self.currentlyPlayingSongId = songId
             
-            guard let duration = song?.duration() else {
-                fatalError("Song has no duration!")
-            }
+            let duration = song?.duration() ?? CMTimeGetSeconds(self.songAudioPlayer.songDuration)
+//            guard let duration = song?.duration() else {
+//                fatalError("Song has no duration!")
+//            }
             /** The following crashes at runtime because this is using a reference to
             an instance of this class (self) to set the value of a static
             //self.setValue(duration, forKey: "currentSongDuration")
