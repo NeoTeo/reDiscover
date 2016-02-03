@@ -9,23 +9,20 @@
 import Foundation
 import Cocoa
 
-@objc
-public protocol CoverDisplayViewController {
+
+public protocol CoverDisplayViewControllerDelegate {
     
-    //: Return a song id given a column, row coordinate position
-     func songIdFromGridPos(gridPos: NSPoint) -> SongIDProtocol?
+    /// For TGCoverDisplayViewController
+    func getSong(songId : SongIDProtocol) -> TGSong?
+    func getArt(artId : String) -> NSImage?
     
+    /// For TimelinePopoverViewControllerDelegate
+    func getSongDuration(songId : SongIDProtocol) -> NSNumber?
+    func getSweetSpots(songId : SongIDProtocol) -> Set<SweetSpot>?
+    func userSelectedSweetSpot(index : Int)
 }
 
-// Decided to let this handle the mouse down after all.
-//// Override the NSCollectionView's mouseDown so it isn't swallowed by the default implementation.
-//extension NSCollectionView {
-//    override public func mouseDown(theEvent: NSEvent) {
-//        self.nextResponder?.mouseDown(theEvent)
-//    }
-//}
-
-public class TGCoverDisplayViewController: NSViewController, CoverDisplayViewController, NSCollectionViewDelegate, NSCollectionViewDelegateFlowLayout, TimelinePopoverDelegateProtocol {
+public class TGCoverDisplayViewController: NSViewController, NSCollectionViewDelegate, NSCollectionViewDelegateFlowLayout {
     
     @IBOutlet weak var coverCollectionView: CoverCollectionView!
     
@@ -38,6 +35,8 @@ public class TGCoverDisplayViewController: NSViewController, CoverDisplayViewCon
     private var songUIController: TGSongUIPopupController?
     public var songTimelineController: TimelinePopoverViewController?
 //    public var songTimelineController: TGSongTimelineViewController?
+    
+    var delegate : CoverDisplayViewControllerDelegate?
     
     private var collectionAccessQ: dispatch_queue_t = dispatch_queue_create("collectionAccessQ", DISPATCH_QUEUE_SERIAL)
     
@@ -87,8 +86,6 @@ public class TGCoverDisplayViewController: NSViewController, CoverDisplayViewCon
         songTimelineController = TimelinePopoverViewController(nibName: "TGSongTimelineView", bundle: nil)
         
         songTimelineController!.delegate = self
-        
-        // make sure timeline controller's views are loaded
         songTimelineController?.view
     }
 
@@ -386,10 +383,10 @@ extension TGCoverDisplayViewController: NSCollectionViewDataSource {
         // Find the referenced image and connect it to the item
 
         if let songId = mappedSongIds[indexPath.item],
-            let song = SongPool.songForSongId(songId) {
+            let song = delegate?.getSong(songId) {
                 
             if let artId = song.artID {
-                image = SongArt.getArt(forArtId: artId)
+                image = delegate?.getArt(artId)
             }
             // If we couldn't find any art set the image to no cover rather than the back cover.
             if image == nil {
@@ -414,4 +411,19 @@ extension TGCoverDisplayViewController: NSCollectionViewDataSource {
 //        return NSView()
 //    }
     
+}
+
+extension TGCoverDisplayViewController : TimelinePopoverViewControllerDelegate {
+
+    func getSongDuration(songId : SongIDProtocol) -> NSNumber? {
+        return delegate?.getSongDuration(songId)
+    }
+    
+    func getSweetSpots(songId: SongIDProtocol) -> Set<SweetSpot>? {
+        return delegate?.getSweetSpots(songId)
+    }
+    
+    func userSelectedSweetSpot(index : Int) {
+        delegate?.userSelectedSweetSpot(index)
+    }
 }

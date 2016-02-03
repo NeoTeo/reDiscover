@@ -9,6 +9,10 @@
 import Foundation
 import AVFoundation
 
+protocol SongAudioCacheTaskDelegate {
+    func getSongURL(songId : SongIDProtocol) -> NSURL?
+    func getSongId(gridPos : NSPoint) -> SongIDProtocol?
+}
 /**
     A CacheTask represents a unit of work that will cache a number of songs.
     `TGSongAudioCacheTask` initiates the construction of a cache based on its given
@@ -32,7 +36,9 @@ class SongAudioCacheTask : NSObject {
     // class context variable used by the observer.
     private var myContext = 0
     
-    var songPoolAPI: SongPoolAccessProtocol?
+    var delegate : SongAudioCacheTaskDelegate?
+//    var songPoolAPI: SongPoolAccessProtocol?
+//    var coverDisplayAPI : CoverDisplayViewController?
     
     // holds the not yet ready players awaiting status change
     var loadingPlayers: PlayerToStatusChangeHandler = PlayerToStatusChangeHandler()
@@ -41,9 +47,14 @@ class SongAudioCacheTask : NSObject {
     // holds the ready players
     var songPlayerCache = HashToPlayerDictionary()
     
-    init(songPoolAPI theAPI: SongPoolAccessProtocol?) {
-        songPoolAPI = theAPI
-    }
+//    init(songPoolAPI theAPI: SongPoolAccessProtocol?) {
+//        songPoolAPI = theAPI
+//    }
+
+//    init(coverDisplayApi : CoverDisplayViewController, songPoolApi : SongPoolAccessProtocol) {
+//            coverDisplayAPI = coverDisplayApi
+//            songPoolAPI = songPoolApi
+//    }
     
     func cacheWithContext(theContext: SongSelectionContext, oldCache: HashToPlayerDictionary) -> HashToPlayerDictionary {
         
@@ -165,9 +176,9 @@ class SongAudioCacheTask : NSObject {
                 if col >= Int(gridDims.x) { break }
 
                 let gridPos = NSPoint(x: col, y: row)
-//                print("CACHING - considering \(col),\(row): \(gridPos)")
-                if let songId = songPoolAPI?.songIdFromGridPos(gridPos) {
-//                    print("CACHING - Which is songId \(songId)")
+
+//                if let songId = songPoolAPI?.songIdFromGridPos(gridPos) {
+                if let songId = delegate?.getSongId(gridPos) {
                     wantedCacheCount += 1
                     idHandler(songId)
                 }
@@ -184,8 +195,8 @@ class SongAudioCacheTask : NSObject {
     */
     func performWhenReadyForPlayback(songId: SongIDProtocol, readySongHandler: (AVPlayer)->()) {
         
-        // At this point we don't know if the url is for the local file system or streaming.
-        guard let songURL = self.songPoolAPI?.songURLForSongID(songId) else {
+//         At this point we don't know if the url is for the local file system or streaming.
+        guard let songURL = delegate?.getSongURL(songId) else {
             print("No songPool!")
             return
         }

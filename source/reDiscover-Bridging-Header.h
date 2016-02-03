@@ -4,7 +4,7 @@
 // SongPool.swift needs to know about the TGFingerPrinter
 //#import "TGFingerPrinter.h"
 
-#import "TGSongPool.h"
+//#import "TGSongPool.h"
 
 
 // SweetSpotServerIO needs to know about the UploadedSSData class

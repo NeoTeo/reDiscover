@@ -34,6 +34,7 @@ class SweetSpotServerIO: NSObject {
     private static var uploadedSweetSpots: Dictionary<String,UploadedSSData> = [String:UploadedSSData]()
     private static var uploadedSweetSpotsMOC: NSManagedObjectContext?
     
+    static var songPoolAPI : SongPoolAccessProtocol?
 //    override init() {
 //
 //        super.init()
@@ -144,7 +145,8 @@ class SweetSpotServerIO: NSObject {
     
     static func sweetSpotHasBeenUploaded(theSS: Double, theSongID: SongIDProtocol) -> Bool {
 //        if  let songUUID = delegate?.UUIDStringForSongID(theSongID),
-        if let songUUID = SongUUID.getUUIDForSongId(theSongID),
+        if let song = songPoolAPI?.songForSongId(theSongID),
+            let songUUID = SongUUID.getUUIDForSong(song),
             let ssData = uploadedSweetSpots[songUUID] as UploadedSSData?,
             let sweetSpots = ssData.sweetSpots as NSArray? {
                 
@@ -156,13 +158,15 @@ class SweetSpotServerIO: NSObject {
     //MARK: Below here belongs in the sweetspotserver class
     static func uploadSweetSpotsForSongID(songID: SongIDProtocol) -> Bool {
         // First get the song's uuid
-//        let songUUID = delegate?.UUIDStringForSongID(songID)
-        guard let songUUID = SongUUID.getUUIDForSongId(songID) else {
+
+        guard let song = songPoolAPI?.songForSongId(songID),
+            let songUUID = SongUUID.getUUIDForSong(song) else {
             print("uploadSweetSpotsForSongID ERROR: song has no UUID")
             return false
         }
         
-        if let song = SongPool.songForSongId(songID),
+        /// songForSongId is static so we need to access it through the type.
+        if let song = songPoolAPI?.songForSongId(songID),
             sweetSpots = SweetSpotController.sweetSpots(forSong: song) as Set<SweetSpot>? {
             for sweetSpot in sweetSpots {
                 if sweetSpotHasBeenUploaded(sweetSpot as Double, theSongID: songID) {
@@ -249,13 +253,14 @@ class SweetSpotServerIO: NSObject {
             return nil
         }
         
-        guard let songUUID = SongUUID.getUUIDForSongId(songID) else { return nil }
+        guard let song = songPoolAPI?.songForSongId(songID),
+            let songUUID = SongUUID.getUUIDForSong(song) else { return nil }
         guard let theURL = NSURL(string: "http://\(hostNameAndPort)/lookup?songUUID=\(songUUID.utf8)") else { return nil }
 
         let request = NSURLRequest(URL: theURL)
         let task = NSURLSession.sharedSession().dataTaskWithRequest(request) { (data, response, error) in
             
-            guard let song = SongPool.songForSongId(songID) else { return }
+            guard let song = songPoolAPI?.songForSongId(songID) else { return }
             if data != nil {
                 do {
                     let requestJSON = try NSJSONSerialization.JSONObjectWithData(data!, options: NSJSONReadingOptions.MutableContainers ) as! NSDictionary
@@ -292,7 +297,7 @@ class SweetSpotServerIO: NSObject {
                                     newSelectedSS = newSSSet!.first
                                 }
                                 
-                                SongPool.addSong(withChanges: [.SweetSpots : newSSSet!, .SelectedSS : newSelectedSS!], forSongId: songID)
+                                songPoolAPI?.addSong(withChanges: [.SweetSpots : newSSSet!, .SelectedSS : newSelectedSS!], forSongId: songID)
                                 
                                 // Let any listeners know we've updated the sweetspots of songID
                                 NSNotificationCenter.defaultCenter().postNotificationName("SweetSpotsUpdated", object: songID)
@@ -316,7 +321,7 @@ class SweetSpotServerIO: NSObject {
         let newSSs : Set<SweetSpot> = [30, 60, 120, 240]
         let selectedSS : SweetSpot = 60
         
-        SongPool.addSong(withChanges: [.SweetSpots : newSSs, .SelectedSS : selectedSS], forSongId: songId)
+        songPoolAPI?.addSong(withChanges: [.SweetSpots : newSSs, .SelectedSS : selectedSS], forSongId: songId)
         
         // Let any listeners know we've updated the sweetspots of songID
         NSNotificationCenter.defaultCenter().postNotificationName("SweetSpotsUpdated", object: songId)

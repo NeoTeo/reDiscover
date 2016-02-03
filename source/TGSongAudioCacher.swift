@@ -16,6 +16,12 @@ import AVFoundation
     case SpeedRect
 }
 
+protocol SongAudioCacherDelegate {
+
+        func getSongURL(songId : SongIDProtocol) -> NSURL?
+        func getSongId(gridPos : NSPoint) -> SongIDProtocol?
+}
+
 typealias HashToPlayerDictionary    = [Int:AVPlayer]
 
 final class TGSongAudioCacher : NSObject {
@@ -27,7 +33,10 @@ final class TGSongAudioCacher : NSObject {
         var callBack: PlayerRequestBlock
     }
     
-    var songPoolAPI: SongPoolAccessProtocol?
+    var delegate : SongAudioCacherDelegate?
+//    var songPoolAPI: SongPoolAccessProtocol?
+//    var coverDisplayAPI : CoverDisplayViewController?
+    
     /// Serialize the access to the pendingPlayerRequestCallback.
     let pendingRequestQ = dispatch_queue_create("Request access q", DISPATCH_QUEUE_SERIAL)
     var _pendingPlayerRequestCallback: SongIdToPlayerRequestBlock?
@@ -78,8 +87,10 @@ final class TGSongAudioCacher : NSObject {
             
             print("Execution block",self.debugId)
             
-            let cacheTask = SongAudioCacheTask(songPoolAPI: self.songPoolAPI)
-
+//            let cacheTask = SongAudioCacheTask(songPoolAPI: self.songPoolAPI)
+            let cacheTask = SongAudioCacheTask()
+            cacheTask.delegate = self
+            
             /// cacheWithContext will block until the whole cache has been loaded.
             self.songPlayerCache = cacheTask.cacheWithContext(theContext, oldCache: self.songPlayerCache)
             
@@ -140,7 +151,16 @@ final class TGSongAudioCacher : NSObject {
     }
 }
 
-
+extension TGSongAudioCacher : SongAudioCacheTaskDelegate {
+    
+    func getSongURL(songId : SongIDProtocol) -> NSURL? {
+        return delegate?.getSongURL(songId)
+    }
+    
+    func getSongId(gridPos : NSPoint) -> SongIDProtocol? {
+        return delegate?.getSongId(gridPos)
+    }
+}
 /** Debug stuff */
 extension TGSongAudioCacher {
     func dumpCacheToLog() {

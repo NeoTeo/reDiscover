@@ -11,7 +11,7 @@
 import Foundation
 
 
-@objc protocol TGSong {
+@objc public protocol TGSong {
     
     var songID: SongIDProtocol { get }
     var urlString: String? { get }

@@ -6,8 +6,12 @@
 //  Copyright © 2016 Teo Sartori. All rights reserved.
 //
 
-import Foundation
 import Cocoa
+
+protocol PlaylistViewControllerDelegate {
+    func getSong(songId : SongIDProtocol) -> TGSong?
+    func requestPlayback(songId: SongIDProtocol, startTimeInSeconds: NSNumber)
+}
 
 public class TGPlaylistViewController : NSViewController, NSTableViewDataSource, NSTableViewDelegate {
     
@@ -17,10 +21,13 @@ public class TGPlaylistViewController : NSViewController, NSTableViewDataSource,
     
     private var playlist : TGPlaylist!
     
+    var delegate : PlaylistViewControllerDelegate?
+    
     public override func awakeFromNib() {
         if playlist == nil {
             playlist = TGPlaylist()
             
+            playlist.delegate = self
             playlistTableView.setDelegate(self)
             playlistTableView.setDataSource(self)
         }
@@ -73,7 +80,7 @@ extension TGPlaylistViewController {
         
         guard let resultCell  = tableView.makeViewWithIdentifier("SongCell", owner: self) as? TGPlaylistCellView,
             let id = playlist.getSongId(atIndex: row),
-            let song = SongPool.songForSongId(id) else {
+            let song = delegate?.getSong(id) else {
                 return nil
         }
         
@@ -97,11 +104,17 @@ extension TGPlaylistViewController {
             playlist.positionInPlaylist = selectedRow
             
             if let songId = playlist.getSongId(atIndex: selectedRow) {
-                SongPool.requestSongPlayback(songId, withStartTimeInSeconds: 0)
+                delegate?.requestPlayback(songId, startTimeInSeconds: 0)
             }
             playlistTableView.deselectRow(selectedRow)
             /// FIXME: Not sure the responder should be self. Used to be _delegate
             self.view.window?.makeFirstResponder(self)
         }
+    }
+}
+
+extension TGPlaylistViewController : PlaylistDelegate {
+    func getSong(songId : SongIDProtocol) -> TGSong? {
+        return delegate?.getSong(songId)
     }
 }

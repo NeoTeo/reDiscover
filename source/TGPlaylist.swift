@@ -28,11 +28,18 @@ NSMutableArray *songList;
 @end
 */
 
+protocol PlaylistDelegate {
+    func getSong(songId : SongIDProtocol) -> TGSong?
+}
+
 class TGPlaylist : NSObject, NSTableViewDataSource {
     
     /// A list of song ids.
     var songList = [SongIDProtocol]()
     var positionInPlaylist = 0
+    
+    //var songPoolAPI : SongPoolAccessProtocol?
+    var delegate : PlaylistDelegate?
     
     override init() {
         super.init()
@@ -105,7 +112,7 @@ class TGPlaylist : NSObject, NSTableViewDataSource {
         
         for songId in songList {
             
-            guard let song = SongPool.songForSongId(songId) else { continue }
+            guard let song = delegate?.getSong(songId) else { continue }
             
             let songData = song.metadataDict()
 

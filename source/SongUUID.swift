@@ -19,12 +19,12 @@ struct UUIDData : SongData {
 
 class SongUUID : NSObject {
 
-    static func getUUIDForSongId(songId: SongIDProtocol) -> String? {
-        return SongPool.songForSongId(songId)?.UUId
-    }
+//    static func getUUIDForSongId(songId: SongIDProtocol) -> String? {
+//        return SongPool.songForSongId(songId)?.UUId
+//    }
 
-    static func getUUIDForSong(song: TGSong) -> String {
-        return song.UUId!
+    static func getUUIDForSong(song: TGSong) -> String? {
+        return song.UUId
     }
     
     static func songWithNewUUId(song: TGSong, newUUId: String, newReleaseId: String?) -> TGSong {

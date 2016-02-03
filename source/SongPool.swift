@@ -12,37 +12,75 @@ import AVFoundation
 
 typealias SongDictionary = [SongID: Song]
 
-final class SongPool : NSObject {
+final class SongPool : NSObject, SongPoolAccessProtocol, SongMetadataUpdaterDelegate {
     
     // Until we've switched TGSongPool over to this class we'll use it as a delegate.
-    static var delegate: SongPoolAccessProtocol?
+    //static var delegate: SongPoolAccessProtocol?
     
     //FIXME: turn these two into protocols!
-    private static var albumCollection: AlbumCollection?
-    private static var songAudioPlayer: TGSongAudioPlayer?
+//    private var albumCollection = AlbumCollection()
+//    private static var songAudioPlayer: TGSongAudioPlayer?
+
+    private var songPool: SongDictionary?
+    private var songPoolAccessQ: dispatch_queue_t?
+    private var serialDataLoad = dispatch_queue_create("serial data load queue", DISPATCH_QUEUE_SERIAL)
     
-    private static var songPool: SongDictionary?
-    private static var songPoolAccessQ: dispatch_queue_t?
+
+//    private let songDataUpdaterOpQ = NSOperationQueue()
+
+//    private static var songAudioCacher = TGSongAudioCacher()
+//    private static var currentSongDuration : NSNumber?
+
     
-    private static let songDataUpdaterOpQ = NSOperationQueue()
+//    static var lastRequestedSongId : SongIDProtocol?
+//    static var currentlyPlayingSongId : SongIDProtocol?
     
-    private static var lastRequestedSongId : SongIDProtocol?
-    private static var currentlyPlayingSongId : SongIDProtocol?
-    private static var songAudioCacher = TGSongAudioCacher()
-    private static var currentSongDuration : NSNumber?
-    private static var requestedPlayheadPosition : NSNumber?
+//    private static var requestedPlayheadPos : NSNumber?
+//    static var requestedPlayheadPosition : NSNumber? {
+//        /**
+//         This method sets the requestedPlayheadPosition (which represents the position the user has manually set with a slider)
+//         of the currently playing song to newPosition and sets a sweet spot for the song which gets stored on next save.
+//         The requestedPlayheadPosition should only result in a sweet spot when the user releases the slider.
+//         */
+//        set(newPosition) {
+//            guard newPosition != nil else { return }
+//            self.requestedPlayheadPos = newPosition
+//            songAudioPlayer?.currentPlayTime = newPosition!.doubleValue
+//        }
+//        
+//        get {
+//            return self.requestedPlayheadPos
+//        }
+//
+//    }
     /// Being observed?
-    private static var playheadPos : NSNumber?
+//    private static var playheadPos : NSNumber?
     
+    /** Utility function allows wrapping code that needs to be sync'd on
+        a queue in a block like this:
+        synchronized {
+            access common stuff...
+            ...
+        }
+    */
+    private func synchronized(f: Void -> Void) {
+        guard songPoolAccessQ != nil else { fatalError("No songPoolAccessQ") }
+        dispatch_sync(songPoolAccessQ!, f)
+    }
+
+//    static func setPlayhead(position : NSNumber) {
+//        playheadPos = position
+//        print("Playhead pos: \(playheadPos)")
+//    }
     /** Bodgy type method to set the instances of the things we haven't yet turned
         into static classes/structs */
 //    static func setVarious(theFingerPrinter: OldFingerPrinter, audioPlayer: TGSongAudioPlayer) {
-    static func setVarious( audioPlayer: TGSongAudioPlayer) {
-        albumCollection = AlbumCollection()
-        songAudioPlayer = audioPlayer
-        songAudioCacher.songPoolAPI = delegate
-    }
-    
+//    func setVarious( audioPlayer: TGSongAudioPlayer) {
+////        albumCollection = AlbumCollection()
+////        songAudioPlayer = audioPlayer
+//        //songAudioCacher.songPoolAPI = delegate
+//    }
+    /*
     static func cacheWithContext(cacheContext : SongSelectionContext) {
         
         /// Cache songs using the context
@@ -51,10 +89,10 @@ final class SongPool : NSObject {
         /// Update the last requestedSongId.
         lastRequestedSongId = cacheContext.selectedSongId
         
-        /// Request updated data for the selecrted song.
+        /// Request updated data for the selected song.
         requestUpdatedData(forSongId: lastRequestedSongId!)
     }
-
+*/
 //    static func durationForSongId(songId: SongID) -> NSNumber {
     /* Duration is now only obtained from the song itself
     static func durationForSongId(songId: SongIDProtocol) -> NSNumber {
@@ -71,244 +109,110 @@ final class SongPool : NSObject {
     */
     
     /// Request the song for the given id and return a copy of it.
-    static func songForSongId(songId: SongIDProtocol) -> TGSong? {
+    func songForSongId(songId: SongIDProtocol) -> TGSong? {
         return songPool?[songId as! SongID]
     }
 
-    /**     Initiate a request to play back the given song.
     
-            If the song has a selected sweet spot play the song from there otherwise
-            just play the song from the start.
-            :params: songID The id of the song to play.
-    */
-    static func requestSongPlayback(songId: SongIDProtocol) {
-        guard let song = SongPool.songForSongId(songId) else { return }
-        
-        let startTime = SweetSpotController.selectedSweetSpotForSong(song)
-        //delegate!.requestSongPlayback(songId, withStartTimeInSeconds: startTime)
-        requestSongPlayback(songId, withStartTimeInSeconds: startTime)
-    }
+//    /** Set up a chain of operations each dependent on the previous that update
+//        various data associated with a song;
+//        1) Loading its embedded file metadata,
+//        2) Generating an acoustic fingerprint of the song's audio,
+//        3) Looking up additional data such as an UUID using the fingerprint,
+//        4) Maintaining and updating the local album collection data.
+//        5) Looking for cover art in a large variety of places (including a web service).
+//    */
+//    func requestUpdatedData(forSongId songId: SongIDProtocol) {
+//        
+//        /// Let any interested parties know we've started updating the current song.
+//        NSNotificationCenter.defaultCenter().postNotificationName("songDidStartUpdating", object: songId)
+//        
+//        /** This shouldn't really be set every time we request updated data but
+//        since this is a static class we've no init to call. */
+//        songDataUpdaterOpQ.maxConcurrentOperationCount = 1
+//        songDataUpdaterOpQ.qualityOfService = .UserInitiated
+//        
+//        // Override all previous ops by cancelling them and adding the new one.
+//        songDataUpdaterOpQ.cancelAllOperations()
+//        
+//
+//        /// All the calls inside the blocks are synchronous.
+//        let updateMetadataOp = NSBlockOperation {
+//            self.updateMetadata(forSongId: songId)
+//        }
+//        let fingerPrinterOp = NSBlockOperation {
+//            /// If fingerPrinter is an empty optional we want it to crash.
+////            updateFingerPrint(forSongId: songId, withFingerPrinter: fingerPrinter! )
+//            self.updateFingerPrint(forSongId: songId )
+//        }
+//        /// This relies on the fingerprint to request the UUId from  a server.
+//        let remoteDataOp = NSBlockOperation {
+//            /// If songAudioPlayer is an empty optional we want it to crash.
+//            if let song = self.songForSongId(songId),
+//                let duration = song.duration() {
+//                self.updateRemoteData(forSongId: songId, withDuration: duration)
+//            }
+//        }
+//        let updateAlbumOp = NSBlockOperation {
+//            self.albumCollection = self.albumCollection.update(albumContainingSongId: songId, usingOldCollection: self.albumCollection)
+//        }
+//        let checkArtOp = NSBlockOperation {
+//            self.checkForArt(forSongId: songId, inAlbumCollection: self.albumCollection)
+//        }
+//        let fetchSweetspotsOp = NSBlockOperation {
+//            SweetSpotServerIO.requestSweetSpotsForSongID(songId)
+//        }
+//
+//        /// Make operations dependent on each other.
+//        fingerPrinterOp.addDependency(updateMetadataOp)
+//        remoteDataOp.addDependency(fingerPrinterOp)
+//
+//        /// The sweetspot fetcher and album op depend on the fingerprint and the UUID.
+//        fetchSweetspotsOp.addDependency(remoteDataOp)
+//        updateAlbumOp.addDependency(remoteDataOp)
+//        
+//        checkArtOp.addDependency(updateAlbumOp)
+//        
+//        
+//        /// Add the ops to the queue.
+//        songDataUpdaterOpQ.addOperations([  updateMetadataOp,
+//                                            fingerPrinterOp,
+//                                            remoteDataOp,
+//                                            updateAlbumOp,
+//                                            checkArtOp,
+//                                            fetchSweetspotsOp], waitUntilFinished: false)
+//    }
     
-    static func requestSongPlayback(songId : SongIDProtocol, withStartTimeInSeconds time : NSNumber?) {
-        
-        lastRequestedSongId = songId
-        
-        songAudioCacher.performWhenPlayerIsAvailableForSongId(songId) { player in
-            
-            guard (self.lastRequestedSongId != nil) && self.lastRequestedSongId!.isEqual(songId) else { return }
-            
-            setSongPlaybackObserver(player)
-            let song = songForSongId(songId)
-            let startTime = time ?? SweetSpotController.selectedSweetSpotForSong(song!) ?? NSNumber(double: 0)
-            
-            songAudioPlayer?.playAtTime(startTime.doubleValue)
-            currentlyPlayingSongId = songId
-            
-            guard let duration = song?.duration() else {
-                fatalError("Song has no duration!")
-            }
-            /** The following crashes at runtime because this is using a reference to
-                an instance of this class (self) to set the value of a static 
-                //self.setValue(duration, forKey: "currentSongDuration")
-            
-                Presumably the following won't have the desired effects since we want to set the
-                currentSongDuration in a KVO compliant fashion. Not sure what that is
-                in Swift. It seems you have to add the dynamic keyword to the properties
-                you want to observe.
-                This and playheadPos are being bound in TGSplitViewController setupBindings()
-                I need to change that to refer to these instead of the ObjC properties
-                in the songPool.m
-            */
-            SongPool.currentSongDuration = duration
-            
-            SongPool.setRequestedPlayheadPosition(startTime)
-        }
-    }
-    
-    /**
-    This method sets the requestedPlayheadPosition (which represents the position the user has manually set with a slider)
-    of the currently playing song to newPosition and sets a sweet spot for the song which gets stored on next save.
-    The requestedPlayheadPosition should only result in a sweet spot when the user releases the slider.
-    */
-    static func setRequestedPlayheadPosition(newPosition : NSNumber) {
-    
-        requestedPlayheadPosition = newPosition
-        
-        /// Set the current playback time and the currently selected sweet spot to the new position.
-        songAudioPlayer?.currentPlayTime = newPosition.doubleValue
-    }
-
-    /**
-    - (void)requestSongPlayback:(id<SongIDProtocol>)songID withStartTimeInSeconds:(NSNumber *)time {
-     
-        id<TGSong> aSong = [self songForID:songID];
-        if (aSong == NULL) {
-            TGLog(TGLOG_ALL,@"Nope, the requested ID %@ is not in the song pool.",songID);
-            return;
-        }
-     
-        lastRequestedSongId = songID;
-     
-        //NUCACHE
-        [songAudioCacher performWhenPlayerIsAvailableForSongId:songID callBack:^(AVPlayer* thePlayer){
-     
-            if (songID == lastRequestedSongId) {
-                 
-                // Start observing the new player.
-                [self setSongPlaybackObserver:thePlayer];
-                 
-                 id<TGSong> song = [self songForID:songID];
-                 
-                 /** If there's no start time, check the sweet spot server for one.
-                 If one is found set the startTime to it, else set it to the beginning. */
-                 NSNumber* startTime = time;
-         
-                 if (startTime == nil) {
-         
-                     // At this point we really ought to make sure we have a song uuid generated from the fingerprint.
-                     startTime = [SweetSpotController selectedSweetSpotForSong:song];
-                     if (startTime == nil) {
-                        startTime = [NSNumber numberWithDouble:0.0];
-                    }
-                }
-         
-                [songAudioPlayer playAtTime:[startTime floatValue]];
-                currentlyPlayingSongId = songID;
-         
-                TGLog(TGLOG_TMP, @"currentSongDuration %f",CMTimeGetSeconds([songAudioPlayer songDuration]));
-         
-                [self setValue:[NSNumber numberWithFloat:CMTimeGetSeconds([songAudioPlayer songDuration])] forKey:@"currentSongDuration"];
-         
-                [self setRequestedPlayheadPosition:startTime];
-            }
-        }];
-    }
-    */
-    
-    static func setSongPlaybackObserver(songPlayer : AVPlayer) {
-        
-        let timerObserver = { (time : CMTime) -> () in
-            let currentPlaybackTime = songPlayer.currentTime()
-            self.songDidUpdatePlayheadPosition(NSNumber(double: CMTimeGetSeconds(currentPlaybackTime)))
-        }
-        songAudioPlayer?.setSongPlayer(songPlayer, block: timerObserver)
-
-        /**
-        // Make a weakly retained self and songPlayer for use inside the block to avoid retain cycle.
-        __unsafe_unretained typeof(self) weakSelf = self;
-        __unsafe_unretained AVPlayer* weakSongPlayer = songPlayer;
-        
-        void (^timerObserverBlock)(CMTime) = ^void(CMTime time) {
-        
-            CMTime currentPlaybackTime = [weakSongPlayer currentTime];
-            [weakSelf songDidUpdatePlayheadPosition:[NSNumber numberWithDouble:CMTimeGetSeconds(currentPlaybackTime)]];
-        };
-        [songAudioPlayer setSongPlayer:songPlayer block:timerObserverBlock];
-        
-        */
-    }
-    
-    static func songDidUpdatePlayheadPosition(playheadPosition : NSNumber) {
-        ///self.setValue(playheadPosition, forKey: "playheadPos")
-        /// Will this work for KVO?
-        SongPool.playheadPos = playheadPosition
-    }
-    
-    /** Set up a chain of operations each dependent on the previous that update
-        various data associated with a song;
-        1) Loading its embedded file metadata,
-        2) Generating an acoustic fingerprint of the song's audio,
-        3) Looking up additional data such as an UUID using the fingerprint,
-        4) Maintaining and updating the local album collection data.
-        5) Looking for cover art in a large variety of places (including a web service).
-    */
-    static func requestUpdatedData(forSongId songId: SongIDProtocol) {
-        
-        /// Let any interested parties know we've started updating the current song.
-        NSNotificationCenter.defaultCenter().postNotificationName("songDidStartUpdating", object: songId)
-        
-        /** This shouldn't really be set every time we request updated data but
-        since this is a static class we've no init to call. */
-        songDataUpdaterOpQ.maxConcurrentOperationCount = 1
-        songDataUpdaterOpQ.qualityOfService = .UserInitiated
-        
-        // Override all previous ops by cancelling them and adding the new one.
-        songDataUpdaterOpQ.cancelAllOperations()
-        
-
-        /// All the calls inside the blocks are synchronous.
-        let updateMetadataOp = NSBlockOperation {
-            updateMetadata(forSongId: songId)
-        }
-        let fingerPrinterOp = NSBlockOperation {
-            /// If fingerPrinter is an empty optional we want it to crash.
-//            updateFingerPrint(forSongId: songId, withFingerPrinter: fingerPrinter! )
-            updateFingerPrint(forSongId: songId )
-        }
-        /// This relies on the fingerprint to request the UUId from  a server.
-        let remoteDataOp = NSBlockOperation {
-            /// If songAudioPlayer is an empty optional we want it to crash.
-            updateRemoteData(forSongId: songId, withDuration: songAudioPlayer!.songDuration)
-        }
-        let updateAlbumOp = NSBlockOperation {
-            albumCollection = AlbumCollection.update(albumContainingSongId: songId, usingOldCollection: albumCollection!)
-        }
-        let checkArtOp = NSBlockOperation {
-            checkForArt(forSongId: songId, inAlbumCollection: albumCollection!)
-        }
-        let fetchSweetspotsOp = NSBlockOperation {
-            SweetSpotServerIO.requestSweetSpotsForSongID(songId)
-        }
-
-        /// Make operations dependent on each other.
-        fingerPrinterOp.addDependency(updateMetadataOp)
-        remoteDataOp.addDependency(fingerPrinterOp)
-
-        /// The sweetspot fetcher and album op depend on the fingerprint and the UUID.
-        fetchSweetspotsOp.addDependency(remoteDataOp)
-        updateAlbumOp.addDependency(remoteDataOp)
-        
-        checkArtOp.addDependency(updateAlbumOp)
-        
-        
-        /// Add the ops to the queue.
-        songDataUpdaterOpQ.addOperations([  updateMetadataOp,
-                                            fingerPrinterOp,
-                                            remoteDataOp,
-                                            updateAlbumOp,
-                                            checkArtOp,
-                                            fetchSweetspotsOp], waitUntilFinished: false)
-    }
-    
-    static func updateMetadata(forSongId songId: SongIDProtocol) {
-        
-        /// Check that the song doesn't already have metadata.
-        if SongPool.songForSongId(songId)?.metadata != nil { return }
-        guard let metadata = SongCommonMetaData.loadedMetaDataForSongId(songId) else { return }
-        /// We need to handle the case where metadata already exists!
-        addSong(withChanges: [.Metadata : metadata], forSongId: songId)
-        
-        /// Let anyone listening know that we've updated the metadata for the songId.
-        NSNotificationCenter.defaultCenter().postNotificationName("songMetaDataUpdated", object: songId)
-    }
-    
-    static func updateRemoteData(forSongId songId: SongIDProtocol, withDuration duration: CMTime) {
-
-        guard let song = songForSongId(songId) else { return }
-        guard let fingerprint = song.fingerPrint else { return }
-        
-        // If the song has not yet a uuid, get one.
-        let uuid = song.UUId
-        if uuid == nil {
-            let durationInSeconds = UInt(CMTimeGetSeconds(duration))
-            if let acoustIdData = AcoustIDWebService.dataDict(forFingerprint: fingerprint, ofDuration: durationInSeconds),
-                let songUUId = SongUUID.extractUUIDFromDictionary(acoustIdData),
-                let bestRelease = AcoustIDWebService.bestMatchRelease(forSong: song, inDictionary: acoustIdData),
-                let releaseId = bestRelease.objectForKey("id") {
-                    SongPool.addSong(withChanges: [.RelId : releaseId, .UuId : songUUId], forSongId: songId)
-            }
-        }
-    }
+//    func updateMetadata(forSongId songId: SongIDProtocol) {
+//        
+//        /// Check that the song doesn't already have metadata.
+//        guard let song = songForSongId(songId) else { return }
+////        if SongPool.songForSongId(songId)?.metadata != nil { return }
+//        guard let metadata = SongCommonMetaData.loadedMetaDataForSongId(song) else { return }
+//        /// We need to handle the case where metadata already exists!
+//        addSong(withChanges: [.Metadata : metadata], forSongId: songId)
+//        
+//        /// Let anyone listening know that we've updated the metadata for the songId.
+//        NSNotificationCenter.defaultCenter().postNotificationName("songMetaDataUpdated", object: songId)
+//    }
+//    
+//    func updateRemoteData(forSongId songId: SongIDProtocol, withDuration duration: NSNumber) {
+//
+//        guard let song = songForSongId(songId) else { return }
+//        guard let fingerprint = song.fingerPrint else { return }
+//        
+//        // If the song has not yet a uuid, get one.
+//        let uuid = song.UUId
+//        if uuid == nil {
+//            let durationInSeconds = UInt(duration.integerValue) //UInt(CMTimeGetSeconds(duration))
+//            if let acoustIdData = AcoustIDWebService.dataDict(forFingerprint: fingerprint, ofDuration: durationInSeconds),
+//                let songUUId = SongUUID.extractUUIDFromDictionary(acoustIdData),
+//                let bestRelease = AcoustIDWebService.bestMatchRelease(forSong: song, inDictionary: acoustIdData),
+//                let releaseId = bestRelease.objectForKey("id") {
+//                    addSong(withChanges: [.RelId : releaseId, .UuId : songUUId], forSongId: songId)
+//            }
+//        }
+//    }
     
 //    static func getAlbum(forSongId songId: SongIDProtocol, fromAlbumCollection albums: AlbumCollection) -> Album? {
 //        var album: Album?
@@ -324,39 +228,46 @@ final class SongPool : NSObject {
 //        return album
 //    }
     
-    static func updateFingerPrint(forSongId songId: SongIDProtocol) {
-        guard let song = songForSongId(songId) else { return }
-        
-        // If there is no fingerprint, generate one sync'ly - this can be slow!
-        if song.fingerPrint == nil,
-            let songUrl = URLForSongId(songId),
-            let (newFingerPrint, duration) = TGSongFingerprinter.fingerprint(forSongUrl: songUrl) {
-                let metadata = SongCommonMetaData(duration: duration)
-                
-                addSong(withChanges: [.Fingerprint : newFingerPrint, .Metadata : metadata], forSongId: songId)
-        }
-        
-    }
+//    func updateFingerPrint(forSongId songId: SongIDProtocol) {
+//        guard let song = songForSongId(songId) else { return }
+//        
+//        // If there is no fingerprint, generate one sync'ly - this can be slow!
+//        if song.fingerPrint == nil,
+//            let songUrl = getUrl(songId),
+//            let (newFingerPrint, duration) = TGSongFingerprinter.fingerprint(forSongUrl: songUrl) {
+//                let metadata = SongCommonMetaData(duration: duration)
+//                
+//                addSong(withChanges: [.Fingerprint : newFingerPrint, .Metadata : metadata], forSongId: songId)
+//        }
+//        
+//    }
     
-    static func URLForSongId(songId: SongIDProtocol) -> NSURL? {
+    func getUrl(songId: SongIDProtocol) -> NSURL? {
         guard let song = songForSongId(songId) where (song.urlString != nil) else { return nil }
         return NSURL(string: song.urlString!)
     }
     
-    static func UUIDStringForSongId(songId: SongIDProtocol) -> String? {
-        return SongUUID.getUUIDForSongId(songId)
+    func UUIDStringForSongId(songId: SongIDProtocol) -> String? {
+        guard let song = songForSongId(songId) else { return nil }
+        return SongUUID.getUUIDForSong(song)
     }
     
-    static func songCount() -> Int {
+    func songCount() -> Int {
         guard let count = songPool?.count else { return 0 }
         return count
     }
 
+    func load(anUrl: NSURL) -> Bool {
+        dispatch_async(serialDataLoad) {
+            self.fillSongPoolWithSongURLsAtURL(anUrl)
+        }
+        return true
+    }
     /**
         Make and return a dictionary of songs made from any audio URLs found 
         from the given URL.
     */
-    static func fillSongPoolWithSongURLsAtURL(theURL: NSURL){
+    func fillSongPoolWithSongURLsAtURL(theURL: NSURL){
 //        var allSongs = [SongID: Song]()
         songPool = SongDictionary()
         songPoolAccessQ = dispatch_queue_create("songPool dictionary access queue", DISPATCH_QUEUE_SERIAL)
@@ -380,27 +291,26 @@ final class SongPool : NSObject {
             the songPool simultanously.
             So, access to the songPool needs to be done through a queue instead of directly as seen below.
             */
-            SongPool.addSong(newSong)
+            self.addSong(newSong)
             //SongPool.addSong(withMetadata: songCommonMetaData, forSongId: songId)
             
             NSNotificationCenter.defaultCenter().postNotificationName("NewSongAdded", object: songId)
         }
     }
 
-    static func addSong(theSong: TGSong) {
-        guard let queue = songPoolAccessQ else { return }
+    func addSong(theSong: TGSong) {
         
-        dispatch_sync(queue) {
-            SongPool.songPool![theSong.songID as! SongID] = theSong as? Song
+        synchronized {
+            self.songPool![theSong.songID as! SongID] = theSong as? Song
         }
     }
     
-    static func addSong(withChanges changes: [SongProperty : AnyObject], forSongId songId: SongIDProtocol) {
-        guard let queue = songPoolAccessQ else { return }
-        
-        dispatch_sync(queue) {
+    func addSong(withChanges changes: [SongProperty : AnyObject], forSongId songId: SongIDProtocol) {
+
+        /// FIXME : Do we really need to sync all of this?
+        synchronized {
             // First we get the up-to-date song
-            let oldSong = songForSongId(songId)
+            let oldSong = self.songForSongId(songId)
             
             // Then we create a new song from the old song and the new metadata (want crash if oldSong is nil)
             let newSong = Song.songWithChanges(oldSong!, changes: changes)
@@ -410,25 +320,51 @@ final class SongPool : NSObject {
             }
             print("addSong withChanges has duration \(newSong.duration())")
             // Then we add that new song to the song pool using the songId
-            SongPool.songPool![songId as! SongID] = newSong as? Song
+            self.songPool![songId as! SongID] = newSong as? Song
         }
     }
     
-    static func checkForArt(forSongId songId: SongIDProtocol, inAlbumCollection collection: AlbumCollection) {
-        guard let song = songForSongId(songId) else { return }
-
-        // Change artForSong to take a songId
-        if song.artID == nil || SongArt.getArt(forArtId: song.artID!) == nil {
-            if let image = SongArtFinder.findArtForSong(song, collection: collection) {
-                
-                let newArtId = SongArt.addImage(image)
-                SongPool.addSong(withChanges: [.ArtId : newArtId], forSongId: songId)
-            }
-        }
+//    func checkForArt(forSongId songId: SongIDProtocol, inAlbumCollection collection: AlbumCollection) {
+//        guard let song = songForSongId(songId) else { return }
+//
+//        // Change artForSong to take a songId
+//        if song.artID == nil || SongArt.getArt(forArtId: song.artID!) == nil {
+//            if let image = SongArtFinder.findArtForSong(song, collection: collection) {
+//                
+//                let newArtId = SongArt.addImage(image)
+//                addSong(withChanges: [.ArtId : newArtId], forSongId: songId)
+//            }
+//        }
+//        
+//        NSNotificationCenter.defaultCenter().postNotificationName("songCoverUpdated", object: songId)
+//    }
+ 
+    /*
+    static func storeSongData() {
         
-        NSNotificationCenter.defaultCenter().postNotificationName("songCoverUpdated", object: songId)
-    }
+        /// We need the dictionary to be available
+//        save(songPoolDictionary)
+        
+        /// We need the MOC and Private MOC to be available
+        CoreDataStore.save(
     
+        SweetSpotServerIO.storeUpload...etc
+    }
+    */
+    /**
+     - (void)storeSongData {
+         // REFAC
+         [SongPool save:songPoolDictionary];
+         
+         // TEOSongData test
+         [self saveContext:NO];
+         
+         // uploadedSweetSpots save
+         [SweetSpotServerIO storeUploadedSweetSpotsDictionary];
+         
+         return;
+     }
+*/
     /**
         Traverse the pool of songs and, for each, compare the metadata fields we want to save with the
         metadata fields of the corresponding core data item. If they differ, update the core data item so
@@ -449,4 +385,20 @@ final class SongPool : NSObject {
             }
         }
     }
+}
+
+extension SongPool : AlbumCollectionDelegate {
+    func getSong(songId : SongIDProtocol) -> TGSong? {
+        return songForSongId(songId)
+    }
+}
+
+extension SongPool {
+    func debugLogSongWithId(songId: SongIDProtocol) {
+        
+    }
+    func debugLogCaches() {
+        
+    }
+
 }

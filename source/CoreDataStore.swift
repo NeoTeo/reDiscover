@@ -86,4 +86,61 @@ extension CoreDataStore {
             }
         }
     }
+    
+    static func saveContext(moc : NSManagedObjectContext, privateMoc : NSManagedObjectContext, wait : Bool) {
+        if moc.hasChanges {
+            moc.performBlockAndWait {
+                do {
+                    
+                    try moc.save()
+                    
+                } catch {
+                    print("CoreDataStore Error: saving MOC \(error)")
+                }
+            }
+        }
+        
+        if privateMoc.hasChanges {
+            let savePrivate = {
+                do { try privateMoc.save() } catch {
+                    print("CoreDataStore Error: saving PrivateMOC \(error)")
+                }
+            }
+
+            if wait {
+                privateMoc.performBlockAndWait(savePrivate)
+            } else {
+                privateMoc.performBlock(savePrivate)
+            }
+        }
+    }
+    /**
+    - (void)saveContext:(BOOL)wait {
+        NSManagedObjectContext *moc = self.TEOmanagedObjectContext;
+        NSManagedObjectContext *private = [self privateContext];
+        
+        if (!moc) return;
+        if ([moc hasChanges]) {
+            [moc performBlockAndWait:^{
+                NSError *error = nil;
+                NSAssert([moc save:&error], @"Error saving MOC: %@\n%@",
+            [error localizedDescription], [error userInfo]);
+            }];
+        }
+        
+        void (^savePrivate) (void) = ^{
+            NSError *error = nil;
+            NSAssert([private save:&error], @"Error saving private moc: %@\n%@",
+            [error localizedDescription], [error userInfo]);
+        };
+        
+        if ([private hasChanges]) {
+            if (wait) {
+                [private performBlockAndWait:savePrivate];
+            } else {
+                [private performBlock:savePrivate];
+            }
+        }
+    }
+    */
 }

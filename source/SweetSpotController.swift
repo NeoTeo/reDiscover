@@ -8,7 +8,12 @@
 
 import Foundation
 
-typealias SweetSpot = NSNumber //Float
+protocol SweetSpotControllerDelegate {
+    func addSong(withChanges changes: [SongProperty : AnyObject], forSongId songId: SongIDProtocol)
+    func getSong(songId : SongIDProtocol) -> TGSong?
+}
+
+public typealias SweetSpot = NSNumber //Float
 // The current implementation stores sweet spots in each song instance.
 // To make songs immutable this means we need to make a new song from the old one
 // every time we want to change any of its properties, including sweet spots.
@@ -23,9 +28,11 @@ typealias SweetSpot = NSNumber //Float
 */
 class SweetSpotController : NSObject {
     
+    var delegate : SweetSpotControllerDelegate?
+    
     /// Add, to the song pool, a new sweet spot to an existing song given by the songId.
-    static func addSweetSpot(atTime time: SweetSpot, forSongId songId: SongIDProtocol) {
-        SongPool.addSong(withChanges: [.SelectedSS : time], forSongId: songId)
+    func addSweetSpot(atTime time: SweetSpot, forSongId songId: SongIDProtocol) {
+        delegate?.addSong(withChanges: [.SelectedSS : time], forSongId: songId)
     }
     
     static func selectedSweetSpotForSong(song: TGSong) -> SweetSpot? {
@@ -37,9 +44,9 @@ class SweetSpotController : NSObject {
         //return 0.0
     }
 
-    static func sweetSpots(forSongId songId: SongIDProtocol) -> Set<SweetSpot>? {
+    func sweetSpots(forSongId songId: SongIDProtocol) -> Set<SweetSpot>? {
         
-        guard let song = SongPool.songForSongId(songId) else { return nil }
+        guard let song = delegate?.getSong(songId) else { return nil }
 
         return song.sweetSpots
     }

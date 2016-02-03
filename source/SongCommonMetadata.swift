@@ -14,7 +14,7 @@ The SongCommonMetaData holds metadata about a song that is common to all songs s
 as title, artist and so on. This is in contrast to SongRediscoverMetaData which holds
 metadata specific to the reDicover app such as fingerprints, uuid and sweet spots.
 */
-class SongCommonMetaData : NSObject, NSCopying {
+public class SongCommonMetaData : NSObject, NSCopying {
     let title:              String
     let album:              String
     let artist:             String
@@ -37,7 +37,7 @@ class SongCommonMetaData : NSObject, NSCopying {
         self.duration       = duration
     }
     
-    func copyWithZone(zone: NSZone) -> AnyObject {
+    public func copyWithZone(zone: NSZone) -> AnyObject {
         return SongCommonMetaData(title: title, album: album, artist: artist, year: year, genre: genre, duration: duration)
     }
 }
@@ -68,9 +68,9 @@ extension SongCommonMetaData {
     - parameter songId
     - returns: An array of NSImages or an empty array if nothing was found.
     */
-    static func getCoverArtForSong(songId: SongIDProtocol) -> [NSImage?] {
+    static func getCoverArtForSong(song : TGSong) -> [NSImage?] {
         
-        if let metadata = SongCommonMetaData.commonMetadataForSong(songId) as? [AVMetadataItem] {
+        if let metadata = SongCommonMetaData.commonMetadataForSong(song) as? [AVMetadataItem] {
             let artworks = AVMetadataItem.metadataItemsFromArray(metadata, withKey: AVMetadataCommonKeyArtwork, keySpace:AVMetadataKeySpaceCommon) as [AVMetadataItem]
             
             var retArt = [NSImage?]()
@@ -84,10 +84,11 @@ extension SongCommonMetaData {
         return [nil]
     }
 
-    private class func commonMetadataForSong(songId: SongIDProtocol) -> [AnyObject]? {
+    private class func commonMetadataForSong(song : TGSong) -> [AnyObject]? {
 
-        if  let sng = SongPool.songForSongId(songId) where sng.urlString != nil,
-            let url = NSURL(string: sng.urlString!) {
+//        if  let sng = SongPool.songForSongId(songId) where sng.urlString != nil,
+        if song.urlString != nil,
+            let url = NSURL(string: song.urlString!) {
 //                print("commonMetadataForSong song \(sng.songID) sweeties \(sng.sweetSpots)")
                 let songAsset = AVURLAsset(URL: url , options: nil)
                 return songAsset.commonMetadata
@@ -113,9 +114,9 @@ extension SongCommonMetaData {
         return nil
     }
 */
-    static func loadedMetaDataForSongId(songId: SongIDProtocol) -> SongCommonMetaData? {
+    static func loadedMetaDataForSongId(song: TGSong) -> SongCommonMetaData? {
         
-        guard let rawMetadata = SongCommonMetaData.commonMetadataForSong(songId) else { return nil }
+        guard let rawMetadata = SongCommonMetaData.commonMetadataForSong(song) else { return nil }
         
         return SongCommonMetaData.extractMetaData(fromRawMetadata: rawMetadata)
     }

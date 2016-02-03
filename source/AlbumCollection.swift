@@ -6,13 +6,17 @@
 //  Copyright (c) 2015 Teo Sartori. All rights reserved.
 //
 
-import Foundation
+import Cocoa
+
+protocol AlbumCollectionDelegate {
+    func getSong(songId : SongIDProtocol) -> TGSong?
+}
 
 
-
-
-final class AlbumCollection : NSObject {
+public final class AlbumCollection : NSObject {
     let albumCache: [AlbumId : Album]
+    
+    var delegate : AlbumCollectionDelegate?
     
     override init() {
         albumCache = [AlbumId : Album]()
@@ -25,7 +29,7 @@ final class AlbumCollection : NSObject {
 
 extension AlbumCollection {
     
-    class func albumWithIdFromCollection(collection: AlbumCollection, albumId: AlbumId) -> Album? {
+    func albumWithIdFromCollection(collection: AlbumCollection, albumId: AlbumId) -> Album? {
         return collection.albumCache[albumId]
 //        if let album = albumCache[albumId] {
 //            return Album(songIds: album.songIds)
@@ -33,14 +37,14 @@ extension AlbumCollection {
 //        return nil
     }
     
-    static func update(albumContainingSongId songId: SongIDProtocol, usingOldCollection albums: AlbumCollection) -> AlbumCollection {
+    func update(albumContainingSongId songId: SongIDProtocol, usingOldCollection albums: AlbumCollection) -> AlbumCollection {
 
         /// Only make a new album if we have a valid song and albumId
-        if let song = SongPool.songForSongId(songId),
+        if let song = delegate?.getSong(songId),
             let albumId = Album.albumIdForSong(song) {
                 
                 /// Check if we already have an album with the given id in the given collection
-                var album = AlbumCollection.albumWithIdFromCollection(albums, albumId: albumId)
+                var album = albums.albumWithIdFromCollection(albums, albumId: albumId)
                 
                 /// If an album was found make a copy of it with the song added to
                 /// it, otherwise make a new album.
@@ -58,18 +62,18 @@ extension AlbumCollection {
         return albums
     }
     
-    class func collectionWithAddedAlbum(collection: AlbumCollection, album: Album) -> AlbumCollection {
+    func collectionWithAddedAlbum(collection: AlbumCollection, album: Album) -> AlbumCollection {
         var tmpCache = collection.albumCache
         tmpCache[album.id] = album
         return AlbumCollection(albums: tmpCache)
     }
     
-    class func artForAlbum(album: Album, inCollection: AlbumCollection) -> NSImage? {
+    func artForAlbum(album: Album, inCollection: AlbumCollection) -> NSImage? {
         let songIds = album.songIds.allObjects
 //        var albumArts = [NSImage?]()
         
         for songId in songIds as! [SongIDProtocol] {
-            if let song = SongPool.songForSongId(songId),
+            if let song = delegate?.getSong(songId),
                 let artId = song.artID,
                 let songArt = SongArt.getArt(forArtId: artId) {
                   //FIXME: For now just return any song art we find

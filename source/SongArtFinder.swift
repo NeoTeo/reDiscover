@@ -6,7 +6,7 @@
 //  Copyright (c) 2015 Teo Sartori. All rights reserved.
 //
 
-import Foundation
+import Cocoa
 
 /**
 The SongArtFinder tries to find the artwork for a given song using a variety of 
@@ -20,7 +20,7 @@ class SongArtFinder: NSObject {
     
     @objc class func findArtForSong(song: TGSong, collection: AlbumCollection) -> NSImage? {
         // No existing artID. Try looking in the metadata.
-        let arts = SongCommonMetaData.getCoverArtForSong(song.songID)
+        let arts = SongCommonMetaData.getCoverArtForSong(song)
         if arts.count > 0 {
             // FIXME: For now just pick the first. We want this to be user selectable.
             return arts[0]
@@ -99,8 +99,8 @@ class SongArtFinder: NSObject {
     */
     private class func findArtForAlbum(forSong song: TGSong, inCollection collection: AlbumCollection) -> NSImage? {
         if let albumId = Album.albumIdForSong(song),
-            let album = AlbumCollection.albumWithIdFromCollection(collection, albumId: albumId),
-            let albumArt = AlbumCollection.artForAlbum(album, inCollection: collection){
+            let album = collection.albumWithIdFromCollection(collection, albumId: albumId),
+            let albumArt = collection.artForAlbum(album, inCollection: collection){
                 return albumArt
         }
         return nil

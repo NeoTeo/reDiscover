@@ -6,16 +6,18 @@
 //  Copyright (c) 2015 Teo Sartori. All rights reserved.
 //
 
-import Foundation
 import Cocoa
 
-protocol TimelinePopoverDelegateProtocol {
-    //func userCreatedNewSweetSpot
+protocol TimelinePopoverViewControllerDelegate {
+    func getSongDuration(songId : SongIDProtocol) -> NSNumber?
+    func getSweetSpots(songId: SongIDProtocol) -> Set<SweetSpot>?
+    func userSelectedSweetSpot(index : Int)
 }
 
-public class TimelinePopoverViewController : NSViewController {//, TimelinePopoverDelegateProtocol {
+public class TimelinePopoverViewController : NSViewController {
     
-    var delegate: TimelinePopoverDelegateProtocol?
+
+    var delegate : TimelinePopoverViewControllerDelegate?
     
     @IBOutlet var thePopover: NSPopover!
     @IBOutlet var timelineBar: NSSlider?
@@ -55,9 +57,9 @@ extension TimelinePopoverViewController {
         
 //        let songDuration = SongPool.durationForSongId(songId)
         /// We get the duration straight from the song.
-        let songDuration = SongPool.songForSongId(songId)?.duration() ?? NSNumber(double: 0)
+        let songDuration = delegate?.getSongDuration(songId) ?? NSNumber(double: 0)
         print("Song with id \(songId) has duration \(songDuration)")
-        if let songSweetSpots = SweetSpotController.sweetSpots(forSongId: songId) {
+        if let songSweetSpots = delegate?.getSweetSpots(songId) {
             theCell.makeMarkers(songSweetSpots, duration: songDuration)
         }
     }
@@ -75,20 +77,16 @@ extension TimelinePopoverViewController {
     
     public func userSelectedExistingSweetSpot(sender: AnyObject!) {
         print("user selected existing sweet spot")
-        guard let songPoolInstance = SongPool.delegate else {
-            print("ERROR: No Song Pool instance found")
-            return
-        }
-        
-        let playingSongId = songPoolInstance.currentlyPlayingSongId()
-        let songSweetspots = SweetSpotController.sweetSpots(forSongId: playingSongId)
-        //mySet[mySet.startIndex.advancedBy(2)]
-        let selectedSweetSpotIndex = sender.tag()
-        if let sweetSpotTime = songSweetspots?[(songSweetspots?.startIndex.advancedBy(selectedSweetSpotIndex))!] {
-            SongPool.delegate?.setRequestedPlayheadPosition(sweetSpotTime)
-
-            SongPool.addSong(withChanges: [.SelectedSS : sweetSpotTime], forSongId: playingSongId)
-        }
+        delegate?.userSelectedSweetSpot(sender.tag())
+//        let playingSongId = delegate?.currentlyPlayingSongId()
+//        let songSweetspots = delegate?.getSweetSpots(playingSongId!)
+//        //mySet[mySet.startIndex.advancedBy(2)]
+//        let selectedSweetSpotIndex = sender.tag()
+//        if let sweetSpotTime = songSweetspots?[(songSweetspots?.startIndex.advancedBy(selectedSweetSpotIndex))!] {
+//            setRequestedPlayheadPosition(sweetSpotTime)
+//
+//            SongPool.addSong(withChanges: [.SelectedSS : sweetSpotTime], forSongId: playingSongId)
+//        }
     }
 
 }
