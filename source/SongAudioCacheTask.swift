@@ -37,8 +37,6 @@ class SongAudioCacheTask : NSObject {
     private var myContext = 0
     
     var delegate : SongAudioCacheTaskDelegate?
-//    var songPoolAPI: SongPoolAccessProtocol?
-//    var coverDisplayAPI : CoverDisplayViewController?
     
     // holds the not yet ready players awaiting status change
     var loadingPlayers: PlayerToStatusChangeHandler = PlayerToStatusChangeHandler()
@@ -46,15 +44,6 @@ class SongAudioCacheTask : NSObject {
     
     // holds the ready players
     var songPlayerCache = HashToPlayerDictionary()
-    
-//    init(songPoolAPI theAPI: SongPoolAccessProtocol?) {
-//        songPoolAPI = theAPI
-//    }
-
-//    init(coverDisplayApi : CoverDisplayViewController, songPoolApi : SongPoolAccessProtocol) {
-//            coverDisplayAPI = coverDisplayApi
-//            songPoolAPI = songPoolApi
-//    }
     
     func cacheWithContext(theContext: SongSelectionContext, oldCache: HashToPlayerDictionary) -> HashToPlayerDictionary {
         

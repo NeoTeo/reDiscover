@@ -74,24 +74,12 @@ final class SongPool : NSObject, SongPoolAccessProtocol, SongMetadataUpdaterDele
         LocalAudioFileStore.applyAudioURLsToClosure(theURL) { songURL in
             
             //MARK: At this point we want to check if our core data store has info on the song.
-            //println("songURL \(songURL)")
             let songString = songURL.absoluteString
             let songId = SongId(string: songString)
             let songCommonMetaData : SongCommonMetaData? = nil//SongCommonMetaData()
             let newSong = Song(songId: songId, metadata: songCommonMetaData, urlString: songString, sweetSpots: nil, fingerPrint: nil, selectedSS: nil, releases: nil, artId: nil, UUId: nil, RelId: nil)
             
-            //songPool[songId] = newSong
-            //FIXME: This is dangerous because other parts of the code may be accessing 
-            // the songPool whilst we are adding to it.
-            /*
-            It is possible to get into a situation where the loading of the URLs takes so long that
-            the songs' metadata is generated (fingerprint) or fetched (cover art) before this function is done.
-            This would mean that different areas of the program would try to add the changes (as new songs) to 
-            the songPool simultanously.
-            So, access to the songPool needs to be done through a queue instead of directly as seen below.
-            */
             self.addSong(newSong)
-            //SongPool.addSong(withMetadata: songCommonMetaData, forSongId: songId)
             
             NSNotificationCenter.defaultCenter().postNotificationName("NewSongAdded", object: songId)
         }
@@ -106,7 +94,7 @@ final class SongPool : NSObject, SongPoolAccessProtocol, SongMetadataUpdaterDele
     
     func addSong(withChanges changes: [SongProperty : AnyObject], forSongId songId: SongId) {
 
-        /// FIXME : Do we really need to sync all of this?
+        /// FIXME : Do we really need to sync _all_ of this?
         synchronized {
             // First we get the up-to-date song
             let oldSong = self.songForSongId(songId)
@@ -124,10 +112,12 @@ final class SongPool : NSObject, SongPoolAccessProtocol, SongMetadataUpdaterDele
     }
      
     /*
+    So this should just store the data in the song pool and let the sweet spot
+    server save its own stuff?
+    
     static func storeSongData() {
-        
-        /// We need the dictionary to be available
-//        save(songPoolDictionary)
+    
+//        save(songPool)
         
         /// We need the MOC and Private MOC to be available
         CoreDataStore.save(
@@ -155,6 +145,7 @@ final class SongPool : NSObject, SongPoolAccessProtocol, SongMetadataUpdaterDele
         that it is saved when we call the associated managed object context's save.
     */
     
+    /// FIXME : This doesn't do anything yet.
     static func save(pool: NSDictionary) {
 //        let myStore = SongMetaDataStoreLocal(metaData:[:])
 
@@ -179,7 +170,9 @@ extension SongPool : AlbumCollectionDelegate {
 
 extension SongPool {
     func debugLogSongWithId(songId: SongId) {
-        
+        if let song = getSong(songId) {
+            print("Song with id \(songId) has duration \(song.duration())")
+        }
     }
     func debugLogCaches() {
         

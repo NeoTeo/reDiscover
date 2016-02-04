@@ -99,9 +99,12 @@ public class SongMetadataUpdater {
         
         /// Check that the song doesn't already have metadata.
         guard let song = delegate?.getSong(songId) else { return }
-        //        if SongPool.songForSongId(songId)?.metadata != nil { return }
+        
+        /// Don't re-fetch the song common metadata if we already have it.
+        if song.metadata != nil { return }
+        
         guard let metadata = SongCommonMetaData.loadedMetaDataForSongId(song) else { return }
-        /// We need to handle the case where metadata already exists!
+
         delegate?.addSong(withChanges: [.Metadata : metadata], forSongId: songId)
         
         /// Let anyone listening know that we've updated the metadata for the songId.

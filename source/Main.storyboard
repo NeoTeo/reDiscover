@@ -60,9 +60,9 @@
             <objects>
                 <splitViewController id="XiH-xD-SmT" customClass="TGSplitViewController" customModule="reDiscover" customModuleProvider="target" sceneMemberID="viewController">
                     <splitViewItems>
-                        <splitViewItem canCollapse="YES" collapsed="YES" holdingPriority="502" id="W0P-yD-rRt"/>
-                        <splitViewItem holdingPriority="499" id="2o7-5d-FlK"/>
-                        <splitViewItem canCollapse="YES" collapsed="YES" holdingPriority="502" id="dZ7-As-gBM"/>
+                        <splitViewItem canCollapse="YES" collapsed="YES" holdingPriority="501" id="W0P-yD-rRt"/>
+                        <splitViewItem holdingPriority="501" id="2o7-5d-FlK"/>
+                        <splitViewItem canCollapse="YES" collapsed="YES" holdingPriority="501" id="dZ7-As-gBM"/>
                     </splitViewItems>
                     <splitView key="splitView" wantsLayer="YES" dividerStyle="thin" vertical="YES" id="TO9-Bc-PxR">
                         <rect key="frame" x="0.0" y="0.0" width="450" height="300"/>
