@@ -127,6 +127,7 @@ extension TGSplitViewController {
         NSValueTransformer.setValueTransformer(transformer, forName: "TimelineTransformer")
         transformer.bind("maxDuration", toObject: self as AnyObject, withKeyPath: "currentSongDuration", options: nil)
         
+        /// Not sure we really need a progress bar in the playlist but keep for now.
         // Bind the playlist controller's progress indicator value parameter with
         // the song pool's playheadPos via the timeline value transformer.
         playlistPanelCtrlr.playlistProgress?.bind("value",
@@ -405,15 +406,22 @@ extension TGSplitViewController {
         */
     }
     
-    func setPlayhead(position : NSNumber) {
-        playheadPos = position
-    }
+//    func setPlayhead(position : NSNumber) {
+//        print("setPlayHead")
+//        playheadPos = position
+//    }
 
 
     func songDidUpdatePlayheadPosition(playheadPosition : NSNumber) {
         ///self.setValue(playheadPosition, forKey: "playheadPos")
         /// Will this work for KVO?
-        playheadPos = playheadPosition
+        /** Do on the main thread to avoid upsetting CoreAnimation.
+            playheadPos property is bound to playlistProgress (which is an NSView).
+        
+        */
+        dispatch_sync(dispatch_get_main_queue()){
+            self.playheadPos = playheadPosition
+        }
     }
 
     /** This is called when the TGTimelineSliderCell detects that the user has let

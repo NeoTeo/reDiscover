@@ -19,29 +19,27 @@ different ways:
 class SongArtFinder: NSObject {
     
     class func findArtForSong(song: TGSong, collection: AlbumCollection) -> NSImage? {
-        print("findArtForSong: Looking in metadata...")
+
         // No existing artID. Try looking in the metadata.
         let arts = SongCommonMetaData.getCoverArtForSong(song)
         if arts.count > 0 {
             // FIXME: For now just pick the first. We want this to be user selectable.
             return arts[0]
         }
-        print("findArtForSong: Looking by album...")
+
         if let art = findArtForAlbum(forSong: song, inCollection: collection) {
             return art
         }
 
-        print("findArtForSong: Looking in directory...")
         if let art = findArtInSongDirectory(song) {
             return art
         }
 
-        print("findArtForSong: Looking on interwebs...")
         if let _ = song.UUId,
             let art = CoverArtArchiveWebFetcher.artForSong(song) {
                 return art
         }
-        print("findArtForSong: found nuffink")
+        
         return nil
     }
     

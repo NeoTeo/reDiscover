@@ -18,7 +18,6 @@ struct TGSongFingerprinter : SongFingerprinter {
             return nil
         }
         
-        print("The song duration is \(duration). Use this instead of getting duration from SongPlayer!")
         return (fingerprintString, duration)
     }
 
