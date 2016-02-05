@@ -117,8 +117,6 @@ class SongAudioCacheTask : NSObject {
                 /// Song player had not been previously cached.
                 /// Do it now and add it to the newCache when it's ready.
                 self.performWhenReadyForPlayback(songId){ songPlayer in
-                    print("This is the completion block for performWhenReadyForPlayback for song",songId.hashValue)
-                    print("Add the song to the new cache")
                     /// This can get called some time after
                     newCacheLock.withCriticalScope {
                         newCache[songId.hashValue] = songPlayer
@@ -253,6 +251,8 @@ class SongAudioCacheTask : NSObject {
                 return
             }
             
+            /// FIXME: Remove this as the thing we're waiting for once we've got 
+            /// the fingerprinting duration integrated.
             //Make sure the asset's duration value is available before kicking off the song player loading.
             songAsset.loadValuesAsynchronouslyForKeys(["duration"]){
                 print("load async duration")

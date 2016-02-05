@@ -16,7 +16,6 @@ protocol TimelinePopoverViewControllerDelegate {
 
 public class TimelinePopoverViewController : NSViewController {
     
-
     var delegate : TimelinePopoverViewControllerDelegate?
     
     @IBOutlet var thePopover: NSPopover!

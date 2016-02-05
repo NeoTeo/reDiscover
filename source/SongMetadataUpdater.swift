@@ -51,6 +51,9 @@ public class SongMetadataUpdater {
         /// All the calls inside the blocks are synchronous.
         let updateMetadataOp = NSBlockOperation {
             self.updateMetadata(forSongId: songId)
+            
+            /// At this point we can signal that the metadata is up to date
+            NSNotificationCenter.defaultCenter().postNotificationName("songMetaDataUpdated", object: songId)
         }
         let fingerPrinterOp = NSBlockOperation {
             /// If fingerPrinter is an empty optional we want it to crash.
@@ -97,18 +100,22 @@ public class SongMetadataUpdater {
 
     func updateMetadata(forSongId songId: SongId) {
         
-        /// Check that the song doesn't already have metadata.
         guard let song = delegate?.getSong(songId) else { return }
         
         /// Don't re-fetch the song common metadata if we already have it.
-        if song.metadata != nil { return }
+        if song.metadata != nil {
+            print("updateMetadata already had metadata \(song.metadata?.artist)")
+            print(song.metadata?.title)
+            print(song.metadata?.album)
+            return }
         
         guard let metadata = SongCommonMetaData.loadedMetaDataForSongId(song) else { return }
 
         delegate?.addSong(withChanges: [.Metadata : metadata], forSongId: songId)
         
         /// Let anyone listening know that we've updated the metadata for the songId.
-        NSNotificationCenter.defaultCenter().postNotificationName("songMetaDataUpdated", object: songId)
+//        NSNotificationCenter.defaultCenter().postNotificationName("songMetaDataUpdated", object: songId)
+        /// Moved to the caller of this method.
     }
     
     func updateRemoteData(forSongId songId: SongId, withDuration duration: NSNumber) {
@@ -138,9 +145,24 @@ public class SongMetadataUpdater {
             let urlString = song.urlString,
             let songUrl = NSURL(string : urlString),
             let (newFingerPrint, duration) = TGSongFingerprinter.fingerprint(forSongUrl: songUrl) {
-                let metadata = SongCommonMetaData(duration: duration)
                 
-                delegate?.addSong(withChanges: [.Fingerprint : newFingerPrint, .Metadata : metadata], forSongId: songId)
+                /// Merge the duration into any existing metadata
+                
+                var metadata = song.metadata
+                if let md = metadata {
+                    metadata = SongCommonMetaData(  title: md.title,
+                                                    album: md.album,
+                                                    artist: md.artist,
+                                                    year: md.year,
+                                                    genre: md.genre,
+                                                    duration: duration)
+                } else {
+                    metadata = SongCommonMetaData(duration: duration)
+                }
+                
+                delegate?.addSong(withChanges: [.Fingerprint : newFingerPrint, .Metadata : metadata!], forSongId: songId)
+                
+                NSNotificationCenter.defaultCenter().postNotificationName("songMetaDataUpdated", object: songId)
         }
         
     }

@@ -102,10 +102,6 @@ final class SongPool : NSObject, SongPoolAccessProtocol, SongMetadataUpdaterDele
             // Then we create a new song from the old song and the new metadata (want crash if oldSong is nil)
             let newSong = Song.songWithChanges(oldSong!, changes: changes)
             
-            if let md = changes[.Metadata] as? SongCommonMetaData {
-                print("metadata change \(md.duration)")
-            }
-            print("addSong withChanges has duration \(newSong.duration())")
             // Then we add that new song to the song pool using the songId
             self.songPool![songId] = newSong as? Song
         }

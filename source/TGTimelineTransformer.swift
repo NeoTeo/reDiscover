@@ -21,7 +21,13 @@ public final class TGTimelineTransformer: NSValueTransformer {
     }
     
     public override func transformedValue(value: AnyObject?) -> AnyObject {
-        guard let numberValue = value as? NSNumber else { return NSNumber(double: 0.0) }
+        
+        guard maxDuration != 0,
+            let numberValue = value as? NSNumber else {
+                
+            return NSNumber(double: 0.0)
+        }
+        
         let unit = 100.0 / maxDuration
         return NSNumber(double: unit * numberValue.doubleValue )
     }

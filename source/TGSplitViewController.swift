@@ -27,8 +27,7 @@ final public class TGSplitViewController: NSSplitViewController, SongPlaybackPro
     private var songMetadataUpdater : SongMetadataUpdater?
     
     var theURL: NSURL?
-    // Would rather use the Static version
-//    var theSongPool: TGSongPool?
+    
     var theSongPool : SongPoolAccessProtocol?
     
     private var songAudioCacher = TGSongAudioCacher()
@@ -285,8 +284,6 @@ extension TGSplitViewController {
         /// Update the last requestedSongId.
         lastRequestedSongId = cacheContext.selectedSongId
         
-        /// FIXME : Move requestUpdatedData and all the funcs it calls out of SongPool 
-        /// and into  some other class.
         //// Request updated data for the selected song.
         songMetadataUpdater?.requestUpdatedData(forSongId: lastRequestedSongId!)
     }
@@ -331,19 +328,10 @@ extension TGSplitViewController {
 //            guard let duration = song?.duration() else {
 //                fatalError("Song has no duration!")
 //            }
-            /** The following crashes at runtime because this is using a reference to
-            an instance of this class (self) to set the value of a static
-            //self.setValue(duration, forKey: "currentSongDuration")
-            
-            Presumably the following won't have the desired effects since we want to set the
-            currentSongDuration in a KVO compliant fashion. Not sure what that is
-            in Swift. It seems you have to add the dynamic keyword to the properties
-            you want to observe.
-            This and playheadPos are being bound in TGSplitViewController setupBindings()
-            I need to change that to refer to these instead of the ObjC properties
-            in the songPool.m
-            */
-            self.currentSongDuration = duration
+            /// Only update currentSongDuration if valid.
+            if duration != 0 {
+                self.currentSongDuration = duration
+            }
             self.requestedPlayheadPosition = startTime
         }
     }
@@ -419,8 +407,8 @@ extension TGSplitViewController {
     
     func setPlayhead(position : NSNumber) {
         playheadPos = position
-        print("Playhead pos: \(playheadPos)")
     }
+
 
     func songDidUpdatePlayheadPosition(playheadPosition : NSNumber) {
         ///self.setValue(playheadPosition, forKey: "playheadPos")
@@ -453,11 +441,15 @@ extension TGSplitViewController {
     // Called when the song metadata is updated and will in turn call the info panel
     // to update its data.
     func songMetaDataWasUpdated(notification: NSNotification) {
+        
         let songId = notification.object as! SongId
         if songId == lastRequestedSongId,
             let infoPanel = songInfoSVI.viewController as? TGSongInfoViewController,
             let song = theSongPool?.songForSongId(songId) {
                 infoPanel.setDisplayStrings(withDisplayStrings: song.metadataDict())
+                
+                /// update the currentSongDuration
+                currentSongDuration = song.duration()
         }
     }
     
