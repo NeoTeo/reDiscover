@@ -20,6 +20,8 @@ public protocol CoverDisplayViewControllerDelegate {
     func getSongDuration(songId : SongId) -> NSNumber?
     func getSweetSpots(songId : SongId) -> Set<SweetSpot>?
     func userSelectedSweetSpot(index : Int)
+    
+    func userPressedPlus()
 }
 
 public class TGCoverDisplayViewController: NSViewController, NSCollectionViewDelegate, NSCollectionViewDelegateFlowLayout {
@@ -34,7 +36,6 @@ public class TGCoverDisplayViewController: NSViewController, NSCollectionViewDel
     private var currentIdxPath: NSIndexPath?
     private var songUIController: TGSongUIPopupController?
     public var songTimelineController: TimelinePopoverViewController?
-//    public var songTimelineController: TGSongTimelineViewController?
     
     var delegate : CoverDisplayViewControllerDelegate?
     
@@ -82,7 +83,7 @@ public class TGCoverDisplayViewController: NSViewController, NSCollectionViewDel
     }
     
     func initializeTimelinePopover() {
-        //songTimelineController = TGSongTimelineViewController(nibName: "TGSongTimelineView", bundle: nil)
+
         songTimelineController = TimelinePopoverViewController(nibName: "TGSongTimelineView", bundle: nil)
         
         songTimelineController!.delegate = self
@@ -220,6 +221,28 @@ public class TGCoverDisplayViewController: NSViewController, NSCollectionViewDel
         return nil
     }
     
+    public func getGridDimensions() -> NSPoint {
+        let (cols, rows) = (coverCollectionView.collectionViewLayout as! NSCollectionViewFlowLayout).colsAndRowsFromLayout()
+        return NSMakePoint(CGFloat(cols), CGFloat(rows))
+    }
+    
+    /** Return the coordinates (column, row) of the songId in the song grid.
+    */
+    public func getCoverCoordinates(songId : SongId) -> NSPoint? {
+        
+        // Get the dimensions in rows and columns of the current cover collection layout.
+        let (cols, rows) = (coverCollectionView.collectionViewLayout as! NSCollectionViewFlowLayout).colsAndRowsFromLayout()
+        for row in 0..<rows {
+            for col in 0..<cols {
+                let curPos = NSMakePoint(CGFloat(col), CGFloat(row))
+                if songIdFromGridPos(curPos) == songId {
+                    return curPos
+                }
+            }
+        }
+        return nil
+    }
+    
     /** Return the songId found at the position in the grid. Nil if not found.
         Not that if a cover at the given grid position hasn't been mapped to a song
         the method will return an empty optional.
@@ -287,7 +310,7 @@ public class TGCoverDisplayViewController: NSViewController, NSCollectionViewDel
     func updateCovers(notification: NSNotification) {
 //        print("Cover update")
       // We should call the cover fade-in animation from here.
-/* This is not working in b3
+/* This is not working properly
         // Not sure this is the best way – O(n), but for now it works.
         // Traverse all the mapped songs dictionary looking for a match with songId.
         // If a match is found we reload only the item at the given index.
@@ -295,7 +318,7 @@ public class TGCoverDisplayViewController: NSViewController, NSCollectionViewDel
         // the visible items, but it doesn't scale well if we decided to allow arbitrary
         // sizes of grids.
         if let songId = notification.object as? SongId {
-            let mappedSongIdArray = mappedSongIds.filter { $1.isEqual(songId) }.map { return $0.0 }
+            let mappedSongIdArray = mappedSongIds.filter { $1 == songId }.map { return $0.0 }
             if mappedSongIdArray.count == 1 {
                 let idx = mappedSongIdArray[0]
                 let newIndexPath = NSIndexPath(forItem: idx, inSection: 0)
@@ -340,14 +363,14 @@ extension TGCoverDisplayViewController: TGSongUIPopupProtocol {
         // The button's coords are relative to its's view so we need to convert.
         let bDims = songUIController!.timelineButton.frame
         let location = self.view.convertPoint(bDims.origin, fromView: songUIController!.view)
-        // <ake a new frame.
+        // Make a new frame.
         let popupBounds = NSMakeRect(location.x, location.y, bDims.width, bDims.height)
 
-//        songTimelineController?.toggleTimelinePopoverRelativeToBounds(popupBounds, ofView: self.view)
-    songTimelineController?.togglePopoverRelativeToBounds(popupBounds, ofView: self.view)
+        songTimelineController?.togglePopoverRelativeToBounds(popupBounds, ofView: self.view)
     }
     
     func songUIPlusButtonWasPressed() {
+        delegate?.userPressedPlus()
         print("Go plus")
     }
     

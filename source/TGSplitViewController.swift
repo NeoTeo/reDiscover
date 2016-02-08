@@ -261,20 +261,22 @@ extension TGSplitViewController {
         }
     }
     
-    func userSelectedSongInContext(notification: NSNotification) {
-        let theContext = notification.object as! SongSelectionContext
-        let songId = theContext.selectedSongId
-        let speedVector = theContext.speedVector
+    func userSelectedSong(context : SongSelectionContext) {
+        let songId = context.selectedSongId
+        let speedVector = context.speedVector
         
         if fabs(speedVector.y) > 2 {
             print("Speed cutoff enabled")
             return
         }
         
-        //theSongPool?.cacheWithContext(theContext)
-        //theSongPool?.requestSongPlayback(songId)
-        cacheWithContext(theContext)
+        cacheWithContext(context)
         requestSongPlayback(songId)
+    }
+    
+    func userSelectedSongInContext(notification: NSNotification) {
+        let theContext = notification.object as! SongSelectionContext
+        userSelectedSong(theContext)
     }
     
     func cacheWithContext(cacheContext : SongSelectionContext) {
@@ -384,10 +386,12 @@ extension TGSplitViewController {
      */
     
     func setSongPlaybackObserver(songPlayer : AVPlayer) {
-        
-        let timerObserver = { (time : CMTime) -> () in
-            let currentPlaybackTime = songPlayer.currentTime()
-            self.songDidUpdatePlayheadPosition(NSNumber(double: CMTimeGetSeconds(currentPlaybackTime)))
+        /// MARK : Make sure we're not creating a retain cycle.
+        let timerObserver = { [weak self, weak songPlayer] (time : CMTime) -> () in
+            /// FIXME : When songPlayer is nil it might be a sign that we're not properly 
+            /// sync'ing ! Fix
+            let currentPlaybackTime = songPlayer!.currentTime()
+            self!.songDidUpdatePlayheadPosition(NSNumber(double: CMTimeGetSeconds(currentPlaybackTime)))
         }
         songAudioPlayer.setSongPlayer(songPlayer, block: timerObserver)
         
@@ -518,6 +522,13 @@ extension TGSplitViewController : CoverDisplayViewControllerDelegate {
             theSongPool?.addSong(withChanges: [.SelectedSS : sweetSpotTime], forSongId: playingSongId)
         }
     }
+    
+    public func userPressedPlus() {
+        /// Figure out which song is currently selected
+        if let selectedSongId = currentlyPlayingSongId {
+            playlistPanelCtrlr.addToPlaylist(songWithId: selectedSongId)
+        }
+    }
 }
 
 extension TGSplitViewController : SongAudioCacherDelegate {
@@ -538,6 +549,23 @@ extension TGSplitViewController : SweetSpotControllerDelegate {
 
 extension TGSplitViewController : PlaylistViewControllerDelegate {
     /// All required methods already declared in the main class.
+    func selectIndirectly(songId : SongId) {
+        guard let coords = coversPanelCtrlr.getCoverCoordinates(songId) else { return }
+        print("playlist selected song at \(coords)")
+        
+        let bogusSpeedVector = NSMakePoint(1, 1)
+        
+        // Get the dimensions in rows and columns of the current cover collection layout.
+        let dims = coversPanelCtrlr.getGridDimensions()
+        let context = TGSongSelectionContext(selectedSongId: songId, speedVector: bogusSpeedVector, selectionPos: coords, gridDimensions: dims, cachingMethod: .Square)
+        
+        //userSelectedSong(context)
+        /// Ensure song is cached.
+        cacheWithContext(context)
+        
+        /// Play back song from beginning, not from sweet spot.
+        requestPlayback(songId, startTimeInSeconds: 0)
+    }
 }
 
 extension NSView {

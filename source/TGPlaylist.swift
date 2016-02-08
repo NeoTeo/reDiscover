@@ -78,7 +78,7 @@ class TGPlaylist : NSObject, NSTableViewDataSource {
         (for now)
     */
     func addSong(withId songId : SongId, atIndex index : Int) {
-        guard index < songList.count else {
+        guard index <= songList.count else {
             print("ERROR: TGPlaylist addSong index is out of bounds.")
             return
         }

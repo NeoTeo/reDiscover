@@ -98,17 +98,20 @@
                 <customView identifier="playlistView" translatesAutoresizingMaskIntoConstraints="NO" id="U4q-eW-vcj">
                     <rect key="frame" x="0.0" y="0.0" width="400" height="600"/>
                     <subviews>
-                        <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="F0x-td-Ipx">
+                        <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="F0x-td-Ipx">
                             <rect key="frame" x="18" y="541" width="130" height="39"/>
+                            <constraints>
+                                <constraint firstAttribute="width" constant="126" id="QuC-gv-byd"/>
+                            </constraints>
                             <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Playlist" id="gHu-ep-aEh">
                                 <font key="font" metaFont="system" size="32"/>
                                 <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                 <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                             </textFieldCell>
                         </textField>
-                        <scrollView ambiguous="YES" misplaced="YES" borderType="none" autohidesScrollers="YES" horizontalLineScroll="64" horizontalPageScroll="10" verticalLineScroll="64" verticalPageScroll="10" hasHorizontalScroller="NO" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Z3C-SG-K7i">
+                        <scrollView borderType="none" autohidesScrollers="YES" horizontalLineScroll="64" horizontalPageScroll="10" verticalLineScroll="64" verticalPageScroll="10" hasHorizontalScroller="NO" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Z3C-SG-K7i">
                             <rect key="frame" x="20" y="20" width="360" height="471"/>
-                            <clipView key="contentView" ambiguous="YES" placeholderIntrinsicWidth="360" placeholderIntrinsicHeight="471" drawsBackground="NO" copiesOnScroll="NO" id="MnJ-We-wEW">
+                            <clipView key="contentView" placeholderIntrinsicWidth="360" placeholderIntrinsicHeight="471" drawsBackground="NO" copiesOnScroll="NO" id="MnJ-We-wEW">
                                 <rect key="frame" x="0.0" y="0.0" width="360" height="471"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                 <subviews>
@@ -171,6 +174,7 @@
                                                             <constraint firstAttribute="trailing" secondItem="Ztc-CO-KuG" secondAttribute="trailing" constant="14" id="13f-oK-v4N"/>
                                                             <constraint firstItem="Ztc-CO-KuG" firstAttribute="leading" secondItem="93Z-VV-Nat" secondAttribute="leading" id="45Y-yO-NNe"/>
                                                             <constraint firstItem="Ztc-CO-KuG" firstAttribute="top" secondItem="aKF-Xb-zdG" secondAttribute="bottom" constant="3" id="ERF-CV-lQq"/>
+                                                            <constraint firstItem="Ztc-CO-KuG" firstAttribute="trailing" secondItem="93Z-VV-Nat" secondAttribute="trailing" id="JZQ-Oh-pag"/>
                                                             <constraint firstItem="93Z-VV-Nat" firstAttribute="top" secondItem="aKF-Xb-zdG" secondAttribute="bottom" constant="19" id="Meo-NF-KR3"/>
                                                             <constraint firstItem="Ztc-CO-KuG" firstAttribute="trailing" secondItem="93Z-VV-Nat" secondAttribute="trailing" id="Yhb-tv-CJR"/>
                                                             <constraint firstItem="Ztc-CO-KuG" firstAttribute="leading" secondItem="5fA-wP-ipP" secondAttribute="leading" constant="23" id="aaz-Yv-4GK"/>
@@ -195,9 +199,6 @@
                                 </subviews>
                                 <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
                             </clipView>
-                            <constraints>
-                                <constraint firstAttribute="width" constant="360" id="hoT-mC-td5"/>
-                            </constraints>
                             <scroller key="horizontalScroller" hidden="YES" verticalHuggingPriority="750" horizontal="YES" id="LJE-rq-SLs">
                                 <autoresizingMask key="autoresizingMask"/>
                             </scroller>
@@ -205,35 +206,47 @@
                                 <autoresizingMask key="autoresizingMask"/>
                             </scroller>
                         </scrollView>
-                        <progressIndicator fixedFrame="YES" maxValue="100" style="bar" translatesAutoresizingMaskIntoConstraints="NO" id="tIx-mA-Unl">
+                        <progressIndicator maxValue="100" style="bar" translatesAutoresizingMaskIntoConstraints="NO" id="tIx-mA-Unl">
                             <rect key="frame" x="20" y="498" width="360" height="20"/>
                         </progressIndicator>
-                        <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="IsJ-7K-OFq">
-                            <rect key="frame" x="34" y="525" width="78" height="16"/>
+                        <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="IsJ-7K-OFq">
+                            <rect key="frame" x="34" y="525" width="102" height="16"/>
+                            <constraints>
+                                <constraint firstAttribute="width" constant="98" id="t1s-4y-kzQ"/>
+                            </constraints>
                             <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="- add to playlist" id="DO4-W3-cfS">
                                 <font key="font" metaFont="cellTitle"/>
                                 <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                 <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                             </textFieldCell>
                         </textField>
-                        <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="fj4-8C-MOm">
+                        <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="fj4-8C-MOm">
                             <rect key="frame" x="23" y="525" width="18" height="16"/>
+                            <constraints>
+                                <constraint firstAttribute="width" constant="14" id="Mwb-nh-9vB"/>
+                            </constraints>
                             <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="g" id="FXU-LX-2Q9">
                                 <font key="font" metaFont="cellTitle"/>
                                 <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                 <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                             </textFieldCell>
                         </textField>
-                        <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="R7u-K5-PHT">
-                            <rect key="frame" x="139" y="525" width="67" height="16"/>
+                        <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="R7u-K5-PHT">
+                            <rect key="frame" x="267" y="525" width="115" height="16"/>
+                            <constraints>
+                                <constraint firstAttribute="width" constant="111" id="3Fv-cj-nnf"/>
+                            </constraints>
                             <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="- save playlist" id="ZEl-jC-LoQ">
                                 <font key="font" metaFont="cellTitle"/>
                                 <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                 <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                             </textFieldCell>
                         </textField>
-                        <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="ENs-NF-J7G">
-                            <rect key="frame" x="128" y="525" width="18" height="16"/>
+                        <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="ENs-NF-J7G">
+                            <rect key="frame" x="256" y="525" width="18" height="16"/>
+                            <constraints>
+                                <constraint firstAttribute="width" constant="14" id="0Td-g9-CpQ"/>
+                            </constraints>
                             <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="p" id="gxy-4p-qp2">
                                 <font key="font" metaFont="cellTitle"/>
                                 <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
@@ -242,8 +255,23 @@
                         </textField>
                     </subviews>
                     <constraints>
-                        <constraint firstItem="Z3C-SG-K7i" firstAttribute="leading" secondItem="U4q-eW-vcj" secondAttribute="leading" constant="20" id="MHg-5O-DO6"/>
-                        <constraint firstAttribute="trailing" secondItem="Z3C-SG-K7i" secondAttribute="trailing" constant="20" id="g8y-HB-now"/>
+                        <constraint firstItem="Z3C-SG-K7i" firstAttribute="leading" secondItem="U4q-eW-vcj" secondAttribute="leading" constant="20" symbolic="YES" id="0gK-1q-DKs"/>
+                        <constraint firstAttribute="trailing" secondItem="Z3C-SG-K7i" secondAttribute="trailing" constant="20" symbolic="YES" id="11J-Et-l45"/>
+                        <constraint firstItem="IsJ-7K-OFq" firstAttribute="leading" secondItem="U4q-eW-vcj" secondAttribute="leading" constant="36" id="6K0-7v-7as"/>
+                        <constraint firstItem="Z3C-SG-K7i" firstAttribute="leading" secondItem="tIx-mA-Unl" secondAttribute="leading" id="E2W-IN-qiQ"/>
+                        <constraint firstItem="Z3C-SG-K7i" firstAttribute="trailing" secondItem="tIx-mA-Unl" secondAttribute="trailing" id="Ekd-ZY-EQg"/>
+                        <constraint firstAttribute="trailing" secondItem="ENs-NF-J7G" secondAttribute="trailing" constant="128" id="FFz-wy-Taw"/>
+                        <constraint firstItem="IsJ-7K-OFq" firstAttribute="baseline" secondItem="fj4-8C-MOm" secondAttribute="baseline" id="Imr-5n-Wct"/>
+                        <constraint firstItem="F0x-td-Ipx" firstAttribute="leading" secondItem="tIx-mA-Unl" secondAttribute="leading" id="MUt-sb-clg"/>
+                        <constraint firstAttribute="bottom" secondItem="Z3C-SG-K7i" secondAttribute="bottom" constant="20" symbolic="YES" id="QvV-EK-Urb"/>
+                        <constraint firstItem="tIx-mA-Unl" firstAttribute="top" secondItem="fj4-8C-MOm" secondAttribute="bottom" constant="8" symbolic="YES" id="V6x-Ph-ezf"/>
+                        <constraint firstItem="IsJ-7K-OFq" firstAttribute="baseline" secondItem="ENs-NF-J7G" secondAttribute="baseline" id="ZQV-pR-utK"/>
+                        <constraint firstItem="R7u-K5-PHT" firstAttribute="trailing" secondItem="tIx-mA-Unl" secondAttribute="trailing" id="elh-SK-UMX"/>
+                        <constraint firstItem="Z3C-SG-K7i" firstAttribute="top" secondItem="U4q-eW-vcj" secondAttribute="top" constant="109" id="etc-8L-FVq"/>
+                        <constraint firstItem="F0x-td-Ipx" firstAttribute="top" secondItem="U4q-eW-vcj" secondAttribute="top" constant="20" symbolic="YES" id="hP2-Cx-Uqu"/>
+                        <constraint firstItem="fj4-8C-MOm" firstAttribute="leading" secondItem="U4q-eW-vcj" secondAttribute="leading" constant="25" id="i0D-1o-z8n"/>
+                        <constraint firstItem="Z3C-SG-K7i" firstAttribute="top" secondItem="tIx-mA-Unl" secondAttribute="bottom" constant="8" symbolic="YES" id="rND-SD-Ezu"/>
+                        <constraint firstItem="ENs-NF-J7G" firstAttribute="baseline" secondItem="R7u-K5-PHT" secondAttribute="baseline" id="yWu-OA-ffC"/>
                     </constraints>
                 </customView>
                 <customObject id="0rr-wt-AEQ" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>

@@ -11,6 +11,7 @@ import Cocoa
 protocol PlaylistViewControllerDelegate {
     func getSong(songId : SongId) -> TGSong?
     func requestPlayback(songId: SongId, startTimeInSeconds: NSNumber)
+    func selectIndirectly(songId : SongId)
 }
 
 public class TGPlaylistViewController : NSViewController, NSTableViewDataSource, NSTableViewDelegate {
@@ -104,7 +105,8 @@ extension TGPlaylistViewController {
             playlist.positionInPlaylist = selectedRow
             
             if let songId = playlist.getSongId(atIndex: selectedRow) {
-                delegate?.requestPlayback(songId, startTimeInSeconds: 0)
+                //delegate?.requestPlayback(songId, startTimeInSeconds: 0)
+                delegate?.selectIndirectly(songId)
             }
             playlistTableView.deselectRow(selectedRow)
             /// FIXME: Not sure the responder should be self. Used to be _delegate
