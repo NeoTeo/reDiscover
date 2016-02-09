@@ -26,6 +26,8 @@ public class TGPlaylistCellView : NSTableCellView {
     
     
     public override func drawRect(dirtyRect: NSRect) {
+        //NSColor.redColor().setFill()
+        //NSRectFill(dirtyRect)
         super.drawRect(dirtyRect)
     }
 }

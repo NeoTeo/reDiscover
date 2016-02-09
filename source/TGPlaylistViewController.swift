@@ -113,6 +113,11 @@ extension TGPlaylistViewController {
             self.view.window?.makeFirstResponder(self)
         }
     }
+    
+    /// Ensure the row height is sufficient.
+    public func tableView(tableView: NSTableView,heightOfRow row: Int) -> CGFloat {
+        return 67
+    }
 }
 
 extension TGPlaylistViewController : PlaylistDelegate {
