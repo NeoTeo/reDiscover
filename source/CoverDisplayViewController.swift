@@ -155,33 +155,39 @@ public class TGCoverDisplayViewController: NSViewController, NSCollectionViewDel
     
     */
     func uncoverSongCover(atLocationInWindow location: NSPoint) {
+        
         let loc = coverCollectionView.convertPoint(location, fromView: nil)
+        
         if let (item, idxPath) = coverAndIdxAtLocation(loc) where idxPath != currentIdxPath {
             dispatch_async(collectionAccessQ){
-            // Store it so I can bail out above (Do I really need this?)
-            self.currentIdxPath = idxPath
-//            print("The item and index is \(item) \(idxPath)")
-            
-            //: At this point we don't know yet if the cover has been uncovered.
-            //: If a songId is found in the mappedSongIds it means it has already been uncovered.
-            var songId = self.mappedSongIds[idxPath.item]
-            
-            // Not yet uncovered. So we pick a random song from the unmapped songs.
-            if songId == nil {
-                // remove a random songId from unmapped and add it to the mapped
-                let unmappedCount = UInt32(self.unmappedSongIdArray.count)
-                let randIdx = arc4random_uniform(unmappedCount)
-                //FIXME: concurrent access here? - consider making safe accessors for the arrays instead
-                // This shit is locking/slowing everything down.
                 
-                    songId = self.unmappedSongIdArray.removeAtIndex(Int(randIdx))
-                    self.mappedSongIds[idxPath.item] = songId
+                // Store it so I can bail out above (Do I really need this?)
+                self.currentIdxPath = idxPath
+            
+                //: At this point we don't know yet if the cover has been uncovered.
+                //: If a songId is found in the mappedSongIds it means it has already been uncovered.
+                var songId = self.mappedSongIds[idxPath.item]
                 
+                // Not yet uncovered. So we pick a random song from the unmapped songs.
+                if songId == nil {
+                    // remove a random songId from unmapped and add it to the mapped
+                    let unmappedCount = UInt32(self.unmappedSongIdArray.count)
+                    let randIdx = arc4random_uniform(unmappedCount)
+                    //FIXME: concurrent access here? - consider making safe accessors for the arrays instead
+                    // This shit is locking/slowing everything down.
+                    
+                        songId = self.unmappedSongIdArray.removeAtIndex(Int(randIdx))
+                        self.mappedSongIds[idxPath.item] = songId
+                    
+                }
+                
+                // Let anyone interested know the user has selected songId
+                self.postNotificationOfSelection(songId!, atIndex: idxPath.item)
             }
             
-            // Let anyone interested know the user has selected songId
-            self.postNotificationOfSelection(songId!, atIndex: idxPath.item)
-            }
+            /// selecting a new song should hide the song UI.
+            self.hideSongUI()
+            
             item.CoverLabel.stringValue = "fetching art..."
             // At this point we should probably initiate a cover animation.
             
@@ -189,6 +195,8 @@ public class TGCoverDisplayViewController: NSViewController, NSCollectionViewDel
     }
     
     func postNotificationOfSelection(songId: SongId, atIndex idx: Int) {
+        
+        
         // 1) Package the context in a data structure.
         // 2) post notification with the context.
         //FIXME: For now we bodge the speed vector.
@@ -258,10 +266,18 @@ public class TGCoverDisplayViewController: NSViewController, NSCollectionViewDel
 //        }
     }
     
+    /** Called when the user scrolls the cover view. We use this to hide the song
+        UI if it is showing. */
     func boundsChanged(theEvent: NSEvent) {
-        // if the song ui is not showing allow scrolling
-        // scrolling should also be able to select songs so call uncoverSong.
-        //print("Scrollage")
+        hideSongUI()
+    }
+    
+    func hideSongUI() {
+        /// Hide the UI.
+        songUIController?.showUI(false)
+        
+        // Hide timeline
+        songTimelineController?.hideTimeline()
     }
     /*: 
         Called when a new song with songId is added.

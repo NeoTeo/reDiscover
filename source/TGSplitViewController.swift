@@ -11,7 +11,7 @@ import Cocoa
 import AVFoundation
 
 
-final public class TGSplitViewController: NSSplitViewController, SongPlaybackProtocol {
+final public class TGSplitViewController: NSSplitViewController {
  
     @IBOutlet weak var playlistSplitViewItem: NSSplitViewItem!
     @IBOutlet weak var coverCollectionSVI: NSSplitViewItem!

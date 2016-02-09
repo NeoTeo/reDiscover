@@ -6,13 +6,24 @@
 //  Copyright © 2016 Teo Sartori. All rights reserved.
 //
 
-import Foundation
+//import Foundation
+import CoreData
 
+/// FIXME : rename this
 class TEOSongData : NSManagedObject {
     @NSManaged var album : String?
     @NSManaged var artist : String?
     @NSManaged var sweetSpots : NSArray?
+    @NSManaged var urlString : String?
+    @NSManaged var uuid : String?
+    @NSManaged var year : NSNumber?
+    @NSManaged var fingerprint : String?
+    @NSManaged var title : String?
+    @NSManaged var genre : String?
+    @NSManaged var selectedSweetSpot : NSNumber?
+    @NSManaged var songReleases : NSData?
 }
+
 /**
 @interface TEOSongData : NSManagedObject
 
@@ -30,7 +41,10 @@ class TEOSongData : NSManagedObject {
 @property (nonatomic, retain) NSData*           songReleases;
 
 + (instancetype)insertItemWithURLString:(NSString*)URLString
-inManagedObje
+ inManagedObjectContext:(NSManagedObjectContext *)managedObjectContext;
+ 
+ @end
+
 
 @implementation TEOSongData
 
@@ -70,7 +84,32 @@ return songData;
 return @"TEOSongData";
 }
 @end
-ctContext:(NSManagedObjectContext *)managedObjectContext;
-
-@end
 */
+
+extension TEOSongData {
+    
+    class func entityName() -> String {
+        return "TEOSongData"
+    }
+    
+    class func insertItem(urlString : String, inContext context : NSManagedObjectContext) -> AnyObject? {
+        if let songData = NSEntityDescription.insertNewObjectForEntityForName(self.entityName(), inManagedObjectContext: context) as? TEOSongData {
+            
+            songData.album              = nil
+            songData.artist             = nil
+            songData.sweetSpots         = nil
+            songData.urlString          = nil
+            songData.uuid               = nil
+            songData.year               = nil
+            songData.genre              = nil
+            songData.title              = nil
+            songData.fingerprint        = nil
+            songData.selectedSweetSpot  = nil
+            songData.songReleases       = nil
+            
+            return songData
+        }
+        
+        return nil
+    }
+}

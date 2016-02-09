@@ -6,7 +6,7 @@
 //  Copyright (c) 2015 Teo Sartori. All rights reserved.
 //
 
-import Foundation
+import CoreData
 
 struct CoreDataStore {
     

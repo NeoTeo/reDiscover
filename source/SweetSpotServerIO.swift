@@ -104,9 +104,9 @@ class SweetSpotServerIO: NSObject {
             do {
                 let fetchedArray = try self.uploadedSweetSpotsMOC?.executeFetchRequest(fetchRequest)
                 
-                for ssData in fetchedArray as! [UploadedSSData] {
-                    //let ssData = ss as! UploadedSSData
-                    self.uploadedSweetSpots[ssData.songUUID] = ssData
+                for ssData in fetchedArray as! [UploadedSSData] where ssData.songUUID != nil {
+
+                    self.uploadedSweetSpots[ssData.songUUID!] = ssData
                     print("The ssData songUUID is \(ssData.songUUID) and its sweetspots \(ssData.sweetSpots)")
                 }
                 
@@ -194,12 +194,12 @@ class SweetSpotServerIO: NSObject {
                             var uploadedSS = uploadedSweetSpots[songUUID]
                             if uploadedSS == nil {
                                 // The song has no existing sweetspots so we create a new set with the sweet spot.
-                                uploadedSS = UploadedSSData.insertItemWithSongUUIDString(songUUID, inManagedObjectContext: uploadedSweetSpotsMOC) as UploadedSSData
+                                uploadedSS = UploadedSSData.insert(songUUID, inContext: uploadedSweetSpotsMOC!) as? UploadedSSData
                                 uploadedSS?.sweetSpots = NSArray(object: sweetSpot) as [AnyObject]
                             } else {
+                                
                                 // The song already has a set of sweetspots so we need to add to it.
-    //                            var existingSS = uploadedSS!.sweetSpots.mutableCopy() as NSMutableArray
-                                let existingSS = NSMutableArray(array: uploadedSS!.sweetSpots)
+                                let existingSS = NSMutableArray(array: uploadedSS!.sweetSpots!)
                                 existingSS.addObject(sweetSpot)
                                 uploadedSS!.sweetSpots = existingSS.copy() as! NSArray as [AnyObject]
                             }

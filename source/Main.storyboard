@@ -116,7 +116,7 @@
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                 <subviews>
                                     <tableView identifier="hatArse" verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" selectionHighlightStyle="none" columnSelection="YES" columnResizing="NO" multipleSelection="NO" autosaveColumns="NO" rowHeight="67" rowSizeStyle="automatic" viewBased="YES" id="JdL-Io-maI">
-                                        <rect key="frame" x="0.0" y="0.0" width="364" height="471"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="364" height="0.0"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <size key="intercellSpacing" width="3" height="4"/>
                                         <color key="backgroundColor" name="windowBackgroundColor" catalog="System" colorSpace="catalog"/>
@@ -146,7 +146,7 @@
                                                                 </constraints>
                                                                 <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" id="qc0-2f-x3s"/>
                                                             </imageView>
-                                                            <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" ambiguous="YES" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="93Z-VV-Nat">
+                                                            <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="93Z-VV-Nat">
                                                                 <rect key="frame" x="63" y="0.0" width="289" height="20"/>
                                                                 <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Artist" id="6ab-KZ-eh0">
                                                                     <font key="font" metaFont="system" size="14"/>
@@ -154,7 +154,7 @@
                                                                     <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                                                 </textFieldCell>
                                                             </textField>
-                                                            <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="Ztc-CO-KuG">
+                                                            <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Ztc-CO-KuG">
                                                                 <rect key="frame" x="63" y="13" width="289" height="29"/>
                                                                 <constraints>
                                                                     <constraint firstAttribute="height" constant="29" id="7Q2-NF-SdS"/>
@@ -165,7 +165,7 @@
                                                                     <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                                                 </textFieldCell>
                                                             </textField>
-                                                            <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" ambiguous="YES" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="aKF-Xb-zdG">
+                                                            <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="aKF-Xb-zdG">
                                                                 <rect key="frame" x="63" y="36" width="289" height="28"/>
                                                                 <textFieldCell key="cell" lineBreakMode="truncatingTail" sendsActionOnEndEditing="YES" title="Title" id="Cy5-MY-5uO">
                                                                     <font key="font" metaFont="system" size="18"/>
@@ -183,9 +183,7 @@
                                                             <constraint firstItem="Ztc-CO-KuG" firstAttribute="leading" secondItem="93Z-VV-Nat" secondAttribute="leading" id="V5r-q4-vQb"/>
                                                             <constraint firstItem="hC8-Sb-VdX" firstAttribute="top" secondItem="5fA-wP-ipP" secondAttribute="top" constant="6" id="WbL-sz-Ut1"/>
                                                             <constraint firstAttribute="bottom" secondItem="Ztc-CO-KuG" secondAttribute="bottom" constant="13" id="deu-0u-JsZ"/>
-                                                            <constraint firstItem="93Z-VV-Nat" firstAttribute="top" secondItem="aKF-Xb-zdG" secondAttribute="bottom" constant="16" id="k0r-EM-nGU"/>
                                                             <constraint firstItem="Ztc-CO-KuG" firstAttribute="top" secondItem="5fA-wP-ipP" secondAttribute="top" constant="25" id="p4R-eE-fdO"/>
-                                                            <constraint firstAttribute="trailing" secondItem="aKF-Xb-zdG" secondAttribute="trailing" constant="11" id="sgE-BB-QSM"/>
                                                             <constraint firstItem="Ztc-CO-KuG" firstAttribute="trailing" secondItem="aKF-Xb-zdG" secondAttribute="trailing" id="uie-8X-tZk"/>
                                                             <constraint firstItem="Ztc-CO-KuG" firstAttribute="leading" secondItem="aKF-Xb-zdG" secondAttribute="leading" id="xqb-OQ-HRs"/>
                                                             <constraint firstItem="hC8-Sb-VdX" firstAttribute="leading" secondItem="5fA-wP-ipP" secondAttribute="leading" constant="9" id="zd1-Ih-8y7"/>

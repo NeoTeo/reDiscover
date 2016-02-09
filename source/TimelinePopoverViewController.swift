@@ -63,6 +63,10 @@ extension TimelinePopoverViewController {
         }
     }
     
+    func hideTimeline() {
+        thePopover?.close()
+    }
+    
     func togglePopoverRelativeToBounds(theBounds: CGRect, ofView theView: NSView) {
         guard let pop = thePopover else { return }
         

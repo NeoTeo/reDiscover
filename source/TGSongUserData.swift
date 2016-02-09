@@ -6,7 +6,7 @@
 //  Copyright © 2016 Teo Sartori. All rights reserved.
 //
 
-import Foundation
+import CoreData
 
 /**
 @interface TGSongUserData : NSManagedObject
@@ -28,7 +28,7 @@ import Foundation
 */
 
 class TGSongUserData : NSManagedObject {
-    @NSManaged var songURL : String?
+    @NSManaged dynamic var songURL : String?
     @NSManaged var songUUID : String?
     @NSManaged var songFingerPrint : String?
     @NSManaged var songUserSweetSpot : Float
