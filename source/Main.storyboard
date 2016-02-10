@@ -154,7 +154,7 @@
                                                                     <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                                                 </textFieldCell>
                                                             </textField>
-                                                            <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Ztc-CO-KuG">
+                                                            <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="Ztc-CO-KuG">
                                                                 <rect key="frame" x="63" y="13" width="289" height="29"/>
                                                                 <constraints>
                                                                     <constraint firstAttribute="height" constant="29" id="7Q2-NF-SdS"/>
@@ -179,11 +179,14 @@
                                                             <constraint firstItem="Ztc-CO-KuG" firstAttribute="trailing" secondItem="93Z-VV-Nat" secondAttribute="trailing" id="2B8-bp-Urz"/>
                                                             <constraint firstAttribute="bottom" secondItem="hC8-Sb-VdX" secondAttribute="bottom" constant="13" id="6An-ag-qdJ"/>
                                                             <constraint firstAttribute="bottom" secondItem="93Z-VV-Nat" secondAttribute="bottom" id="9Sh-Np-r5S"/>
+                                                            <constraint firstAttribute="trailing" secondItem="Ztc-CO-KuG" secondAttribute="trailing" constant="11" id="EGy-Vt-2ae"/>
                                                             <constraint firstItem="aKF-Xb-zdG" firstAttribute="top" secondItem="5fA-wP-ipP" secondAttribute="top" constant="3" id="RWj-1u-8qN"/>
+                                                            <constraint firstAttribute="trailing" secondItem="93Z-VV-Nat" secondAttribute="trailing" constant="11" id="T5O-MK-Zh4"/>
                                                             <constraint firstItem="Ztc-CO-KuG" firstAttribute="leading" secondItem="93Z-VV-Nat" secondAttribute="leading" id="V5r-q4-vQb"/>
                                                             <constraint firstItem="hC8-Sb-VdX" firstAttribute="top" secondItem="5fA-wP-ipP" secondAttribute="top" constant="6" id="WbL-sz-Ut1"/>
                                                             <constraint firstAttribute="bottom" secondItem="Ztc-CO-KuG" secondAttribute="bottom" constant="13" id="deu-0u-JsZ"/>
                                                             <constraint firstItem="Ztc-CO-KuG" firstAttribute="top" secondItem="5fA-wP-ipP" secondAttribute="top" constant="25" id="p4R-eE-fdO"/>
+                                                            <constraint firstAttribute="trailing" secondItem="aKF-Xb-zdG" secondAttribute="trailing" constant="11" id="tpZ-j0-zOP"/>
                                                             <constraint firstItem="Ztc-CO-KuG" firstAttribute="trailing" secondItem="aKF-Xb-zdG" secondAttribute="trailing" id="uie-8X-tZk"/>
                                                             <constraint firstItem="Ztc-CO-KuG" firstAttribute="leading" secondItem="aKF-Xb-zdG" secondAttribute="leading" id="xqb-OQ-HRs"/>
                                                             <constraint firstItem="hC8-Sb-VdX" firstAttribute="leading" secondItem="5fA-wP-ipP" secondAttribute="leading" constant="9" id="zd1-Ih-8y7"/>

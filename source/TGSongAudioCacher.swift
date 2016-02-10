@@ -34,8 +34,6 @@ final class TGSongAudioCacher : NSObject {
     }
     
     var delegate : SongAudioCacherDelegate?
-//    var songPoolAPI: SongPoolAccessProtocol?
-//    var coverDisplayAPI : CoverDisplayViewController?
     
     /// Serialize the access to the pendingPlayerRequestCallback.
     let pendingRequestQ = dispatch_queue_create("Request access q", DISPATCH_QUEUE_SERIAL)
@@ -87,7 +85,6 @@ final class TGSongAudioCacher : NSObject {
             
             print("Execution block",self.debugId)
             
-//            let cacheTask = SongAudioCacheTask(songPoolAPI: self.songPoolAPI)
             let cacheTask = SongAudioCacheTask()
             cacheTask.delegate = self
             

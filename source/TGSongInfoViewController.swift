@@ -20,8 +20,10 @@ class TGSongInfoViewController : NSViewController {
     var noCoverImage : NSImage!
     
     override func awakeFromNib() {
-        noCoverImage = NSImage(named: "noCover")!
-        albumCover.image = noCoverImage
+        
+        noCoverImage        = NSImage(named: "noCover")!
+        
+        albumCover.image    = noCoverImage
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -29,24 +31,33 @@ class TGSongInfoViewController : NSViewController {
         super.init(coder: aDecoder)
     }
     
+    /** Update the labels displaying the song information */
     func setDisplayStrings(withDisplayStrings displayStrings : NSDictionary) {
+        
+        print("setDisplayStrings called")
+        /// update the info labels on the main queue as CoreAnimation requires
         dispatch_async(dispatch_get_main_queue()) {
-            self.titleLabel.stringValue = displayStrings.objectForKey("Title") as! String
-            self.artistLabel.stringValue = displayStrings.objectForKey("Artist") as! String
-            self.albumLabel.stringValue = displayStrings.objectForKey("Album") as! String
+            print("setDisplayStrings actually being updated.")
+            self.titleLabel.stringValue     = displayStrings.objectForKey("Title") as! String
+            self.artistLabel.stringValue    = displayStrings.objectForKey("Artist") as! String
+            self.albumLabel.stringValue     = displayStrings.objectForKey("Album") as! String
             
+            /// Set up the scrolling text.
             self.scrollTitleView.setText(self.titleLabel.stringValue)
             self.scrollTitleView.setSpeed(0.01)
         }
     }
     
-    /**
+    /** Update the cover image on the info panel */
+    func setCoverImage(coverImage : NSImage?) {
+        
+        let image = coverImage == nil ? noCoverImage : coverImage!
+
+        /**
         setSongCoverImage might get called by a separate thread and since
         Core Anim doesn't like working on non-main treads, we need to ensure that
         setImage is called on the main thread.
-     */
-    func setCoverImage(coverImage : NSImage?) {
-        let image = coverImage == nil ? noCoverImage : coverImage!
+        */
         dispatch_async(dispatch_get_main_queue()) {
             self.crossFadeToImage(image)
         }

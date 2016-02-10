@@ -165,11 +165,16 @@ extension SongPool : AlbumCollectionDelegate {
 }
 
 extension SongPool {
+    
     func debugLogSongWithId(songId: SongId) {
-        if let song = getSong(songId) {
-            print("Song with id \(songId) has duration \(song.duration())")
-        }
+        
+        guard let song = getSong(songId) else { return }
+            
+        print("Song with id \(songId) has duration \(song.duration())")
+
     }
+    
+    
     func debugLogCaches() {
         
     }

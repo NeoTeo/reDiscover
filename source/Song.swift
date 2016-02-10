@@ -14,7 +14,6 @@ class Song : NSObject, TGSong {
     let songId: SongId
     let urlString: String?
     let selectedSweetSpot: NSNumber? //Float
-//    let sweetSpots: [SweetSpot]?
     let sweetSpots: Set<SweetSpot>?
     let metadata: SongCommonMetaData?
     let artID: String?
@@ -23,7 +22,6 @@ class Song : NSObject, TGSong {
     let UUId: String?
     let RelId: String?
     
-//    required init(SongId: SongId, metadata: SongCommonMetaData?, urlString: String?, sweetSpots: [SweetSpot]?,
     required init(songId: SongId, metadata: SongCommonMetaData?, urlString: String?, sweetSpots: Set<SweetSpot>?,
         fingerPrint: String?, selectedSS: SweetSpot?, releases: NSData?, artId: String?, UUId: String?, RelId: String?) {
             
@@ -38,10 +36,6 @@ class Song : NSObject, TGSong {
             self.UUId                = UUId
             self.RelId               = RelId
     }
-    
-    //    func isEqualTo(aSong: TGSong) -> Bool {
-    //        return aSong.songID.isEqual(self.songID)
-    //    }
 }
 
 public enum SongProperty: Hashable {
@@ -73,6 +67,7 @@ extension Song {
         var relid       = theSong.RelId
         
         for (change, obj) in changes {
+            
             switch change {
             case .Id:
                 songId = obj as! SongId
@@ -97,16 +92,31 @@ extension Song {
             }
         }
         
-        return Song(songId: songId, metadata: metadata, urlString: urlString, sweetSpots: sweetspots, fingerPrint: fingerprint, selectedSS: selectedSS, releases: releases, artId: artId, UUId: uuid, RelId: relid)
+        return Song(songId: songId,
+                            metadata: metadata,
+                            urlString: urlString,
+                            sweetSpots: sweetspots,
+                            fingerPrint: fingerprint,
+                            selectedSS: selectedSS,
+                            releases: releases,
+                            artId: artId,
+                            UUId: uuid,
+                            RelId: relid)
     }
     
+    
     func duration() -> NSNumber? {
+        
         guard let dur = metadata?.duration else { return nil }
+        
         return NSNumber(double: dur)
     }
     
+    
     func metadataDict() -> NSDictionary {
+        
         guard let md = metadata else { return [:] }
+        
         return [    "Artist" : md.artist,
                     "Title" : md.title,
                     "Album" : md.album,
