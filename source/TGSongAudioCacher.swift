@@ -18,7 +18,7 @@ public enum CachingMethod : Int {
 
 protocol SongAudioCacherDelegate {
 
-        func getSongURL(songId : SongId) -> NSURL?
+        func getUrl(songId : SongId) -> NSURL?
         func getSongId(gridPos : NSPoint) -> SongId?
 }
 
@@ -151,7 +151,7 @@ final class TGSongAudioCacher : NSObject {
 extension TGSongAudioCacher : SongAudioCacheTaskDelegate {
     
     func getSongURL(songId : SongId) -> NSURL? {
-        return delegate?.getSongURL(songId)
+        return delegate?.getUrl(songId)
     }
     
     func getSongId(gridPos : NSPoint) -> SongId? {
