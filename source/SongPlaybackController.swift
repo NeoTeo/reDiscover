@@ -44,9 +44,11 @@ class TGSongPlaybackController : NSObject {
     private dynamic var requestedPlayheadPos : NSNumber?
     dynamic var requestedPlayheadPosition : NSNumber? {
         /**
-        This method sets the requestedPlayheadPosition (which represents the position the user has manually set with a slider)
-        of the currently playing song to newPosition and sets a sweet spot for the song which gets stored on next save.
-        The requestedPlayheadPosition should only result in a sweet spot when the user releases the slider.
+        The requestedPlayheadPosition is the playhead position of the currently 
+        playing song. It is KVO bound to a slider that the user sets manually.
+        It should set a sweet spot for the song which gets stored on next save.
+        The requestedPlayheadPosition should only result in a sweet spot when the 
+        user releases the slider.
         */
         set(newPosition) {
             guard newPosition != nil else { return }
@@ -60,6 +62,7 @@ class TGSongPlaybackController : NSObject {
     }
 
     override init() {
+        
         delegate = nil
         super.init()
         
@@ -94,6 +97,7 @@ extension TGSongPlaybackController {
     }
     
     func setSongPlaybackObserver(songPlayer : AVPlayer) {
+        
         /// MARK : Make sure we're not creating a retain cycle.
         let timerObserver = { [weak self, weak songPlayer] (time : CMTime) -> () in
             /// FIXME : When songPlayer is nil it might be a sign that we're not properly
@@ -116,11 +120,11 @@ extension TGSongPlaybackController {
 //        songMetadataUpdater?.requestUpdatedData(forSongId: lastRequestedSongId!)
     }
 
-    /**     Initiate a request to play back the given song.
+    /**  Initiate a request to play back the given song.
      
-     If the song has a selected sweet spot play the song from there otherwise
-     just play the song from the start.
-     :params: songID The id of the song to play.
+         If the song has a selected sweet spot play the song from there otherwise
+         just play the song from the start.
+         :params: songID The id of the song to play.
      */
     func requestSongPlayback(songId: SongId) {
         

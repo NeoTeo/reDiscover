@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="6172.15" systemVersion="14A261i" minimumToolsVersion="Xcode 4.3" macOSVersion="Automatic" iOSVersion="Automatic">
-    <entity name="TEOSongData" representedClassName="TEOSongData" syncable="YES">
+<model userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="9525" systemVersion="15D21" minimumToolsVersion="Xcode 4.3">
+    <entity name="TEOSongData" representedClassName=".TEOSongData" syncable="YES">
         <attribute name="album" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="artist" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="fingerprint" optional="YES" attributeType="String" syncable="YES"/>

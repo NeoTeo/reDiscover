@@ -13,14 +13,11 @@ import AVFoundation
 typealias SongDictionary = [SongId: Song]
 
 final class SongPool : NSObject, SongPoolAccessProtocol, SongMetadataUpdaterDelegate {
-    
-    // Until we've switched TGSongPool over to this class we'll use it as a delegate.
 
     private var songPool: SongDictionary?
     private var songPoolAccessQ: dispatch_queue_t?
     private var serialDataLoad = dispatch_queue_create("serial data load queue", DISPATCH_QUEUE_SERIAL)
-    
-    
+	
     /** Utility function allows wrapping code that needs to be sync'd on
         a queue in a block like this:
         synchronized {
@@ -29,6 +26,7 @@ final class SongPool : NSObject, SongPoolAccessProtocol, SongMetadataUpdaterDele
         }
     */
     private func synchronized(f: Void -> Void) {
+		
         guard songPoolAccessQ != nil else { fatalError("No songPoolAccessQ") }
         dispatch_sync(songPoolAccessQ!, f)
     }
@@ -38,8 +36,6 @@ final class SongPool : NSObject, SongPoolAccessProtocol, SongMetadataUpdaterDele
     func songForSongId(songId: SongId) -> TGSong? {
         return songPool?[songId]
     }
-
-    
     
     func getUrl(songId: SongId) -> NSURL? {
         guard let song = songForSongId(songId) where (song.urlString != nil) else { return nil }
@@ -62,6 +58,7 @@ final class SongPool : NSObject, SongPoolAccessProtocol, SongMetadataUpdaterDele
         }
         return true
     }
+	
     /**
         Make and return a dictionary of songs made from any audio URLs found 
         from the given URL.
@@ -170,7 +167,17 @@ extension SongPool {
         
         guard let song = getSong(songId) else { return }
             
-        print("Song with id \(songId) has duration \(song.duration())")
+        print("Song with id \(songId) has: ")
+		print("duration \(song.duration())")
+		if let sweeties = song.sweetSpots {
+			print("sweet spots: ")
+			for ss in sweeties {
+				print("ss: \(ss)")
+			}
+		} else {
+			print("No sweetspots")
+		}
+		
 
     }
     

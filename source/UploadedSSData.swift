@@ -25,7 +25,9 @@ class UploadedSSData : NSManagedObject {
 }
 
 extension UploadedSSData {
+	
     class func insert(songUuid : String, inContext context : NSManagedObjectContext) -> AnyObject? {
+		
         if let ssData = NSEntityDescription.insertNewObjectForEntityForName("UploadedSSData", inManagedObjectContext: context) as? UploadedSSData {
             
             ssData.songUUID = songUuid

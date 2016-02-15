@@ -13,6 +13,14 @@ protocol SweetSpotControllerDelegate {
     func getSong(songId : SongId) -> TGSong?
 }
 
+protocol SweetSpotControllerLocalStoreDelegate {
+	
+	func storeUploadedSweetSpotsDictionary()
+	func markSweetSpotAsUploaded(uuid : String, sweetSpot : SweetSpot)
+	func sweetSpotHasBeenUploaded(theSS: Double, song : TGSong) -> Bool
+
+}
+
 public typealias SweetSpot = NSNumber //Float
 // The current implementation stores sweet spots in each song instance.
 // To make songs immutable this means we need to make a new song from the old one
@@ -29,8 +37,9 @@ public typealias SweetSpot = NSNumber //Float
 public class SweetSpotController : NSObject {
     
     var delegate : SweetSpotControllerDelegate?
-    
-    /// Add, to the song pool, a new sweet spot to an existing song given by the songId.
+	var storeDelegate : SweetSpotControllerLocalStoreDelegate = TGSweetSpotLocalStore()
+	
+    /// Set the song's selected sweet spot to the given time.
     func addSweetSpot(atTime time: SweetSpot, forSongId songId: SongId) {
         delegate?.addSong(withChanges: [.SelectedSS : time], forSongId: songId)
     }
@@ -54,21 +63,61 @@ public class SweetSpotController : NSObject {
     static func sweetSpots(forSong song: TGSong) -> Set<SweetSpot>? {
         return song.sweetSpots //as? [SweetSpot]
     }
-/*
-    static func songWithSweetSpots(sweetSpots: Set<SweetSpot>, forSong song: TGSong) -> TGSong {
-        return Song(songId: song.songID, metadata: song.metadata, urlString: song.urlString, sweetSpots: sweetSpots, fingerPrint: song.fingerPrint, selectedSS: song.selectedSweetSpot, releases: song.songReleases, artId: song.artID, UUId: song.UUId, RelId: song.RelId)
-    }
-    
-    /**
-    Make a copy of the given song with a sweet spot set to the given time.
-    
-    - parameter song: The song to make a copy of.
-    - parameter startTime: The time, in seconds, of the sweet spot.
-    - returns: A copy of the given song with an added sweet spot at the given time.
-    */
-    static func songWithSelectedSweetSpot(song: TGSong, atTime startTime: SweetSpot) -> TGSong {
-        return Song(songId: song.songID, metadata: song.metadata, urlString: song.urlString, sweetSpots: song.sweetSpots, fingerPrint: song.fingerPrint, selectedSS: startTime, releases: song.songReleases, artId: song.artID, UUId: song.UUId, RelId: song.RelId)
-        
-    }
-*/
+	
+	func uploadSweetSpots(songId : SongId) {
+		
+		guard let song = delegate?.getSong(songId) else { return }
+		
+		/// FIXME: Bodge whilst using SweetSpotServer as a type. Change to use a delegate
+		SweetSpotServerIO.delegate = self
+		SweetSpotServerIO.uploadSweetSpots(song)
+	}
+	
+	/**
+		Promotes the currently selected sweet spot to the sweet spot set so that 
+		it can be uploaded and saved.
+	*/
+	func promoteSelectedSweetSpot(songId : SongId) {
+
+		guard let song		 = delegate?.getSong(songId) else { return }
+		guard let selectedSS = song.selectedSweetSpot else { return }
+
+		/// Insert into existing sweetspots if there otherwise make new set.
+		var newSweetSpots = song.sweetSpots ?? Set<SweetSpot>()
+		newSweetSpots.insert(selectedSS)
+		
+		/// Update the song in the song pool with the changed sweet spots.
+		delegate?.addSong(withChanges: [.SweetSpots : newSweetSpots], forSongId: songId)
+	}
+	
+	func storeSweetSpots() {
+
+		/// Access the delegate's type method via dynamicType.
+		/// FIXME: Decide on the advantage of this over an instance method.
+		/** 
+			This just stores the list of sweet spots we already have uploaded to
+			the server.
+		*/
+		storeDelegate.storeUploadedSweetSpotsDictionary()
+
+	}
+}
+
+extension SweetSpotController : SweetSpotServerIODelegate {
+	
+	func getSong(songId : SongId) -> TGSong? {
+		return delegate?.getSong(songId)
+	}
+	
+	func addSong(withChanges changes: [SongProperty : AnyObject], forSongId songId: SongId) {
+		delegate?.addSong(withChanges: changes, forSongId: songId)
+	}
+	
+	func sweetSpotHasBeenUploaded(theSS: Double, song : TGSong) -> Bool {
+		return storeDelegate.sweetSpotHasBeenUploaded(theSS, song: song)
+	}
+	
+	func markSweetSpotAsUploaded(uuid : String, sweetSpot : SweetSpot) {
+		storeDelegate.markSweetSpotAsUploaded(uuid, sweetSpot: sweetSpot)
+	}
 }
