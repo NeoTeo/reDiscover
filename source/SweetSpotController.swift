@@ -22,17 +22,14 @@ protocol SweetSpotControllerLocalStoreDelegate {
 }
 
 public typealias SweetSpot = NSNumber //Float
-// The current implementation stores sweet spots in each song instance.
-// To make songs immutable this means we need to make a new song from the old one
-// every time we want to change any of its properties, including sweet spots.
-// The methods of this class should act on songs and for those methods that modify
-// a song (eg. add a new sweet spot) they should create and return a new song
-// with the new sweetspot.
+
 /**
-    Perhaps it would be better if this class (which might as well be a struct since
-    everything is static) kept a map of songIds to selected sweet spots. To avoid
-    concurrency issues it would control access through a queue. The downside is 
-    that storing it would be more work than if everything just resided in the song.
+	The current implementation stores sweet spots in each song instance.
+	To make songs immutable this means we need to make a new song from the old one
+	every time we want to change any of its properties, including sweet spots.
+	The methods of this class should act on songs and for those methods that modify
+	a song (eg. add a new sweet spot) they should create and return a new song
+	with the new sweetspot.
 */
 public class SweetSpotController : NSObject {
     

@@ -15,7 +15,20 @@ protocol SweetSpotLocalStore {
 	func sweetSpotHasBeenUploaded(theSS: Double, song : TGSong) -> Bool
 }
 
+/**
+	The TGSweetSpotLocalStore handles the local storage of the sweet spots that 
+	have already been uploaded to the sweet spot server.
 
+	The uploadedSweetSpots is a dictionary of song ids and the sweet spots of that
+	song that have been succesfully uploaded to the server. It is written out whenever
+	the application quits (currently saving is manual) and loaded back in on application
+	start, before the application attempts to import whatever song urls the user
+	has passed in.
+
+	When the song pool loads a song url and sweet spots are found, it is checked,
+	using the song's uuid, against the uploadedSweetSpots and any sweet spots not
+	in there will be uploaded to the server.
+*/
 class TGSweetSpotLocalStore : SweetSpotLocalStore {
 	
 	private var uploadedSweetSpots: Dictionary<String,UploadedSSData> = [String:UploadedSSData]()
@@ -28,25 +41,28 @@ class TGSweetSpotLocalStore : SweetSpotLocalStore {
 		initUploadedSweetSpots()
 	}
 
-	/** Set up the Core Data persistent store for sweet spots that have already been uploaded to the server.
+	/** 
+		Set up the Core Data persistent store for sweet spots that have already 
+		been uploaded to the server.
 	*/
 	private func setupUploadedSweetSpotsMOC() {
 		
-		if  let modelURL = NSBundle.mainBundle().URLForResource("uploadedSS", withExtension: "momd"),
-			let mom = NSManagedObjectModel(contentsOfURL: modelURL) {
-				
-				uploadedSweetSpotsMOC = NSManagedObjectContext(concurrencyType: .MainQueueConcurrencyType)
-				uploadedSweetSpotsMOC?.persistentStoreCoordinator = NSPersistentStoreCoordinator(managedObjectModel: mom)
-				
-				do {
-					// Build the URL where to store the data.
-					let documentsDirectory = try NSFileManager.defaultManager().URLForDirectory(.DocumentDirectory, inDomain: .UserDomainMask, appropriateForURL: nil, create: true).URLByAppendingPathComponent("uploadedSS.xml")
-					
-					
-					try uploadedSweetSpotsMOC?.persistentStoreCoordinator?.addPersistentStoreWithType(NSXMLStoreType,configuration: nil,URL: documentsDirectory, options: nil)
-				} catch {
-					print("SweetSpotServerIO init error: \(error)")
-				}
+		guard let modelURL = NSBundle.mainBundle().URLForResource("uploadedSS", withExtension: "momd"),
+			let mom = NSManagedObjectModel(contentsOfURL: modelURL) else {
+				return
+		}
+		
+		uploadedSweetSpotsMOC = NSManagedObjectContext(concurrencyType: .MainQueueConcurrencyType)
+		uploadedSweetSpotsMOC?.persistentStoreCoordinator = NSPersistentStoreCoordinator(managedObjectModel: mom)
+		
+		do {
+			// Build the URL where to store the data.
+			let documentsDirectory = try NSFileManager.defaultManager().URLForDirectory(.DocumentDirectory, inDomain: .UserDomainMask, appropriateForURL: nil, create: true).URLByAppendingPathComponent("uploadedSS.xml")
+			
+			
+			try uploadedSweetSpotsMOC?.persistentStoreCoordinator?.addPersistentStoreWithType(NSXMLStoreType,configuration: nil,URL: documentsDirectory, options: nil)
+		} catch {
+			print("SweetSpotServerIO init error: \(error)")
 		}
 	}
 

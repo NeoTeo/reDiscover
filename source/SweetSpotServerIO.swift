@@ -21,18 +21,9 @@ protocol SweetSpotServerIODelegate {
 /**
     The SweetSpotServerIO class handles communication with the sweet spot web server.
 
-    To avoid re-sending sweetspots it maintains a locally persisted store, uploadedSweetSpots, 
-	of all the songs whose sweet spots have already been uploaded to the server.
-
-    The uploadedSweetSpots is a dictionary of song ids and the sweet spots of that 
-	song that have been succesfully uploaded to the server. It is written out whenever
-	the application quits (currently saving is manual) and loaded back in on application
-	start, before the application attempts to import whatever song urls the user
-	has passed in.
-    
-	When the song pool loads a song url and sweet spots are found, it is checked,
-	using the song's uuid, against the uploadedSweetSpots and any sweet spots not
-	in there will be uploaded to the server.
+    To avoid re-sending sweetspots it maintains a locally persisted store, accessed
+	via its delegate, of all the songs whose sweet spots have already been uploaded 
+	to the server.
 */
 class SweetSpotServerIO: NSObject {
 
