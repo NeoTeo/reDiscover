@@ -162,12 +162,12 @@ extension TGSplitViewController {
         playbackController.delegate     = self
         
         /// FIXME : Make SweetSpotServerIO use delegate
-        SweetSpotServerIO.songPoolAPI   = theSongPool
+//        SweetSpotServerIO.songPoolAPI   = theSongPool
         coversPanelCtrlr.delegate       = self
         playlistPanelCtrlr.delegate     = self
         
         /// The song pool handles the song metadata updater's requirements
-        songMetadataUpdater             = SongMetadataUpdater(delegate: theSongPool)
+        songMetadataUpdater             = SongMetadataUpdater(delegate: self) //theSongPool)
     }
     
     private func setupPanels() {
@@ -437,4 +437,10 @@ extension TGSplitViewController : SongPlaybackControllerDelegate {
 		
         return coversPanelCtrlr.songIdFromGridPos(gridPos)
     }
+}
+
+extension TGSplitViewController : SongMetadataUpdaterDelegate {
+	func sendSweetSpotsRequest(songId: SongId) {
+		return sweetSpotController.requestSweetSpots(songId)
+	}
 }

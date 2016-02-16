@@ -8,7 +8,7 @@
 
 import Foundation
 
-protocol SongPoolAccessProtocol : SongMetadataUpdaterDelegate {
+protocol SongPoolAccessProtocol {
     
     func addSong(theSong: TGSong)
     func addSong(withChanges changes: [SongProperty : AnyObject], forSongId songId: SongId)

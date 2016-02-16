@@ -10,39 +10,55 @@ import Cocoa
 
 protocol SweetSpotServerIODelegate {
 
+	func getSong(songId : SongId) -> TGSong?
 	func addSong(withChanges changes: [SongProperty : AnyObject], forSongId songId: SongId)
+	
+	func sweetSpots(forSong song: TGSong) -> Set<SweetSpot>?
 	func sweetSpotHasBeenUploaded(theSS: Double, song : TGSong) -> Bool
 	func markSweetSpotAsUploaded(uuid : String, sweetSpot : SweetSpot)
 }
-    //MARK: Move the core data functions to a separate class.
+
 /**
     The SweetSpotServerIO class handles communication with the sweet spot web server.
 
-    It maintains a locally persisted store, uploadedSweetSpots, of all the songs whose sweet spots have already been 
-    uploaded to the server in order to avoid re-sending them.
+    To avoid re-sending sweetspots it maintains a locally persisted store, uploadedSweetSpots, 
+	of all the songs whose sweet spots have already been uploaded to the server.
 
-    The uploadedSweetSpots is a dictionary of song ids and the sweet spots of that song that have been succesfully
-    uploaded to the server. It is written out whenever the application quits (currently saving is manual) and loaded back
-    in on application start, before the application attempts to import whatever song urls the user has passed in.
-    When TGSongPool loads a song url and sweet spots are found, it is checked, using the song's uuid, against the 
-    uploadedSweetSpots and any sweet spots not in there will be uploaded to the server.
+    The uploadedSweetSpots is a dictionary of song ids and the sweet spots of that 
+	song that have been succesfully uploaded to the server. It is written out whenever
+	the application quits (currently saving is manual) and loaded back in on application
+	start, before the application attempts to import whatever song urls the user
+	has passed in.
+    
+	When the song pool loads a song url and sweet spots are found, it is checked,
+	using the song's uuid, against the uploadedSweetSpots and any sweet spots not
+	in there will be uploaded to the server.
 */
 class SweetSpotServerIO: NSObject {
 
-	static var delegate : SweetSpotServerIODelegate?
-
-    // Should this be lazy?
-    private static var hostName = "192.168.5.9" /// currently the server addr.
-    private static var hostPort = "6969"
-    
-    // The location of the SweetSpotServer. For now it's just localhost.
-    private static let hostNameAndPort = hostName+":"+hostPort //"localhost:6969"
+	var delegate : SweetSpotServerIODelegate?
 	
-    static var songPoolAPI : SongPoolAccessProtocol?
+	private var hostName : String!
+	private var hostPort : String!
+	private let hostNameAndPort : String!
+
+	override init() {
+		
+		hostName = "127.0.0.1"
+		hostPort = "6969"
+
+		/// During dev we get the host ip from the environment variables
+		let envVars = NSProcessInfo.processInfo().environment
+		if let serverIp = envVars["SERVER_IP"] {
+			hostName = serverIp
+		}
+		
+		hostNameAndPort = hostName+":"+hostPort
+	}
 
 
-//    static func uploadSweetSpotsForSongID(songId : SongId) -> Bool {
-    static func uploadSweetSpots(song: TGSong) -> Bool {	
+    func uploadSweetSpots(song: TGSong) -> Bool {
+		
 		precondition(delegate != nil)
 		
         // First get the song's uuid
@@ -50,9 +66,9 @@ class SweetSpotServerIO: NSObject {
             print("uploadSweetSpotsForSongID ERROR: song has no UUID")
             return false
         }
-        
-        /// songForSongId is static so we need to access it through the type. (change to use delegate)
-        guard let sweetSpots = SweetSpotController.sweetSpots(forSong: song) as Set<SweetSpot>? else {
+		
+//        guard let sweetSpots = SweetSpotController.sweetSpots(forSong: song) as Set<SweetSpot>? else {
+        guard let sweetSpots = delegate?.sweetSpots(forSong: song) as Set<SweetSpot>? else {
 			return false
 		}
 		
@@ -116,77 +132,82 @@ class SweetSpotServerIO: NSObject {
     will contain the sweet spots added in step 3 and the new meta data.
     So, consequently, the returned array will always be nil.
     */
-    static func requestSweetSpotsForSongID(songID: SongId) -> NSArray? {
-        let envVars = NSProcessInfo.processInfo().environment
+    func requestSweetSpotsForSongID(songID: SongId) -> NSArray? {
+		
+		let envVars = NSProcessInfo.processInfo().environment
         if let _ = envVars["NO_SSSERVER"] {
             self.mock(songID)
             return nil
         }
-        
-        guard let song = songPoolAPI?.songForSongId(songID),
-            let songUUID = song.UUId else { return nil }
-        guard let theURL = NSURL(string: "http://\(hostNameAndPort)/lookup?songUUID=\(songUUID.utf8)") else { return nil }
+		
+        guard let song = delegate?.getSong(songID),let songUUID = song.UUId else {
+			return nil
+		}
+		
+        guard let theURL = NSURL(string: "http://\(hostNameAndPort)/lookup?songUUID=\(songUUID.utf8)") else {
+			return nil
+		}
 
         let request = NSURLRequest(URL: theURL)
         let task = NSURLSession.sharedSession().dataTaskWithRequest(request) { (data, response, error) in
-            
-            guard let song = songPoolAPI?.songForSongId(songID) else { return }
-            if data != nil {
-                do {
-                    let requestJSON = try NSJSONSerialization.JSONObjectWithData(data!, options: NSJSONReadingOptions.MutableContainers ) as! NSDictionary
-                    
-                    if let status = requestJSON.objectForKey("status") as! String? {
-                        if (status == "ok") == nil { return }
-                            
-                        guard let result: AnyObject? = requestJSON.objectForKey("result") else { return }
-                        
-                        // Use the line above to avoid the line below.
-                        if result! is NSDictionary {
+			
+            guard let song = self.delegate?.getSong(songID) else { return }
+			
+            guard data != nil else { return }
+			do {
+				let requestJSON = try NSJSONSerialization.JSONObjectWithData(data!, options: NSJSONReadingOptions.MutableContainers ) as! NSDictionary
+				
+				if let status = requestJSON.objectForKey("status") as! String? {
+					if (status == "ok") == nil { return }
+						
+					guard let result: AnyObject? = requestJSON.objectForKey("result") else { return }
+					
+					// Use the line above to avoid the line below.
+					if result! is NSDictionary {
+						
+						let resultDict		 = result as! NSDictionary
+						let serverSweetSpots = resultDict["sweetspots"] as! [SweetSpot]//NSArray
+						
+						if serverSweetSpots.count > 0 {
 							
-                            let resultDict		 = result as! NSDictionary
-                            let serverSweetSpots = resultDict["sweetspots"] as! [SweetSpot]//NSArray
+							print("the serverSweetSpots has \(serverSweetSpots.count) elements")
+							print("the song id is \(songID )")
 							
-                            if serverSweetSpots.count > 0 {
+							// If the song already has sweet spots add the server's sweet spots to them.
+							var songSS: Set<SweetSpot>? = self.delegate?.sweetSpots(forSong: song)
+							var newSSSet: Set<SweetSpot>?
+							
+							if songSS != nil {
 								
-                                print("the serverSweetSpots has \(serverSweetSpots.count) elements")
-                                print("the song id is \(songID )")
-                                
-                                // If the song already has sweet spots add the server's sweet spots to them.
-                                var songSS: Set<SweetSpot>? = SweetSpotController.sweetSpots(forSong: song)
-                                var newSSSet: Set<SweetSpot>?
+								for ss in serverSweetSpots {
+									songSS!.insert(ss)
+								}
 								
-                                if songSS != nil {
-									
-                                    for ss in serverSweetSpots {
-                                        songSS!.insert(ss)
-                                    }
-									
-                                    newSSSet = songSS
-                                } else {
-									
-                                    newSSSet = Set<SweetSpot>(serverSweetSpots)
-                                }
-                                
-                                /// If a sweet spot is already selected, use it
-                                /// otherwise pick the first from the new set.
-                                var newSelectedSS = song.selectedSweetSpot
+								newSSSet = songSS
+							} else {
 								
-                                if newSelectedSS == nil {
-                                    newSelectedSS = newSSSet!.first
-                                }
-                                
-                                songPoolAPI?.addSong(withChanges: [.SweetSpots : newSSSet!, .SelectedSS : newSelectedSS!], forSongId: songID)
-                                
-                                // Let any listeners know we've updated the sweetspots of songID
-                                NSNotificationCenter.defaultCenter().postNotificationName("SweetSpotsUpdated", object: songID)
-                            }
-                        }
-                    }
-                } catch {
-                    print("JSONSerialization failed \(error)")
-                    return
-                }
-            }
+								newSSSet = Set<SweetSpot>(serverSweetSpots)
+							}
+							
+							/// If a sweet spot is already selected, use it
+							/// otherwise pick the first from the new set.
+							var newSelectedSS = song.selectedSweetSpot
+							
+							if newSelectedSS == nil {
+								newSelectedSS = newSSSet!.first
+							}
+							
+//                                self.songPoolAPI?.addSong(withChanges: [.SweetSpots : newSSSet!, .SelectedSS : newSelectedSS!], forSongId: songID)
+							self.delegate?.addSong(withChanges: [.SweetSpots : newSSSet!, .SelectedSS : newSelectedSS!], forSongId: songID)
+							// Let any listeners know we've updated the sweetspots of songID
+							NSNotificationCenter.defaultCenter().postNotificationName("SweetSpotsUpdated", object: songID)
+						}
+					}
+				}
+			} catch {
+				print("JSONSerialization failed \(error)")
+				return
+			}
         }
 
         task.resume()
@@ -195,12 +216,13 @@ class SweetSpotServerIO: NSObject {
     
     /** Mock fetch sweetspots and selected sweet spot when there is not network connection.
     */
-    static func mock(songId: SongId) {
+    func mock(songId: SongId) {
         let newSSs : Set<SweetSpot> = [30, 60, 120, 240]
         let selectedSS : SweetSpot = 60
         
-        songPoolAPI?.addSong(withChanges: [.SweetSpots : newSSs, .SelectedSS : selectedSS], forSongId: songId)
-        
+//        songPoolAPI?.addSong(withChanges: [.SweetSpots : newSSs, .SelectedSS : selectedSS], forSongId: songId)
+        delegate?.addSong(withChanges: [.SweetSpots : newSSs, .SelectedSS : selectedSS], forSongId: songId)
+		
         // Let any listeners know we've updated the sweetspots of songID
         NSNotificationCenter.defaultCenter().postNotificationName("SweetSpotsUpdated", object: songId)
 

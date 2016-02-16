@@ -39,6 +39,14 @@ public class SweetSpotController : NSObject {
     var delegate : SweetSpotControllerDelegate?
 	var storeDelegate : SweetSpotControllerLocalStoreDelegate = TGSweetSpotLocalStore()
 	
+	let sweetSpotServerIO = SweetSpotServerIO()
+	
+	override init() {
+		super.init()
+		
+		sweetSpotServerIO.delegate = self
+	}
+	
     /// Set the song's selected sweet spot to the given time.
     func addSweetSpot(atTime time: SweetSpot, forSongId songId: SongId) {
         delegate?.addSong(withChanges: [.SelectedSS : time], forSongId: songId)
@@ -60,7 +68,7 @@ public class SweetSpotController : NSObject {
         return song.sweetSpots
     }
 
-    static func sweetSpots(forSong song: TGSong) -> Set<SweetSpot>? {
+    func sweetSpots(forSong song: TGSong) -> Set<SweetSpot>? {
         return song.sweetSpots //as? [SweetSpot]
     }
 	
@@ -69,8 +77,16 @@ public class SweetSpotController : NSObject {
 		guard let song = delegate?.getSong(songId) else { return }
 		
 		/// FIXME: Bodge whilst using SweetSpotServer as a type. Change to use a delegate
-		SweetSpotServerIO.delegate = self
-		SweetSpotServerIO.uploadSweetSpots(song)
+		sweetSpotServerIO.delegate = self
+		sweetSpotServerIO.uploadSweetSpots(song)
+	}
+	
+	/**
+		Initiate a request for sweet spots for the song with the given song id.
+		Will post a SweetSpotsUpdated notification when done.
+	*/
+	func requestSweetSpots(songId : SongId) {
+		sweetSpotServerIO.requestSweetSpotsForSongID(songId)
 	}
 	
 	/**
@@ -99,7 +115,6 @@ public class SweetSpotController : NSObject {
 			the server.
 		*/
 		storeDelegate.storeUploadedSweetSpotsDictionary()
-
 	}
 }
 

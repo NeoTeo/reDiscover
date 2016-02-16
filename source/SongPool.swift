@@ -12,7 +12,7 @@ import AVFoundation
 
 typealias SongDictionary = [SongId: Song]
 
-final class SongPool : NSObject, SongPoolAccessProtocol, SongMetadataUpdaterDelegate {
+final class SongPool : NSObject, SongPoolAccessProtocol {
 
     private var songPool: SongDictionary?
     private var songPoolAccessQ: dispatch_queue_t?
@@ -177,13 +177,7 @@ extension SongPool {
 		} else {
 			print("No sweetspots")
 		}
-		
-
     }
     
-    
-    func debugLogCaches() {
-        
-    }
-
+    func debugLogCaches() {    }
 }

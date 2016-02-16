@@ -11,6 +11,7 @@ import Foundation
 protocol SongMetadataUpdaterDelegate {
     func getSong(songId : SongId) -> TGSong?
     func addSong(withChanges changes: [SongProperty : AnyObject], forSongId songId: SongId)
+	func sendSweetSpotsRequest(songId : SongId)
 }
 
 public class SongMetadataUpdater {
@@ -75,7 +76,9 @@ public class SongMetadataUpdater {
             self.checkForArt(forSongId: songId, inAlbumCollection: self.albumCollection)
         }
         let fetchSweetspotsOp = NSBlockOperation {
-            SweetSpotServerIO.requestSweetSpotsForSongID(songId)
+//            SweetSpotServerIO.requestSweetSpotsForSongID(songId)
+			/// Initiate a request for sweet spots from the remote server.
+			self.delegate?.sendSweetSpotsRequest(songId)
         }
         
         /// Make operations dependent on each other.
