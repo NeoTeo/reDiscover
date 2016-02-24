@@ -146,6 +146,11 @@ final class TGSongAudioCacher : NSObject {
             */
         }
     }
+	
+	func isCached(songId : SongId) -> Bool {
+		guard let _ = songPlayerCache[songId.hashValue] else { return false }
+		return true
+	}
 }
 
 extension TGSongAudioCacher : SongAudioCacheTaskDelegate {
@@ -161,8 +166,6 @@ extension TGSongAudioCacher : SongAudioCacheTaskDelegate {
 /** Debug stuff */
 extension TGSongAudioCacher {
     func dumpCacheToLog() {
-        for id in songPlayerCache {
-            print(id)
-        }
+		let _ = songPlayerCache.map { (key, value) in print("cached: \(key)") }
     }
 }
