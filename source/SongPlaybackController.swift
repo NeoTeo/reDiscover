@@ -8,13 +8,18 @@
 
 import AVFoundation
 
-protocol SongPlaybackController {
-    func requestSongPlayback(songId : SongId, withStartTimeInSeconds time : NSNumber?)
-    func requestSongPlayback(songId : SongId)
-    func refreshCache(context : SongSelectionContext)
-    func dumpCacheToLog()
-    func currentlyPlaying() -> SongId
-}
+/**
+	Currently no point in having the SongPlaybackController protocol because
+	TGSongPlaybackController cannot conform to it. This is because the dynamic 
+	properties needed for KVO binding cannot be declared in a protocol.
+*/
+//protocol SongPlaybackController {
+//    func requestSongPlayback(songId : SongId, withStartTimeInSeconds time : NSNumber?)
+//    func requestSongPlayback(songId : SongId)
+//    func refreshCache(context : SongSelectionContext)
+//    func dumpCacheToLog()
+//    func currentlyPlaying() -> SongId
+//}
 
 protocol SongPlaybackControllerDelegate {
     func getSong(songId : SongId) -> TGSong?
