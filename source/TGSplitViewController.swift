@@ -443,4 +443,8 @@ extension TGSplitViewController : SongMetadataUpdaterDelegate {
 	func sendSweetSpotsRequest(songId: SongId) {
 		return sweetSpotController.requestSweetSpots(songId)
 	}
+	
+	func isCached(songId : SongId) -> Bool {
+		return playbackController.isCached(songId)
+	}
 }

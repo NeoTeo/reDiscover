@@ -175,6 +175,10 @@ extension TGSongPlaybackController {
             self.playheadPos = playheadPosition
         }
     }
+	
+	func isCached(songId : SongId) -> Bool {
+		return songAudioCacher.isCached(songId)
+	}
 }
 
 extension TGSongPlaybackController : SongAudioCacherDelegate {

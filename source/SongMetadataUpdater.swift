@@ -12,6 +12,7 @@ protocol SongMetadataUpdaterDelegate {
     func getSong(songId : SongId) -> TGSong?
     func addSong(withChanges changes: [SongProperty : AnyObject], forSongId songId: SongId)
 	func sendSweetSpotsRequest(songId : SongId)
+	func isCached(songId : SongId) -> Bool
 }
 
 public class SongMetadataUpdater {
@@ -36,7 +37,12 @@ public class SongMetadataUpdater {
      5) Looking for cover art in a large variety of places (including a web service).
      */
     func requestUpdatedData(forSongId songId: SongId) {
-        
+		
+		guard delegate?.isCached(songId) != nil else {
+			print("requestUpdatedData called on song id \(songId.hashValue) which is not yet cached")
+			return
+		}
+		print("requestUpdatedData ALL GOOD")
         /// Let any interested parties know we've started updating the current song.
         NSNotificationCenter.defaultCenter().postNotificationName("songDidStartUpdating", object: songId)
         
