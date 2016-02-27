@@ -163,24 +163,9 @@ public class TGCoverDisplayViewController: NSViewController, NSCollectionViewDel
                 
                 // Store it so I can bail out above (Do I really need this?)
                 self.currentIdxPath = idxPath
-            
-                //: At this point we don't know yet if the cover has been uncovered.
-                //: If a songId is found in the mappedSongIds it means it has already been uncovered.
-                var songId = self.mappedSongIds[idxPath.item]
-                
-                // Not yet uncovered. So we pick a random song from the unmapped songs.
-                if songId == nil {
-                    // remove a random songId from unmapped and add it to the mapped
-                    let unmappedCount = UInt32(self.unmappedSongIdArray.count)
-                    let randIdx = arc4random_uniform(unmappedCount)
-                    //FIXME: concurrent access here? - consider making safe accessors for the arrays instead
-                    // This shit is locking/slowing everything down.
-                    
-                        songId = self.unmappedSongIdArray.removeAtIndex(Int(randIdx))
-                        self.mappedSongIds[idxPath.item] = songId
-                    
-                }
-                
+
+				let songId = self.mapIndexToCover(idxPath.item)
+				
                 // Let anyone interested know the user has selected songId
                 self.postNotificationOfSelection(songId!, atIndex: idxPath.item)
             }
@@ -193,10 +178,31 @@ public class TGCoverDisplayViewController: NSViewController, NSCollectionViewDel
             
         }
     }
-    
+	
+	/** 
+		This method assigns a new songId to a given cover grid index and returns
+		the songId. If it was already mapped the songId is returned.
+	*/
+	func mapIndexToCover(index : Int) -> SongId? {
+		
+		var songId = self.mappedSongIds[index]
+
+		if songId == nil {
+			
+			// Remove a random songId from unmapped and add it to the mapped.
+			let unmappedCount = UInt32(self.unmappedSongIdArray.count)
+			let randIdx		  = Int(arc4random_uniform(unmappedCount))
+			
+			songId = self.unmappedSongIdArray.removeAtIndex(randIdx)
+			self.mappedSongIds[index] = songId
+		}
+		
+		return songId
+	}
+	
     func postNotificationOfSelection(songId: SongId, atIndex idx: Int) {
-        
-        
+		
+		
         // 1) Package the context in a data structure.
         // 2) post notification with the context.
         //FIXME: For now we bodge the speed vector.
@@ -251,19 +257,21 @@ public class TGCoverDisplayViewController: NSViewController, NSCollectionViewDel
         return nil
     }
     
-    /** Return the songId found at the position in the grid. Nil if not found.
-        Not that if a cover at the given grid position hasn't been mapped to a song
-        the method will return an empty optional.
+    /** 
+		Return the songId found at the position in the grid. 
+		If resolvingIsAllowed is true the grid position is resolved to a songId
+		if one isn't found in the mappedSongIds. Nil is returned otherwise.
     */
-    public func songIdFromGridPos(gridPos: NSPoint) -> SongId? {
+	public func songIdFromGridPos(gridPos: NSPoint, resolvingIsAllowed : Bool = false) -> SongId? {
         
         // Ask the flow layout for an index given a grid position.
         let index = (coverCollectionView.collectionViewLayout as! NSCollectionViewFlowLayout).indexFromGridPos(gridPos)
-//        if let index = coverCollectionView.indexPathForItemAtPoint(gridPos) {
-            return mappedSongIds[index]
-//        } else {
-//            return nil
-//        }
+		var songId = mappedSongIds[index]
+		
+		if songId == nil && resolvingIsAllowed {
+			songId = mapIndexToCover(index)
+		}
+		return songId
     }
     
     /** Called when the user scrolls the cover view. We use this to hide the song
