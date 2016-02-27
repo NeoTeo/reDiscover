@@ -22,7 +22,7 @@ protocol SongAudioCacherDelegate {
         func getSongId(gridPos : NSPoint) -> SongId?
 }
 
-typealias HashToPlayerDictionary    = [Int:AVPlayer]
+typealias SongIdToPlayerDictionary    = [SongId : AVPlayer]
 
 final class TGSongAudioCacher : NSObject {
     
@@ -54,7 +54,7 @@ final class TGSongAudioCacher : NSObject {
     }
 
     let cachingOpQueue  = NSOperationQueue()
-    var songPlayerCache = HashToPlayerDictionary()
+	var songPlayerCache = SongIdToPlayerDictionary()
 
     var debugId = 0
     
@@ -95,12 +95,16 @@ final class TGSongAudioCacher : NSObject {
             if let pp = self.pendingPlayerRequestCallback {
                 
                 // Check if the pending player request is in this new cache
-                if let player = self.songPlayerCache[pp.songId.hashValue] {
+                if let player = self.songPlayerCache[pp.songId] {				
                     pp.callBack(player)
                     self.pendingPlayerRequestCallback = nil
                 }
             }
-            
+			/// hertil : let's call the update metadata from here?
+			for (songId, _) in self.songPlayerCache {
+				
+			}
+			print("We have a fresh new cache of size \(self.songPlayerCache.count)")
         }
         
 /*        operationBlock.completionBlock = {
@@ -134,7 +138,7 @@ final class TGSongAudioCacher : NSObject {
     func performWhenPlayerIsAvailableForSongId(songId: SongId, callBack: (AVPlayer)->()) {
         
         // If the requested Player is already in the cache, execute callback immediately.
-        if let player = songPlayerCache[songId.hashValue] {
+        if let player = songPlayerCache[songId] {
             callBack(player)
         } else {
             // Add the callback to a dictionary where it's associated with the songId.
@@ -148,7 +152,7 @@ final class TGSongAudioCacher : NSObject {
     }
 	
 	func isCached(songId : SongId) -> Bool {
-		guard let _ = songPlayerCache[songId.hashValue] else { return false }
+		guard let _ = songPlayerCache[songId] else { return false }
 		return true
 	}
 }
@@ -166,6 +170,6 @@ extension TGSongAudioCacher : SongAudioCacheTaskDelegate {
 /** Debug stuff */
 extension TGSongAudioCacher {
     func dumpCacheToLog() {
-		let _ = songPlayerCache.map { (key, value) in print("cached: \(key)") }
+		let _ = songPlayerCache.map { (key, value) in print("cached: \(key.hashValue)") }
     }
 }

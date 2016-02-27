@@ -43,10 +43,9 @@ class SongAudioCacheTask : NSObject {
     let loadingPlayersLock = NSLock()
     
     // holds the ready players
-    var songPlayerCache = HashToPlayerDictionary()
-    
-    func cacheWithContext(theContext: SongSelectionContext, oldCache: HashToPlayerDictionary) -> HashToPlayerDictionary {
-        
+	var songPlayerCache = SongIdToPlayerDictionary()
+	
+    func cacheWithContext(theContext: SongSelectionContext, oldCache: SongIdToPlayerDictionary) -> SongIdToPlayerDictionary {
         let group = dispatch_group_create()
         self.songPlayerCache = oldCache
         
@@ -64,14 +63,13 @@ class SongAudioCacheTask : NSObject {
         
         return songPlayerCache
     }
-    
-    
-    func newCacheFromCache(oldCache: HashToPlayerDictionary, withContext context: SongSelectionContext, operationBlock: NSBlockOperation?, completionHandler: (HashToPlayerDictionary)->()) {
-        
+	
+	func newCacheFromCache(oldCache: SongIdToPlayerDictionary, withContext context: SongSelectionContext, operationBlock: NSBlockOperation?, completionHandler: (SongIdToPlayerDictionary)->()) {
+	
         var wantedCacheCount    = 0
         let newCacheLock        = NSLock()
-        
-        var newCache: HashToPlayerDictionary = HashToPlayerDictionary() {
+		
+        var newCache: SongIdToPlayerDictionary = SongIdToPlayerDictionary() {
             /**
             Once the number of items in the `newCache` matches the `wantedCacheCount`
             we know we have finished so we call the completion handler.
@@ -98,7 +96,7 @@ class SongAudioCacheTask : NSObject {
             print("completion block for generateWantedSongIds.")
             // This is a handler that is passed a songId of a song that needs caching.
             // If the song was already in the old cache, copy it to the new cache.
-            if let oldPlayer = oldCache[songId.hashValue] {
+            if let oldPlayer = oldCache[songId] {
                 print("found a cached player for song id",songId.hashValue)
                 /**
                 Since oldCache is a deep copy of the actual cache we are effectively
@@ -109,7 +107,7 @@ class SongAudioCacheTask : NSObject {
                 */
                 
                 newCacheLock.withCriticalScope {
-                    newCache[songId.hashValue] = oldPlayer
+                    newCache[songId] = oldPlayer
                 }
                 
             } else {
@@ -119,18 +117,18 @@ class SongAudioCacheTask : NSObject {
                 self.performWhenReadyForPlayback(songId){ songPlayer in
                     /// This can get called some time after
                     newCacheLock.withCriticalScope {
-                        newCache[songId.hashValue] = songPlayer
+                        newCache[songId] = songPlayer						
                     }
                 }
             }
         }
         
         /**
-        This catches the case where all the songs are already cached by the
-        time the `generateWantedSongsIds` returns with a `wantedCacheCount`:
-        If the `newCache` contains the same amount of players as we wanted,
-        we call the completion handler, otherwise the completion handler is
-        called in the `didSet` of the `newCache`.
+			This catches the case where all the songs are already cached by the
+			time the `generateWantedSongsIds` returns with a `wantedCacheCount`:
+			If the `newCache` contains the same amount of players as we wanted,
+			we call the completion handler, otherwise the completion handler is
+			called in the `didSet` of the `newCache`.
         */
         if newCache.count == wantedCacheCount {
             completionHandler(newCache)
@@ -138,12 +136,12 @@ class SongAudioCacheTask : NSObject {
     }
     
     /**
-    This method will use the given context to decide on a number of songIds
-    that should be cached.
-    It calls the given `idHandler` with each chosen `songId` right away.
+		This method will use the given context to decide on a number of songIds
+		that should be cached. It calls the given `idHandler` with each chosen 
+		`songId` right away.
     
-    Future improvements will take a caching algo to allow for different
-    types of caching selections.
+		Future improvements will take a caching algo to allow for different
+		types of caching selections.
     */
     func generateWantedSongIds(theContext: SongSelectionContext, operationBlock: NSBlockOperation?, idHandler: (SongId)->()) -> Int {
         
