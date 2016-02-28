@@ -189,12 +189,16 @@ public class TGCoverDisplayViewController: NSViewController, NSCollectionViewDel
 
 		if songId == nil {
 			
-			// Remove a random songId from unmapped and add it to the mapped.
 			let unmappedCount = UInt32(self.unmappedSongIdArray.count)
-			let randIdx		  = Int(arc4random_uniform(unmappedCount))
+		
+			 if unmappedCount > 0 {
 			
-			songId = self.unmappedSongIdArray.removeAtIndex(randIdx)
-			self.mappedSongIds[index] = songId
+				// Remove a random songId from unmapped and add it to the mapped.
+				let randIdx		  = Int(arc4random_uniform(unmappedCount))
+			
+				songId = self.unmappedSongIdArray.removeAtIndex(randIdx)
+				self.mappedSongIds[index] = songId
+			}
 		}
 		
 		return songId
