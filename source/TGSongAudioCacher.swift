@@ -101,9 +101,12 @@ final class TGSongAudioCacher : NSObject {
                 }
             }
 			/// hertil : let's call the update metadata from here?
-			for (songId, _) in self.songPlayerCache {
-				
+			let songIds = Array(self.songPlayerCache.keys)
+			
+			if theContext.postCompletion != nil {
+				theContext.postCompletion!(songIds)
 			}
+
 			print("We have a fresh new cache of size \(self.songPlayerCache.count)")
         }
         
@@ -154,6 +157,10 @@ final class TGSongAudioCacher : NSObject {
 	func isCached(songId : SongId) -> Bool {
 		guard let _ = songPlayerCache[songId] else { return false }
 		return true
+	}
+	
+	func getCachedSongIds() -> [SongId] {
+		return Array(songPlayerCache.keys)
 	}
 }
 

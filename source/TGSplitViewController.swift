@@ -258,7 +258,7 @@ extension TGSplitViewController {
         }
     }
     
-    func userSelectedSong(context : SongSelectionContext) {
+    func userSelectedSong(var context : SongSelectionContext) {
         
         let songId      = context.selectedSongId
         let speedVector = context.speedVector
@@ -271,12 +271,17 @@ extension TGSplitViewController {
         /// do this as part of the requestSongPlayback
         // cacheWithContext(context)
 
+		/// add the requestUpdatedData as a postSongCacheCompletion to the context
+		context.postCompletion = songMetadataUpdater?.requestUpdatedData
         playbackController.refreshCache(context)
         playbackController.requestSongPlayback(songId)
         
         //// Request updated data for the selected song.
         songMetadataUpdater?.requestUpdatedData(forSongId: context.selectedSongId)
-
+		
+		/// hertil
+//		let cachedSongIds = playbackController.getCachedSongIds()
+//		songMetadataUpdater?.requestUpdatedData(cachedSongIds)
     }
     
     func userSelectedSongInContext(notification: NSNotification) {
@@ -433,9 +438,9 @@ extension TGSplitViewController : SongPlaybackControllerDelegate {
         return theSongPool.getUrl(songId)
     }
     
-    func getSongId(gridPos : NSPoint) -> SongId? {
+    func getSongId(gridPos : NSPoint, resolvingIsAllowed : Bool = false) -> SongId? {
 		
-        return coversPanelCtrlr.songIdFromGridPos(gridPos)
+        return coversPanelCtrlr.songIdFromGridPos(gridPos, resolvingIsAllowed: resolvingIsAllowed)
     }
 }
 

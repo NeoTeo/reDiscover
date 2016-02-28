@@ -18,16 +18,46 @@ protocol SongMetadataUpdaterDelegate {
 public class SongMetadataUpdater {
 
     var delegate : SongMetadataUpdaterDelegate?
-    
+	
+	/// The songUpdateTracker tracks when a song has last been updated.
+	private var songUpdateTracker: SongMetadataUpdateTracker = TGSongMetadataUpdateTracker()
+
+	/// An operation queue for udating the cache as a whole. Used by the cacher.
+	private let songCacheDataUpdaterOpQ = NSOperationQueue()
+	
     private let songDataUpdaterOpQ = NSOperationQueue()
     private var albumCollection = AlbumCollection()
-
+	
     init(delegate : SongMetadataUpdaterDelegate) {
         self.delegate = delegate
         albumCollection.delegate = self
+
+		/// Make the two operations queues effectively serial.
+		songCacheDataUpdaterOpQ.maxConcurrentOperationCount = 1
+		songCacheDataUpdaterOpQ.qualityOfService = .UserInitiated
+		
+		songDataUpdaterOpQ.maxConcurrentOperationCount = 1
+		songDataUpdaterOpQ.qualityOfService = .UserInitiated
+
     }
-    
-    
+	
+	
+	func requestUpdatedData(cachedSongIds : [SongId]) {
+		
+		/// Clear the previous cache request
+		songCacheDataUpdaterOpQ.cancelAllOperations()
+		
+		for songId in cachedSongIds {
+
+			/// Skip if below minimum interval or not cached.
+			guard songUpdateTracker.secondsSinceUpdate(songId) >= songUpdateTracker.minUpdateInterval else { continue }
+			guard delegate?.isCached(songId) != nil else { continue }
+			
+			runMetadataUpdate(songDataUpdaterOpQ, songId: songId)
+			songUpdateTracker.markUpdate(songId)
+		}
+		
+	}
     /** Set up a chain of operations each dependent on the previous that update
      various data associated with a song;
      1) Loading its embedded file metadata,
@@ -39,78 +69,80 @@ public class SongMetadataUpdater {
     func requestUpdatedData(forSongId songId: SongId) {
 		
 		guard delegate?.isCached(songId) != nil else {
-			print("requestUpdatedData called on song id \(songId.hashValue) which is not yet cached")
+			print("Cannot request metadata for a song (id \(songId.hashValue)) which has not yet been cached")
 			return
 		}
 		print("requestUpdatedData ALL GOOD")
         /// Let any interested parties know we've started updating the current song.
         NSNotificationCenter.defaultCenter().postNotificationName("songDidStartUpdating", object: songId)
         
-        /** This shouldn't really be set every time we request updated data but
-        since this is a static class we've no init to call. */
-        songDataUpdaterOpQ.maxConcurrentOperationCount = 1
-        songDataUpdaterOpQ.qualityOfService = .UserInitiated
-        
+		
         // Override all previous ops by cancelling them and adding the new one.
         songDataUpdaterOpQ.cancelAllOperations()
+		
+		runMetadataUpdate(songDataUpdaterOpQ, songId: songId)
         
-        
-        /// All the calls inside the blocks are synchronous.
-        let updateMetadataOp = NSBlockOperation {
-            self.updateMetadata(forSongId: songId)
-            
-            /// At this point we can signal that the metadata is up to date
-            NSNotificationCenter.defaultCenter().postNotificationName("songMetaDataUpdated", object: songId)
-        }
-        let fingerPrinterOp = NSBlockOperation {
-            /// If fingerPrinter is an empty optional we want it to crash.
-            //            updateFingerPrint(forSongId: songId, withFingerPrinter: fingerPrinter! )
-            self.updateFingerPrint(forSongId: songId )
-        }
-        /// This relies on the fingerprint to request the UUId from  a server.
-        let remoteDataOp = NSBlockOperation {
-            /// If songAudioPlayer is an empty optional we want it to crash.
-            if let song = self.delegate?.getSong(songId),
-                let duration = song.duration() {
-                    self.updateRemoteData(forSongId: songId, withDuration: duration)
-            }
-        }
-        let updateAlbumOp = NSBlockOperation {
-            self.albumCollection = self.albumCollection.update(albumContainingSongId: songId, usingOldCollection: self.albumCollection)
-        }
-        let checkArtOp = NSBlockOperation {
-            self.checkForArt(forSongId: songId, inAlbumCollection: self.albumCollection)
-        }
-        let fetchSweetspotsOp = NSBlockOperation {
-//            SweetSpotServerIO.requestSweetSpotsForSongID(songId)
+    }
+	
+	func runMetadataUpdate(opQueue : NSOperationQueue, songId : SongId) {
+		
+		/// All the calls inside the blocks are synchronous.
+		let updateMetadataOp = NSBlockOperation {
+			self.updateMetadata(forSongId: songId)
+			
+			/// At this point we can signal that the metadata is up to date
+			NSNotificationCenter.defaultCenter().postNotificationName("songMetaDataUpdated", object: songId)
+		}
+		let fingerPrinterOp = NSBlockOperation {
+			/// If fingerPrinter is an empty optional we want it to crash.
+			//            updateFingerPrint(forSongId: songId, withFingerPrinter: fingerPrinter! )
+			self.updateFingerPrint(forSongId: songId )
+		}
+		/// This relies on the fingerprint to request the UUId from  a server.
+		let remoteDataOp = NSBlockOperation {
+			/// If songAudioPlayer is an empty optional we want it to crash.
+			if let song = self.delegate?.getSong(songId),
+				let duration = song.duration() {
+					self.updateRemoteData(forSongId: songId, withDuration: duration)
+			}
+		}
+		let updateAlbumOp = NSBlockOperation {
+			self.albumCollection = self.albumCollection.update(albumContainingSongId: songId, usingOldCollection: self.albumCollection)
+		}
+		let checkArtOp = NSBlockOperation {
+			self.checkForArt(forSongId: songId, inAlbumCollection: self.albumCollection)
+		}
+		let fetchSweetspotsOp = NSBlockOperation {
+			//            SweetSpotServerIO.requestSweetSpotsForSongID(songId)
 			/// Initiate a request for sweet spots from the remote server.
 			self.delegate?.sendSweetSpotsRequest(songId)
-        }
-        
-        /// Make operations dependent on each other.
-        fingerPrinterOp.addDependency(updateMetadataOp)
-        remoteDataOp.addDependency(fingerPrinterOp)
-        
-        /// The sweetspot fetcher and album op depend on the fingerprint and the UUID.
-        fetchSweetspotsOp.addDependency(remoteDataOp)
-        updateAlbumOp.addDependency(remoteDataOp)
-        
-        checkArtOp.addDependency(updateAlbumOp)
-        
-        
-        /// Add the ops to the queue.
-        songDataUpdaterOpQ.addOperations([  updateMetadataOp,
-            fingerPrinterOp,
-            remoteDataOp,
-            updateAlbumOp,
-            checkArtOp,
-            fetchSweetspotsOp], waitUntilFinished: false)
-    }
+		}
+		
+		/// Make operations dependent on each other.
+		fingerPrinterOp.addDependency(updateMetadataOp)
+		remoteDataOp.addDependency(fingerPrinterOp)
+		
+		/// The sweetspot fetcher and album op depend on the fingerprint and the UUID.
+		fetchSweetspotsOp.addDependency(remoteDataOp)
+		updateAlbumOp.addDependency(remoteDataOp)
+		
+		checkArtOp.addDependency(updateAlbumOp)
+		
+		
+		/// Add the ops to the queue.
+		opQueue.addOperations([  updateMetadataOp,
+			fingerPrinterOp,
+			remoteDataOp,
+			updateAlbumOp,
+			checkArtOp,
+			fetchSweetspotsOp], waitUntilFinished: false)
+		
+	}
 
     func updateMetadata(forSongId songId: SongId) {
-        
+		
         guard let song = delegate?.getSong(songId) else { return }
-        
+		
         /// Don't re-fetch the song common metadata if we already have it.
         if song.metadata != nil {
             print("updateMetadata already had metadata \(song.metadata?.artist)")

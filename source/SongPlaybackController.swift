@@ -24,7 +24,7 @@ import AVFoundation
 protocol SongPlaybackControllerDelegate {
     func getSong(songId : SongId) -> TGSong?
     func getUrl(songId : SongId) -> NSURL?
-    func getSongId(gridPos : NSPoint) -> SongId?
+    func getSongId(gridPos : NSPoint, resolvingIsAllowed : Bool) -> SongId?
 }
 
 /** TGSongPlaybackController cannot be a struct because it has dynamic properties
@@ -187,7 +187,7 @@ extension TGSongPlaybackController : SongAudioCacherDelegate {
     }
     
     func getSongId(gridPos : NSPoint) -> SongId? {
-        return delegate?.getSongId(gridPos)
+        return delegate?.getSongId(gridPos, resolvingIsAllowed: true)
     }
 }
 
@@ -195,4 +195,8 @@ extension TGSongPlaybackController {
     func dumpCacheToLog() {
         songAudioCacher.dumpCacheToLog()
     }
+	
+	func getCachedSongIds() -> [SongId] {
+		return songAudioCacher.getCachedSongIds()
+	}
 }
