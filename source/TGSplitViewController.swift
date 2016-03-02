@@ -412,15 +412,15 @@ extension TGSplitViewController : PlaylistViewControllerDelegate {
     func selectIndirectly(songId : SongId) {
         
         guard let coords    = coversPanelCtrlr.getCoverCoordinates(songId) else { return }
-        let speedVector     = NSMakePoint(1, 1)
+        let speedVector     = NSPoint(x: 1, y: 1)
         
         // Get the dimensions in rows and columns of the current cover collection layout.
         let dims			= coversPanelCtrlr.getGridDimensions()
         let context			= TGSongSelectionContext(	selectedSongId: songId,
-														speedVector: speedVector,
-														selectionPos: coords,
+                                                           speedVector: speedVector,
+														  selectionPos: coords,
 														gridDimensions: dims,
-														cachingMethod: .Square)
+														 cachingMethod: .Square)
         
         /// Ask playback controller to refresh the cache and play back the song.
         playbackController.refreshCache(context)

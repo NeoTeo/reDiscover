@@ -27,7 +27,7 @@ public class TGTimelineBarView : NSView {
     
     func knobPosition() -> NSPoint {
         let rect = self.bounds
-        return NSMakePoint(CGRectGetWidth(rect) / 100 * CGFloat(playheadPositionInPercent), CGRectGetMidY(rect))
+        return NSPoint(x: CGRectGetWidth(rect) / 100 * CGFloat(playheadPositionInPercent), y: CGRectGetMidY(rect))
     }
 
     override public func drawRect(dirtyRect: NSRect) {
@@ -38,7 +38,11 @@ public class TGTimelineBarView : NSView {
         
         // Calculate the width of the rect based on current playhead position
         let width = CGRectGetWidth(rect) / 100 * CGFloat(playheadPositionInPercent)
-        let playbackRect = NSMakeRect(rect.origin.x+1, rect.origin.y+1, width, rect.size.height-2)
+        let playbackRect = NSRect(x: rect.origin.x+1,
+                                  y: rect.origin.y+1,
+                              width: width,
+                             height: rect.size.height-2)
+        
         NSColor.darkGrayColor().setFill()
         NSRectFill(playbackRect)
     }

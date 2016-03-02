@@ -87,7 +87,9 @@ class SongArtFinder: NSObject {
                 } catch _ {
                     regEx = nil
                 }
-                let matchRange = regEx?.rangeOfFirstMatchInString(word, options: .ReportCompletion, range: NSMakeRange(0, word.characters.count))
+                let matchRange = regEx?.rangeOfFirstMatchInString(word,
+                                        options: .ReportCompletion,
+                                          range: NSRange(location: 0, length: word.characters.count))
                 
                 return matchRange?.location != NSNotFound
             }

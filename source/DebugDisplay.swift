@@ -33,7 +33,7 @@ class DebugDisplay: NSViewController {
         }
         set {
             position = newValue
-            view.frame = CGRectMake(newValue.x, newValue.y, dimensions.width, dimensions.height)
+            view.frame = CGRect(x: newValue.x, y: newValue.y, width: dimensions.width, height: dimensions.height)
         }
     }
     

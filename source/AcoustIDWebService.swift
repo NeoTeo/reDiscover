@@ -53,7 +53,7 @@ class AcoustIDWebService: NSObject {
                     if title.lowercaseString == song.metadata?.album.lowercaseString { releaseScore += 1 }
                 }
                 
-                //FIXME: For now just hardwired to US. Make it check for the user's country or some selected setting.
+                // FIXME: For now just hardwired to US. Make it check for the user's country or some selected setting.
                 if let country = release["country"] as? String {
                     if country.lowercaseString == "us" { releaseScore += 1 }
                 }

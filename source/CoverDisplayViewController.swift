@@ -74,7 +74,7 @@ public class TGCoverDisplayViewController: NSViewController, NSCollectionViewDel
         if let oldTA = oldTrackingArea {
             theView.removeTrackingArea(oldTA)
         }
-        let trackingRect = NSMakeRect(0, 0, theView.frame.width, theView.frame.height)
+        let trackingRect = NSRect(x: 0, y: 0, width: theView.frame.width, height: theView.frame.height)
         let newTrackingArea = NSTrackingArea(rect: trackingRect, options: [.MouseEnteredAndExited, .MouseMoved, .ActiveInKeyWindow], owner: self, userInfo: nil)
         
         theView.addTrackingArea(newTrackingArea)
@@ -128,8 +128,13 @@ public class TGCoverDisplayViewController: NSViewController, NSCollectionViewDel
 
             // Get the frame of the item use it to make a new frame in the collection view coordinates
             let itemFrame = coverCollectionView.frameForItemAtIndex(idxPath.item)
+            
             let newPos = self.view.convertPoint(itemFrame.origin, fromView: coverCollectionView)
-            let newFrame = CGRectMake(newPos.x, newPos.y-itemFrame.size.height, itemFrame.size.width, itemFrame.size.height)
+            
+            let newFrame = CGRect(  x: newPos.x,
+                                    y: newPos.y - itemFrame.size.height,
+                                width: itemFrame.size.width,
+                               height: itemFrame.size.height)
 
             // Show the UI inside the frame we've created.
             songUIController!.showInside(!songUIController!.isUIActive(), frame: newFrame)
@@ -210,20 +215,22 @@ public class TGCoverDisplayViewController: NSViewController, NSCollectionViewDel
         // 1) Package the context in a data structure.
         // 2) post notification with the context.
         //FIXME: For now we bodge the speed vector.
-        let bogusSpeedVector = NSMakePoint(1, 1)
+        let bogusSpeedVector = NSPoint(x: 1, y: 1)
         
         // Get the dimensions in rows and columns of the current cover collection layout.
         let (cols, rows) = (coverCollectionView.collectionViewLayout as! NSCollectionViewFlowLayout).colsAndRowsFromLayout()
 
         // Compute the column and row location of the given index.
-        let y = Int(floor(CGFloat(idx / cols)))
-        let x = Int(floor(CGFloat(idx - (cols * y))))
-        let loc = NSMakePoint(CGFloat(x), CGFloat(y))
-        
-//        print("cols \(cols) and rows \(rows), x \(x) and y \(y)")
-        
-        let dims = NSMakePoint(CGFloat(cols), CGFloat(rows))
-        let context = TGSongSelectionContext(selectedSongId: songId, speedVector: bogusSpeedVector, selectionPos: loc, gridDimensions: dims, cachingMethod: .Square)
+        let y       = Int(floor(CGFloat(idx / cols)))
+        let x       = Int(floor(CGFloat(idx - (cols * y))))
+        let loc     = NSPoint(x: CGFloat(x), y: CGFloat(y))
+        let dims    = NSPoint(x: CGFloat(cols), y: CGFloat(rows))
+        let context = TGSongSelectionContext(
+                        selectedSongId: songId,
+                           speedVector: bogusSpeedVector,
+                          selectionPos: loc,
+                        gridDimensions: dims,
+                         cachingMethod: .Square)
         
         NSNotificationCenter.defaultCenter().postNotificationName("userSelectedSong", object: context)
         
@@ -241,7 +248,7 @@ public class TGCoverDisplayViewController: NSViewController, NSCollectionViewDel
     
     public func getGridDimensions() -> NSPoint {
         let (cols, rows) = (coverCollectionView.collectionViewLayout as! NSCollectionViewFlowLayout).colsAndRowsFromLayout()
-        return NSMakePoint(CGFloat(cols), CGFloat(rows))
+        return NSPoint(x: CGFloat(cols), y: CGFloat(rows))
     }
     
     /** Return the coordinates (column, row) of the songId in the song grid.
@@ -252,7 +259,9 @@ public class TGCoverDisplayViewController: NSViewController, NSCollectionViewDel
         let (cols, rows) = (coverCollectionView.collectionViewLayout as! NSCollectionViewFlowLayout).colsAndRowsFromLayout()
         for row in 0..<rows {
             for col in 0..<cols {
-                let curPos = NSMakePoint(CGFloat(col), CGFloat(row))
+                
+                let curPos = NSPoint(x: CGFloat(col), y: CGFloat(row))
+                
                 if songIdFromGridPos(curPos) == songId {
                     return curPos
                 }
@@ -389,10 +398,14 @@ extension TGCoverDisplayViewController: TGSongUIPopupProtocol {
     func songUITimelineButtonWasPressed() {
         
         // The button's coords are relative to its's view so we need to convert.
-        let bDims = songUIController!.timelineButton.frame
-        let location = self.view.convertPoint(bDims.origin, fromView: songUIController!.view)
+        let bDims       = songUIController!.timelineButton.frame
+        let location    = self.view.convertPoint(bDims.origin,fromView: songUIController!.view)
+        
         // Make a new frame.
-        let popupBounds = NSMakeRect(location.x, location.y, bDims.width, bDims.height)
+        let popupBounds = NSRect(   x: location.x,
+                                    y: location.y,
+                                width: bDims.width,
+                               height: bDims.height)
 
         songTimelineController?.togglePopoverRelativeToBounds(popupBounds, ofView: self.view)
     }

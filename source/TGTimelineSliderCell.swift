@@ -71,15 +71,19 @@ class TGTimelineSliderCell : NSSliderCell {
         let halfFrameHeight = frameHeight / 2
         
         /// Setting the rect of the bar here since I can't seem to get it from the superclass
-        barRect = NSMakeRect(   0,
-                                CGFloat(halfFrameHeight - TimelineBarHeight / 2),
-                                frameSize.width,
-                                CGFloat(TimelineBarHeight))
+        barRect = NSRect(   x: 0,
+                            y: CGFloat(halfFrameHeight - TimelineBarHeight / 2),
+                        width: frameSize.width,
+                       height: CGFloat(TimelineBarHeight))
         
         /// Allow control view to draw subviews' layers into its own.
         controlView.canDrawSubviewsIntoLayer = true
         
-        sweetSpotsView      = NSView(frame: NSMakeRect(0, 2, frameSize.width, frameSize.height))
+        sweetSpotsView      = NSView(frame: NSRect(x: 0,
+                                                   y: 2,
+                                               width: frameSize.width,
+                                              height: frameSize.height))
+        
         timelineBarView     = TGTimelineBarView(frame: barRect!)
         
         knobImage           = NSImage(named: "ssButton")!
@@ -162,10 +166,10 @@ class TGTimelineSliderCell : NSSliderCell {
                     when clicked. */
                 //print("Setting sweet spot marker at position \(ssXPos)")
                 let val = CGFloat(self.SweetSpotMarkerHeight)
-                let aSSControl = TGSweetSpotControl(frame: NSMakeRect(ssXPos,
-                                                                        val,
-                                                                        val,
-                                                                        val))
+                let aSSControl = TGSweetSpotControl(frame: NSRect(x: ssXPos,
+                                                                  y: val,
+                                                              width: val,
+                                                             height: val))
 
                 aSSControl.tag    = spotIndex//sweetSpots.indexOf(<#T##member: SweetSpot##SweetSpot#>)
                 aSSControl.target = self.theController
