@@ -30,6 +30,10 @@ public class TGCoverDisplayViewController: NSViewController, NSCollectionViewDel
     
     private var unmappedSongIdArray: [SongId] = []
     private var mappedSongIds: [Int:SongId] = [:]
+	
+	/// The set of uncovered songs.
+	private var uncoveredSongIds = Set<SongId>()
+	
     private var songCount = 0
 
     private var currentTrackingArea: NSTrackingArea?
@@ -164,15 +168,20 @@ public class TGCoverDisplayViewController: NSViewController, NSCollectionViewDel
         let loc = coverCollectionView.convertPoint(location, fromView: nil)
         
         if let (item, idxPath) = coverAndIdxAtLocation(loc) where idxPath != currentIdxPath {
+			/** FIXME: How much of this (beside uncoveredSongIds access and mapIndexToCover
+				need to be run asyncly? */
             dispatch_async(collectionAccessQ){
                 
                 // Store it so I can bail out above (Do I really need this?)
                 self.currentIdxPath = idxPath
 
-				let songId = self.mapIndexToCover(idxPath.item)
+				guard let songId = self.mapIndexToCover(idxPath.item) else {
+					fatalError("uncoverSongCover missing song id!")
+				}
 				
+				self.uncoveredSongIds.insert(songId)
                 // Let anyone interested know the user has selected songId
-                self.postNotificationOfSelection(songId!, atIndex: idxPath.item)
+                self.postNotificationOfSelection(songId, atIndex: idxPath.item)
             }
             
             /// selecting a new song should hide the song UI.
@@ -373,26 +382,7 @@ public class TGCoverDisplayViewController: NSViewController, NSCollectionViewDel
     }
 }
 
-/*
-//MARK: TGSongTimelineViewControllerProtocol methods
-extension TGCoverDisplayViewController: TGSongTimelineViewControllerDelegate {
-    
-    public func userCreatedNewSweetSpot(sender: AnyObject!) {
-        print("user created new sweet spot")
-    }
-    
-    public func userSelectedExistingSweetSpot(sender: AnyObject!) {
-        print("user selected existing sweet spot")
-    }
-    
-    public func userSelectedSweetSpotMarkerAtIndex(ssIndex: UInt) {
-        print("user selected sweet spot marker at index")
-    }
-    
-
-}
-*/
-//MARK: TGSongUIPopupProtocol methods
+// MARK: TGSongUIPopupProtocol methods
 extension TGCoverDisplayViewController: TGSongUIPopupProtocol {
     
     func songUITimelineButtonWasPressed() {
@@ -424,42 +414,38 @@ extension TGCoverDisplayViewController: TGSongUIPopupProtocol {
     }
 }
 
-//MARK: NSCollectionViewDataSource methods
+// MARK: NSCollectionViewDataSource methods
 extension TGCoverDisplayViewController: NSCollectionViewDataSource {
 
-    //    public func numberOfSectionsInCollectionView(collectionView: NSCollectionView) -> Int {
-    //        return 1
-    //    }
 
     public func collectionView(collectionView: NSCollectionView, numberOfItemsInSection section: Int) -> Int {
         return songCount
     }
     
     public func collectionView(collectionView: NSCollectionView, itemForRepresentedObjectAtIndexPath indexPath: NSIndexPath) -> NSCollectionViewItem {
-//print("Datasource request for \(indexPath)")
+
         let item = collectionView.makeItemWithIdentifier("Cover", forIndexPath: indexPath) as! TGCollectionCover
         item.CoverLabel.stringValue = ""
-        
-        
-        var image: NSImage?
-        // If the indexpath is not associated with a song, pick a random unassigned
-        // song and associate them, then return the item.
-        // Find the referenced image and connect it to the item
 
-        if let songId = mappedSongIds[indexPath.item],
+		var image : NSImage?
+		
+        if let songId = mappedSongIds[indexPath.item] where uncoveredSongIds.contains(songId),
             let song = delegate?.getSong(songId) {
-                
+		
             if let artId = song.artID {
                 image = delegate?.getArt(artId)
             }
-            // If we couldn't find any art set the image to no cover rather than the back cover.
+				
+            // The song has been uncovered but could find no cover art.
             if image == nil {
+				/** FIXME: Change this to display a generic blank cover and display
+				the song title, album and artist on top.
+				*/
+
                 image = NSImage(named: "noCover")
             }
-        }
-        
-        if image == nil {
-            // Set the image to a back cover.
+        } else {
+            // Set the image to an uncovered / back cover.
             image = NSImage(named: "songImage")
         }
         
@@ -470,11 +456,6 @@ extension TGCoverDisplayViewController: NSCollectionViewDataSource {
 
         return item
     }
-    
-//    public func collectionView(collectionView: NSCollectionView, viewForSupplementaryElementOfKind kind: String, atIndexPath indexPath: NSIndexPath) -> NSView {
-//        return NSView()
-//    }
-    
 }
 
 extension TGCoverDisplayViewController : TimelinePopoverViewControllerDelegate {

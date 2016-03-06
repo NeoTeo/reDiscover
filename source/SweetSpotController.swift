@@ -73,8 +73,7 @@ public class SweetSpotController : NSObject {
 		
 		guard let song = delegate?.getSong(songId) else { return }
 		
-		/// FIXME: Bodge whilst using SweetSpotServer as a type. Change to use a delegate
-		sweetSpotServerIO.delegate = self
+		//sweetSpotServerIO.delegate = self
 		sweetSpotServerIO.uploadSweetSpots(song)
 	}
 	

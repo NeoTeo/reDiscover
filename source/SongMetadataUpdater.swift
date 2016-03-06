@@ -116,6 +116,9 @@ public class SongMetadataUpdater {
 			//            SweetSpotServerIO.requestSweetSpotsForSongID(songId)
 			/// Initiate a request for sweet spots from the remote server.
 			self.delegate?.sendSweetSpotsRequest(songId)
+			
+			/// Don't mark as updated until we've been through the whole chain.
+			self.songUpdateTracker.markUpdate(songId)
 		}
 		
 		/// Make operations dependent on each other.
