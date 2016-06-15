@@ -435,7 +435,7 @@ extension TGCoverDisplayViewController: NSCollectionViewDataSource {
             if let artId = song.artID {
                 image = delegate?.getArt(artId)
             }
-				
+		
             // The song has been uncovered but could find no cover art.
             if image == nil {
 				/** FIXME: Change this to display a generic blank cover and display
@@ -448,7 +448,14 @@ extension TGCoverDisplayViewController: NSCollectionViewDataSource {
             // Set the image to an uncovered / back cover.
             image = NSImage(named: "songImage")
         }
-        
+		
+		if let _ = mappedSongIds[indexPath.item] {
+			image?.lockFocus()
+			let cImage = NSImage(named: "cached")
+			cImage!.drawAtPoint(item.view.frame.origin, fromRect: NSZeroRect, operation: .CompositeSourceOver, fraction: 1.0)
+			image?.unlockFocus()
+		}
+		
         let obj = CoverImage(image: image!)
         
         item.representedObject = obj
