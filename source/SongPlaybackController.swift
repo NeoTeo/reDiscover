@@ -103,7 +103,7 @@ extension TGSongPlaybackController {
     
     func setSongPlaybackObserver(songPlayer : AVPlayer) {
         
-        /// MARK : Make sure we're not creating a retain cycle.
+        /// Since the timerObserver must survive its call we make its parameters weak
         let timerObserver = { [weak self, weak songPlayer] (time : CMTime) -> () in
             /// FIXME : When songPlayer is nil it might be a sign that we're not properly
             /// sync'ing ! Fix

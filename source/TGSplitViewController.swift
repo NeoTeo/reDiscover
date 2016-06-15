@@ -257,8 +257,19 @@ extension TGSplitViewController {
             }
         }
     }
+
+    /** 
+        Called when the user has selected a song.
+    */
+    func userSelectedSongInContext(notification: NSNotification) {
+        let theContext = notification.object as! SongSelectionContext
+        userSelectedSong(theContext)
+    }
     
-    func userSelectedSong(var context : SongSelectionContext) {
+    /**
+     
+    */
+    func userSelectedSong(context : SongSelectionContext) {
         
         let songId      = context.selectedSongId
         let speedVector = context.speedVector
@@ -268,26 +279,21 @@ extension TGSplitViewController {
             return
         }
         
-        /// do this as part of the requestSongPlayback
-        // cacheWithContext(context)
+        let newContext = TGSongSelectionContext( selectedSongId: songId,
+                                                    speedVector: speedVector,
+                                                   selectionPos: context.selectionPos,
+                                                 gridDimensions: context.gridDimensions,
+                                                  cachingMethod: context.cachingMethod)
 
 		/// add the requestUpdatedData as a postSongCacheCompletion to the context
-		context.postCompletion = songMetadataUpdater?.requestUpdatedData
-        playbackController.refreshCache(context)
+		newContext.postCompletion = songMetadataUpdater?.requestUpdatedData
+        playbackController.refreshCache(newContext)
         playbackController.requestSongPlayback(songId)
         
         //// Request updated data for the selected song.
-        songMetadataUpdater?.requestUpdatedData(forSongId: context.selectedSongId)
-		
-		/// hertil
-//		let cachedSongIds = playbackController.getCachedSongIds()
-//		songMetadataUpdater?.requestUpdatedData(cachedSongIds)
+        songMetadataUpdater?.requestUpdatedData(forSongId: newContext.selectedSongId)
     }
     
-    func userSelectedSongInContext(notification: NSNotification) {
-        let theContext = notification.object as! SongSelectionContext
-        userSelectedSong(theContext)
-    }
     
     func requestPlayback(songId: SongId, startTimeInSeconds: NSNumber) {
         /** FIXME : Just do this directly once we're sure everyone is calling
