@@ -9,6 +9,6 @@
 import Foundation
 
 protocol AudioFileStore {
-    static func songURLsFromURL(theURL: NSURL) -> [NSURL]?;
+    static func songURLsFromURL(_ theURL: URL) -> [URL]?;
 }
 

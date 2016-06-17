@@ -21,7 +21,7 @@ class TEOSongData : NSManagedObject {
     @NSManaged var title : String?
     @NSManaged var genre : String?
     @NSManaged var selectedSweetSpot : NSNumber?
-    @NSManaged var songReleases : NSData?
+    @NSManaged var songReleases : Data?
 }
 
 /**
@@ -92,8 +92,8 @@ extension TEOSongData {
         return "TEOSongData"
     }
     
-    class func insertItem(urlString : String, inContext context : NSManagedObjectContext) -> AnyObject? {
-        if let songData = NSEntityDescription.insertNewObjectForEntityForName(self.entityName(), inManagedObjectContext: context) as? TEOSongData {
+    class func insertItem(_ urlString : String, inContext context : NSManagedObjectContext) -> AnyObject? {
+        if let songData = NSEntityDescription.insertNewObject(forEntityName: self.entityName(), into: context) as? TEOSongData {
             
             songData.album              = nil
             songData.artist             = nil

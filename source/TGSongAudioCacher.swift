@@ -10,16 +10,16 @@ import Cocoa
 import AVFoundation
 
 public enum CachingMethod : Int {
-    case None
-    case All
-    case Square
-    case SpeedRect
+    case none
+    case all
+    case square
+    case speedRect
 }
 
 protocol SongAudioCacherDelegate {
 
-        func getUrl(songId : SongId) -> NSURL?
-        func getSongId(gridPos : NSPoint) -> SongId?
+        func getUrl(_ songId : SongId) -> URL?
+        func getSongId(_ gridPos : NSPoint) -> SongId?
 }
 
 typealias SongIdToPlayerDictionary    = [SongId : AVPlayer]
@@ -36,24 +36,24 @@ final class TGSongAudioCacher : NSObject {
     var delegate : SongAudioCacherDelegate?
     
     /// Serialize the access to the pendingPlayerRequestCallback.
-    let pendingRequestQ = dispatch_queue_create("Request access q", DISPATCH_QUEUE_SERIAL)
+    let pendingRequestQ = DispatchQueue(label: "Request access q", attributes: DispatchQueueAttributes.serial)
     var _pendingPlayerRequestCallback: SongIdToPlayerRequestBlock?
     var pendingPlayerRequestCallback: SongIdToPlayerRequestBlock? {
         get {
             var requestCallback: SongIdToPlayerRequestBlock?
-            dispatch_sync(self.pendingRequestQ) {
+            self.pendingRequestQ.sync {
                 requestCallback = self._pendingPlayerRequestCallback
             }
             return requestCallback
         }
         set(request) {
-            dispatch_sync(self.pendingRequestQ) {
+            self.pendingRequestQ.sync {
                 self._pendingPlayerRequestCallback = request
             }
         }
     }
 
-    let cachingOpQueue  = NSOperationQueue()
+    let cachingOpQueue  = OperationQueue()
 	var songPlayerCache = SongIdToPlayerDictionary()
 
     var debugId = 0
@@ -65,10 +65,10 @@ final class TGSongAudioCacher : NSObject {
         cachingOpQueue.maxConcurrentOperationCount = 1
         
         // Make the qos higher than default.
-        cachingOpQueue.qualityOfService = .UserInitiated
+        cachingOpQueue.qualityOfService = .userInitiated
     }
 
-    func cacheWithContext(theContext: SongSelectionContext) {
+    func cacheWithContext(_ theContext: SongSelectionContext) {
 
         /**
         Each cacheTask will block until it is done. Because we wrap them in operation
@@ -79,7 +79,7 @@ final class TGSongAudioCacher : NSObject {
         /// Cancel any pending operations in the cachingOpQueue.
         cachingOpQueue.cancelAllOperations()
         debugId += 1
-        let operationBlock = NSBlockOperation()
+        let operationBlock = BlockOperation()
 
         operationBlock.addExecutionBlock(){
             
@@ -138,7 +138,7 @@ final class TGSongAudioCacher : NSObject {
             instance variable. Any existing pending request is overwritten because
             it has been overridden by this more recent request.
     */
-    func performWhenPlayerIsAvailableForSongId(songId: SongId, callBack: (AVPlayer)->()) {
+    func performWhenPlayerIsAvailableForSongId(_ songId: SongId, callBack: (AVPlayer)->()) {
         
         // If the requested Player is already in the cache, execute callback immediately.
         if let player = songPlayerCache[songId] {
@@ -154,7 +154,7 @@ final class TGSongAudioCacher : NSObject {
         }
     }
 	
-	func isCached(songId : SongId) -> Bool {
+	func isCached(_ songId : SongId) -> Bool {
 		guard let _ = songPlayerCache[songId] else { return false }
 		return true
 	}
@@ -166,11 +166,11 @@ final class TGSongAudioCacher : NSObject {
 
 extension TGSongAudioCacher : SongAudioCacheTaskDelegate {
     
-    func getSongURL(songId : SongId) -> NSURL? {
+    func getSongURL(_ songId : SongId) -> URL? {
         return delegate?.getUrl(songId)
     }
     
-    func getSongId(gridPos : NSPoint) -> SongId? {
+    func getSongId(_ gridPos : NSPoint) -> SongId? {
         return delegate?.getSongId(gridPos)
     }
 }

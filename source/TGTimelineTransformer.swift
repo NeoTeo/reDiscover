@@ -8,7 +8,7 @@
 
 import Foundation
 
-public final class TGTimelineTransformer: NSValueTransformer {
+public final class TGTimelineTransformer: ValueTransformer {
 
     dynamic var maxDuration: Double = 0.0
     
@@ -20,20 +20,20 @@ public final class TGTimelineTransformer: NSValueTransformer {
         return true
     }
     
-    public override func transformedValue(value: AnyObject?) -> AnyObject {
+    public override func transformedValue(_ value: AnyObject?) -> AnyObject {
         
         guard maxDuration != 0,
             let numberValue = value as? NSNumber else {
                 
-            return NSNumber(double: 0.0)
+            return NSNumber(value: 0.0)
         }
         
         let unit = 100.0 / maxDuration
-        return NSNumber(double: unit * numberValue.doubleValue )
+        return NSNumber(value: unit * numberValue.doubleValue )
     }
     
-    public override func reverseTransformedValue(value: AnyObject?) -> AnyObject {
-        guard let numberValue = value as? NSNumber else { return NSNumber(double: 0.0) }
-        return NSNumber(double: maxDuration / 100.0 * numberValue.doubleValue)
+    public override func reverseTransformedValue(_ value: AnyObject?) -> AnyObject {
+        guard let numberValue = value as? NSNumber else { return NSNumber(value: 0.0) }
+        return NSNumber(value: maxDuration / 100.0 * numberValue.doubleValue)
     }
 }

@@ -10,7 +10,7 @@ import Foundation
 
 extension Dictionary where Value : Equatable {
     
-    func allKeysForValue(val: Value) -> [Key] {
+    func allKeysForValue(_ val: Value) -> [Key] {
         return self.filter{ $0.1 == val }.map{ $0.0 }
     }
 }

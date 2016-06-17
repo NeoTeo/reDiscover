@@ -25,9 +25,9 @@ public class TGPlaylistCellView : NSTableCellView {
     @IBOutlet weak var artistLabel: NSTextField!
     
     
-    public override func drawRect(dirtyRect: NSRect) {
+    public override func draw(_ dirtyRect: NSRect) {
         //NSColor.redColor().setFill()
         //NSRectFill(dirtyRect)
-        super.drawRect(dirtyRect)
+        super.draw(dirtyRect)
     }
 }

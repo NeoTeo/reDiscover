@@ -6,7 +6,8 @@
 //  Copyright (c) 2015 Teo Sartori. All rights reserved.
 //
 
-import Foundation
+//import Foundation
+import CoreData
 
 /**
 SongMetaData collects all the metadata associated with a song. 

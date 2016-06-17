@@ -21,29 +21,29 @@ public class TGTimelineBarView : NSView {
         playheadPositionInPercent = 0
     }
 
-    public func setPlayheadPositionInPercent(pos : Double) {
+    public func setPlayheadPositionInPercent(_ pos : Double) {
         self.playheadPositionInPercent = pos
     }
     
     func knobPosition() -> NSPoint {
         let rect = self.bounds
-        return NSPoint(x: CGRectGetWidth(rect) / 100 * CGFloat(playheadPositionInPercent), y: CGRectGetMidY(rect))
+        return NSPoint(x: rect.width / 100 * CGFloat(playheadPositionInPercent), y: rect.midY)
     }
 
-    override public func drawRect(dirtyRect: NSRect) {
+    override public func draw(_ dirtyRect: NSRect) {
         
         let rect = self.bounds
-        NSColor.lightGrayColor().setFill()
+        NSColor.lightGray().setFill()
         NSRectFill(rect)
         
         // Calculate the width of the rect based on current playhead position
-        let width = CGRectGetWidth(rect) / 100 * CGFloat(playheadPositionInPercent)
+        let width = rect.width / 100 * CGFloat(playheadPositionInPercent)
         let playbackRect = NSRect(x: rect.origin.x+1,
                                   y: rect.origin.y+1,
                               width: width,
                              height: rect.size.height-2)
         
-        NSColor.darkGrayColor().setFill()
+        NSColor.darkGray().setFill()
         NSRectFill(playbackRect)
     }
 }

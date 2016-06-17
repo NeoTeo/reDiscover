@@ -32,5 +32,5 @@ class TGSongUserData : NSManagedObject {
     @NSManaged var songUUID : String?
     @NSManaged var songFingerPrint : String?
     @NSManaged var songUserSweetSpot : Float
-    @NSManaged var songSweetSpots : NSData?
+    @NSManaged var songSweetSpots : Data?
 }

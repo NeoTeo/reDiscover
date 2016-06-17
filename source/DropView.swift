@@ -10,7 +10,7 @@ import Foundation
 import AppKit
 
 protocol DropViewDelegate {
-    func dropViewDidReceiveURL(theURL: NSURL);
+    func dropViewDidReceiveURL(_ theURL: URL);
 }
 
 class DropView : NSView {//, NSDraggingDestination {
@@ -26,36 +26,36 @@ class DropView : NSView {//, NSDraggingDestination {
         dropArrowImageView.unregisterDraggedTypes()
         
         // Register for notifications of URLs and filenames.
-        self.registerForDraggedTypes([NSURLPboardType,NSFilenamesPboardType])
+        self.register(forDraggedTypes: [NSURLPboardType,NSFilenamesPboardType])
     }
     
     
     /// Method to coordinate with source about the types of drop we handle and it provides.
-    override func draggingEntered(sender: NSDraggingInfo) -> NSDragOperation {
+    override func draggingEntered(_ sender: NSDraggingInfo) -> NSDragOperation {
         let dMask = sender.draggingSourceOperationMask()
         // Ensure the sender supports the link operation and assure it we do too.
-        if (dMask.rawValue & NSDragOperation.Link.rawValue) != 0 {
-            return NSDragOperation.Generic
+        if (dMask.rawValue & NSDragOperation.link.rawValue) != 0 {
+            return NSDragOperation.generic
         }
 
-        return NSDragOperation.None
+        return NSDragOperation()
     }
     
     /// Method to determine whether we can accept the particular drop data.
-    override func prepareForDragOperation(sender: NSDraggingInfo) -> Bool {
+    override func prepareForDragOperation(_ sender: NSDraggingInfo) -> Bool {
         sender.animatesToDestination = false
         return true
     }
     
     // Method to handle the dropped data.
-    override func performDragOperation(sender: NSDraggingInfo) -> Bool {
+    override func performDragOperation(_ sender: NSDraggingInfo) -> Bool {
 
         let pboard = sender.draggingPasteboard()
         let myArray = pboard.types! as NSArray
         
-        if myArray.containsObject(NSURLPboardType) {
-            let fileURL = NSURL(fromPasteboard: pboard)
-            delegate?.dropViewDidReceiveURL(fileURL!)
+        if myArray.contains(NSURLPboardType),
+            let fileURL = NSURL(from: pboard) {
+            delegate?.dropViewDidReceiveURL(fileURL as URL)
         }
         
         return true

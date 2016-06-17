@@ -12,26 +12,26 @@ import AppKit
 
 class CoverArtArchiveWebFetcher : NSObject {
     
-    class func artForSong(song: TGSong) -> NSImage? {
+    class func artForSong(_ song: TGSong) -> NSImage? {
 
         if let releaseMBID = song.RelId,
-            let coverArtArchiveURL = NSURL(string:"http://coverartarchive.org/release/\(releaseMBID)"),
-            let result = NSData(contentsOfURL: coverArtArchiveURL) where result.length > 0 {
+            let coverArtArchiveURL = URL(string:"http://coverartarchive.org/release/\(releaseMBID)"),
+            let result = try? Data(contentsOf: coverArtArchiveURL) where result.count > 0 {
             // coverartarchive.org returns a dictionary at the top level.
             do {
-                let resultJSON = try NSJSONSerialization.JSONObjectWithData(result, options: NSJSONReadingOptions.MutableContainers) as! NSDictionary
+                let resultJSON = try JSONSerialization.jsonObject(with: result, options: JSONSerialization.ReadingOptions.mutableContainers) as! NSDictionary
                 let images = resultJSON["images"] as! NSArray
                 
                 if images.count == 0 { return nil }
                 
                 let imageEntry = images[0] as! NSDictionary
                 
-                let imageURL = NSURL(string: imageEntry["image"] as! String)
+                let imageURL = URL(string: imageEntry["image"] as! String)
                 if imageURL == nil { return nil }
                 
-                let coverArtData = NSData(contentsOfURL: imageURL!)
+                let coverArtData = try? Data(contentsOf: imageURL!)
                 
-                if coverArtData == nil || coverArtData!.length == 0 { return nil }
+                if coverArtData == nil || coverArtData!.count == 0 { return nil }
                 
                 let theImage = NSImage(data: coverArtData!)
                 

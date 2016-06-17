@@ -9,7 +9,7 @@
 import Cocoa
 
 protocol AlbumCollectionDelegate {
-    func getSong(songId : SongId) -> TGSong?
+    func getSong(_ songId : SongId) -> TGSong?
 }
 
 
@@ -29,7 +29,7 @@ public final class AlbumCollection : NSObject {
 
 extension AlbumCollection {
     
-    func albumWithIdFromCollection(collection: AlbumCollection, albumId: AlbumId) -> Album? {
+    func albumWithIdFromCollection(_ collection: AlbumCollection, albumId: AlbumId) -> Album? {
         return collection.albumCache[albumId]
 //        if let album = albumCache[albumId] {
 //            return Album(songIds: album.songIds)
@@ -62,13 +62,13 @@ extension AlbumCollection {
         return albums
     }
     
-    func collectionWithAddedAlbum(collection: AlbumCollection, album: Album) -> AlbumCollection {
+    func collectionWithAddedAlbum(_ collection: AlbumCollection, album: Album) -> AlbumCollection {
         var tmpCache = collection.albumCache
         tmpCache[album.id] = album
         return AlbumCollection(albums: tmpCache)
     }
     
-    func artForAlbum(album: Album, inCollection: AlbumCollection) -> NSImage? {
+    func artForAlbum(_ album: Album, inCollection: AlbumCollection) -> NSImage? {
         let songIds = Array(album.songIds)
         
         for songId in songIds {

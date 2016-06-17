@@ -28,7 +28,7 @@ class Album : NSObject {
 
 extension Album {
     
-    static func albumIdForSong(song: TGSong) -> AlbumId? {
+    static func albumIdForSong(_ song: TGSong) -> AlbumId? {
         if let artist = song.metadata?.artist,let album = song.metadata?.album {
             
             return Hasher.hashFromString(album+artist)
@@ -39,7 +39,7 @@ extension Album {
     /**
     Returns a new album formed by adding a given song to the given album.
     */
-    static func albumWithAddedSong(song: TGSong,oldAlbum: Album) -> Album {
+    static func albumWithAddedSong(_ song: TGSong,oldAlbum: Album) -> Album {
         if let aId = Album.albumIdForSong(song) {
             /// FIXME : This mutates and probably shouldn't
             var newSongIds = oldAlbum.songIds

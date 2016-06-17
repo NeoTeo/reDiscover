@@ -21,7 +21,7 @@ class TGSongAudioPlayer: NSObject {
     var songPlayerItem: AVPlayerItem?
     var currentVolume:Float  = 1.0
     var playerObserver: AnyObject?
-    let testQ = dispatch_queue_create("playback queue", nil)
+    let testQ = DispatchQueue(label: "playback queue", attributes: [])
     
     var currentPlayTime: Double {
         get {
@@ -64,7 +64,7 @@ class TGSongAudioPlayer: NSObject {
         }
     }
 
-    func setSongPlayer(newPlayer: AVPlayer, block: (CMTime) -> ()) {
+    func setSongPlayer(_ newPlayer: AVPlayer, block: (CMTime) -> ()) {
         if let prevPlayer = prevSongPlayer where playerObserver != nil {
             prevPlayer.removeTimeObserver(playerObserver!)
         }
@@ -74,7 +74,7 @@ class TGSongAudioPlayer: NSObject {
         }
         currentPlayer = newPlayer
         
-        currentPlayer?.addPeriodicTimeObserverForInterval(CMTimeMake(10, 100), queue: testQ, usingBlock: block)
+        currentPlayer?.addPeriodicTimeObserver(forInterval: CMTimeMake(10, 100), queue: testQ, using: block)
     }
 
     func getPrevSongPlayer()->AVPlayer? {
@@ -85,21 +85,21 @@ class TGSongAudioPlayer: NSObject {
         
         if let prevPlayer = prevSongPlayer {
             prevPlayer.pause()
-            NSNotificationCenter.defaultCenter().removeObserver(prevPlayer)
+            NotificationCenter.default().removeObserver(prevPlayer)
         }
         
         if let player = songPlayer {
             player.volume = currentVolume
 
-            if player.status == .ReadyToPlay {
+            if player.status == .readyToPlay {
                 player.play()
             }
         }
     }
     
-    func playAtTime(startTime: Float64) {
+    func playAtTime(_ startTime: Float64) {
 
-        currentPlayer?.seekToTime(CMTimeMakeWithSeconds(startTime, 1000)){ success in
+        currentPlayer?.seek(to: CMTimeMakeWithSeconds(startTime, 1000)){ success in
             if success == true {
 //                println("Playback from \(startTime) succeeded")
                 self.playSong()
@@ -109,19 +109,19 @@ class TGSongAudioPlayer: NSObject {
 //            }
         }
 
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "stopSong", name: AVPlayerItemDidPlayToEndTimeNotification, object: currentPlayer)
+        NotificationCenter.default().addObserver(self, selector: "stopSong", name: NSNotification.Name.AVPlayerItemDidPlayToEndTime, object: currentPlayer)
     }
     
     func stopSong() {
         NSLog("song finished!")
-        NSNotificationCenter.defaultCenter().removeObserver(currentPlayer!)
+        NotificationCenter.default().removeObserver(currentPlayer!)
     }
     
-    func setVolume(theVolume: Float) {
+    func setVolume(_ theVolume: Float) {
         currentVolume = theVolume
     }
     
-    func songDidUpdatePlayheadPosition(position: Double) {
+    func songDidUpdatePlayheadPosition(_ position: Double) {
         // Set the value of a playhead position var that is bound to 
         // TGTimelineSliderCell's currentPlayheadPositionInPercent
     }

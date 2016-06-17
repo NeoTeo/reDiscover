@@ -17,7 +17,7 @@ protocol SongMetaDataStore {
     
     var allSongMetaData: [String : SongMetaData] { get }
     
-    static func add(songMetaData: SongMetaData, songStore: SongMetaDataStore) -> SongMetaDataStore
-    static func save(songStore: SongMetaDataStore)
+    static func add(_ songMetaData: SongMetaData, songStore: SongMetaDataStore) -> SongMetaDataStore
+    static func save(_ songStore: SongMetaDataStore)
     static func load() -> SongMetaDataStore?
 }

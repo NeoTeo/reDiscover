@@ -20,12 +20,12 @@ public protocol TGSong {
     var metadata: SongCommonMetaData? { get }
     var artID: String? { get }
     var fingerPrint: String? { get }
-    var songReleases: NSData? { get }
+    var songReleases: Data? { get }
     var UUId: String? { get }
     var RelId: String? { get }
     
     init(songId: SongId, metadata: SongCommonMetaData?, urlString: String?, sweetSpots: Set<SweetSpot>?,
-        fingerPrint: String?, selectedSS: SweetSpot?, releases: NSData?, artId: String?, UUId: String?, RelId: String?)
+        fingerPrint: String?, selectedSS: SweetSpot?, releases: Data?, artId: String?, UUId: String?, RelId: String?)
     
     func metadataDict() -> NSDictionary
     

@@ -13,9 +13,9 @@ import Cocoa
 class TGTimelineSliderCell : NSSliderCell {
     
     enum TimelineBarSize {
-        case Small
-        case Normal
-        case Big
+        case small
+        case normal
+        case big
     }
 
     let SweetSpotMarkerHeight   = 8
@@ -48,7 +48,7 @@ class TGTimelineSliderCell : NSSliderCell {
     /// This class' controller.
     var theController : AnyObject!
 
-    required init?(coder aDecoder: NSCoder) {
+    required init(coder aDecoder: NSCoder) {
         playheadPositionInPercent   = 0
         currentSongDuration         = 0
         super.init(coder: aDecoder)
@@ -63,7 +63,7 @@ class TGTimelineSliderCell : NSSliderCell {
             return
         }
         
-        var frameHeight = Int(CGRectGetHeight(controlView.frame))
+        var frameHeight = Int(controlView.frame.height)
         let frameSize   = controlView.frame.size
         
         /// Ensure the frame height is even.
@@ -98,26 +98,26 @@ class TGTimelineSliderCell : NSSliderCell {
     /** Grow the timeline bar and all the sweet spot controls when the mouse pointer
         enters the slider cell area.
     */
-    func mouseEntered(theEvent : NSEvent) {
-        resizeTimeline(.Big)
+    func mouseEntered(_ theEvent : NSEvent) {
+        resizeTimeline(.big)
     }
     
     /** Return the timeline bar and all the sweet spot controls  to their normal 
         sizes when the then mouse pointer leaves the slider cell area.
     */
-    func mouseExited(theEvent : NSEvent) {
-        resizeTimeline(.Normal)
+    func mouseExited(_ theEvent : NSEvent) {
+        resizeTimeline(.normal)
     }
 
-    func resizeTimeline(size : TimelineBarSize) {
+    func resizeTimeline(_ size : TimelineBarSize) {
         
         var halfSweetSpot = CGFloat(SweetSpotMarkerHeight / 2)
         var barFrame      = barRect
         
         switch size   {
-        case .Big:
+        case .big:
             halfSweetSpot = -halfSweetSpot
-            barFrame      = NSRectFromCGRect(CGRectInset(barRect!, 0, -4))
+            barFrame      = NSRectFromCGRect(barRect!.insetBy(dx: 0, dy: -4))
         default:
             break
         }
@@ -126,14 +126,14 @@ class TGTimelineSliderCell : NSSliderCell {
         rather than Core Animation on a bg thread.
         */
         for spot in sweetSpotsView.subviews {
-            spot.animator().frame  = NSRectFromCGRect(CGRectInset(spot.frame, halfSweetSpot, halfSweetSpot))
+            spot.animator().frame  = NSRectFromCGRect(spot.frame.insetBy(dx: halfSweetSpot, dy: halfSweetSpot))
         }
         
         timelineBarView.animator().frame = barFrame!
     }
     
     /// FIXME: Change to makeMarkers(sweetSpots : Set<SweetSpot>, duration : NSNumber)
-    func makeMarkers(sweetSpots: Set<SweetSpot>, duration: NSNumber) {
+    func makeMarkers(_ sweetSpots: Set<SweetSpot>, duration: NSNumber) {
 
         guard duration.doubleValue != 0 else {
             print("Dropping out of makeMarkersFromSweetSpots because song duration is 0.")
@@ -141,7 +141,7 @@ class TGTimelineSliderCell : NSSliderCell {
         }
 
         /// Adding and removing subviews needs to happen on the main thread.
-        dispatch_async(dispatch_get_main_queue()) {
+        DispatchQueue.main.async {
             var spotIndex = 0
 
             /// Clear out the existing sweet spot markers from the sweetSpotsView
@@ -155,9 +155,9 @@ class TGTimelineSliderCell : NSSliderCell {
                     continue
                 }
                 
-                let ssXPos = CGRectGetWidth(self.barRect!) / CGFloat(duration.doubleValue) * CGFloat(ss.doubleValue)
+                let ssXPos = self.barRect!.width / CGFloat(duration.doubleValue) * CGFloat(ss.doubleValue)
                 
-                if isnan(ssXPos) || !isfinite(ssXPos) {
+                if ssXPos.isNaN || ssXPos.isInfinite {
                     print("ERROR: Something is wrong with sweet spot duration.")
                     fatalError()
                 }
@@ -173,7 +173,8 @@ class TGTimelineSliderCell : NSSliderCell {
 
                 aSSControl.tag    = spotIndex//sweetSpots.indexOf(<#T##member: SweetSpot##SweetSpot#>)
                 aSSControl.target = self.theController
-                aSSControl.action = "userSelectedExistingSweetSpot:"
+                // FIXME: figure out what's to be called.
+                aSSControl.action = Selector("userSelectedExistingSweetSpot:")
                 aSSControl.image  = self.knobImage
                 
                 self.sweetSpotsView.addSubview(aSSControl)
@@ -184,16 +185,16 @@ class TGTimelineSliderCell : NSSliderCell {
     }
     
     /** When the slider is released we notify that the user wants to create a sweet spot */
-    override func stopTracking(lastPoint: NSPoint, at stopPoint: NSPoint, inView controlView: NSView, mouseIsUp flag: Bool) {
+    override func stopTracking(last lastPoint: NSPoint, current stopPoint: NSPoint, in controlView: NSView, mouseIsUp flag: Bool) {
         print("Done tracking!")
-        NSNotificationCenter.defaultCenter().postNotificationName("UserCreatedSweetSpot", object: nil)
+        NotificationCenter.default().post(name: Notification.Name(rawValue: "UserCreatedSweetSpot"), object: nil)
     }
     
-    override func drawWithFrame(cellFrame: NSRect, inView controlView: NSView) {
+    override func draw(withFrame cellFrame: NSRect, in controlView: NSView) {
         drawKnob()
     }
     
-    override func drawKnob(knobRect: NSRect) {
+    override func drawKnob(_ knobRect: NSRect) {
         knobImageView.frame = knobRect
     }
     

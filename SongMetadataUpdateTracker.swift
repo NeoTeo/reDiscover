@@ -9,40 +9,40 @@
 import Foundation
 
 protocol SongMetadataUpdateTracker {
-	mutating func markUpdate(songId : SongId)
-	func lastUpdate(songId : SongId) -> NSDate?
-	func secondsSinceUpdate(songId : SongId) -> NSTimeInterval
+	mutating func markUpdate(_ songId : SongId)
+	func lastUpdate(_ songId : SongId) -> Date?
+	func secondsSinceUpdate(_ songId : SongId) -> TimeInterval
 	
-	var minUpdateInterval : NSTimeInterval { get }
+	var minUpdateInterval : TimeInterval { get }
 }
 
 struct TGSongMetadataUpdateTracker : SongMetadataUpdateTracker {
 
 	/// The update interval is an hour.
-	let minUpdateInterval : NSTimeInterval = 3600
+	let minUpdateInterval : TimeInterval = 3600
 
-	private var updates = [SongId : NSDate]()
-	private var updatesAccessQ: dispatch_queue_t = dispatch_queue_create("updatesQ", DISPATCH_QUEUE_SERIAL)
+	private var updates = [SongId : Date]()
+	private var updatesAccessQ: DispatchQueue = DispatchQueue(label: "updatesQ", attributes: DispatchQueueAttributes.serial)
 	
-	private func synchronized(f: Void -> Void) {
+	private func synchronized(_ f: (Void) -> Void) {
 		//guard updatesAccessQ != nil else { fatalError("No updatesAccessQ") }
-		dispatch_sync(updatesAccessQ, f)
+		updatesAccessQ.sync(execute: f)
 	}
 
 	/// access queue to make this thread safe.
-	mutating func markUpdate(songId : SongId) {
+	mutating func markUpdate(_ songId : SongId) {
 		synchronized {
-			self.updates[songId] = NSDate()
+			self.updates[songId] = Date()
 		}
 	}
 	
-	func lastUpdate(songId : SongId) -> NSDate? {
+	func lastUpdate(_ songId : SongId) -> Date? {
 		return updates[songId]
 	}
 	
-	func secondsSinceUpdate(songId : SongId) -> NSTimeInterval {
+	func secondsSinceUpdate(_ songId : SongId) -> TimeInterval {
 		guard let lastUpdate = updates[songId] else { return minUpdateInterval }
-		let diff = NSDate().timeIntervalSinceDate(lastUpdate)
+		let diff = Date().timeIntervalSince(lastUpdate)
 		return diff
 	}
 	

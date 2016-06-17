@@ -13,7 +13,7 @@ class DebugDisplay: NSViewController {
     var position: NSPoint = NSPoint(x: 0, y: 0)
     var dimensions: NSSize = NSSize(width: 500, height: 150)
 
-    var refreshTimer: NSTimer?
+    var refreshTimer: Timer?
     
     static var updatePending = false
     static var debugString = "No data"
@@ -37,20 +37,20 @@ class DebugDisplay: NSViewController {
         }
     }
     
-    func showUI(state: Bool) {
+    func showUI(_ state: Bool) {
         if state == true {
             print("Setting timer")
-            refreshTimer = NSTimer.scheduledTimerWithTimeInterval(1.0, target: self, selector: Selector("refresh"), userInfo: nil, repeats: true)
+            refreshTimer = Timer.scheduledTimer(timeInterval: 1.0, target: self, selector: Selector("refresh"), userInfo: nil, repeats: true)
         }
         else {
             refreshTimer?.invalidate()
             refreshTimer = nil
         }
-        view.hidden = !state
+        view.isHidden = !state
     }
 
     func isVisible() -> Bool {
-        return !view.hidden
+        return !view.isHidden
     }
  
     // The class that actually has an instance of DebugDisplay can copy the class
@@ -63,7 +63,7 @@ class DebugDisplay: NSViewController {
     }
     
     // Allows me to update from anywhere without needing an instance.
-    static func updateDebugStrings(newString: String) {
+    static func updateDebugStrings(_ newString: String) {
         debugString = newString
         updatePending = true
     }

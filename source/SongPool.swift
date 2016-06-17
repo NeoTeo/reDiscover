@@ -15,8 +15,8 @@ typealias SongDictionary = [SongId: Song]
 final class SongPool : NSObject, SongPoolAccessProtocol {
 
     private var songPool: SongDictionary?
-    private var songPoolAccessQ: dispatch_queue_t?
-    private var serialDataLoad = dispatch_queue_create("serial data load queue", DISPATCH_QUEUE_SERIAL)
+    private var songPoolAccessQ: DispatchQueue?
+    private var serialDataLoad = DispatchQueue(label: "serial data load queue", attributes: DispatchQueueAttributes.serial)
 	
     /** Utility function allows wrapping code that needs to be sync'd on
         a queue in a block like this:
@@ -25,24 +25,24 @@ final class SongPool : NSObject, SongPoolAccessProtocol {
             ...
         }
     */
-    private func synchronized(f: Void -> Void) {
+    private func synchronized(_ f: (Void) -> Void) {
 		
         guard songPoolAccessQ != nil else { fatalError("No songPoolAccessQ") }
-        dispatch_sync(songPoolAccessQ!, f)
+        songPoolAccessQ!.sync(execute: f)
     }
 
     
     /// Request the song for the given id and return a copy of it.
-    func songForSongId(songId: SongId) -> TGSong? {
+    func songForSongId(_ songId: SongId) -> TGSong? {
         return songPool?[songId]
     }
     
-    func getUrl(songId: SongId) -> NSURL? {
+    func getUrl(_ songId: SongId) -> URL? {
         guard let song = songForSongId(songId) where (song.urlString != nil) else { return nil }
-        return NSURL(string: song.urlString!)
+        return URL(string: song.urlString!)
     }
     
-    func UUIDStringForSongId(songId: SongId) -> String? {
+    func UUIDStringForSongId(_ songId: SongId) -> String? {
         guard let song = songForSongId(songId) else { return nil }
         return SongUUID.getUUIDForSong(song)
     }
@@ -52,8 +52,8 @@ final class SongPool : NSObject, SongPoolAccessProtocol {
         return count
     }
 
-    func load(anUrl: NSURL) -> Bool {
-        dispatch_async(serialDataLoad) {
+    func load(_ anUrl: URL) -> Bool {
+        serialDataLoad.async {
             self.fillSongPoolWithSongURLsAtURL(anUrl)
         }
         return true
@@ -63,26 +63,26 @@ final class SongPool : NSObject, SongPoolAccessProtocol {
         Make and return a dictionary of songs made from any audio URLs found 
         from the given URL.
     */
-    func fillSongPoolWithSongURLsAtURL(theURL: NSURL){
+    func fillSongPoolWithSongURLsAtURL(_ theURL: URL){
 //        var allSongs = [SongId: Song]()
         songPool = SongDictionary()
-        songPoolAccessQ = dispatch_queue_create("songPool dictionary access queue", DISPATCH_QUEUE_SERIAL)
+        songPoolAccessQ = DispatchQueue(label: "songPool dictionary access queue", attributes: DispatchQueueAttributes.serial)
         
         LocalAudioFileStore.applyAudioURLsToClosure(theURL) { songURL in
             
             //MARK: At this point we want to check if our core data store has info on the song.
-            let songString = songURL.absoluteString
+            guard let songString = songURL.absoluteString else { return }
             let songId = SongId(string: songString)
             let songCommonMetaData : SongCommonMetaData? = nil//SongCommonMetaData()
             let newSong = Song(songId: songId, metadata: songCommonMetaData, urlString: songString, sweetSpots: nil, fingerPrint: nil, selectedSS: nil, releases: nil, artId: nil, UUId: nil, RelId: nil)
             
             self.addSong(newSong)
             
-            NSNotificationCenter.defaultCenter().postNotificationName("NewSongAdded", object: songId)
+            NotificationCenter.default().post(name: Notification.Name(rawValue: "NewSongAdded"), object: songId)
         }
     }
 
-    func addSong(theSong: TGSong) {
+    func addSong(_ theSong: TGSong) {
         
         synchronized {
             self.songPool![theSong.songId] = theSong as? Song
@@ -139,7 +139,7 @@ final class SongPool : NSObject, SongPoolAccessProtocol {
     */
     
     /// FIXME : This doesn't do anything yet.
-    static func save(pool: NSDictionary) {
+    static func save(_ pool: NSDictionary) {
 //        let myStore = SongMetaDataStoreLocal(metaData:[:])
 
         for (_,value) in pool {
@@ -156,14 +156,14 @@ final class SongPool : NSObject, SongPoolAccessProtocol {
 }
 
 extension SongPool : AlbumCollectionDelegate {
-    func getSong(songId : SongId) -> TGSong? {
+    func getSong(_ songId : SongId) -> TGSong? {
         return songForSongId(songId)
     }
 }
 
 extension SongPool {
     
-    func debugLogSongWithId(songId: SongId) {
+    func debugLogSongWithId(_ songId: SongId) {
         
         guard let song = getSong(songId) else { return }
             

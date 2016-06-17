@@ -10,8 +10,8 @@ import Foundation
 import AVFoundation
 
 protocol SongAudioCacheTaskDelegate {
-    func getSongURL(songId : SongId) -> NSURL?
-    func getSongId(gridPos : NSPoint) -> SongId?
+    func getSongURL(_ songId : SongId) -> URL?
+    func getSongId(_ gridPos : NSPoint) -> SongId?
 }
 /**
     A CacheTask represents a unit of work that will cache a number of songs.
@@ -40,34 +40,34 @@ class SongAudioCacheTask : NSObject {
     
     // holds the not yet ready players awaiting status change
     var loadingPlayers: PlayerToStatusChangeHandler = PlayerToStatusChangeHandler()
-    let loadingPlayersLock = NSLock()
+    let loadingPlayersLock = Lock()
     
     // holds the ready players
 	var songPlayerCache = SongIdToPlayerDictionary()
 	
-    func cacheWithContext(theContext: SongSelectionContext, oldCache: SongIdToPlayerDictionary) -> SongIdToPlayerDictionary {
-        let group = dispatch_group_create()
+    func cacheWithContext(_ theContext: SongSelectionContext, oldCache: SongIdToPlayerDictionary) -> SongIdToPlayerDictionary {
+        let group = DispatchGroup()
         self.songPlayerCache = oldCache
         
-        dispatch_group_enter(group)
+        group.enter()
         // Make a new cache and call trailing closure when done.
         self.newCacheFromCache(self.songPlayerCache, withContext: theContext, operationBlock: nil) { newCache in
             
             /// Replace the songPlayerCache with the new one.
             self.songPlayerCache = newCache
-            dispatch_group_leave(group)
+            group.leave()
         }
         
         // Block until a new cache is returned.
-        dispatch_group_wait(group, DISPATCH_TIME_FOREVER)
+        group.wait(timeout: DispatchTime.distantFuture)
         
         return songPlayerCache
     }
 	
-	func newCacheFromCache(oldCache: SongIdToPlayerDictionary, withContext context: SongSelectionContext, operationBlock: NSBlockOperation?, completionHandler: (SongIdToPlayerDictionary)->()) {
+	func newCacheFromCache(_ oldCache: SongIdToPlayerDictionary, withContext context: SongSelectionContext, operationBlock: BlockOperation?, completionHandler: (SongIdToPlayerDictionary)->()) {
 	
         var wantedCacheCount    = 0
-        let newCacheLock        = NSLock()
+        let newCacheLock        = Lock()
 		
         var newCache: SongIdToPlayerDictionary = SongIdToPlayerDictionary() {
             /**
@@ -143,7 +143,7 @@ class SongAudioCacheTask : NSObject {
 		Future improvements will take a caching algo to allow for different
 		types of caching selections.
     */
-    func generateWantedSongIds(theContext: SongSelectionContext, operationBlock: NSBlockOperation?, idHandler: (SongId)->()) -> Int {
+    func generateWantedSongIds(_ theContext: SongSelectionContext, operationBlock: BlockOperation?, idHandler: (SongId)->()) -> Int {
         
         let selectionPos    = theContext.selectionPos
         let gridDims        = theContext.gridDimensions
@@ -152,12 +152,14 @@ class SongAudioCacheTask : NSObject {
         var wantedCacheCount = 0
 
         // Figure out what songs to cache
-        for var row = Int(selectionPos.y)-radius ; row <= Int(selectionPos.y)+radius ; row += 1 {
-            
+//        for var row = Int(selectionPos.y)-radius ; row <= Int(selectionPos.y)+radius ; row += 1 {
+        for row in Int(selectionPos.y)-radius ... Int(selectionPos.y)+radius {
+        
             if row >= Int(gridDims.y) { break }
             
-            for var col = Int(selectionPos.x)-radius ; col <= Int(selectionPos.x)+radius ; col += 1 {
-                
+//            for var col = Int(selectionPos.x)-radius ; col <= Int(selectionPos.x)+radius ; col += 1 {
+            for col in Int(selectionPos.x)-radius ... Int(selectionPos.x)+radius {
+            
                 // Guards - Don't go lower than 0 or outside the dims of the grid.
                 if row < 0 || col < 0 { continue }
                 if col >= Int(gridDims.x) { break }
@@ -179,7 +181,7 @@ class SongAudioCacheTask : NSObject {
             and has an associated AVPlayer with which to play back the song that 
             the id refers to.
     */
-    func performWhenReadyForPlayback(songId: SongId, readySongHandler: (AVPlayer)->()) {
+    func performWhenReadyForPlayback(_ songId: SongId, readySongHandler: (AVPlayer)->()) {
         
 //         At this point we don't know if the url is for the local file system or streaming.
         guard let songURL = delegate?.getSongURL(songId) else {
@@ -188,7 +190,7 @@ class SongAudioCacheTask : NSObject {
         }
         
 //        let songAsset: AVURLAsset = AVURLAsset(URL: songURL, options: [AVURLAssetPreferPreciseDurationAndTimingKey : true])
-        let songAsset: AVURLAsset = AVURLAsset(URL: songURL, options: nil)
+        let songAsset: AVURLAsset = AVURLAsset(url: songURL, options: nil)
         /** TODO: Make initial asset load as fast as possible but as soon as it 
             has loaded re-initiate the slow version (if we can keep playing the
             initial in the bg. Otherwise we'll have to do a dupe load and swap).
@@ -217,9 +219,9 @@ class SongAudioCacheTask : NSObject {
         }
         
         // add an observer to get called when the player status changes (to signal completion).
-        thePlayer.addObserver(self, forKeyPath: "status", options: .New, context: &self.myContext)
+        thePlayer.addObserver(self, forKeyPath: "status", options: .new, context: &self.myContext)
         
-        songAsset.loadValuesAsynchronouslyForKeys(["tracks"]){
+        songAsset.loadValuesAsynchronously(forKeys: ["tracks"]){
             /**
             Everything in here is executed asyncly and thus any access to class
             properties need to either be atomic or serialized. This completion
@@ -236,14 +238,14 @@ class SongAudioCacheTask : NSObject {
             need to check for specific values. Streams don't have a tracks value
             so if it fails we assume it's a stream.
             */
-            switch(songAsset.statusOfValueForKey("tracks", error: &error)) {
-            case .Loaded:
+            switch(songAsset.statusOfValue(forKey: "tracks", error: &error)) {
+            case .loaded:
                 // This is a file
                 thePlayerItem = AVPlayerItem(asset: songAsset)
                 
-            case .Failed:
+            case .failed:
                 // This is a stream
-                thePlayerItem = AVPlayerItem(URL: songURL)
+                thePlayerItem = AVPlayerItem(url: songURL)
                 
             default:
                 print("ERROR: Cancelled?")
@@ -253,10 +255,10 @@ class SongAudioCacheTask : NSObject {
             /// FIXME: Remove this as the thing we're waiting for once we've got 
             /// the fingerprinting duration integrated.
             //Make sure the asset's duration value is available before kicking off the song player loading.
-            songAsset.loadValuesAsynchronouslyForKeys(["duration"]){
+            songAsset.loadValuesAsynchronously(forKeys: ["duration"]){
                 print("load async duration")
                 /// Since the loading begins as soon as the player item is associated with the player I have to do this *after* adding the observer to an uninited player.
-                thePlayer.replaceCurrentItemWithPlayerItem(thePlayerItem)
+                thePlayer.replaceCurrentItem(with: thePlayerItem)
             }
         }
     }
@@ -265,7 +267,7 @@ class SongAudioCacheTask : NSObject {
             If the player is found in the loadingPlayers it is removed from it and
             the completionHandler stored with it is called.
     */
-    override func observeValueForKeyPath(keyPath: String?, ofObject object: AnyObject?, change: [String : AnyObject]?, context: UnsafeMutablePointer<Void>) {
+    override func observeValue(forKeyPath keyPath: String?, of object: AnyObject?, change: [NSKeyValueChangeKey : AnyObject]?, context: UnsafeMutablePointer<Void>?) {
         
         if context == &myContext {
             
@@ -277,7 +279,7 @@ class SongAudioCacheTask : NSObject {
             // so they shouldn't be concurrent. Try to remove and test.
             /// Lock it because performWhenReadyForPlayback may be adding to loadingPlayers in a different thread.
             self.loadingPlayersLock.withCriticalScope {
-                if let completionHandler = self.loadingPlayers.removeValueForKey(playa) as StatusChangeHandler? {
+                if let completionHandler = self.loadingPlayers.removeValue(forKey: playa) as StatusChangeHandler? {
                     completionHandler()
                 }
             }

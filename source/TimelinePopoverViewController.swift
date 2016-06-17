@@ -9,9 +9,9 @@
 import Cocoa
 
 protocol TimelinePopoverViewControllerDelegate {
-    func getSongDuration(songId : SongId) -> NSNumber?
-    func getSweetSpots(songId: SongId) -> Set<SweetSpot>?
-    func userSelectedSweetSpot(index : Int)
+    func getSongDuration(_ songId : SongId) -> NSNumber?
+    func getSweetSpots(_ songId: SongId) -> Set<SweetSpot>?
+    func userSelectedSweetSpot(_ index : Int)
 }
 
 public class TimelinePopoverViewController : NSViewController {
@@ -21,7 +21,7 @@ public class TimelinePopoverViewController : NSViewController {
     @IBOutlet var thePopover: NSPopover!
     @IBOutlet var timelineBar: NSSlider?
     
-    override init?(nibName nibNameOrNil: String?, bundle nibBundleOrNil: NSBundle?) {
+    override init?(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
         super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
     }
     
@@ -35,28 +35,28 @@ extension TimelinePopoverViewController {
     public override func awakeFromNib() {
         
         let trackingRect = self.view.frame
-        let trackingArea = NSTrackingArea(rect: trackingRect,options: [.MouseEnteredAndExited, .ActiveInKeyWindow], owner: timelineBar?.cell, userInfo: nil)
+        let trackingArea = NSTrackingArea(rect: trackingRect,options: [.mouseEnteredAndExited, .activeInKeyWindow], owner: timelineBar?.cell, userInfo: nil)
         
         self.view.addTrackingArea(trackingArea)
         
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "updateTimelineSweetSpots:", name: "SweetSpotsUpdated", object: nil)
+        NotificationCenter.default().addObserver(self, selector: #selector(TimelinePopoverViewController.updateTimelineSweetSpots(_:)), name: "SweetSpotsUpdated", object: nil)
     }
     
-    func updateTimelineSweetSpots(notification: NSNotification) {
+    func updateTimelineSweetSpots(_ notification: Notification) {
         
         if let songId = notification.object as? SongId {
             setCurrentSongId(songId)
         }
     }
     
-    func setCurrentSongId(songId: SongId) {
+    func setCurrentSongId(_ songId: SongId) {
         
         let theCell = timelineBar?.cell as! TGTimelineSliderCell
         theCell.theController = self
         
 //        let songDuration = SongPool.durationForSongId(songId)
         /// We get the duration straight from the song.
-        let songDuration = delegate?.getSongDuration(songId) ?? NSNumber(double: 0)
+        let songDuration = delegate?.getSongDuration(songId) ?? NSNumber(value: 0)
         print("Song with id \(songId) has duration \(songDuration)")
         if let songSweetSpots = delegate?.getSweetSpots(songId) {
             theCell.makeMarkers(songSweetSpots, duration: songDuration)
@@ -67,20 +67,20 @@ extension TimelinePopoverViewController {
         thePopover?.close()
     }
     
-    func togglePopoverRelativeToBounds(theBounds: CGRect, ofView theView: NSView) {
+    func togglePopoverRelativeToBounds(_ theBounds: CGRect, ofView theView: NSView) {
         guard let pop = thePopover else { return }
         
-        if pop.shown {
+        if pop.isShown {
             pop.close()
         } else {
             
-            pop.showRelativeToRect(theBounds, ofView: theView, preferredEdge: .MaxY)
+            pop.show(relativeTo: theBounds, of: theView, preferredEdge: .maxY)
         }
     }
     
-    public func userSelectedExistingSweetSpot(sender: AnyObject!) {
+    public func userSelectedExistingSweetSpot(_ sender: AnyObject!) {
         print("user selected existing sweet spot")
-        delegate?.userSelectedSweetSpot(sender.tag())
+        delegate?.userSelectedSweetSpot(sender.tag)
 //        let playingSongId = delegate?.currentlyPlayingSongId()
 //        let songSweetspots = delegate?.getSweetSpots(playingSongId!)
 //        //mySet[mySet.startIndex.advancedBy(2)]

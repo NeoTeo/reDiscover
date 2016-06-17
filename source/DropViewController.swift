@@ -11,7 +11,7 @@ import AppKit
 
 class DropViewController : NSViewController, DropViewDelegate {
  
-    var droppedURL: NSURL?
+    var droppedURL: URL?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -21,9 +21,9 @@ class DropViewController : NSViewController, DropViewDelegate {
     }
     
     override func viewDidAppear() {
-        let envVars = NSProcessInfo.processInfo().environment
+        let envVars = ProcessInfo.processInfo().environment
         if let _ = envVars["NO_DROP"] {
-            droppedURL = NSURL(fileURLWithPath: "/Users/teo/Desktop/songs")
+            droppedURL = URL(fileURLWithPath: "/Users/teo/Desktop/songs")
             if droppedURL != nil  {
                 dropViewDidReceiveURL(droppedURL!)
             }
@@ -47,7 +47,7 @@ class DropViewController : NSViewController, DropViewDelegate {
         up before the segue happens. In this case we're closing and releasing the
         drop window before TGSplitViewController's viewDidAppear is called.
     */
-    override func prepareForSegue(segue: NSStoryboardSegue, sender: AnyObject!) {
+    override func prepare(for segue: NSStoryboardSegue, sender: AnyObject!) {
         print("Drop View Controller preparing for segue")
 
       let splitViewCtrlr = segue.destinationController as! TGSplitViewController
@@ -62,17 +62,17 @@ class DropViewController : NSViewController, DropViewDelegate {
         
         /// close and release the drop window.
         //print("The window we're about to close: \(self.view.window)")
-        self.view.window?.releasedWhenClosed = true
+        self.view.window?.isReleasedWhenClosed = true
         self.view.window?.close()
 
     }
     
     
-    func dropViewDidReceiveURL(theURL: NSURL) {
+    func dropViewDidReceiveURL(_ theURL: URL) {
         if validateURL(theURL) {
             droppedURL = theURL
 //            performSegueWithIdentifier("oldStyleSegue", sender: self)
-            performSegueWithIdentifier("segueToSplitView", sender: self)            
+            performSegue(withIdentifier: "segueToSplitView", sender: self)            
             // We need to do this again because the app is deactivated when the user clicks a folder
             // in Finder to drag onto here.
 
@@ -80,7 +80,7 @@ class DropViewController : NSViewController, DropViewDelegate {
         }
     }
 
-    func validateURL(theURL: NSURL) -> Bool {
+    func validateURL(_ theURL: URL) -> Bool {
         // TEO For now...
         return true
     }

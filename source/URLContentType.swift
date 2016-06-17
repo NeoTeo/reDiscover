@@ -9,7 +9,7 @@
 import Foundation
 
 enum URLContentType {
-    case Image
-    case Audio
-    case Unknown
+    case image
+    case audio
+    case unknown
 }

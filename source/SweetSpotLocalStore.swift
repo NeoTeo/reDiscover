@@ -11,8 +11,8 @@ import Cocoa
 
 protocol SweetSpotLocalStore {
 	func storeUploadedSweetSpotsDictionary()
-	func markSweetSpotAsUploaded(uuid : String, sweetSpot : SweetSpot)
-	func sweetSpotHasBeenUploaded(theSS: Double, song : TGSong) -> Bool
+	func markSweetSpotAsUploaded(_ uuid : String, sweetSpot : SweetSpot)
+	func sweetSpotHasBeenUploaded(_ theSS: Double, song : TGSong) -> Bool
 }
 
 /**
@@ -47,20 +47,20 @@ class TGSweetSpotLocalStore : SweetSpotLocalStore {
 	*/
 	private func setupUploadedSweetSpotsMOC() {
 		
-		guard let modelURL = NSBundle.mainBundle().URLForResource("uploadedSS", withExtension: "momd"),
-			let mom = NSManagedObjectModel(contentsOfURL: modelURL) else {
+		guard let modelURL = Bundle.main().urlForResource("uploadedSS", withExtension: "momd"),
+			let mom = NSManagedObjectModel(contentsOf: modelURL) else {
 				return
 		}
 		
-		uploadedSweetSpotsMOC = NSManagedObjectContext(concurrencyType: .MainQueueConcurrencyType)
+		uploadedSweetSpotsMOC = NSManagedObjectContext(concurrencyType: .mainQueueConcurrencyType)
 		uploadedSweetSpotsMOC?.persistentStoreCoordinator = NSPersistentStoreCoordinator(managedObjectModel: mom)
 		
 		do {
 			// Build the URL where to store the data.
-			let documentsDirectory = try NSFileManager.defaultManager().URLForDirectory(.DocumentDirectory, inDomain: .UserDomainMask, appropriateForURL: nil, create: true).URLByAppendingPathComponent("uploadedSS.xml")
+			let documentsDirectory = try! FileManager.default().urlForDirectory(.documentDirectory, in: .userDomainMask, appropriateFor: nil, create: true).appendingPathComponent("uploadedSS.xml")
 			
 			
-			try uploadedSweetSpotsMOC?.persistentStoreCoordinator?.addPersistentStoreWithType(NSXMLStoreType,configuration: nil,URL: documentsDirectory, options: nil)
+			try uploadedSweetSpotsMOC?.persistentStoreCoordinator?.addPersistentStore(ofType: NSXMLStoreType,configurationName: nil,at: documentsDirectory, options: nil)
 		} catch {
 			print("SweetSpotServerIO init error: \(error)")
 		}
@@ -69,12 +69,15 @@ class TGSweetSpotLocalStore : SweetSpotLocalStore {
 
 	private func initUploadedSweetSpots() {
 		
-		let fetchRequest = NSFetchRequest(entityName: "UploadedSSData")
-		uploadedSweetSpotsMOC?.performBlockAndWait() {
+        //let fetchRequest = NSFetchRequest(entityName: "UploadedSSData")
+        let request = NSFetchRequest<UploadedSSData>()
+		uploadedSweetSpotsMOC?.performAndWait() {
 			do {
-				let fetchedArray = try self.uploadedSweetSpotsMOC?.executeFetchRequest(fetchRequest)
+                guard let fetchedArray = try self.uploadedSweetSpotsMOC?.fetch(request) else {
+                    return
+                }
 				
-				for ssData in fetchedArray as! [UploadedSSData] where ssData.songUUID != nil {
+				for ssData in fetchedArray as [UploadedSSData] where ssData.songUUID != nil {
 					
 					self.uploadedSweetSpots[ssData.songUUID!] = ssData
 					print("The ssData songUUID is \(ssData.songUUID) and its sweetspots \(ssData.sweetSpots)")
@@ -89,7 +92,7 @@ class TGSweetSpotLocalStore : SweetSpotLocalStore {
 	}
 
 
-	func markSweetSpotAsUploaded(uuid : String, sweetSpot : SweetSpot) {
+	func markSweetSpotAsUploaded(_ uuid : String, sweetSpot : SweetSpot) {
 	
 		var uploadedSS = uploadedSweetSpots[uuid]
 		
@@ -101,7 +104,7 @@ class TGSweetSpotLocalStore : SweetSpotLocalStore {
 
 			// The song already has a set of sweetspots so we need to add to it.
 			let existingSS = NSMutableArray(array: uploadedSS!.sweetSpots!)
-			existingSS.addObject(sweetSpot)
+			existingSS.add(sweetSpot)
 			uploadedSS!.sweetSpots = existingSS.copy() as! NSArray as [AnyObject]
 		}
 
@@ -114,7 +117,7 @@ class TGSweetSpotLocalStore : SweetSpotLocalStore {
 		precondition(uploadedSweetSpotsMOC != nil)
 		
 		if uploadedSweetSpotsMOC!.hasChanges {
-			uploadedSweetSpotsMOC!.performBlockAndWait() {
+			uploadedSweetSpotsMOC!.performAndWait() {
 				do {
 					try self.uploadedSweetSpotsMOC!.save()
 				} catch {
@@ -141,12 +144,12 @@ class TGSweetSpotLocalStore : SweetSpotLocalStore {
 
 extension TGSweetSpotLocalStore : SweetSpotControllerLocalStoreDelegate {
 	
-	func sweetSpotHasBeenUploaded(theSS: Double, song : TGSong) -> Bool {
+	func sweetSpotHasBeenUploaded(_ theSS: Double, song : TGSong) -> Bool {
 		if	let songUUID = song.UUId,
 			let ssData = uploadedSweetSpots[songUUID] as UploadedSSData?,
 			let sweetSpots = ssData.sweetSpots as NSArray? {
 				
-				return sweetSpots.containsObject(theSS)
+				return sweetSpots.contains(theSS)
 		}
 		return false
 	}

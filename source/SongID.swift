@@ -24,7 +24,7 @@ public class SongId : Hashable {
         idValue = string.hash
     }
     
-    func isEqualToSongId(anId: SongId) -> Bool {
+    func isEqualToSongId(_ anId: SongId) -> Bool {
         return anId.idValue == self.idValue
     }
     

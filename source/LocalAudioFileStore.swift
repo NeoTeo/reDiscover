@@ -31,25 +31,25 @@ extension LocalAudioFileStore {
         executionTime for just finding urls and returning them as array  = 21.6866909861565
     )
     */
-    static func applyAudioURLsToClosure(topURL: NSURL, closure: (NSURL) -> () ) {
+    static func applyAudioURLsToClosure(_ topURL: URL, closure: (URL) -> () ) {
         
-        let fileManager = NSFileManager.defaultManager()
-        if let enumerator = fileManager.enumeratorAtURL(topURL,
-            includingPropertiesForKeys: [NSURLIsDirectoryKey],
-            options: NSDirectoryEnumerationOptions(),
-            errorHandler: { (url: NSURL!, error: NSError!) -> Bool in
+        let fileManager = FileManager.default()
+        if let enumerator = fileManager.enumerator(at: topURL,
+            includingPropertiesForKeys: [URLResourceKey.isDirectoryKey.rawValue],
+            options: FileManager.DirectoryEnumerationOptions(),
+            errorHandler: { (url: URL!, error: NSError!) -> Bool in
                 print("Error reading URL")
                 return true
         }) {
             
-            for url in enumerator.allObjects as! [NSURL] {
+            for url in enumerator.allObjects as! [URL] {
 
                 var isDirectory: AnyObject?
                 do {
-                    try url.getResourceValue(&isDirectory, forKey: NSURLIsDirectoryKey)
+                    try (url as NSURL).getResourceValue(&isDirectory, forKey: URLResourceKey.isDirectoryKey)
                     
                     if isDirectory?.boolValue == false {
-                        if LocalFileIO.getURLContentType(url) == .Audio {
+                        if LocalFileIO.getURLContentType(url) == .audio {
                             closure(url)
                         }
                     }
@@ -61,25 +61,25 @@ extension LocalAudioFileStore {
         }
     }
     
-    static func songURLsFromURL(theURL: NSURL) -> [NSURL]? {
+    static func songURLsFromURL(_ theURL: URL) -> [URL]? {
         
-        let fileManager = NSFileManager.defaultManager()
-        if let enumerator = fileManager.enumeratorAtURL(theURL,
-            includingPropertiesForKeys: [NSURLIsDirectoryKey],
-            options: NSDirectoryEnumerationOptions(),
-            errorHandler: { (url: NSURL!, error: NSError!) -> Bool in
+        let fileManager = FileManager.default()
+        if let enumerator = fileManager.enumerator(at: theURL,
+            includingPropertiesForKeys: [URLResourceKey.isDirectoryKey.rawValue],
+            options: FileManager.DirectoryEnumerationOptions(),
+            errorHandler: { (url: URL!, error: NSError!) -> Bool in
                 print("Error reading URL")
                 return true
         }) {
             
-            var songURLs = [NSURL]()
-            for url in enumerator.allObjects as! [NSURL] {
+            var songURLs = [URL]()
+            for url in enumerator.allObjects as! [URL] {
                 var isDirectory: AnyObject?
 
                 do {
-                    try url.getResourceValue(&isDirectory, forKey: NSURLIsDirectoryKey)
+                    try (url as NSURL).getResourceValue(&isDirectory, forKey: URLResourceKey.isDirectoryKey)
                     if isDirectory?.boolValue == false {
-                        if LocalFileIO.getURLContentType(url) == .Audio {
+                        if LocalFileIO.getURLContentType(url) == .audio {
                             songURLs.append(url)
                         }
                     }

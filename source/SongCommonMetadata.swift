@@ -37,7 +37,7 @@ public class SongCommonMetaData : NSObject, NSCopying {
         self.duration       = duration
     }
     
-    public func copyWithZone(zone: NSZone) -> AnyObject {
+    public func copy(with zone: NSZone?) -> AnyObject {
         return SongCommonMetaData(title: title, album: album, artist: artist, year: year, genre: genre, duration: duration)
     }
 }
@@ -68,10 +68,10 @@ extension SongCommonMetaData {
     - parameter songId
     - returns: An array of NSImages or an empty array if nothing was found.
     */
-    static func getCoverArtForSong(song : TGSong) -> [NSImage?] {
+    static func getCoverArtForSong(_ song : TGSong) -> [NSImage?] {
         
         if let metadata = SongCommonMetaData.commonMetadataForSong(song) as? [AVMetadataItem] {
-            let artworks = AVMetadataItem.metadataItemsFromArray(metadata, withKey: AVMetadataCommonKeyArtwork, keySpace:AVMetadataKeySpaceCommon) as [AVMetadataItem]
+            let artworks = AVMetadataItem.metadataItems(from: metadata, withKey: AVMetadataCommonKeyArtwork, keySpace:AVMetadataKeySpaceCommon) as [AVMetadataItem]
             
             var retArt = [NSImage?]()
             for aw: AVMetadataItem in artworks where aw.dataValue != nil {
@@ -84,13 +84,13 @@ extension SongCommonMetaData {
         return [nil]
     }
 
-    private class func commonMetadataForSong(song : TGSong) -> [AnyObject]? {
+    private class func commonMetadataForSong(_ song : TGSong) -> [AnyObject]? {
 
 //        if  let sng = SongPool.songForSongId(songId) where sng.urlString != nil,
         if song.urlString != nil,
-            let url = NSURL(string: song.urlString!) {
+            let url = URL(string: song.urlString!) {
 //                print("commonMetadataForSong song \(sng.songID) sweeties \(sng.sweetSpots)")
-                let songAsset = AVURLAsset(URL: url , options: nil)
+                let songAsset = AVURLAsset(url: url , options: nil)
                 return songAsset.commonMetadata
         }
         return nil
@@ -114,7 +114,7 @@ extension SongCommonMetaData {
         return nil
     }
 */
-    static func loadedMetaDataForSongId(song: TGSong) -> SongCommonMetaData? {
+    static func loadedMetaDataForSongId(_ song: TGSong) -> SongCommonMetaData? {
         
         guard let rawMetadata = SongCommonMetaData.commonMetadataForSong(song) else { return nil }
         
@@ -182,19 +182,19 @@ extension SongCommonMetaData {
         var year: UInt      = 0
         let metadata        = metadata as! [AVMetadataItem]
 
-        let titles = AVMetadataItem.metadataItemsFromArray(metadata,
+        let titles = AVMetadataItem.metadataItems(from: metadata,
             withKey: AVMetadataCommonKeyTitle,
             keySpace:AVMetadataKeySpaceCommon)
         
-        let albums = AVMetadataItem.metadataItemsFromArray(metadata,
+        let albums = AVMetadataItem.metadataItems(from: metadata,
             withKey: AVMetadataCommonKeyAlbumName,
             keySpace:AVMetadataKeySpaceCommon)
         
-        let artists = AVMetadataItem.metadataItemsFromArray(metadata,
+        let artists = AVMetadataItem.metadataItems(from: metadata,
             withKey: AVMetadataCommonKeyArtist,
             keySpace:AVMetadataKeySpaceCommon)
         
-        let years = AVMetadataItem.metadataItemsFromArray(metadata, 
+        let years = AVMetadataItem.metadataItems(from: metadata, 
             withKey: AVMetadataCommonKeyCreationDate,
             keySpace:AVMetadataKeySpaceCommon)
 
@@ -204,10 +204,10 @@ extension SongCommonMetaData {
         
         //FIXME: Beware, this can also be a string value!
         //print("YEARS: \(years)")
-        if years.count > 0 && years[0].key!.isKindOfClass(NSNumber) {
+        if years.count > 0 && years[0].key! is NSNumber {
             if let num = years[0].numberValue {
                 //year = years[0].numberValue?.unsignedIntegerValue as! UInt
-                year = num.unsignedLongValue
+                year = num.uintValue
                 //print("Magic!~~ \(year)")
             }
         }
@@ -220,7 +220,7 @@ extension SongCommonMetaData {
         
         let metadata = metadata as! [AVMetadataItem]
         
-        let artworks = AVMetadataItem.metadataItemsFromArray(metadata, withKey: AVMetadataCommonKeyArtwork, keySpace:AVMetadataKeySpaceCommon)
+        let artworks = AVMetadataItem.metadataItems(from: metadata, withKey: AVMetadataCommonKeyArtwork, keySpace:AVMetadataKeySpaceCommon)
         
         var retArt = [NSImage?]()
         let aw = artworks[0]
@@ -245,7 +245,7 @@ extension SongCommonMetaData {
         var artist: String = "No artist"
         var year: UInt = 0
         
-        if let songURL = NSURL(string: urlString) {
+        if let songURL = URL(string: urlString) {
             //let pathString = songURL.path
             
             if let metadata = MDItemCreateWithURL(kCFAllocatorDefault, songURL) {
@@ -263,7 +263,7 @@ extension SongCommonMetaData {
     }
     
     // replaces SongPool requestEmbeddedMetadataForSongID:
-    static func metaDataForSong(song: TGSong) -> SongCommonMetaData {
+    static func metaDataForSong(_ song: TGSong) -> SongCommonMetaData {
         return song.metadata!
     }
 }

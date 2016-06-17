@@ -9,7 +9,7 @@
 import Cocoa
 
 extension NSView {
-    private func _printAllSubviews(indentString: String) {
+    private func _printAllSubviews(_ indentString: String) {
         Swift.print(indentString+"This view is: \(self)")
         for sv in self.subviews {
             sv._printAllSubviews(indentString+"  ")

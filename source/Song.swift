@@ -18,12 +18,12 @@ class Song : NSObject, TGSong {
     let metadata: SongCommonMetaData?
     let artID: String?
     let fingerPrint: String?
-    let songReleases: NSData?
+    let songReleases: Data?
     let UUId: String?
     let RelId: String?
     
     required init(songId: SongId, metadata: SongCommonMetaData?, urlString: String?, sweetSpots: Set<SweetSpot>?,
-        fingerPrint: String?, selectedSS: SweetSpot?, releases: NSData?, artId: String?, UUId: String?, RelId: String?) {
+        fingerPrint: String?, selectedSS: SweetSpot?, releases: Data?, artId: String?, UUId: String?, RelId: String?) {
             
             self.songId              = songId
             self.urlString           = urlString
@@ -39,21 +39,21 @@ class Song : NSObject, TGSong {
 }
 
 public enum SongProperty: Hashable {
-    case Id
-    case Metadata
-    case UrlString
-    case SweetSpots
-    case Fingerprint
-    case SelectedSS
-    case Releases
-    case ArtId
-    case UuId
-    case RelId
+    case id
+    case metadata
+    case urlString
+    case sweetSpots
+    case fingerprint
+    case selectedSS
+    case releases
+    case artId
+    case uuId
+    case relId
 }
 
 extension Song {
     
-    static func songWithChanges(theSong: TGSong, changes: [SongProperty : AnyObject]) -> TGSong {
+    static func songWithChanges(_ theSong: TGSong, changes: [SongProperty : AnyObject]) -> TGSong {
         
         var songId      = theSong.songId
         var metadata    = theSong.metadata
@@ -69,25 +69,25 @@ extension Song {
         for (change, obj) in changes {
             
             switch change {
-            case .Id:
+            case .id:
                 songId = obj as! SongId
-            case .Metadata:
+            case .metadata:
                 metadata = obj as? SongCommonMetaData
-            case .UrlString:
+            case .urlString:
                 urlString = obj as? String
-            case .SweetSpots:
+            case .sweetSpots:
                 sweetspots = obj as? Set<SweetSpot>
-            case .Fingerprint:
+            case .fingerprint:
                 fingerprint = obj as? String
-            case .SelectedSS:
+            case .selectedSS:
                 selectedSS = obj as? SweetSpot
-            case .Releases:
-                releases = obj as? NSData
-            case .ArtId:
+            case .releases:
+                releases = obj as? Data
+            case .artId:
                 artId = obj as? String
-            case .UuId:
+            case .uuId:
                 uuid = obj as? String
-            case .RelId:
+            case .relId:
                 relid = obj as? String
             }
         }
@@ -109,7 +109,7 @@ extension Song {
         
         guard let dur = metadata?.duration else { return nil }
         
-        return NSNumber(double: dur)
+        return NSNumber(value: dur)
     }
     
     

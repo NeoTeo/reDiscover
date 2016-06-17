@@ -22,9 +22,9 @@ import AVFoundation
 //}
 
 protocol SongPlaybackControllerDelegate {
-    func getSong(songId : SongId) -> TGSong?
-    func getUrl(songId : SongId) -> NSURL?
-    func getSongId(gridPos : NSPoint, resolvingIsAllowed : Bool) -> SongId?
+    func getSong(_ songId : SongId) -> TGSong?
+    func getUrl(_ songId : SongId) -> URL?
+    func getSongId(_ gridPos : NSPoint, resolvingIsAllowed : Bool) -> SongId?
 }
 
 /** TGSongPlaybackController cannot be a struct because it has dynamic properties
@@ -78,7 +78,7 @@ class TGSongPlaybackController : NSObject {
 /** Accessors */
 extension TGSongPlaybackController {
 
-    func updateCurrentSongDuration(newDuration : NSNumber?) {
+    func updateCurrentSongDuration(_ newDuration : NSNumber?) {
         currentSongDuration = newDuration
     }
     
@@ -97,23 +97,23 @@ extension TGSongPlaybackController {
 
 extension TGSongPlaybackController {
     
-    func setVolume(value : Float) {
+    func setVolume(_ value : Float) {
         songAudioPlayer.setVolume(0.2)
     }
     
-    func setSongPlaybackObserver(songPlayer : AVPlayer) {
+    func setSongPlaybackObserver(_ songPlayer : AVPlayer) {
         
         /// Since the timerObserver must survive its call we make its parameters weak
         let timerObserver = { [weak self, weak songPlayer] (time : CMTime) -> () in
             /// FIXME : When songPlayer is nil it might be a sign that we're not properly
             /// sync'ing ! Fix
             let currentPlaybackTime = songPlayer!.currentTime()
-            self!.songDidUpdatePlayheadPosition(NSNumber(double: CMTimeGetSeconds(currentPlaybackTime)))
+            self!.songDidUpdatePlayheadPosition(NSNumber(value: CMTimeGetSeconds(currentPlaybackTime)))
         }
         songAudioPlayer.setSongPlayer(songPlayer, block: timerObserver)
     }
     
-    func refreshCache(context : SongSelectionContext) {
+    func refreshCache(_ context : SongSelectionContext) {
 
         /// Cache songs using the context
         songAudioCacher.cacheWithContext(context)
@@ -131,7 +131,7 @@ extension TGSongPlaybackController {
          just play the song from the start.
          :params: songID The id of the song to play.
      */
-    func requestSongPlayback(songId: SongId) {
+    func requestSongPlayback(_ songId: SongId) {
         
         guard let song = delegate?.getSong(songId) else { return }
         let startTime = SweetSpotController.selectedSweetSpotForSong(song)
@@ -140,7 +140,7 @@ extension TGSongPlaybackController {
     }
 
     
-    func requestSongPlayback(songId : SongId, withStartTimeInSeconds time : NSNumber?) {
+    func requestSongPlayback(_ songId : SongId, withStartTimeInSeconds time : NSNumber?) {
 
         /// Ensure we have a delegate to call.
         precondition(delegate != nil)
@@ -153,7 +153,7 @@ extension TGSongPlaybackController {
             
             self.setSongPlaybackObserver(player)
             let song = self.delegate?.getSong(songId)
-            let startTime = time ?? SweetSpotController.selectedSweetSpotForSong(song!) ?? NSNumber(double: 0)
+            let startTime = time ?? SweetSpotController.selectedSweetSpotForSong(song!) ?? NSNumber(value: 0)
             
             self.songAudioPlayer.playAtTime(startTime.doubleValue)
             self.currentlyPlayingSongId = songId
@@ -167,26 +167,26 @@ extension TGSongPlaybackController {
         }
     }
 
-    func songDidUpdatePlayheadPosition(playheadPosition : NSNumber) {
+    func songDidUpdatePlayheadPosition(_ playheadPosition : NSNumber) {
         /** Do on the main thread to avoid upsetting CoreAnimation.
             playheadPos property is bound to playlistProgress (which is an NSView).
         */
-        dispatch_sync(dispatch_get_main_queue()){
+        DispatchQueue.main.sync{
             self.playheadPos = playheadPosition
         }
     }
 	
-	func isCached(songId : SongId) -> Bool {
+	func isCached(_ songId : SongId) -> Bool {
 		return songAudioCacher.isCached(songId)
 	}
 }
 
 extension TGSongPlaybackController : SongAudioCacherDelegate {
-    func getUrl(songId : SongId) -> NSURL? {
+    func getUrl(_ songId : SongId) -> URL? {
         return delegate?.getUrl(songId)
     }
     
-    func getSongId(gridPos : NSPoint) -> SongId? {
+    func getSongId(_ gridPos : NSPoint) -> SongId? {
         return delegate?.getSongId(gridPos, resolvingIsAllowed: true)
     }
 }

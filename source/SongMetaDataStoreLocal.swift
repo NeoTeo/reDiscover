@@ -18,7 +18,7 @@ class SongMetaDataStoreLocal : SongMetaDataStore {
 }
 
 extension SongMetaDataStoreLocal {
-    static func add(songMetaData: SongMetaData, songStore: SongMetaDataStore) -> SongMetaDataStore {
+    static func add(_ songMetaData: SongMetaData, songStore: SongMetaDataStore) -> SongMetaDataStore {
         
         var allSongs = songStore.allSongMetaData
         allSongs[songMetaData.generatedMetaData.URLString] = songMetaData
@@ -30,7 +30,7 @@ extension SongMetaDataStoreLocal {
         return nil
     }
     
-    static func save(songStore: SongMetaDataStore) {
+    static func save(_ songStore: SongMetaDataStore) {
         
     }
     

@@ -10,12 +10,12 @@ import Foundation
 
 class Hasher {
     
-    class func hashFromString(inString: String) -> String {
+    class func hashFromString(_ inString: String) -> String {
         //let str = inString.cStringUsingEncoding(NSUTF8StringEncoding)
-        let strLen = CUnsignedInt(inString.lengthOfBytesUsingEncoding(NSUTF8StringEncoding))
+        let strLen = CUnsignedInt(inString.lengthOfBytes(using: String.Encoding.utf8))
         let digestLen = Int(CC_MD5_DIGEST_LENGTH)
         
-        let result = UnsafeMutablePointer<CUnsignedChar>.alloc(digestLen)
+        let result = UnsafeMutablePointer<CUnsignedChar>(allocatingCapacity: digestLen)
         
         CC_MD5(inString, strLen, result)
         
@@ -24,7 +24,7 @@ class Hasher {
             hash.appendFormat("%02x", result[i])
         }
         
-        result.destroy()
+        result.deinitialize()
         
         return hash as String
     }

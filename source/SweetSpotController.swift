@@ -10,14 +10,14 @@ import Foundation
 
 protocol SweetSpotControllerDelegate {
     func addSong(withChanges changes: [SongProperty : AnyObject], forSongId songId: SongId)
-    func getSong(songId : SongId) -> TGSong?
+    func getSong(_ songId : SongId) -> TGSong?
 }
 
 protocol SweetSpotControllerLocalStoreDelegate {
 	
 	func storeUploadedSweetSpotsDictionary()
-	func markSweetSpotAsUploaded(uuid : String, sweetSpot : SweetSpot)
-	func sweetSpotHasBeenUploaded(theSS: Double, song : TGSong) -> Bool
+	func markSweetSpotAsUploaded(_ uuid : String, sweetSpot : SweetSpot)
+	func sweetSpotHasBeenUploaded(_ theSS: Double, song : TGSong) -> Bool
 
 }
 
@@ -46,10 +46,10 @@ public class SweetSpotController : NSObject {
 	
     /// Set the song's selected sweet spot to the given time.
     func addSweetSpot(atTime time: SweetSpot, forSongId songId: SongId) {
-        delegate?.addSong(withChanges: [.SelectedSS : time], forSongId: songId)
+        delegate?.addSong(withChanges: [.selectedSS : time], forSongId: songId)
     }
     
-    static func selectedSweetSpotForSong(song: TGSong) -> SweetSpot? {
+    static func selectedSweetSpotForSong(_ song: TGSong) -> SweetSpot? {
         
         return song.selectedSweetSpot
         /// FIXME:
@@ -69,7 +69,7 @@ public class SweetSpotController : NSObject {
         return song.sweetSpots //as? [SweetSpot]
     }
 	
-	func uploadSweetSpots(songId : SongId) {
+	func uploadSweetSpots(_ songId : SongId) {
 		
 		guard let song = delegate?.getSong(songId) else { return }
 		
@@ -81,7 +81,7 @@ public class SweetSpotController : NSObject {
 		Initiate a request for sweet spots for the song with the given song id.
 		Will post a SweetSpotsUpdated notification when done.
 	*/
-	func requestSweetSpots(songId : SongId) {
+	func requestSweetSpots(_ songId : SongId) {
 		sweetSpotServerIO.requestSweetSpotsForSongID(songId)
 	}
 	
@@ -89,7 +89,7 @@ public class SweetSpotController : NSObject {
 		Promotes the currently selected sweet spot to the sweet spot set so that 
 		it can be uploaded and saved.
 	*/
-	func promoteSelectedSweetSpot(songId : SongId) {
+	func promoteSelectedSweetSpot(_ songId : SongId) {
 
 		guard let song		 = delegate?.getSong(songId) else { return }
 		guard let selectedSS = song.selectedSweetSpot else { return }
@@ -99,7 +99,7 @@ public class SweetSpotController : NSObject {
 		newSweetSpots.insert(selectedSS)
 		
 		/// Update the song in the song pool with the changed sweet spots.
-		delegate?.addSong(withChanges: [.SweetSpots : newSweetSpots], forSongId: songId)
+		delegate?.addSong(withChanges: [.sweetSpots : newSweetSpots], forSongId: songId)
 	}
 	
 	func storeSweetSpots() {
@@ -116,7 +116,7 @@ public class SweetSpotController : NSObject {
 
 extension SweetSpotController : SweetSpotServerIODelegate {
 	
-	func getSong(songId : SongId) -> TGSong? {
+	func getSong(_ songId : SongId) -> TGSong? {
 		return delegate?.getSong(songId)
 	}
 	
@@ -124,11 +124,11 @@ extension SweetSpotController : SweetSpotServerIODelegate {
 		delegate?.addSong(withChanges: changes, forSongId: songId)
 	}
 	
-	func sweetSpotHasBeenUploaded(theSS: Double, song : TGSong) -> Bool {
+	func sweetSpotHasBeenUploaded(_ theSS: Double, song : TGSong) -> Bool {
 		return storeDelegate.sweetSpotHasBeenUploaded(theSS, song: song)
 	}
 	
-	func markSweetSpotAsUploaded(uuid : String, sweetSpot : SweetSpot) {
+	func markSweetSpotAsUploaded(_ uuid : String, sweetSpot : SweetSpot) {
 		storeDelegate.markSweetSpotAsUploaded(uuid, sweetSpot: sweetSpot)
 	}
 }

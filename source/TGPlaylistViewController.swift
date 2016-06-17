@@ -9,9 +9,9 @@
 import Cocoa
 
 protocol PlaylistViewControllerDelegate {
-    func getSong(songId : SongId) -> TGSong?
-    func requestPlayback(songId: SongId, startTimeInSeconds: NSNumber)
-    func selectIndirectly(songId : SongId)
+    func getSong(_ songId : SongId) -> TGSong?
+    func requestPlayback(_ songId: SongId, startTimeInSeconds: NSNumber)
+    func selectIndirectly(_ songId : SongId)
 }
 
 public class TGPlaylistViewController : NSViewController, NSTableViewDataSource, NSTableViewDelegate {
@@ -29,12 +29,12 @@ public class TGPlaylistViewController : NSViewController, NSTableViewDataSource,
             playlist = TGPlaylist()
             
             playlist.delegate = self
-            playlistTableView.setDelegate(self)
-            playlistTableView.setDataSource(self)
+            playlistTableView.delegate = self
+            playlistTableView.dataSource = self
         }
     }
     
-    override init?(nibName nibNameOrNil: String?, bundle nibBundleOrNil: NSBundle?) {
+    override init?(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
         super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
     }
     
@@ -72,14 +72,14 @@ public class TGPlaylistViewController : NSViewController, NSTableViewDataSource,
 
 /// NSTableViewDataSource delegate methods
 extension TGPlaylistViewController {
-    
-    public func numberOfRowsInTableView(tableview : NSTableView) -> Int {
+
+    @objc(numberOfRowsInTableView:) public func numberOfRows(in tableView: NSTableView) -> Int {
         return playlist.songsInPlaylist()
     }
     
-    public func tableView(tableView: NSTableView, viewForTableColumn tableColumn: NSTableColumn?, row: Int) -> NSView? {
+    @objc(tableView:viewForTableColumn:row:) public func tableView(_ tableView: NSTableView, viewFor tableColumn: NSTableColumn?, row: Int) -> NSView? {
         
-        guard let resultCell  = tableView.makeViewWithIdentifier("SongCell", owner: self) as? TGPlaylistCellView,
+        guard let resultCell  = tableView.make(withIdentifier: "SongCell", owner: self) as? TGPlaylistCellView,
             let id = playlist.getSongId(atIndex: row),
             let song = delegate?.getSong(id) else {
                 return nil
@@ -99,7 +99,7 @@ extension TGPlaylistViewController {
 /// NSTableViewDelegate methods
 extension TGPlaylistViewController {
     
-    public func tableViewSelectionDidChange(notification: NSNotification) {
+    public func tableViewSelectionDidChange(_ notification: Notification) {
         let selectedRow = playlistTableView.selectedRow
         if selectedRow >= 0 {
             playlist.positionInPlaylist = selectedRow
@@ -115,13 +115,13 @@ extension TGPlaylistViewController {
     }
     
     /// Ensure the row height is sufficient.
-    public func tableView(tableView: NSTableView,heightOfRow row: Int) -> CGFloat {
+    public func tableView(_ tableView: NSTableView,heightOfRow row: Int) -> CGFloat {
         return 67
     }
 }
 
 extension TGPlaylistViewController : PlaylistDelegate {
-    func getSong(songId : SongId) -> TGSong? {
+    func getSong(_ songId : SongId) -> TGSong? {
         return delegate?.getSong(songId)
     }
 }

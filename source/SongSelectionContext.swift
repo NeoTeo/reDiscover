@@ -17,7 +17,7 @@ public protocol SongSelectionContext {
     var cachingMethod: CachingMethod { get }
 	
 	/// A closure called after the completion of the caching task
-	var postCompletion: ([SongId] -> Void)? { get set }
+	var postCompletion: (([SongId]) -> Void)? { get set }
 }
 
 //struct TGSongSelectionContext : SongSelectionContext {
@@ -28,7 +28,7 @@ final class TGSongSelectionContext : NSObject, SongSelectionContext {
     let gridDimensions: NSPoint
     let cachingMethod: CachingMethod
 	
-	var postCompletion : ([SongId] -> Void)?
+	var postCompletion : (([SongId]) -> Void)?
 	
     init(selectedSongId: SongId,
         speedVector: NSPoint,

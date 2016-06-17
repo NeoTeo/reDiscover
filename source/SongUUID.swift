@@ -23,18 +23,18 @@ class SongUUID : NSObject {
 //        return SongPool.songForSongId(songId)?.UUId
 //    }
 
-    static func getUUIDForSong(song: TGSong) -> String? {
+    static func getUUIDForSong(_ song: TGSong) -> String? {
         return song.UUId
     }
     
-    static func songWithNewUUId(song: TGSong, newUUId: String, newReleaseId: String?) -> TGSong {
+    static func songWithNewUUId(_ song: TGSong, newUUId: String, newReleaseId: String?) -> TGSong {
         return Song(songId: song.songId, metadata: song.metadata, urlString: song.urlString,
             sweetSpots: song.sweetSpots, fingerPrint: song.fingerPrint, selectedSS: song.selectedSweetSpot,
             releases: song.songReleases, artId: song.artID, UUId: newUUId, RelId: newReleaseId)
     }
     
-    class func extractUUIDFromDictionary(songDict: NSDictionary) -> String? {
-        if let uuidString = songDict.objectForKey("id") as? String {
+    class func extractUUIDFromDictionary(_ songDict: NSDictionary) -> String? {
+        if let uuidString = songDict.object(forKey: "id") as? String {
             return uuidString
         }
         return nil

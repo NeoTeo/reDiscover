@@ -9,10 +9,10 @@
 import Foundation
 
 protocol SongMetadataUpdaterDelegate {
-    func getSong(songId : SongId) -> TGSong?
+    func getSong(_ songId : SongId) -> TGSong?
     func addSong(withChanges changes: [SongProperty : AnyObject], forSongId songId: SongId)
-	func sendSweetSpotsRequest(songId : SongId)
-	func isCached(songId : SongId) -> Bool
+	func sendSweetSpotsRequest(_ songId : SongId)
+	func isCached(_ songId : SongId) -> Bool
 }
 
 public class SongMetadataUpdater {
@@ -23,9 +23,9 @@ public class SongMetadataUpdater {
 	private var songUpdateTracker: SongMetadataUpdateTracker = TGSongMetadataUpdateTracker()
 
 	/// An operation queue for udating the cache as a whole. Used by the cacher.
-	private let songCacheDataUpdaterOpQ = NSOperationQueue()
+	private let songCacheDataUpdaterOpQ = OperationQueue()
 	
-    private let songDataUpdaterOpQ = NSOperationQueue()
+    private let songDataUpdaterOpQ = OperationQueue()
     private var albumCollection = AlbumCollection()
 	
     init(delegate : SongMetadataUpdaterDelegate) {
@@ -34,15 +34,15 @@ public class SongMetadataUpdater {
 
 		/// Make the two operations queues effectively serial.
 		songCacheDataUpdaterOpQ.maxConcurrentOperationCount = 1
-		songCacheDataUpdaterOpQ.qualityOfService = .UserInitiated
+		songCacheDataUpdaterOpQ.qualityOfService = .userInitiated
 		
 		songDataUpdaterOpQ.maxConcurrentOperationCount = 1
-		songDataUpdaterOpQ.qualityOfService = .UserInitiated
+		songDataUpdaterOpQ.qualityOfService = .userInitiated
 
     }
 	
 	
-	func requestUpdatedData(cachedSongIds : [SongId]) {
+	func requestUpdatedData(_ cachedSongIds : [SongId]) {
 		
 		/// Clear the previous cache request
 		songCacheDataUpdaterOpQ.cancelAllOperations()
@@ -74,7 +74,7 @@ public class SongMetadataUpdater {
 		}
 		print("requestUpdatedData ALL GOOD")
         /// Let any interested parties know we've started updating the current song.
-        NSNotificationCenter.defaultCenter().postNotificationName("songDidStartUpdating", object: songId)
+        NotificationCenter.default().post(name: Notification.Name(rawValue: "songDidStartUpdating"), object: songId)
         
 		
         // Override all previous ops by cancelling them and adding the new one.
@@ -84,35 +84,35 @@ public class SongMetadataUpdater {
         
     }
 	
-	func runMetadataUpdate(opQueue : NSOperationQueue, songId : SongId) {
+	func runMetadataUpdate(_ opQueue : OperationQueue, songId : SongId) {
 		
 		/// All the calls inside the blocks are synchronous.
-		let updateMetadataOp = NSBlockOperation {
+		let updateMetadataOp = BlockOperation {
 			self.updateMetadata(forSongId: songId)
 			
 			/// At this point we can signal that the metadata is up to date
-			NSNotificationCenter.defaultCenter().postNotificationName("songMetaDataUpdated", object: songId)
+			NotificationCenter.default().post(name: Notification.Name(rawValue: "songMetaDataUpdated"), object: songId)
 		}
-		let fingerPrinterOp = NSBlockOperation {
+		let fingerPrinterOp = BlockOperation {
 			/// If fingerPrinter is an empty optional we want it to crash.
 			//            updateFingerPrint(forSongId: songId, withFingerPrinter: fingerPrinter! )
 			self.updateFingerPrint(forSongId: songId )
 		}
 		/// This relies on the fingerprint to request the UUId from  a server.
-		let remoteDataOp = NSBlockOperation {
+		let remoteDataOp = BlockOperation {
 			/// If songAudioPlayer is an empty optional we want it to crash.
 			if let song = self.delegate?.getSong(songId),
 				let duration = song.duration() {
 					self.updateRemoteData(forSongId: songId, withDuration: duration)
 			}
 		}
-		let updateAlbumOp = NSBlockOperation {
+		let updateAlbumOp = BlockOperation {
 			self.albumCollection = self.albumCollection.update(albumContainingSongId: songId, usingOldCollection: self.albumCollection)
 		}
-		let checkArtOp = NSBlockOperation {
+		let checkArtOp = BlockOperation {
 			self.checkForArt(forSongId: songId, inAlbumCollection: self.albumCollection)
 		}
-		let fetchSweetspotsOp = NSBlockOperation {
+		let fetchSweetspotsOp = BlockOperation {
 			//            SweetSpotServerIO.requestSweetSpotsForSongID(songId)
 			/// Initiate a request for sweet spots from the remote server.
 			self.delegate?.sendSweetSpotsRequest(songId)
@@ -155,7 +155,7 @@ public class SongMetadataUpdater {
         
         guard let metadata = SongCommonMetaData.loadedMetaDataForSongId(song) else { return }
 
-        delegate?.addSong(withChanges: [.Metadata : metadata], forSongId: songId)
+        delegate?.addSong(withChanges: [.metadata : metadata], forSongId: songId)
         
         /// Let anyone listening know that we've updated the metadata for the songId.
 //        NSNotificationCenter.defaultCenter().postNotificationName("songMetaDataUpdated", object: songId)
@@ -170,12 +170,12 @@ public class SongMetadataUpdater {
         // If the song has not yet a uuid, get one.
         let uuid = song.UUId
         if uuid == nil {
-            let durationInSeconds = UInt(duration.integerValue) //UInt(CMTimeGetSeconds(duration))
+            let durationInSeconds = UInt(duration.intValue) //UInt(CMTimeGetSeconds(duration))
             if let acoustIdData = AcoustIDWebService.dataDict(forFingerprint: fingerprint, ofDuration: durationInSeconds),
                 let songUUId = SongUUID.extractUUIDFromDictionary(acoustIdData),
                 let bestRelease = AcoustIDWebService.bestMatchRelease(forSong: song, inDictionary: acoustIdData),
-                let releaseId = bestRelease.objectForKey("id") {
-                    delegate?.addSong(withChanges: [.RelId : releaseId, .UuId : songUUId], forSongId: songId)
+                let releaseId = bestRelease.object(forKey: "id") {
+                    delegate?.addSong(withChanges: [.relId : releaseId, .uuId : songUUId], forSongId: songId)
             }
         }
     }
@@ -187,7 +187,7 @@ public class SongMetadataUpdater {
         // If there is no fingerprint, generate one sync'ly - this can be slow!
         if song.fingerPrint == nil,
             let urlString = song.urlString,
-            let songUrl = NSURL(string : urlString),
+            let songUrl = URL(string : urlString),
             let (newFingerPrint, duration) = TGSongFingerprinter.fingerprint(forSongUrl: songUrl) {
                 
                 /// Merge the duration into any existing metadata
@@ -204,9 +204,9 @@ public class SongMetadataUpdater {
                     metadata = SongCommonMetaData(duration: duration)
                 }
                 
-                delegate?.addSong(withChanges: [.Fingerprint : newFingerPrint, .Metadata : metadata!], forSongId: songId)
+                delegate?.addSong(withChanges: [.fingerprint : newFingerPrint, .metadata : metadata!], forSongId: songId)
                 
-                NSNotificationCenter.defaultCenter().postNotificationName("songMetaDataUpdated", object: songId)
+                NotificationCenter.default().post(name: Notification.Name(rawValue: "songMetaDataUpdated"), object: songId)
         }
         
     }
@@ -219,11 +219,11 @@ public class SongMetadataUpdater {
             if let image = SongArtFinder.findArtForSong(song, collection: collection) {
                 
                 let newArtId = SongArt.addImage(image)
-                delegate?.addSong(withChanges: [.ArtId : newArtId], forSongId: songId)
+                delegate?.addSong(withChanges: [.artId : newArtId], forSongId: songId)
             }
         }
         
-        NSNotificationCenter.defaultCenter().postNotificationName("songCoverUpdated", object: songId)
+        NotificationCenter.default().post(name: Notification.Name(rawValue: "songCoverUpdated"), object: songId)
     }
 }
 
@@ -231,7 +231,7 @@ public class SongMetadataUpdater {
 /// let's see if any other requirements surface.
 extension SongMetadataUpdater : AlbumCollectionDelegate {
     
-    func getSong(songId : SongId) -> TGSong? {
+    func getSong(_ songId : SongId) -> TGSong? {
         return delegate?.getSong(songId)
     }
 }

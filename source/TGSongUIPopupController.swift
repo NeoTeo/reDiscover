@@ -28,19 +28,19 @@ class TGSongUIPopupController: NSViewController {
     var position: NSPoint = NSPoint(x: 0, y: 0)
     var dimensions: NSSize = NSSize(width: 150, height: 150)
     
-    @IBAction func timelineAction(sender: AnyObject) {
+    @IBAction func timelineAction(_ sender: AnyObject) {
         delegate?.songUITimelineButtonWasPressed()
     }
     
-    @IBAction func plusAction(sender: AnyObject) {
+    @IBAction func plusAction(_ sender: AnyObject) {
         delegate?.songUIPlusButtonWasPressed()
     }
     
-    @IBAction func gearAction(sender: AnyObject) {
+    @IBAction func gearAction(_ sender: AnyObject) {
         delegate?.songUIGearButtonWasPressed()
     }
     
-    @IBAction func infoAction(sender: AnyObject) {
+    @IBAction func infoAction(_ sender: AnyObject) {
         delegate?.songUIInfoButtonWasPressed()
     }
     
@@ -60,17 +60,17 @@ class TGSongUIPopupController: NSViewController {
         // Do view setup here.
     }
     
-    func showInside(state: Bool, frame: NSRect) {
+    func showInside(_ state: Bool, frame: NSRect) {
         currentUIPosition = frame.origin
-        view.hidden = !state
+        view.isHidden = !state
     }
     
-    func showUI(state: Bool) {
-        view.hidden = !state
+    func showUI(_ state: Bool) {
+        view.isHidden = !state
     }
     
     func isUIActive() -> Bool {
-        return !view.hidden
+        return !view.isHidden
     }
     
 }

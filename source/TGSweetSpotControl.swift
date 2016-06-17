@@ -10,7 +10,7 @@ import Cocoa
 
 class TGSweetSpotControl : NSButton {
     
-    override func drawRect(dirtyRect: NSRect) {
-        self.image?.drawInRect(dirtyRect)
+    override func draw(_ dirtyRect: NSRect) {
+        self.image?.draw(in: dirtyRect)
     }
 }

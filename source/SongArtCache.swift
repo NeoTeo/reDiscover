@@ -25,7 +25,7 @@ struct SongArtCache {
     }
     
     
-    func addImage(image: NSImage?) -> SongArtCache {
+    func addImage(_ image: NSImage?) -> SongArtCache {
         
         if let img = image {
             var tmpCache = coverArtById
@@ -37,7 +37,7 @@ struct SongArtCache {
         return self
     }
     
-    func artForArtId(artId: SongArtId) -> NSImage? {
+    func artForArtId(_ artId: SongArtId) -> NSImage? {
         // Return art that is already in the cache.
             return coverArtById[artId as String]
     }

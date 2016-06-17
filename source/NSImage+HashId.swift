@@ -13,18 +13,18 @@ extension NSImage {
     func hashId() -> String {
 
         let digestLen = Int(CC_MD5_DIGEST_LENGTH)
-        if let imageData = self.TIFFRepresentation {
-            let dataLen = CUnsignedInt(imageData.length)
-            let result = UnsafeMutablePointer<CUnsignedChar>.alloc(digestLen)
+        if let imageData = self.tiffRepresentation {
+            let dataLen = CUnsignedInt(imageData.count)
+            let result = UnsafeMutablePointer<CUnsignedChar>(allocatingCapacity: digestLen)
             
-            CC_MD5(imageData.bytes, dataLen, result)
+            CC_MD5((imageData as NSData).bytes, dataLen, result)
             
             let hash = NSMutableString()
             for i in 0..<digestLen {
                 hash.appendFormat("%02x", result[i])
             }
             
-            result.destroy()
+            result.deinitialize()
             return hash as String
         }
         //FIXME: We want to catch this - needs to propagate the error back up the chain.

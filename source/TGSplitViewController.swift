@@ -26,7 +26,7 @@ final public class TGSplitViewController: NSSplitViewController {
 
     private var songMetadataUpdater : SongMetadataUpdater?
     
-    var theURL: NSURL?
+    var theURL: URL?
     
     var theSongPool : SongPoolAccessProtocol!
     
@@ -49,7 +49,7 @@ extension TGSplitViewController {
         /// Make our window key, frontmost, first responder and main.
         win.makeKeyAndOrderFront(self)
         win.makeFirstResponder(self)
-        win.makeMainWindow()
+        win.makeMain()
         
         /// Instantiate a song pool. 
         theSongPool = SongPool()
@@ -79,10 +79,11 @@ extension TGSplitViewController {
         // Bind the timeline value transformer's maxDuration with the song pool's currentSongDuration.
         let transformer = TGTimelineTransformer()
         
-        NSValueTransformer.setValueTransformer(transformer, forName: "TimelineTransformer")
+        ValueTransformer.setValueTransformer(transformer, forName: ValueTransformerName("TimelineTransformer"))
+//        ValueTransformer.setValueTransformer(transformer, forName: "TimelineTransformer")
         
         transformer.bind(   "maxDuration",
-                            toObject: playbackController as AnyObject,
+                            to: playbackController as AnyObject,
                             withKeyPath: "currentSongDuration",
                             options: nil)
         
@@ -94,7 +95,7 @@ extension TGSplitViewController {
         // Bind the playlist controller's progress indicator value parameter with
         // the song pool's playheadPos via the timeline value transformer.
         playlistPanelCtrlr.playlistProgress?.bind(  "value",
-                                                    toObject: playbackController as AnyObject,
+                                                    to: playbackController as AnyObject,
                                                     withKeyPath: "playheadPos",
                                                     options: [NSValueTransformerNameBindingOption : "TimelineTransformer"])
 		
@@ -105,14 +106,14 @@ extension TGSplitViewController {
         }
         
         timeline.bind(  "value",
-                        toObject: objectController!,
+                        to: objectController!,
                         withKeyPath: "selection.requestedPlayheadPosition",
                         options: [NSValueTransformerNameBindingOption : "TimelineTransformer"])
         
         // Bind the selection's (the songpool) playheadPos with the timeline bar
         // cell's currentPlayheadPositionInPercent so we can animate the bar.
         timeline.cell?.bind(	"currentPlayheadPositionInPercent",
-                                toObject: objectController!,
+                                to: objectController!,
                                 withKeyPath: "selection.playheadPos",
                                 options: [NSValueTransformerNameBindingOption : "TimelineTransformer"])
     }
@@ -120,27 +121,27 @@ extension TGSplitViewController {
     
     func registerNotifications() {
         
-        NSNotificationCenter.defaultCenter().addObserver(   self,
+        NotificationCenter.default().addObserver(   self,
                                                             selector: "songCoverWasUpdated:",
                                                             name: "songCoverUpdated",
                                                             object: nil)
         
-        NSNotificationCenter.defaultCenter().addObserver(   self,
+        NotificationCenter.default().addObserver(   self,
                                                             selector: "songMetaDataWasUpdated:",
                                                             name: "songMetaDataUpdated",
                                                             object: nil)
         
-        NSNotificationCenter.defaultCenter().addObserver(   self,
+        NotificationCenter.default().addObserver(   self,
                                                             selector: "userSelectedSongInContext:",
                                                             name: "userSelectedSong",
                                                             object: nil)
         
-        NSNotificationCenter.defaultCenter().addObserver(   self,
+        NotificationCenter.default().addObserver(   self,
                                                             selector: "songDidStartUpdating:",
                                                             name: "songDidStartUpdating",
                                                             object: nil)
         
-        NSNotificationCenter.defaultCenter().addObserver(   self,
+        NotificationCenter.default().addObserver(   self,
                                                             selector: "userCreatedSweetSpot:",
                                                             name: "UserCreatedSweetSpot",
                                                             object: nil)
@@ -175,12 +176,12 @@ extension TGSplitViewController {
         // Start off with the side panels collapsed.
         /// TODO: briefly animate the panels to show they exist, highlighting the
         /// buttons that will toggle them.
-        playlistSplitViewItem.collapsed = true
-        songInfoSVI.collapsed           = true
+        playlistSplitViewItem.isCollapsed = true
+        songInfoSVI.isCollapsed           = true
         
     }
     
-    func togglePanel(panelID: Int) {
+    func togglePanel(_ panelID: Int) {
         
         /** First temporarily set the coverCollectionSplitViewItem's holding priority,
             which should be set < 500 so that it can be resized by a window resize,
@@ -203,18 +204,18 @@ extension TGSplitViewController {
         let splitViewItem = self.splitViewItems[panelID]
         
         // Anchor the appropriate window edge before letting the splitview animate.
-        let anchor: NSLayoutAttribute = (panelID == 0) ? .Trailing : .Leading
+        let anchor: NSLayoutAttribute = (panelID == 0) ? .trailing : .leading
         
-        self.view.window?.setAnchorAttribute(anchor, forOrientation: .Horizontal)
+        self.view.window?.setAnchorAttribute(anchor, for: .horizontal)
         
-        splitViewItem.animator().collapsed = !splitViewItem.collapsed
+        splitViewItem.animator().isCollapsed = !splitViewItem.isCollapsed
         
         /// return the coverCollectionSplitViewItem's holding priority to its previous value
         coverCollectionSVI.holdingPriority = prevPriority
         print("Done toggle, coverCollectionSVI holding priority: \(coverCollectionSVI.holdingPriority)")
     }
 
-    public override func keyDown(theEvent: NSEvent) {
+    public override func keyDown(_ theEvent: NSEvent) {
 
         let string = theEvent.characters!
         
@@ -261,7 +262,7 @@ extension TGSplitViewController {
     /** 
         Called when the user has selected a song.
     */
-    func userSelectedSongInContext(notification: NSNotification) {
+    func userSelectedSongInContext(_ notification: Notification) {
         let theContext = notification.object as! SongSelectionContext
         userSelectedSong(theContext)
     }
@@ -269,7 +270,7 @@ extension TGSplitViewController {
     /**
      
     */
-    func userSelectedSong(context : SongSelectionContext) {
+    func userSelectedSong(_ context : SongSelectionContext) {
         
         let songId      = context.selectedSongId
         let speedVector = context.speedVector
@@ -295,7 +296,7 @@ extension TGSplitViewController {
     }
     
     
-    func requestPlayback(songId: SongId, startTimeInSeconds: NSNumber) {
+    func requestPlayback(_ songId: SongId, startTimeInSeconds: NSNumber) {
         /** FIXME : Just do this directly once we're sure everyone is calling
             requestPlayback instead of requestSongPlayback
         */
@@ -307,7 +308,7 @@ extension TGSplitViewController {
         corresponding time. The song is always the TGSongPool's currentlyPlayingSongId and the
         time is the TGSongPool's requestedPlayheadPosition.
     */
-    func userCreatedSweetSpot(notification: NSNotification) {
+    func userCreatedSweetSpot(_ notification: Notification) {
         
         if let ssTime = playbackController.requestedPlayheadPosition,
             let songId = playbackController.getCurrentlyPlayingSongId() {
@@ -317,7 +318,7 @@ extension TGSplitViewController {
     }
     
     // Notification when a song starts loading/caching. Allows us to update UI to show activity.
-    func songDidStartUpdating(notification: NSNotification) {
+    func songDidStartUpdating(_ notification: Notification) {
 
         if let infoPanel = songInfoSVI.viewController as? TGSongInfoViewController,
             let coverImage = SongArt.getFetchingCoverImage() {
@@ -327,7 +328,7 @@ extension TGSplitViewController {
     }
     // Called when the song metadata is updated and will in turn call the info panel
     // and playback controller to update their data.
-    func songMetaDataWasUpdated(notification: NSNotification) {
+    func songMetaDataWasUpdated(_ notification: Notification) {
         
         let songId = notification.object as! SongId
         if songId == playbackController.getRequestedSongId(),
@@ -339,7 +340,7 @@ extension TGSplitViewController {
         }
     }
     
-    func songCoverWasUpdated(notification: NSNotification) {
+    func songCoverWasUpdated(_ notification: Notification) {
         
         let songId = notification.object as! SongId
         
@@ -361,36 +362,36 @@ extension TGSplitViewController {
 extension TGSplitViewController : CoverDisplayViewControllerDelegate {
  
     /// For TGCoverDisplayViewController
-    public func getSong(songId : SongId) -> TGSong? {
+    public func getSong(_ songId : SongId) -> TGSong? {
         
         return theSongPool.songForSongId(songId)
     }
     
-    public func getArt(artId : String) -> NSImage? {
+    public func getArt(_ artId : String) -> NSImage? {
         
         /// Static access for now
         return SongArt.getArt(forArtId: artId)
     }
  
     /// For TimelinePopoverViewControllerDelegate
-    public func getSongDuration(songId : SongId) -> NSNumber? {
+    public func getSongDuration(_ songId : SongId) -> NSNumber? {
         
         return theSongPool.songForSongId(songId)?.duration()
     }
     
-    public func getSweetSpots(songId : SongId) -> Set<SweetSpot>? {
+    public func getSweetSpots(_ songId : SongId) -> Set<SweetSpot>? {
         
         return theSongPool.songForSongId(songId)?.sweetSpots
     }
     
-    public func userSelectedSweetSpot(index : Int) {
+    public func userSelectedSweetSpot(_ index : Int) {
         
         if let playingSongId = playbackController.getCurrentlyPlayingSongId(),
             let sweetSpots = getSweetSpots(playingSongId) {
-                
-            let sweetSpotTime = sweetSpots[(sweetSpots.startIndex.advancedBy(index))]
+            
+            let sweetSpotTime = sweetSpots[sweetSpots.index(sweetSpots.startIndex, offsetBy: index)]
             playbackController.requestedPlayheadPosition = sweetSpotTime
-            theSongPool.addSong(withChanges: [.SelectedSS : sweetSpotTime], forSongId: playingSongId)
+            theSongPool.addSong(withChanges: [.selectedSS : sweetSpotTime], forSongId: playingSongId)
         }
     }
     
@@ -415,7 +416,7 @@ extension TGSplitViewController : SweetSpotControllerDelegate {
 extension TGSplitViewController : PlaylistViewControllerDelegate {
     
     /// All required methods already declared in the main class.
-    func selectIndirectly(songId : SongId) {
+    func selectIndirectly(_ songId : SongId) {
         
         guard let coords    = coversPanelCtrlr.getCoverCoordinates(songId) else { return }
         let speedVector     = NSPoint(x: 1, y: 1)
@@ -426,7 +427,7 @@ extension TGSplitViewController : PlaylistViewControllerDelegate {
                                                            speedVector: speedVector,
 														  selectionPos: coords,
 														gridDimensions: dims,
-														 cachingMethod: .Square)
+														 cachingMethod: .square)
         
         /// Ask playback controller to refresh the cache and play back the song.
         playbackController.refreshCache(context)
@@ -439,23 +440,23 @@ extension TGSplitViewController : PlaylistViewControllerDelegate {
 
 extension TGSplitViewController : SongPlaybackControllerDelegate {
 	
-    func getUrl(songId : SongId) -> NSURL? {
+    func getUrl(_ songId : SongId) -> URL? {
 		
         return theSongPool.getUrl(songId)
     }
     
-    func getSongId(gridPos : NSPoint, resolvingIsAllowed : Bool = false) -> SongId? {
+    func getSongId(_ gridPos : NSPoint, resolvingIsAllowed : Bool = false) -> SongId? {
 		
         return coversPanelCtrlr.songIdFromGridPos(gridPos, resolvingIsAllowed: resolvingIsAllowed)
     }
 }
 
 extension TGSplitViewController : SongMetadataUpdaterDelegate {
-	func sendSweetSpotsRequest(songId: SongId) {
+	func sendSweetSpotsRequest(_ songId: SongId) {
 		return sweetSpotController.requestSweetSpots(songId)
 	}
 	
-	func isCached(songId : SongId) -> Bool {
+	func isCached(_ songId : SongId) -> Bool {
 		return playbackController.isCached(songId)
 	}
 }

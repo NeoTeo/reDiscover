@@ -22,27 +22,27 @@ extension CoreDataStore {
     Only when the root context is saved are the changes committed to the store (by the persistent store coordinator associated with the root context).
     A parent context does *not* pull from its children before it saves, so the children must save before the parent.
     */
-    static func managedObjectContext(modelName: String) -> NSManagedObjectContext? {
+    static func managedObjectContext(_ modelName: String) -> NSManagedObjectContext? {
         
         var moc: NSManagedObjectContext?
         
-        if let modelURL = NSBundle.mainBundle().URLForResource(modelName, withExtension: "momd"),
-            let model = NSManagedObjectModel(contentsOfURL: modelURL) {
+        if let modelURL = Bundle.main().urlForResource(modelName, withExtension: "momd"),
+            let model = NSManagedObjectModel(contentsOf: modelURL) {
                 
-            moc = NSManagedObjectContext(concurrencyType: .PrivateQueueConcurrencyType)
+            moc = NSManagedObjectContext(concurrencyType: .privateQueueConcurrencyType)
             moc!.persistentStoreCoordinator = NSPersistentStoreCoordinator(managedObjectModel: model)
                 
             do {
             
-            let docPath = try NSFileManager.defaultManager().URLForDirectory(NSSearchPathDirectory.DocumentDirectory,
-                inDomain: NSSearchPathDomainMask.UserDomainMask,
-                appropriateForURL: nil,
-                create: true).URLByAppendingPathComponent("reDiscoverdb_v2.sqlite")
+            let docPath = try! FileManager.default().urlForDirectory(FileManager.SearchPathDirectory.documentDirectory,
+                in: FileManager.SearchPathDomainMask.userDomainMask,
+                appropriateFor: nil,
+                create: true).appendingPathComponent("reDiscoverdb_v2.sqlite")
                 
             
-                try moc!.persistentStoreCoordinator?.addPersistentStoreWithType(NSSQLiteStoreType,
-                    configuration: nil,
-                    URL: docPath,
+                try moc!.persistentStoreCoordinator?.addPersistentStore(ofType: NSSQLiteStoreType,
+                    configurationName: nil,
+                    at: docPath,
                     options: nil)
             } catch {
                 print("Error in managedObjectContext \(error)")
@@ -53,15 +53,17 @@ extension CoreDataStore {
         return moc
     }
     
-    static func fetchSongsMetaData(context: NSManagedObjectContext) -> [String : SongMetaData]? {
+    static func fetchSongsMetaData(_ context: NSManagedObjectContext) -> [String : SongMetaData]? {
         
-        let fetchRequest = NSFetchRequest(entityName: "SongMetaData")
+        // FIXME: this is not wired up properly anymore
+        /*
+        let fetchRequest = NSFetchRequest<SongMetaData>()
         var songsMetaData: [String : SongMetaData]?
         
-        context.performBlockAndWait {
+        context.performAndWait {
             let fetchedArray: [AnyObject]?
             do {
-                fetchedArray = try context.executeFetchRequest(fetchRequest)
+                fetchedArray = try context.fetch(fetchRequest)
             } catch {
                 fatalError("Error while fetching SongMetaData: \(error)")
             }
@@ -72,11 +74,13 @@ extension CoreDataStore {
         }
         
         return songsMetaData
+         */
+        return nil
     }
     
-    static func saveContext(context: NSManagedObjectContext) {
+    static func saveContext(_ context: NSManagedObjectContext) {
         if context.hasChanges {
-            context.performBlockAndWait {
+            context.performAndWait {
                 do {
                     try context.save()
                     
@@ -87,9 +91,9 @@ extension CoreDataStore {
         }
     }
     
-    static func saveContext(moc : NSManagedObjectContext, privateMoc : NSManagedObjectContext, wait : Bool) {
+    static func saveContext(_ moc : NSManagedObjectContext, privateMoc : NSManagedObjectContext, wait : Bool) {
         if moc.hasChanges {
-            moc.performBlockAndWait {
+            moc.performAndWait {
                 do {
                     
                     try moc.save()
@@ -108,9 +112,9 @@ extension CoreDataStore {
             }
 
             if wait {
-                privateMoc.performBlockAndWait(savePrivate)
+                privateMoc.performAndWait(savePrivate)
             } else {
-                privateMoc.performBlock(savePrivate)
+                privateMoc.perform(savePrivate)
             }
         }
     }

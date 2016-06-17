@@ -10,7 +10,7 @@ import Foundation
 import Cocoa
 
 extension NSResponder {
-    static func printResponderChain(responder: NSResponder?) {
+    static func printResponderChain(_ responder: NSResponder?) {
         guard let r = responder else {
             Swift.print("End of chain.")
             return

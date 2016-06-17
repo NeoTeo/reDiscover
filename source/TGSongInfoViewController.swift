@@ -36,11 +36,11 @@ class TGSongInfoViewController : NSViewController {
         
         print("setDisplayStrings called")
         /// update the info labels on the main queue as CoreAnimation requires
-        dispatch_async(dispatch_get_main_queue()) {
+        DispatchQueue.main.async {
             print("setDisplayStrings actually being updated.")
-            self.titleLabel.stringValue     = displayStrings.objectForKey("Title") as! String
-            self.artistLabel.stringValue    = displayStrings.objectForKey("Artist") as! String
-            self.albumLabel.stringValue     = displayStrings.objectForKey("Album") as! String
+            self.titleLabel.stringValue     = displayStrings.object(forKey: "Title") as! String
+            self.artistLabel.stringValue    = displayStrings.object(forKey: "Artist") as! String
+            self.albumLabel.stringValue     = displayStrings.object(forKey: "Album") as! String
             
             /// Set up the scrolling text.
             self.scrollTitleView.setText(self.titleLabel.stringValue)
@@ -49,7 +49,7 @@ class TGSongInfoViewController : NSViewController {
     }
     
     /** Update the cover image on the info panel */
-    func setCoverImage(coverImage : NSImage?) {
+    func setCoverImage(_ coverImage : NSImage?) {
         
         let image = coverImage == nil ? noCoverImage : coverImage!
 
@@ -58,17 +58,17 @@ class TGSongInfoViewController : NSViewController {
         Core Anim doesn't like working on non-main treads, we need to ensure that
         setImage is called on the main thread.
         */
-        dispatch_async(dispatch_get_main_queue()) {
-            self.crossFadeToImage(image)
+        DispatchQueue.main.async {
+            self.crossFadeToImage(image!)
         }
     }
 
-    func crossFadeToImage(newImage : NSImage) {
+    func crossFadeToImage(_ newImage : NSImage) {
         
         /// Early out if albumCover has no layer
         if albumCover.layer == nil { return }
         
-        NSAnimationContext.currentContext().allowsImplicitAnimation = true
+        NSAnimationContext.current().allowsImplicitAnimation = true
         let newCoverImageView = NSImageView(frame: albumCover.frame)
         newCoverImageView.wantsLayer = true
         newCoverImageView.image = newImage

@@ -11,17 +11,17 @@ import Cocoa
 
 class LocalFileIO: NSObject {
 
-    class func imageURLsAtPath(dirURL: NSURL) -> [NSURL]? {
+    class func imageURLsAtPath(_ dirURL: URL) -> [URL]? {
 
-        let fileManager = NSFileManager.defaultManager()
+        let fileManager = FileManager.default()
         do {
-            let dirContents = try fileManager.contentsOfDirectoryAtURL(dirURL, includingPropertiesForKeys: nil, options: .SkipsHiddenFiles)
+            let dirContents = try fileManager.contentsOfDirectory(at: dirURL, includingPropertiesForKeys: nil, options: .skipsHiddenFiles)
             
-            var imageURLs = [NSURL]()
+            var imageURLs = [URL]()
             
-            for item in dirContents as [NSURL] {
+            for item in dirContents as [URL] {
                 
-                if getURLContentType(item) == .Image {
+                if getURLContentType(item) == .image {
                     imageURLs.append(item)
                 }
             }
@@ -38,7 +38,7 @@ class LocalFileIO: NSObject {
     }
     
     // Change this to return an enum type instead
-    static func getURLContentType(theURL: NSURL) -> URLContentType {
+    static func getURLContentType(_ theURL: URL) -> URLContentType {
         
         if let ext = theURL.pathExtension,
             let unmanagedFileUTI = UTTypeCreatePreferredIdentifierForTag(kUTTagClassFilenameExtension, ext, nil) {
@@ -46,12 +46,12 @@ class LocalFileIO: NSObject {
             let fileUTI = unmanagedFileUTI.takeRetainedValue()
             // Only add image files.
             if UTTypeConformsTo(fileUTI, kUTTypeImage) {
-                return .Image
+                return .image
             }
             if UTTypeConformsTo(fileUTI, kUTTypeAudio) {
-                return .Audio
+                return .audio
             }
         }
-        return .Unknown
+        return .unknown
     }
 }

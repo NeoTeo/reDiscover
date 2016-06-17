@@ -18,7 +18,7 @@ different ways:
 */
 class SongArtFinder: NSObject {
     
-    class func findArtForSong(song: TGSong, collection: AlbumCollection) -> NSImage? {
+    class func findArtForSong(_ song: TGSong, collection: AlbumCollection) -> NSImage? {
 
         // No existing artID. Try looking in the metadata.
         let arts = SongCommonMetaData.getCoverArtForSong(song)
@@ -43,20 +43,20 @@ class SongArtFinder: NSObject {
         return nil
     }
     
-    private class func findArtInSongDirectory(song: TGSong) -> NSImage? {
+    private class func findArtInSongDirectory(_ song: TGSong) -> NSImage? {
         if let urlString = song.urlString,
-            let url = NSURL(string: urlString),
-            let dirURL = url.filePathURL?.URLByDeletingLastPathComponent {
+            let url = URL(string: urlString),
+            let dirURL = try! (url as NSURL).filePathURL?.deletingLastPathComponent() {
                 let imageURLs = LocalFileIO.imageURLsAtPath(dirURL)
                 
             var words = ["scan","album","art","cover","front","fold"]
-            let absString: NSString? = dirURL.filePathURL?.absoluteString
-            if let albumName = absString?.lastPathComponent.stringByRemovingPercentEncoding {
+            let absString: NSString? = try! dirURL.filePathURL().absoluteString
+            if let albumName = absString?.lastPathComponent.removingPercentEncoding {
                 words.append(albumName)
             }
             
             if let matches = imageURLs?.filter(lastURLComponentInMatchWordsFilter(words)) where matches.count > 0 {
-                return NSImage(contentsOfURL: matches[0])
+                return NSImage(contentsOf: matches[0])
             }
         }
         return nil
@@ -67,7 +67,7 @@ class SongArtFinder: NSObject {
     takes an URL and returns true if the last component the URL matches any of the words 
     in the matchWords.
     */
-    private class func lastURLComponentInMatchWordsFilter(matchWords: [String]) -> (NSURL) -> Bool {
+    private class func lastURLComponentInMatchWordsFilter(_ matchWords: [String]) -> (URL) -> Bool {
         
         // Construct a parens wrapped "|" delimited string from the matchWords.
         // This gives "Expression too complex" error. Perhaps a later version of Swift?...
@@ -79,16 +79,16 @@ class SongArtFinder: NSObject {
         
         // Return a lambda that returns true if its input matches any of the matchWords.
         return { url in
-            let absString: NSString? = url.filePathURL?.absoluteString
-            if let word = absString?.lastPathComponent.stringByRemovingPercentEncoding {
-                let regEx: NSRegularExpression?
+            let absString: NSString? = try! url.filePathURL().absoluteString
+            if let word = absString?.lastPathComponent.removingPercentEncoding {
+                let regEx: RegularExpression?
                 do {
-                    regEx = try NSRegularExpression(pattern: rex, options: .CaseInsensitive)
+                    regEx = try RegularExpression(pattern: rex, options: .caseInsensitive)
                 } catch _ {
                     regEx = nil
                 }
-                let matchRange = regEx?.rangeOfFirstMatchInString(word,
-                                        options: .ReportCompletion,
+                let matchRange = regEx?.rangeOfFirstMatch(in: word,
+                                        options: .reportCompletion,
                                           range: NSRange(location: 0, length: word.characters.count))
                 
                 return matchRange?.location != NSNotFound

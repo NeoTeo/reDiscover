@@ -17,14 +17,14 @@ class AcoustIDWebService: NSObject {
         let path = "http://api.acoustid.org/v2/lookup?client=\(acoustIdAPIKey)&meta=releases&duration=\(duration)&fingerprint=\(fingerprint)"
 
         if let
-            acoustIdURL = NSURL(string: path),
-            acoustiData = NSData(contentsOfURL: acoustIdURL) where acoustiData.length > 0 {
+            acoustIdURL = URL(string: path),
+            acoustiData = try? Data(contentsOf: acoustIdURL) where acoustiData.count > 0 {
                 
             do {
-                if let acoustiJSON = try NSJSONSerialization.JSONObjectWithData(acoustiData, options: .MutableContainers) as? NSDictionary,
-                    let status = acoustiJSON["status"] as? NSString where status.isEqualToString("ok"),
+                if let acoustiJSON = try JSONSerialization.jsonObject(with: acoustiData, options: .mutableContainers) as? NSDictionary,
+                    let status = acoustiJSON["status"] as? NSString where status.isEqual(to: "ok"),
                     let results = acoustiJSON["results"] as? NSArray where results.count != 0,
-                    let theElement = results.objectAtIndex(0) as? NSDictionary {
+                    let theElement = results.object(at: 0) as? NSDictionary {
                         
                     return theElement
                 }
@@ -50,12 +50,12 @@ class AcoustIDWebService: NSObject {
                 var releaseScore = 0
                 //println("Release: \(release)")
                 if let title = release["title"] as? String {
-                    if title.lowercaseString == song.metadata?.album.lowercaseString { releaseScore += 1 }
+                    if title.lowercased() == song.metadata?.album.lowercased() { releaseScore += 1 }
                 }
                 
                 // FIXME: For now just hardwired to US. Make it check for the user's country or some selected setting.
                 if let country = release["country"] as? String {
-                    if country.lowercaseString == "us" { releaseScore += 1 }
+                    if country.lowercased() == "us" { releaseScore += 1 }
                 }
                 
                 if let date = release["date"] as? NSDictionary,

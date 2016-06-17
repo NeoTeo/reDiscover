@@ -29,7 +29,7 @@ NSMutableArray *songList;
 */
 
 protocol PlaylistDelegate {
-    func getSong(songId : SongId) -> TGSong?
+    func getSong(_ songId : SongId) -> TGSong?
 }
 
 class TGPlaylist : NSObject, NSTableViewDataSource {
@@ -63,14 +63,14 @@ class TGPlaylist : NSObject, NSTableViewDataSource {
             print("ERROR: TGPlaylist getSongId index is out of bounds.")
             return
         }
-        songList.removeAtIndex(index)
+        songList.remove(at: index)
     }
     
-    func removeSong(songId : SongId) {
+    func removeSong(_ songId : SongId) {
         
 //        if let idx = songList.indexOf( { SongId.isEqual($0) }) {
-        if let idx = songList.indexOf( { songId == $0 }) {
-            songList.removeAtIndex(idx)
+        if let idx = songList.index( where: { songId == $0 }) {
+            songList.remove(at: idx)
         }
     }
     
@@ -83,7 +83,7 @@ class TGPlaylist : NSObject, NSTableViewDataSource {
             return
         }
         
-        songList.insert(songId, atIndex: index)
+        songList.insert(songId, at: index)
     }
     
     func getNextSongIdToPlay() -> SongId? {
@@ -98,8 +98,8 @@ class TGPlaylist : NSObject, NSTableViewDataSource {
     
     func store(withName fileName : String) {
         
-        let paths = NSSearchPathForDirectoriesInDomains( .DocumentDirectory,
-            .UserDomainMask,
+        let paths = NSSearchPathForDirectoriesInDomains( .documentDirectory,
+            .userDomainMask,
             true)
         let documentsDirectory = paths[0]
         let fullPath = "\(documentsDirectory)/\(fileName).m3u"
@@ -124,10 +124,10 @@ class TGPlaylist : NSObject, NSTableViewDataSource {
             
             let info            = "\(m3uExtInf)\(songDuration),\(artist) - \(title)\n"
             
-            content += info + url!
+            content += info + url!!
         }
         
         print("The playlist content is \(content)")
-        try! content.writeToFile(fullPath, atomically: false, encoding: NSUTF8StringEncoding)
+        try! content.write(toFile: fullPath, atomically: false, encoding: String.Encoding.utf8)
     }
 }
