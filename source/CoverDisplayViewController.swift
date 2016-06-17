@@ -329,7 +329,10 @@ public class TGCoverDisplayViewController: NSViewController, NSCollectionViewDel
                 self.unmappedSongIdArray.append(songId)
 
                 // The next empty index is the same as the songCount (number of songs in collection).
-                let newIndexPath = IndexPath(index: self.songCount)
+                let newIndexPath = NSIndexPath(forItem: self.songCount, inSection: 0) as IndexPath
+                
+//                let newIndexPath = IndexPath(index: self.songCount)
+                
 //                let newIndexPath = IndexPath(forItem: self.songCount, inSection: 0)
                 self.songCount += 1
                 
