@@ -46,7 +46,9 @@ class TGTimelineSliderCell : NSSliderCell {
     var sweetSpotPositions : [SweetSpot]?
     
     /// This class' controller.
-    var theController : AnyObject!
+    // FIXME: This is gross, make the controller conform to a protocol
+//    var theController : AnyObject!
+    var theController: TimelinePopoverViewControllerDelegate!
 
     required init(coder aDecoder: NSCoder) {
         playheadPositionInPercent   = 0
@@ -172,9 +174,9 @@ class TGTimelineSliderCell : NSSliderCell {
                                                              height: val))
 
                 aSSControl.tag    = spotIndex//sweetSpots.indexOf(<#T##member: SweetSpot##SweetSpot#>)
-                aSSControl.target = self.theController
+                aSSControl.target = self.theController as? AnyObject
                 // FIXME: figure out what's to be called.
-                aSSControl.action = Selector("userSelectedExistingSweetSpot:")
+                aSSControl.action = #selector(TimelinePopoverViewController.userSelectedExistingSweetSpot(_:))
                 aSSControl.image  = self.knobImage
                 
                 self.sweetSpotsView.addSubview(aSSControl)

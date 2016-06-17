@@ -91,7 +91,8 @@ public class TGCoverDisplayViewController: NSViewController, NSCollectionViewDel
         songTimelineController = TimelinePopoverViewController(nibName: "TGSongTimelineView", bundle: nil)
         
         songTimelineController!.delegate = self
-        songTimelineController?.view
+        // wake that view
+        let _ = songTimelineController?.view
     }
 
     func initializeUIController() {
@@ -476,7 +477,7 @@ extension TGCoverDisplayViewController : TimelinePopoverViewControllerDelegate {
         return delegate?.getSweetSpots(songId)
     }
     
-    func userSelectedSweetSpot(_ index : Int) {
+    func userSelectedExistingSweetSpot(_ index : Int) {
         delegate?.userSelectedSweetSpot(index)
     }
 }

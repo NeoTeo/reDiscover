@@ -74,7 +74,7 @@ public class SweetSpotController : NSObject {
 		guard let song = delegate?.getSong(songId) else { return }
 		
 		//sweetSpotServerIO.delegate = self
-		sweetSpotServerIO.uploadSweetSpots(song)
+		let _ = sweetSpotServerIO.uploadSweetSpots(song)
 	}
 	
 	/**
@@ -82,7 +82,7 @@ public class SweetSpotController : NSObject {
 		Will post a SweetSpotsUpdated notification when done.
 	*/
 	func requestSweetSpots(_ songId : SongId) {
-		sweetSpotServerIO.requestSweetSpotsForSongID(songId)
+		let _ = sweetSpotServerIO.requestSweetSpotsForSongID(songId)
 	}
 	
 	/**

@@ -59,7 +59,7 @@ class SongAudioCacheTask : NSObject {
         }
         
         // Block until a new cache is returned.
-        group.wait(timeout: DispatchTime.distantFuture)
+        let _ = group.wait(timeout: DispatchTime.distantFuture)
         
         return songPlayerCache
     }

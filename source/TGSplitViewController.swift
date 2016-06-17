@@ -57,7 +57,7 @@ extension TGSplitViewController {
         
         connectControllers()
 
-        theSongPool.load(theURL!)
+        let _ = theSongPool.load(theURL!)
         
         /// Sets up all the notifications we want to listen out for.
         registerNotifications()
@@ -122,27 +122,27 @@ extension TGSplitViewController {
     func registerNotifications() {
         
         NotificationCenter.default().addObserver(   self,
-                                                            selector: "songCoverWasUpdated:",
+                                                            selector: #selector(TGSplitViewController.songCoverWasUpdated(_:)),
                                                             name: "songCoverUpdated",
                                                             object: nil)
         
         NotificationCenter.default().addObserver(   self,
-                                                            selector: "songMetaDataWasUpdated:",
+                                                            selector: #selector(TGSplitViewController.songMetaDataWasUpdated(_:)),
                                                             name: "songMetaDataUpdated",
                                                             object: nil)
         
         NotificationCenter.default().addObserver(   self,
-                                                            selector: "userSelectedSongInContext:",
+                                                            selector: #selector(TGSplitViewController.userSelectedSongInContext(_:)),
                                                             name: "userSelectedSong",
                                                             object: nil)
         
         NotificationCenter.default().addObserver(   self,
-                                                            selector: "songDidStartUpdating:",
+                                                            selector: #selector(TGSplitViewController.songDidStartUpdating(_:)),
                                                             name: "songDidStartUpdating",
                                                             object: nil)
         
         NotificationCenter.default().addObserver(   self,
-                                                            selector: "userCreatedSweetSpot:",
+                                                            selector: #selector(TGSplitViewController.userCreatedSweetSpot(_:)),
                                                             name: "UserCreatedSweetSpot",
                                                             object: nil)
 

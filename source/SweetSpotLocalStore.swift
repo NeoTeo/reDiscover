@@ -69,15 +69,15 @@ class TGSweetSpotLocalStore : SweetSpotLocalStore {
 
 	private func initUploadedSweetSpots() {
 		
+        precondition(uploadedSweetSpotsMOC != nil)
         //let fetchRequest = NSFetchRequest(entityName: "UploadedSSData")
-        let request = NSFetchRequest<UploadedSSData>()
-		uploadedSweetSpotsMOC?.performAndWait() {
+        let request:NSFetchRequest<NSFetchRequestResult> = NSFetchRequest(entityName: "UploadedSSData")
+
+		uploadedSweetSpotsMOC!.performAndWait() {
 			do {
-                guard let fetchedArray = try self.uploadedSweetSpotsMOC?.fetch(request) else {
-                    return
-                }
+                let fetchedArray = try self.uploadedSweetSpotsMOC!.fetch(request)
 				
-				for ssData in fetchedArray as [UploadedSSData] where ssData.songUUID != nil {
+				for ssData in fetchedArray as! [UploadedSSData] where ssData.songUUID != nil {
 					
 					self.uploadedSweetSpots[ssData.songUUID!] = ssData
 					print("The ssData songUUID is \(ssData.songUUID) and its sweetspots \(ssData.sweetSpots)")
@@ -88,7 +88,6 @@ class TGSweetSpotLocalStore : SweetSpotLocalStore {
 				fatalError("Failed to upload SweetSpots \(error)")
 			}
 		}
-		
 	}
 
 

@@ -11,8 +11,9 @@ import Cocoa
 protocol TimelinePopoverViewControllerDelegate {
     func getSongDuration(_ songId : SongId) -> NSNumber?
     func getSweetSpots(_ songId: SongId) -> Set<SweetSpot>?
-    func userSelectedSweetSpot(_ index : Int)
+    func userSelectedExistingSweetSpot(_ index : Int)
 }
+
 
 public class TimelinePopoverViewController : NSViewController {
     
@@ -52,7 +53,7 @@ extension TimelinePopoverViewController {
     func setCurrentSongId(_ songId: SongId) {
         
         let theCell = timelineBar?.cell as! TGTimelineSliderCell
-        theCell.theController = self
+        theCell.theController = delegate
         
 //        let songDuration = SongPool.durationForSongId(songId)
         /// We get the duration straight from the song.
@@ -80,16 +81,7 @@ extension TimelinePopoverViewController {
     
     public func userSelectedExistingSweetSpot(_ sender: AnyObject!) {
         print("user selected existing sweet spot")
-        delegate?.userSelectedSweetSpot(sender.tag)
-//        let playingSongId = delegate?.currentlyPlayingSongId()
-//        let songSweetspots = delegate?.getSweetSpots(playingSongId!)
-//        //mySet[mySet.startIndex.advancedBy(2)]
-//        let selectedSweetSpotIndex = sender.tag()
-//        if let sweetSpotTime = songSweetspots?[(songSweetspots?.startIndex.advancedBy(selectedSweetSpotIndex))!] {
-//            setRequestedPlayheadPosition(sweetSpotTime)
-//
-//            SongPool.addSong(withChanges: [.SelectedSS : sweetSpotTime], forSongId: playingSongId)
-//        }
+        delegate?.userSelectedExistingSweetSpot(sender.tag)
     }
 
 }
