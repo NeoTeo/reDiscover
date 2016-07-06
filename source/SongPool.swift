@@ -78,7 +78,7 @@ final class SongPool : NSObject, SongPoolAccessProtocol {
             
             self.addSong(newSong)
             
-            NotificationCenter.default().post(name: Notification.Name(rawValue: "NewSongAdded"), object: songId)
+            NotificationCenter.default.post(name: Notification.Name(rawValue: "NewSongAdded"), object: songId)
         }
     }
 

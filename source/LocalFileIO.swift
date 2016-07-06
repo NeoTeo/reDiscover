@@ -13,7 +13,7 @@ class LocalFileIO: NSObject {
 
     class func imageURLsAtPath(_ dirURL: URL) -> [URL]? {
 
-        let fileManager = FileManager.default()
+        let fileManager = FileManager.default
         do {
             let dirContents = try fileManager.contentsOfDirectory(at: dirURL, includingPropertiesForKeys: nil, options: .skipsHiddenFiles)
             

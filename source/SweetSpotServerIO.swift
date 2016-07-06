@@ -39,7 +39,7 @@ class SweetSpotServerIO: NSObject {
 		hostPort = "6969"
 
 		/// During dev we get the host ip from the environment variables
-		let envVars = ProcessInfo.processInfo().environment
+		let envVars = ProcessInfo.processInfo.environment
 		if let serverIp = envVars["SERVER_IP"] {
 			hostName = serverIp
 		}
@@ -125,7 +125,7 @@ class SweetSpotServerIO: NSObject {
     */
     func requestSweetSpotsForSongID(_ songID: SongId) -> NSArray? {
 		
-		let envVars = ProcessInfo.processInfo().environment
+		let envVars = ProcessInfo.processInfo.environment
         if let _ = envVars["NO_SSSERVER"] {
             self.mock(songID)
             return nil
@@ -140,7 +140,7 @@ class SweetSpotServerIO: NSObject {
 		}
 
         let request = URLRequest(url: theURL)
-        let task = URLSession.shared().dataTask(with: request) { (data, response, error) in
+        let task = URLSession.shared.dataTask(with: request) { (data, response, error) in
 			
             guard let song = self.delegate?.getSong(songID) else { return }
 			
@@ -191,7 +191,7 @@ class SweetSpotServerIO: NSObject {
 //                                self.songPoolAPI?.addSong(withChanges: [.SweetSpots : newSSSet!, .SelectedSS : newSelectedSS!], forSongId: songID)
 							self.delegate?.addSong(withChanges: [.sweetSpots : newSSSet!, .selectedSS : newSelectedSS!], forSongId: songID)
 							// Let any listeners know we've updated the sweetspots of songID
-							NotificationCenter.default().post(name: Notification.Name(rawValue: "SweetSpotsUpdated"), object: songID)
+							NotificationCenter.default.post(name: Notification.Name(rawValue: "SweetSpotsUpdated"), object: songID)
 						}
 					}
 				}
@@ -215,7 +215,7 @@ class SweetSpotServerIO: NSObject {
         delegate?.addSong(withChanges: [.sweetSpots : newSSs, .selectedSS : selectedSS], forSongId: songId)
 		
         // Let any listeners know we've updated the sweetspots of songID
-        NotificationCenter.default().post(name: Notification.Name(rawValue: "SweetSpotsUpdated"), object: songId)
+        NotificationCenter.default.post(name: Notification.Name(rawValue: "SweetSpotsUpdated"), object: songId)
 
     }
 }

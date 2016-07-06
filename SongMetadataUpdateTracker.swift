@@ -24,7 +24,7 @@ struct TGSongMetadataUpdateTracker : SongMetadataUpdateTracker {
 	private var updates = [SongId : Date]()
 	private var updatesAccessQ: DispatchQueue = DispatchQueue(label: "updatesQ", attributes: DispatchQueueAttributes.serial)
 	
-	private func synchronized(_ f: (Void) -> Void) {
+	private func synchronized( _ f: @noescape (Void) -> Void) {
 		//guard updatesAccessQ != nil else { fatalError("No updatesAccessQ") }
 		updatesAccessQ.sync(execute: f)
 	}
@@ -32,7 +32,7 @@ struct TGSongMetadataUpdateTracker : SongMetadataUpdateTracker {
 	/// access queue to make this thread safe.
 	mutating func markUpdate(_ songId : SongId) {
 		synchronized {
-			self.updates[songId] = Date()
+            self.updates[songId] = Date()
 		}
 	}
 	

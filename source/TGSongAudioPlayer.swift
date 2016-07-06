@@ -85,7 +85,7 @@ class TGSongAudioPlayer: NSObject {
         
         if let prevPlayer = prevSongPlayer {
             prevPlayer.pause()
-            NotificationCenter.default().removeObserver(prevPlayer)
+            NotificationCenter.default.removeObserver(prevPlayer)
         }
         
         if let player = songPlayer {
@@ -109,12 +109,12 @@ class TGSongAudioPlayer: NSObject {
 //            }
         }
 
-        NotificationCenter.default().addObserver(self, selector: "stopSong", name: NSNotification.Name.AVPlayerItemDidPlayToEndTime, object: currentPlayer)
+        NotificationCenter.default.addObserver(self, selector: #selector(TGSongAudioPlayer.stopSong), name: NSNotification.Name.AVPlayerItemDidPlayToEndTime, object: currentPlayer)
     }
     
     func stopSong() {
         NSLog("song finished!")
-        NotificationCenter.default().removeObserver(currentPlayer!)
+        NotificationCenter.default.removeObserver(currentPlayer!)
     }
     
     func setVolume(_ theVolume: Float) {

@@ -65,9 +65,9 @@ public class TGCoverDisplayViewController: NSViewController, NSCollectionViewDel
     }
         
     func initializeObservers() {
-        NotificationCenter.default().addObserver(self, selector: #selector(TGCoverDisplayViewController.updateSongs(_:)), name: "NewSongAdded", object: nil)
-        NotificationCenter.default().addObserver(self, selector: #selector(TGCoverDisplayViewController.updateCovers(_:)), name: "songCoverUpdated", object: nil)
-        NotificationCenter.default().addObserver(self, selector: #selector(TGCoverDisplayViewController.boundsChanged(_:)), name: NSNotification.Name.NSScrollViewDidLiveScroll, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(TGCoverDisplayViewController.updateSongs(_:)), name: "NewSongAdded" as NSNotification.Name, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(TGCoverDisplayViewController.updateCovers(_:)), name: "songCoverUpdated" as NSNotification.Name, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(TGCoverDisplayViewController.boundsChanged(_:)), name: NSNotification.Name.NSScrollViewDidLiveScroll, object: nil)
     }
     
     public override func viewWillLayout() {
@@ -242,7 +242,7 @@ public class TGCoverDisplayViewController: NSViewController, NSCollectionViewDel
                         gridDimensions: dims,
                          cachingMethod: .square)
         
-        NotificationCenter.default().post(name: Notification.Name(rawValue: "userSelectedSong"), object: context)
+        NotificationCenter.default.post(name: Notification.Name(rawValue: "userSelectedSong"), object: context)
         
     }
     

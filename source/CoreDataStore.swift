@@ -26,7 +26,7 @@ extension CoreDataStore {
         
         var moc: NSManagedObjectContext?
         
-        if let modelURL = Bundle.main().urlForResource(modelName, withExtension: "momd"),
+        if let modelURL = Bundle.main.urlForResource(modelName, withExtension: "momd"),
             let model = NSManagedObjectModel(contentsOf: modelURL) {
                 
             moc = NSManagedObjectContext(concurrencyType: .privateQueueConcurrencyType)
@@ -34,7 +34,7 @@ extension CoreDataStore {
                 
             do {
             
-            let docPath = try! FileManager.default().urlForDirectory(FileManager.SearchPathDirectory.documentDirectory,
+            let docPath = try! FileManager.default.urlForDirectory(FileManager.SearchPathDirectory.documentDirectory,
                 in: FileManager.SearchPathDomainMask.userDomainMask,
                 appropriateFor: nil,
                 create: true).appendingPathComponent("reDiscoverdb_v2.sqlite")

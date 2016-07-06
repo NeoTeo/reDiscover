@@ -189,7 +189,7 @@ class TGTimelineSliderCell : NSSliderCell {
     /** When the slider is released we notify that the user wants to create a sweet spot */
     override func stopTracking(last lastPoint: NSPoint, current stopPoint: NSPoint, in controlView: NSView, mouseIsUp flag: Bool) {
         print("Done tracking!")
-        NotificationCenter.default().post(name: Notification.Name(rawValue: "UserCreatedSweetSpot"), object: nil)
+        NotificationCenter.default.post(name: Notification.Name(rawValue: "UserCreatedSweetSpot"), object: nil)
     }
     
     override func draw(withFrame cellFrame: NSRect, in controlView: NSView) {

@@ -8,6 +8,7 @@
 
 import Foundation
 import AVFoundation
+import AppKit
 
 /**
 The SongCommonMetaData holds metadata about a song that is common to all songs such

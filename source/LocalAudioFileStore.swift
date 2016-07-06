@@ -33,7 +33,7 @@ extension LocalAudioFileStore {
     */
     static func applyAudioURLsToClosure(_ topURL: URL, closure: (URL) -> () ) {
         
-        let fileManager = FileManager.default()
+        let fileManager = FileManager.default
         if let enumerator = fileManager.enumerator(at: topURL,
             includingPropertiesForKeys: [URLResourceKey.isDirectoryKey.rawValue],
             options: FileManager.DirectoryEnumerationOptions(),
@@ -63,7 +63,7 @@ extension LocalAudioFileStore {
     
     static func songURLsFromURL(_ theURL: URL) -> [URL]? {
         
-        let fileManager = FileManager.default()
+        let fileManager = FileManager.default
         if let enumerator = fileManager.enumerator(at: theURL,
             includingPropertiesForKeys: [URLResourceKey.isDirectoryKey.rawValue],
             options: FileManager.DirectoryEnumerationOptions(),

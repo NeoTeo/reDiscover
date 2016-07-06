@@ -8,6 +8,7 @@
 
 import Foundation
 import AVFoundation
+import AppKit
 
 typealias SongArtId = NSString
 

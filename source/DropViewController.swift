@@ -21,7 +21,7 @@ class DropViewController : NSViewController, DropViewDelegate {
     }
     
     override func viewDidAppear() {
-        let envVars = ProcessInfo.processInfo().environment
+        let envVars = ProcessInfo.processInfo.environment
         if let _ = envVars["NO_DROP"] {
             droppedURL = URL(fileURLWithPath: "/Users/teo/Desktop/songs")
             if droppedURL != nil  {

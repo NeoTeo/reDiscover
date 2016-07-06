@@ -40,7 +40,7 @@ class DebugDisplay: NSViewController {
     func showUI(_ state: Bool) {
         if state == true {
             print("Setting timer")
-            refreshTimer = Timer.scheduledTimer(timeInterval: 1.0, target: self, selector: Selector("refresh"), userInfo: nil, repeats: true)
+            refreshTimer = Timer.scheduledTimer(timeInterval: 1.0, target: self, selector: #selector(DebugDisplay.refresh), userInfo: nil, repeats: true)
         }
         else {
             refreshTimer?.invalidate()

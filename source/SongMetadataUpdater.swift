@@ -74,7 +74,7 @@ public class SongMetadataUpdater {
 		}
 		print("requestUpdatedData ALL GOOD")
         /// Let any interested parties know we've started updating the current song.
-        NotificationCenter.default().post(name: Notification.Name(rawValue: "songDidStartUpdating"), object: songId)
+        NotificationCenter.default.post(name: Notification.Name(rawValue: "songDidStartUpdating"), object: songId)
         
 		
         // Override all previous ops by cancelling them and adding the new one.
@@ -91,7 +91,7 @@ public class SongMetadataUpdater {
 			self.updateMetadata(forSongId: songId)
 			
 			/// At this point we can signal that the metadata is up to date
-			NotificationCenter.default().post(name: Notification.Name(rawValue: "songMetaDataUpdated"), object: songId)
+			NotificationCenter.default.post(name: Notification.Name(rawValue: "songMetaDataUpdated"), object: songId)
 		}
 		let fingerPrinterOp = BlockOperation {
 			/// If fingerPrinter is an empty optional we want it to crash.
@@ -206,7 +206,7 @@ public class SongMetadataUpdater {
                 
                 delegate?.addSong(withChanges: [.fingerprint : newFingerPrint, .metadata : metadata!], forSongId: songId)
                 
-                NotificationCenter.default().post(name: Notification.Name(rawValue: "songMetaDataUpdated"), object: songId)
+                NotificationCenter.default.post(name: Notification.Name(rawValue: "songMetaDataUpdated"), object: songId)
         }
         
     }
@@ -223,7 +223,7 @@ public class SongMetadataUpdater {
             }
         }
         
-        NotificationCenter.default().post(name: Notification.Name(rawValue: "songCoverUpdated"), object: songId)
+        NotificationCenter.default.post(name: Notification.Name(rawValue: "songCoverUpdated"), object: songId)
     }
 }
 

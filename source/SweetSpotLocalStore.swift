@@ -47,7 +47,7 @@ class TGSweetSpotLocalStore : SweetSpotLocalStore {
 	*/
 	private func setupUploadedSweetSpotsMOC() {
 		
-		guard let modelURL = Bundle.main().urlForResource("uploadedSS", withExtension: "momd"),
+		guard let modelURL = Bundle.main.urlForResource("uploadedSS", withExtension: "momd"),
 			let mom = NSManagedObjectModel(contentsOf: modelURL) else {
 				return
 		}
@@ -57,7 +57,7 @@ class TGSweetSpotLocalStore : SweetSpotLocalStore {
 		
 		do {
 			// Build the URL where to store the data.
-			let documentsDirectory = try! FileManager.default().urlForDirectory(.documentDirectory, in: .userDomainMask, appropriateFor: nil, create: true).appendingPathComponent("uploadedSS.xml")
+			let documentsDirectory = try! FileManager.default.urlForDirectory(.documentDirectory, in: .userDomainMask, appropriateFor: nil, create: true).appendingPathComponent("uploadedSS.xml")
 			
 			
 			try uploadedSweetSpotsMOC?.persistentStoreCoordinator?.addPersistentStore(ofType: NSXMLStoreType,configurationName: nil,at: documentsDirectory, options: nil)
