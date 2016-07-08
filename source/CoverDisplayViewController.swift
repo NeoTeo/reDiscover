@@ -200,6 +200,9 @@ public class TGCoverDisplayViewController: NSViewController, NSCollectionViewDel
 	*/
 	func mapIndexToCover(_ index : Int) -> SongId? {
 		
+        /// The cacher can ask for grid indexes greater than the number of songs.
+        guard index < songCount else { return nil }
+        
 		var songId = self.mappedSongIds[index]
 
 		if songId == nil {
@@ -210,9 +213,10 @@ public class TGCoverDisplayViewController: NSViewController, NSCollectionViewDel
 			
 				// Remove a random songId from unmapped and add it to the mapped.
 				let randIdx		  = Int(arc4random_uniform(unmappedCount))
-			
+			print("randIdx = \(randIdx)")
 				songId = self.unmappedSongIdArray.remove(at: randIdx)
 				self.mappedSongIds[index] = songId
+                print("mapped index \(index) to songId \(songId)")
 			}
 		}
 		
@@ -289,6 +293,10 @@ public class TGCoverDisplayViewController: NSViewController, NSCollectionViewDel
         
         // Ask the flow layout for an index given a grid position.
         let index = (coverCollectionView.collectionViewLayout as! NSCollectionViewFlowLayout).indexFromGridPos(gridPos)
+        
+        /// Catch indices from grid positions with no songs on.
+        guard index < songCount else { return nil }
+        
 		var songId = mappedSongIds[index]
 		
 		if songId == nil && resolvingIsAllowed {

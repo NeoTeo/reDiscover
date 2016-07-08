@@ -16,10 +16,10 @@ func generateFingerprint(fromSongAtUrl songUrl : URL) -> (String, Double)? {
      pass it to chromaprint_get_fingerprint without errors.
      The defer ensures it is not leaked if we drop out early.
      */
-    var fingerprint = UnsafeMutablePointer<Int8>(allocatingCapacity: 1)
+    var fingerprint: UnsafeMutablePointer<Int8>? = UnsafeMutablePointer<Int8>(allocatingCapacity: 1)
     defer {
-        fingerprint.deinitialize()
-        fingerprint.deallocateCapacity(1)
+        fingerprint?.deinitialize()
+        fingerprint?.deallocateCapacity(1)
     }
     
     /// Start by creating a chromaprint context.
@@ -34,14 +34,15 @@ func generateFingerprint(fromSongAtUrl songUrl : URL) -> (String, Double)? {
     (Note we can also get a hash back with chromprint_get_fingerprint_hash)
     */
     // MARK: teowip watch this and make sure it works.
-    var tmp: UnsafeMutablePointer<Int8>? = fingerprint
-//    if chromaprint_get_fingerprint(chromaprintContext, &fingerprint) == 0 {
-    if chromaprint_get_fingerprint(chromaprintContext, &tmp ) == 0 {
+//    var tmp: UnsafeMutablePointer<Int8>? = fingerprint
+    
+    if chromaprint_get_fingerprint(chromaprintContext, &fingerprint) == 0 {
+//    if chromaprint_get_fingerprint(chromaprintContext, &tmp ) == 0 {
         print("Error: could not get fingerprint")
         return nil
     }
     
-    let fingerprintString = NSString(cString: fingerprint, encoding: String.Encoding.ascii.rawValue)
+    let fingerprintString = NSString(cString: fingerprint!, encoding: String.Encoding.ascii.rawValue)
     
     chromaprint_dealloc(chromaprintContext)
 
