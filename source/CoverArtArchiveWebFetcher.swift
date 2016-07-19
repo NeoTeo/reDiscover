@@ -16,7 +16,7 @@ class CoverArtArchiveWebFetcher : NSObject {
 
         if let releaseMBID = song.RelId,
             let coverArtArchiveURL = URL(string:"http://coverartarchive.org/release/\(releaseMBID)"),
-            let result = try? Data(contentsOf: coverArtArchiveURL) where result.count > 0 {
+            let result = try? Data(contentsOf: coverArtArchiveURL), result.count > 0 {
             // coverartarchive.org returns a dictionary at the top level.
             do {
                 let resultJSON = try JSONSerialization.jsonObject(with: result, options: JSONSerialization.ReadingOptions.mutableContainers) as! NSDictionary

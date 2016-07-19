@@ -38,7 +38,7 @@ final class SongPool : NSObject, SongPoolAccessProtocol {
     }
     
     func getUrl(_ songId: SongId) -> URL? {
-        guard let song = songForSongId(songId) where (song.urlString != nil) else { return nil }
+        guard let song = songForSongId(songId), (song.urlString != nil) else { return nil }
         return URL(string: song.urlString!)
     }
     

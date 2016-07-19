@@ -18,12 +18,12 @@ class AcoustIDWebService: NSObject {
 
         if let
             acoustIdURL = URL(string: path),
-            acoustiData = try? Data(contentsOf: acoustIdURL) where acoustiData.count > 0 {
+            let acoustiData = try? Data(contentsOf: acoustIdURL), acoustiData.count > 0 {
                 
             do {
                 if let acoustiJSON = try JSONSerialization.jsonObject(with: acoustiData, options: .mutableContainers) as? NSDictionary,
-                    let status = acoustiJSON["status"] as? NSString where status.isEqual(to: "ok"),
-                    let results = acoustiJSON["results"] as? NSArray where results.count != 0,
+                    let status = acoustiJSON["status"] as? NSString, status.isEqual(to: "ok"),
+                    let results = acoustiJSON["results"] as? NSArray, results.count != 0,
                     let theElement = results.object(at: 0) as? NSDictionary {
                         
                     return theElement
@@ -45,7 +45,7 @@ class AcoustIDWebService: NSObject {
         var bestRelease: NSDictionary?
         var topScore = 0
         
-        if let releases = dataDict["releases"] as? NSArray where releases.count > 0 {
+        if let releases = dataDict["releases"] as? NSArray, releases.count > 0 {
             for release in releases as! [NSDictionary]{
                 var releaseScore = 0
                 //println("Release: \(release)")

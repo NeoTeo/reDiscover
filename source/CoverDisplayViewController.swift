@@ -168,7 +168,7 @@ public class TGCoverDisplayViewController: NSViewController, NSCollectionViewDel
         
         let loc = coverCollectionView.convert(location, from: nil)
         
-        if let (item, idxPath) = coverAndIdxAtLocation(loc) where idxPath != currentIdxPath {
+        if let (item, idxPath) = coverAndIdxAtLocation(loc), idxPath != currentIdxPath {
 			/** FIXME: How much of this (beside uncoveredSongIds access and mapIndexToCover
 				need to be run asyncly? */
             collectionAccessQ.async{
@@ -442,7 +442,7 @@ extension TGCoverDisplayViewController: NSCollectionViewDataSource {
 
 		var image : NSImage?
 		
-        if let songId = mappedSongIds[(indexPath as NSIndexPath).item] where uncoveredSongIds.contains(songId),
+        if let songId = mappedSongIds[(indexPath as NSIndexPath).item], uncoveredSongIds.contains(songId),
             let song = delegate?.getSong(songId) {
 		
             if let artId = song.artID {

@@ -65,7 +65,7 @@ class TGSongAudioPlayer: NSObject {
     }
 
     func setSongPlayer(_ newPlayer: AVPlayer, block: (CMTime) -> ()) {
-        if let prevPlayer = prevSongPlayer where playerObserver != nil {
+        if let prevPlayer = prevSongPlayer, playerObserver != nil {
             prevPlayer.removeTimeObserver(playerObserver!)
         }
         

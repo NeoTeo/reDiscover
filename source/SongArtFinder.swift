@@ -55,7 +55,7 @@ class SongArtFinder: NSObject {
                 words.append(albumName)
             }
             
-            if let matches = imageURLs?.filter(lastURLComponentInMatchWordsFilter(words)) where matches.count > 0 {
+            if let matches = imageURLs?.filter(lastURLComponentInMatchWordsFilter(words)), matches.count > 0 {
                 return NSImage(contentsOf: matches[0])
             }
         }
