@@ -31,8 +31,8 @@ protocol SweetSpotLocalStore {
 */
 class TGSweetSpotLocalStore : SweetSpotLocalStore {
 	
-	private var uploadedSweetSpots: Dictionary<String,UploadedSSData> = [String:UploadedSSData]()
-	private var uploadedSweetSpotsMOC: NSManagedObjectContext?
+	fileprivate var uploadedSweetSpots: Dictionary<String,UploadedSSData> = [String:UploadedSSData]()
+	fileprivate var uploadedSweetSpotsMOC: NSManagedObjectContext?
 
 	
 	init() {
@@ -46,9 +46,9 @@ class TGSweetSpotLocalStore : SweetSpotLocalStore {
 		been uploaded to the server.
 	*/
 	private func setupUploadedSweetSpotsMOC() {
-		
-		guard let modelURL = Bundle.main.urlForResource("uploadedSS", withExtension: "momd"),
-			let mom = NSManagedObjectModel(contentsOf: modelURL) else {
+
+        guard let modelUrl = Bundle.main.url(forResource: "uploadedSS", withExtension: "momd"),
+			let mom = NSManagedObjectModel(contentsOf: modelUrl) else {
 				return
 		}
 		
@@ -57,7 +57,7 @@ class TGSweetSpotLocalStore : SweetSpotLocalStore {
 		
 		do {
 			// Build the URL where to store the data.
-			let documentsDirectory = try! FileManager.default.urlForDirectory(.documentDirectory, in: .userDomainMask, appropriateFor: nil, create: true).appendingPathComponent("uploadedSS.xml")
+			let documentsDirectory = try! FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: true).appendingPathComponent("uploadedSS.xml")
 			
 			
 			try uploadedSweetSpotsMOC?.persistentStoreCoordinator?.addPersistentStore(ofType: NSXMLStoreType,configurationName: nil,at: documentsDirectory, options: nil)
@@ -98,13 +98,15 @@ class TGSweetSpotLocalStore : SweetSpotLocalStore {
 		if uploadedSS == nil {
 			// The song has no existing sweetspots so we create a new set with the sweet spot.
 			uploadedSS = UploadedSSData.insert(uuid, inContext: uploadedSweetSpotsMOC!) as? UploadedSSData
-			uploadedSS?.sweetSpots = NSArray(object: sweetSpot) as [AnyObject]
+			uploadedSS?.sweetSpots = [sweetSpot] //NSArray(object: sweetSpot) as [AnyObject]
 		} else {
 
 			// The song already has a set of sweetspots so we need to add to it.
-			let existingSS = NSMutableArray(array: uploadedSS!.sweetSpots!)
-			existingSS.add(sweetSpot)
-			uploadedSS!.sweetSpots = existingSS.copy() as! NSArray as [AnyObject]
+//			let existingSS = NSMutableArray(array: uploadedSS!.sweetSpots!)
+//			existingSS.add(sweetSpot)
+//			uploadedSS!.sweetSpots = existingSS.copy() as! NSArray as [AnyObject]
+            // FIXME: potential multithreading access issue.
+            uploadedSS!.sweetSpots?.append(sweetSpot)
 		}
 
 		// Add the new data to the dictionary

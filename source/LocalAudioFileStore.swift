@@ -35,9 +35,9 @@ extension LocalAudioFileStore {
         
         let fileManager = FileManager.default
         if let enumerator = fileManager.enumerator(at: topURL,
-            includingPropertiesForKeys: [URLResourceKey.isDirectoryKey.rawValue],
+            includingPropertiesForKeys: [URLResourceKey(rawValue: URLResourceKey.isDirectoryKey.rawValue)],
             options: FileManager.DirectoryEnumerationOptions(),
-            errorHandler: { (url: URL!, error: NSError!) -> Bool in
+            errorHandler: { (url: URL, error: Error) -> Bool in
                 print("Error reading URL")
                 return true
         }) {
@@ -65,9 +65,9 @@ extension LocalAudioFileStore {
         
         let fileManager = FileManager.default
         if let enumerator = fileManager.enumerator(at: theURL,
-            includingPropertiesForKeys: [URLResourceKey.isDirectoryKey.rawValue],
+            includingPropertiesForKeys: [URLResourceKey(rawValue: URLResourceKey.isDirectoryKey.rawValue)],
             options: FileManager.DirectoryEnumerationOptions(),
-            errorHandler: { (url: URL!, error: NSError!) -> Bool in
+            errorHandler: { (url: URL, error: Error) -> Bool in
                 print("Error reading URL")
                 return true
         }) {

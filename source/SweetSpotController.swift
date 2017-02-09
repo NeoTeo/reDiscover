@@ -9,7 +9,7 @@
 import Foundation
 
 protocol SweetSpotControllerDelegate {
-    func addSong(withChanges changes: [SongProperty : AnyObject], forSongId songId: SongId)
+    func addSong(withChanges changes: [SongProperty : Any], forSongId songId: SongId)
     func getSong(_ songId : SongId) -> TGSong?
 }
 
@@ -99,7 +99,7 @@ public class SweetSpotController : NSObject {
 		newSweetSpots.insert(selectedSS)
 		
 		/// Update the song in the song pool with the changed sweet spots.
-		delegate?.addSong(withChanges: [.sweetSpots : newSweetSpots], forSongId: songId)
+		delegate?.addSong(withChanges: [.sweetSpots : newSweetSpots as AnyObject], forSongId: songId)
 	}
 	
 	func storeSweetSpots() {

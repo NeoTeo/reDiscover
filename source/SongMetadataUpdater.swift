@@ -10,7 +10,7 @@ import Foundation
 
 protocol SongMetadataUpdaterDelegate {
     func getSong(_ songId : SongId) -> TGSong?
-    func addSong(withChanges changes: [SongProperty : AnyObject], forSongId songId: SongId)
+    func addSong(withChanges changes: [SongProperty : Any], forSongId songId: SongId)
 	func sendSweetSpotsRequest(_ songId : SongId)
 	func isCached(_ songId : SongId) -> Bool
 }

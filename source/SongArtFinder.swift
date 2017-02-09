@@ -44,14 +44,15 @@ class SongArtFinder: NSObject {
     }
     
     private class func findArtInSongDirectory(_ song: TGSong) -> NSImage? {
-        if let urlString = song.urlString,
-            let url = URL(string: urlString),
-            let dirURL = try! (url as NSURL).filePathURL?.deletingLastPathComponent() {
-                let imageURLs = LocalFileIO.imageURLsAtPath(dirURL)
+        if let urlString = song.urlString, let url = URL(string: urlString) {
+//            let dirURL = try! (url as NSURL).filePathURL?.deletingLastPathComponent() {
+            let dirURL = url.deletingLastPathComponent()
+            let imageURLs = LocalFileIO.imageURLsAtPath(dirURL)
                 
             var words = ["scan","album","art","cover","front","fold"]
-            let absString: NSString? = try! dirURL.filePathURL().absoluteString
-            if let albumName = absString?.lastPathComponent.removingPercentEncoding {
+//            let absString: NSString? = try! dirURL.filePathURL().absoluteString
+//            if let albumName = absString.lastPathComponent.removingPercentEncoding {
+            if let albumName = url.lastPathComponent.removingPercentEncoding {
                 words.append(albumName)
             }
             
@@ -79,19 +80,25 @@ class SongArtFinder: NSObject {
         
         // Return a lambda that returns true if its input matches any of the matchWords.
         return { url in
-            let absString: NSString? = try! url.filePathURL().absoluteString
-            if let word = absString?.lastPathComponent.removingPercentEncoding {
-                let regEx: RegularExpression?
-                do {
-                    regEx = try RegularExpression(pattern: rex, options: .caseInsensitive)
-                } catch _ {
-                    regEx = nil
-                }
-                let matchRange = regEx?.rangeOfFirstMatch(in: word,
-                                        options: .reportCompletion,
-                                          range: NSRange(location: 0, length: word.characters.count))
+//            let absString: NSString? = try! url.filePathURL().absoluteString
+//            if let word = absString?.lastPathComponent.removingPercentEncoding {
+            if let word = url.lastPathComponent.removingPercentEncoding {
                 
-                return matchRange?.location != NSNotFound
+//                let regEx: RegularExpression?
+//                do {
+//                    regEx = try RegularExpression(pattern: rex, options: .caseInsensitive)
+//                } catch _ {
+//                    regEx = nil
+//                }
+//                let matchRange = regEx?.rangeOfFirstMatch(in: word,
+//                                        options: .reportCompletion,
+//                                          range: NSRange(location: 0, length: word.characters.count))
+//                
+//                return matchRange?.location != NSNotFound
+                
+                if word.range(of:rex, options: .regularExpression) != nil {
+                    return true
+                }
             }
             return false
         }

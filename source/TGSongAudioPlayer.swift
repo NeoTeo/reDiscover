@@ -38,6 +38,7 @@ class TGSongAudioPlayer: NSObject {
         }
     }
     
+    // FIXME: Change to TimeInterval
     var songDuration: CMTime {
         get {
             if let duration = currentPlayer?.currentItem?.duration {
@@ -64,7 +65,7 @@ class TGSongAudioPlayer: NSObject {
         }
     }
 
-    func setSongPlayer(_ newPlayer: AVPlayer, block: (CMTime) -> ()) {
+    func setSongPlayer(_ newPlayer: AVPlayer, block: @escaping (CMTime) -> ()) {
         if let prevPlayer = prevSongPlayer, playerObserver != nil {
             prevPlayer.removeTimeObserver(playerObserver!)
         }

@@ -38,7 +38,7 @@ public class SongCommonMetaData : NSObject, NSCopying {
         self.duration       = duration
     }
     
-    public func copy(with zone: NSZone?) -> AnyObject {
+    public func copy(with zone: NSZone?) -> Any {
         return SongCommonMetaData(title: title, album: album, artist: artist, year: year, genre: genre, duration: duration)
     }
 }
@@ -249,7 +249,7 @@ extension SongCommonMetaData {
         if let songURL = URL(string: urlString) {
             //let pathString = songURL.path
             
-            if let metadata = MDItemCreateWithURL(kCFAllocatorDefault, songURL) {
+            if let metadata = MDItemCreateWithURL(kCFAllocatorDefault, songURL as CFURL!) {
                 if let artists = MDItemCopyAttribute(metadata,kMDItemAuthors) as? NSArray {
                     artist = artists[0] as! String
                 }

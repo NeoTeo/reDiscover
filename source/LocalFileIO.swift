@@ -40,8 +40,8 @@ class LocalFileIO: NSObject {
     // Change this to return an enum type instead
     static func getURLContentType(_ theURL: URL) -> URLContentType {
         
-        if let ext = theURL.pathExtension,
-            let unmanagedFileUTI = UTTypeCreatePreferredIdentifierForTag(kUTTagClassFilenameExtension, ext, nil) {
+        let ext = theURL.pathExtension
+        if let unmanagedFileUTI = UTTypeCreatePreferredIdentifierForTag(kUTTagClassFilenameExtension, ext as CFString, nil) {
                 
             let fileUTI = unmanagedFileUTI.takeRetainedValue()
             // Only add image files.

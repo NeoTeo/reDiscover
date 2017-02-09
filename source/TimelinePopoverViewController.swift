@@ -40,7 +40,7 @@ extension TimelinePopoverViewController {
         
         self.view.addTrackingArea(trackingArea)
         
-        NotificationCenter.default.addObserver(self, selector: #selector(TimelinePopoverViewController.updateTimelineSweetSpots(_:)), name: "SweetSpotsUpdated" as NSNotification.Name, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(TimelinePopoverViewController.updateTimelineSweetSpots(_:)), name: NSNotification.Name("SweetSpotsUpdated"), object: nil)
     }
     
     func updateTimelineSweetSpots(_ notification: Notification) {

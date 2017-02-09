@@ -16,7 +16,7 @@ final class SongPool : NSObject, SongPoolAccessProtocol {
 
     private var songPool: SongDictionary?
     private var songPoolAccessQ: DispatchQueue?
-    private var serialDataLoad = DispatchQueue(label: "serial data load queue", attributes: DispatchQueueAttributes.serial)
+    private var serialDataLoad = DispatchQueue(label: "serial data load queue")
 	
     /** Utility function allows wrapping code that needs to be sync'd on
         a queue in a block like this:
@@ -66,12 +66,12 @@ final class SongPool : NSObject, SongPoolAccessProtocol {
     func fillSongPoolWithSongURLsAtURL(_ theURL: URL){
 //        var allSongs = [SongId: Song]()
         songPool = SongDictionary()
-        songPoolAccessQ = DispatchQueue(label: "songPool dictionary access queue", attributes: DispatchQueueAttributes.serial)
+        songPoolAccessQ = DispatchQueue(label: "songPool dictionary access queue")
         
         LocalAudioFileStore.applyAudioURLsToClosure(theURL) { songURL in
             
             //MARK: At this point we want to check if our core data store has info on the song.
-            guard let songString = songURL.absoluteString else { return }
+            let songString = songURL.absoluteString
             let songId = SongId(string: songString)
             let songCommonMetaData : SongCommonMetaData? = nil//SongCommonMetaData()
             let newSong = Song(songId: songId, metadata: songCommonMetaData, urlString: songString, sweetSpots: nil, fingerPrint: nil, selectedSS: nil, releases: nil, artId: nil, UUId: nil, RelId: nil)
@@ -89,7 +89,7 @@ final class SongPool : NSObject, SongPoolAccessProtocol {
         }
     }
     
-    func addSong(withChanges changes: [SongProperty : AnyObject], forSongId songId: SongId) {
+    func addSong(withChanges changes: [SongProperty : Any], forSongId songId: SongId) {
 
         /// FIXME : Do we really need to sync _all_ of this?
         synchronized {

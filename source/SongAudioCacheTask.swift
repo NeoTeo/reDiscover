@@ -40,7 +40,7 @@ class SongAudioCacheTask : NSObject {
     
     // holds the not yet ready players awaiting status change
     var loadingPlayers: PlayerToStatusChangeHandler = PlayerToStatusChangeHandler()
-    let loadingPlayersLock = Lock()
+    let loadingPlayersLock = NSLock()
     
     // holds the ready players
 	var songPlayerCache = SongIdToPlayerDictionary()
@@ -64,10 +64,10 @@ class SongAudioCacheTask : NSObject {
         return songPlayerCache
     }
 	
-	func newCacheFromCache(_ oldCache: SongIdToPlayerDictionary, withContext context: SongSelectionContext, operationBlock: BlockOperation?, completionHandler: (SongIdToPlayerDictionary)->()) {
+	func newCacheFromCache(_ oldCache: SongIdToPlayerDictionary, withContext context: SongSelectionContext, operationBlock: BlockOperation?, completionHandler: @escaping (SongIdToPlayerDictionary)->()) {
 	
         var wantedCacheCount    = 0
-        let newCacheLock        = Lock()
+        let newCacheLock        = NSLock()
 		
         var newCache: SongIdToPlayerDictionary = SongIdToPlayerDictionary() {
             /**
@@ -105,7 +105,8 @@ class SongAudioCacheTask : NSObject {
                 below (performWhenReadyForPlayback in the else) that was initiated 
                 previously.
                 */
-                
+                // FIXME: This should use access queues instead or GCD dispatch_async / dispatch_sync
+                /// see songPoolAccessQ
                 newCacheLock.withCriticalScope {
                     newCache[songId] = oldPlayer
                 }
@@ -181,7 +182,7 @@ class SongAudioCacheTask : NSObject {
             and has an associated AVPlayer with which to play back the song that 
             the id refers to.
     */
-    func performWhenReadyForPlayback(_ songId: SongId, readySongHandler: (AVPlayer)->()) {
+    func performWhenReadyForPlayback(_ songId: SongId, readySongHandler: @escaping (AVPlayer)->()) {
         
 //         At this point we don't know if the url is for the local file system or streaming.
         guard let songURL = delegate?.getSongURL(songId) else {
@@ -267,7 +268,7 @@ class SongAudioCacheTask : NSObject {
             If the player is found in the loadingPlayers it is removed from it and
             the completionHandler stored with it is called.
     */
-    override func observeValue(forKeyPath keyPath: String?, of object: AnyObject?, change: [NSKeyValueChangeKey : AnyObject]?, context: UnsafeMutablePointer<Void>?) {
+    override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
         
         if context == &myContext {
             

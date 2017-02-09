@@ -20,7 +20,7 @@ public class TGPlaylistViewController : NSViewController, NSTableViewDataSource,
     @IBOutlet weak var playlistProgress: NSProgressIndicator!
 
     
-    private var playlist : TGPlaylist!
+    fileprivate var playlist : TGPlaylist!
     
     var delegate : PlaylistViewControllerDelegate?
     

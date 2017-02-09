@@ -22,9 +22,9 @@ struct TGSongMetadataUpdateTracker : SongMetadataUpdateTracker {
 	let minUpdateInterval : TimeInterval = 3600
 
 	private var updates = [SongId : Date]()
-	private var updatesAccessQ: DispatchQueue = DispatchQueue(label: "updatesQ", attributes: DispatchQueueAttributes.serial)
+	private var updatesAccessQ: DispatchQueue = DispatchQueue(label: "updatesQ")
 	
-	private func synchronized( _ f: @noescape (Void) -> Void) {
+	private func synchronized( _ f: (Void) -> Void) {
 		//guard updatesAccessQ != nil else { fatalError("No updatesAccessQ") }
 		updatesAccessQ.sync(execute: f)
 	}

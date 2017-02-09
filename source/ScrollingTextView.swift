@@ -10,14 +10,14 @@ import Cocoa
 
 class ScrollingTextView: NSView {
 
-    var scrollText:NSString = ""
+    var scrollText: String = ""
     // Why this can't just be a Double I don't know.
     var textWidth: CGFloat = 0.0
     var scrollSpeed: TimeInterval = 0
     var scrollTimer: Timer?
     var textPosition = NSZeroPoint
     
-    func setText(_ newText: NSString) {
+    func setText(_ newText: String) {
         scrollText = newText
         textWidth = newText.size(withAttributes: nil).width
 

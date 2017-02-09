@@ -32,15 +32,15 @@ class TGSongInfoViewController : NSViewController {
     }
     
     /** Update the labels displaying the song information */
-    func setDisplayStrings(withDisplayStrings displayStrings : NSDictionary) {
+    func setDisplayStrings(withDisplayStrings displayStrings : [String : Any]) {
         
         print("setDisplayStrings called")
         /// update the info labels on the main queue as CoreAnimation requires
         DispatchQueue.main.async {
             print("setDisplayStrings actually being updated.")
-            self.titleLabel.stringValue     = displayStrings.object(forKey: "Title") as! String
-            self.artistLabel.stringValue    = displayStrings.object(forKey: "Artist") as! String
-            self.albumLabel.stringValue     = displayStrings.object(forKey: "Album") as! String
+            self.titleLabel.stringValue     = displayStrings["Title"] as! String
+            self.artistLabel.stringValue    = displayStrings["Artist"] as! String
+            self.albumLabel.stringValue     = displayStrings["Album"] as! String
             
             /// Set up the scrolling text.
             self.scrollTitleView.setText(self.titleLabel.stringValue)

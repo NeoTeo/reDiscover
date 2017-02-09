@@ -118,13 +118,13 @@ class TGPlaylist : NSObject, NSTableViewDataSource {
             let songData = song.metadataDict()
 
             let songDuration    = songData["Duration"]
-            let url             = songData["SongURL"]?.absoluteString
+            //let url             = songData["SongURL"]?.absoluteString
             let artist          = songData["Artist"]
             let title           = songData["Title"]
             
             let info            = "\(m3uExtInf)\(songDuration),\(artist) - \(title)\n"
             
-            content += info + url!!
+            content += info //+ url!!
         }
         
         print("The playlist content is \(content)")

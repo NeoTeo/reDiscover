@@ -9,7 +9,7 @@
 import Foundation
 import Cocoa
 
-typealias KeyframeParametricBlock = (time: Double) -> Double
+typealias KeyframeParametricBlock = (_ time: Double) -> Double
 
 extension CAKeyframeAnimation {
     
@@ -29,7 +29,7 @@ extension CAKeyframeAnimation {
         var values   = [Double]()
             
         for _ in 0 ..< steps {
-            let value = fromVal + (block(time: time) * (toVal - fromVal))
+            let value = fromVal + (block(time) * (toVal - fromVal))
             values.append(value)
             time += timeStep
         }

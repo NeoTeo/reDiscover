@@ -149,12 +149,13 @@ class SweetSpotServerIO: NSObject {
 				let requestJSON = try JSONSerialization.jsonObject(with: data!, options: JSONSerialization.ReadingOptions.mutableContainers ) as! NSDictionary
 				
 				if let status = requestJSON.object(forKey: "status") as! String? {
-					if (status == "ok") == nil { return }
+                    
+					guard status == "ok" else { return }
 						
-					guard let result: AnyObject? = requestJSON.object(forKey: "result") else { return }
+					guard let result = requestJSON.object(forKey: "result") else { return }
 					
 					// Use the line above to avoid the line below.
-					if result! is NSDictionary {
+					if result is NSDictionary {
 						
 						let resultDict		 = result as! NSDictionary
 						let serverSweetSpots = resultDict["sweetspots"] as! [SweetSpot]//NSArray
@@ -165,16 +166,17 @@ class SweetSpotServerIO: NSObject {
 							print("the song id is \(songID )")
 							
 							// If the song already has sweet spots add the server's sweet spots to them.
-							var songSS: Set<SweetSpot>? = self.delegate?.sweetSpots(forSong: song)
-							var newSSSet: Set<SweetSpot>?
 							
-							if songSS != nil {
+							var newSSSet: Set<SweetSpot>
+							
+                            if var songSS = self.delegate?.sweetSpots(forSong: song) {
 								
 								for ss in serverSweetSpots {
-									songSS!.insert(ss)
+									songSS.insert(ss)
 								}
 								
 								newSSSet = songSS
+                                
 							} else {
 								
 								newSSSet = Set<SweetSpot>(serverSweetSpots)
@@ -185,11 +187,10 @@ class SweetSpotServerIO: NSObject {
 							var newSelectedSS = song.selectedSweetSpot
 							
 							if newSelectedSS == nil {
-								newSelectedSS = newSSSet!.first
+								newSelectedSS = newSSSet.first
 							}
 							
-//                                self.songPoolAPI?.addSong(withChanges: [.SweetSpots : newSSSet!, .SelectedSS : newSelectedSS!], forSongId: songID)
-							self.delegate?.addSong(withChanges: [.sweetSpots : newSSSet!, .selectedSS : newSelectedSS!], forSongId: songID)
+							self.delegate?.addSong(withChanges: [.sweetSpots : newSSSet as AnyObject, .selectedSS : newSelectedSS!], forSongId: songID)
 							// Let any listeners know we've updated the sweetspots of songID
 							NotificationCenter.default.post(name: Notification.Name(rawValue: "SweetSpotsUpdated"), object: songID)
 						}
@@ -212,7 +213,7 @@ class SweetSpotServerIO: NSObject {
         let selectedSS : SweetSpot = 60
         
 //        songPoolAPI?.addSong(withChanges: [.SweetSpots : newSSs, .SelectedSS : selectedSS], forSongId: songId)
-        delegate?.addSong(withChanges: [.sweetSpots : newSSs, .selectedSS : selectedSS], forSongId: songId)
+        delegate?.addSong(withChanges: [.sweetSpots : newSSs as AnyObject, .selectedSS : selectedSS], forSongId: songId)
 		
         // Let any listeners know we've updated the sweetspots of songID
         NotificationCenter.default.post(name: Notification.Name(rawValue: "SweetSpotsUpdated"), object: songId)

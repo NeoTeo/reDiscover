@@ -20,7 +20,8 @@ import CoreData
 @end
 */
 class UploadedSSData : NSManagedObject {
-    @NSManaged var sweetSpots : NSArray?
+//    @NSManaged var sweetSpots : NSArray?
+    @NSManaged var sweetSpots: [SweetSpot]?
     @NSManaged var songUUID : String?
 }
 

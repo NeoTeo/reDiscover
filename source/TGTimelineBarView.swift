@@ -33,7 +33,7 @@ public class TGTimelineBarView : NSView {
     override public func draw(_ dirtyRect: NSRect) {
         
         let rect = self.bounds
-        NSColor.lightGray().setFill()
+        NSColor.lightGray.setFill()
         NSRectFill(rect)
         
         // Calculate the width of the rect based on current playhead position
@@ -43,7 +43,7 @@ public class TGTimelineBarView : NSView {
                               width: width,
                              height: rect.size.height-2)
         
-        NSColor.darkGray().setFill()
+        NSColor.darkGray.setFill()
         NSRectFill(playbackRect)
     }
 }

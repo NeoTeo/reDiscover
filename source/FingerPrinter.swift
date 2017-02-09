@@ -16,10 +16,10 @@ func generateFingerprint(fromSongAtUrl songUrl : URL) -> (String, Double)? {
      pass it to chromaprint_get_fingerprint without errors.
      The defer ensures it is not leaked if we drop out early.
      */
-    var fingerprint: UnsafeMutablePointer<Int8>? = UnsafeMutablePointer<Int8>(allocatingCapacity: 1)
+    var fingerprint: UnsafeMutablePointer<Int8>? = UnsafeMutablePointer<Int8>.allocate(capacity: 1)
     defer {
         fingerprint?.deinitialize()
-        fingerprint?.deallocateCapacity(1)
+        fingerprint?.deallocate(capacity: 1)
     }
     
     /// Start by creating a chromaprint context.
@@ -136,7 +136,8 @@ private func decodeAudio(
                         bufferLength,           /// number of bytes to copy
                         data!.mutableBytes)     /// destination buffer
                     
-                    let samples = UnsafeMutablePointer<Int16>(data!.mutableBytes)
+                    let opaquePtr = OpaquePointer(data!.mutableBytes)
+                    let samples = UnsafeMutablePointer<Int16>(opaquePtr)
                     
                     /**
                      *  - ctx: Chromaprint context pointer
@@ -157,7 +158,7 @@ private func decodeAudio(
                     /// pick the smaller of the two values so we don't remove too much
                     let length = min(remainingSamples, sampleCount)
                     
-                    chromaprint_feed(context, UnsafeMutablePointer<Void>(samples),length)
+                    chromaprint_feed(context, UnsafeMutableRawPointer(samples),length)
                     
                     sampleData.append(samples, length: bufferLength)
                     CMSampleBufferInvalidate(sampleBufferRef)

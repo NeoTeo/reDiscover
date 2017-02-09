@@ -20,7 +20,7 @@ public final class TGTimelineTransformer: ValueTransformer {
         return true
     }
     
-    public override func transformedValue(_ value: AnyObject?) -> AnyObject {
+    public override func transformedValue(_ value: Any?) -> Any {
         
         guard maxDuration != 0,
             let numberValue = value as? NSNumber else {
@@ -32,7 +32,7 @@ public final class TGTimelineTransformer: ValueTransformer {
         return NSNumber(value: unit * numberValue.doubleValue )
     }
     
-    public override func reverseTransformedValue(_ value: AnyObject?) -> AnyObject {
+    public override func reverseTransformedValue(_ value: Any?) -> Any {
         guard let numberValue = value as? NSNumber else { return NSNumber(value: 0.0) }
         return NSNumber(value: maxDuration / 100.0 * numberValue.doubleValue)
     }

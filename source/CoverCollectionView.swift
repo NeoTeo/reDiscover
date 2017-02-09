@@ -11,9 +11,9 @@ import Cocoa
 
 class CoverCollectionView: NSCollectionView {
     
-    override func mouseDown(_ theEvent: NSEvent) {
+    override func mouseDown(with theEvent: NSEvent) {
         // Just pass the event on to the next responder in the chain.
-        nextResponder?.mouseDown(theEvent)
+        nextResponder?.mouseDown(with: theEvent)
     }
 
 }

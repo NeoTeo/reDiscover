@@ -10,7 +10,7 @@ import Foundation
 import AVFoundation
 import AppKit
 
-typealias SongArtId = NSString
+typealias SongArtId = String
 
 enum DefaultImage: Int {
     case none
@@ -58,12 +58,12 @@ class SongArt : NSObject {
         // Is there any point to this when SongArt is the only class to have access to the artCache?
         // Why not just mutate the artCache?
         artCache = artCache.addImage(image)
-        return image.hashId()
+        return image.hashId() as SongArtId
     }
     
     // For now it's just the hashId, but may change.
     static func idForImage(_ image: NSImage) -> SongArtId {
-        return image.hashId()
+        return image.hashId() as SongArtId
     }
     
 //    static func artForSong(song: TGSong) -> NSImage? {
@@ -79,7 +79,7 @@ class SongArt : NSObject {
 //    }
     
     static func getArt(forArtId artId: String) -> NSImage? {
-        return artCache.artForArtId(artId)
+        return artCache.artForArtId(artId as SongArtId)
     }
     
     /**

@@ -15,7 +15,7 @@ extension NSImage {
         let digestLen = Int(CC_MD5_DIGEST_LENGTH)
         if let imageData = self.tiffRepresentation {
             let dataLen = CUnsignedInt(imageData.count)
-            let result = UnsafeMutablePointer<CUnsignedChar>(allocatingCapacity: digestLen)
+            let result = UnsafeMutablePointer<CUnsignedChar>.allocate(capacity: digestLen)
             
             CC_MD5((imageData as NSData).bytes, dataLen, result)
             

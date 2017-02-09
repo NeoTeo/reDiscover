@@ -53,7 +53,7 @@ public enum SongProperty: Hashable {
 
 extension Song {
     
-    static func songWithChanges(_ theSong: TGSong, changes: [SongProperty : AnyObject]) -> TGSong {
+    static func songWithChanges(_ theSong: TGSong, changes: [SongProperty : Any]) -> TGSong {
         
         var songId      = theSong.songId
         var metadata    = theSong.metadata
@@ -113,7 +113,7 @@ extension Song {
     }
     
     
-    func metadataDict() -> NSDictionary {
+    func metadataDict() -> [String : Any] {
         
         guard let md = metadata else { return [:] }
         

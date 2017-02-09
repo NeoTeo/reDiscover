@@ -27,7 +27,7 @@ public protocol TGSong {
     init(songId: SongId, metadata: SongCommonMetaData?, urlString: String?, sweetSpots: Set<SweetSpot>?,
         fingerPrint: String?, selectedSS: SweetSpot?, releases: Data?, artId: String?, UUId: String?, RelId: String?)
     
-    func metadataDict() -> NSDictionary
+    func metadataDict() -> [String : Any]
     
     /// Convenience methods
     func duration() -> NSNumber?

@@ -30,7 +30,7 @@ class DropViewController : NSViewController, DropViewDelegate {
         }
     }
     
-    override var representedObject: AnyObject? {
+    override var representedObject: Any? {
         didSet {
             // Update the view, if already loaded.
         }
@@ -47,7 +47,7 @@ class DropViewController : NSViewController, DropViewDelegate {
         up before the segue happens. In this case we're closing and releasing the
         drop window before TGSplitViewController's viewDidAppear is called.
     */
-    override func prepare(for segue: NSStoryboardSegue, sender: AnyObject!) {
+    override func prepare(for segue: NSStoryboardSegue, sender: Any?) {
         print("Drop View Controller preparing for segue")
 
       let splitViewCtrlr = segue.destinationController as! TGSplitViewController
@@ -76,7 +76,7 @@ class DropViewController : NSViewController, DropViewDelegate {
             // We need to do this again because the app is deactivated when the user clicks a folder
             // in Finder to drag onto here.
 
-            NSApp.activateIgnoringOtherApps(true)
+            NSApp.activate(ignoringOtherApps: true)
         }
     }
 

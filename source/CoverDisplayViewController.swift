@@ -28,22 +28,22 @@ public class TGCoverDisplayViewController: NSViewController, NSCollectionViewDel
     
     @IBOutlet weak var coverCollectionView: CoverCollectionView!
     
-    private var unmappedSongIdArray: [SongId] = []
-    private var mappedSongIds: [Int:SongId] = [:]
+    fileprivate var unmappedSongIdArray: [SongId] = []
+    fileprivate var mappedSongIds: [Int:SongId] = [:]
 	
 	/// The set of uncovered songs.
-	private var uncoveredSongIds = Set<SongId>()
+	fileprivate var uncoveredSongIds = Set<SongId>()
 	
-    private var songCount = 0
+    fileprivate var songCount = 0
 
     private var currentTrackingArea: NSTrackingArea?
     private var currentIdxPath: IndexPath?
-    private var songUIController: TGSongUIPopupController?
+    fileprivate var songUIController: TGSongUIPopupController?
     public var songTimelineController: TimelinePopoverViewController?
     
     var delegate : CoverDisplayViewControllerDelegate?
     
-    private var collectionAccessQ: DispatchQueue = DispatchQueue(label: "collectionAccessQ", attributes: DispatchQueueAttributes.serial)
+    private var collectionAccessQ = DispatchQueue(label: "collectionAccessQ")
     
     public override func awakeFromNib() {
 
@@ -65,8 +65,8 @@ public class TGCoverDisplayViewController: NSViewController, NSCollectionViewDel
     }
         
     func initializeObservers() {
-        NotificationCenter.default.addObserver(self, selector: #selector(TGCoverDisplayViewController.updateSongs(_:)), name: "NewSongAdded" as NSNotification.Name, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(TGCoverDisplayViewController.updateCovers(_:)), name: "songCoverUpdated" as NSNotification.Name, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(TGCoverDisplayViewController.updateSongs(_:)), name: Notification.Name("NewSongAdded"), object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(TGCoverDisplayViewController.updateCovers(_:)), name: Notification.Name("songCoverUpdated"), object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(TGCoverDisplayViewController.boundsChanged(_:)), name: NSNotification.Name.NSScrollViewDidLiveScroll, object: nil)
     }
     
@@ -121,7 +121,7 @@ public class TGCoverDisplayViewController: NSViewController, NSCollectionViewDel
 //        }
 //    }
     
-    override public func mouseDown(_ theEvent: NSEvent) {
+    override public func mouseDown(with theEvent: NSEvent) {
 
         // Show the UI for the item that was clicked.
         
@@ -141,12 +141,13 @@ public class TGCoverDisplayViewController: NSViewController, NSCollectionViewDel
                                 width: itemFrame.size.width,
                                height: itemFrame.size.height)
 
+            // FIXME: That's an awful lot of force unwraps.
             // Show the UI inside the frame we've created.
             songUIController!.showInside(!songUIController!.isUIActive(), frame: newFrame)
         }
     }
 
-    public override func mouseMoved(_ theEvent: NSEvent) {
+    public override func mouseMoved(with theEvent: NSEvent) {
         
         // Convert the mouse pointer coordinates to the coverCollectionView coordinates. 
         // This does takes scrolling into consideration.

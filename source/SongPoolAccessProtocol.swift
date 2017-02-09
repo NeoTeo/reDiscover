@@ -11,7 +11,7 @@ import Foundation
 protocol SongPoolAccessProtocol {
     
     func addSong(_ theSong: TGSong)
-    func addSong(withChanges changes: [SongProperty : AnyObject], forSongId songId: SongId)
+    func addSong(withChanges changes: [SongProperty : Any], forSongId songId: SongId)
     func songForSongId(_ songId: SongId) -> TGSong?
     func getUrl(_ songId: SongId) -> URL?
     func debugLogSongWithId(_ songId: SongId)

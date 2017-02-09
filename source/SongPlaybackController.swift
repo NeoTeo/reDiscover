@@ -34,19 +34,19 @@ class TGSongPlaybackController : NSObject {
 
     var delegate : SongPlaybackControllerDelegate?
 
-    private var songAudioCacher = TGSongAudioCacher()
-    private var songAudioPlayer = TGSongAudioPlayer()
+    fileprivate var songAudioCacher = TGSongAudioCacher()
+    fileprivate var songAudioPlayer = TGSongAudioPlayer()
     
-    private var lastRequestedSongId : SongId?
-    private var currentlyPlayingSongId : SongId?
+    fileprivate var lastRequestedSongId : SongId?
+    fileprivate var currentlyPlayingSongId : SongId?
     
     /// currentSongDuration needs to be dynamic because it is KVO bound.
-    private dynamic var currentSongDuration : NSNumber?
+    fileprivate dynamic var currentSongDuration : NSNumber?
 
     /// The current position of the playhead.
-    private dynamic var playheadPos : NSNumber?
+    fileprivate dynamic var playheadPos : NSNumber?
 
-    private dynamic var requestedPlayheadPos : NSNumber?
+    fileprivate dynamic var requestedPlayheadPos : NSNumber?
     dynamic var requestedPlayheadPosition : NSNumber? {
         /**
         The requestedPlayheadPosition is the playhead position of the currently 
@@ -158,11 +158,12 @@ extension TGSongPlaybackController {
             self.songAudioPlayer.playAtTime(startTime.doubleValue)
             self.currentlyPlayingSongId = songId
             
-            let duration = song?.duration() ?? CMTimeGetSeconds(self.songAudioPlayer.songDuration)
+            let dur = song?.duration()
+//            let duration = song?.duration() ?? CMTimeGetSeconds(self.songAudioPlayer.songDuration)
             /// Only update currentSongDuration if valid.
-            if duration != 0 {
-                self.currentSongDuration = duration
-            }
+            
+            self.currentSongDuration = (dur != nil) ? dur! : CMTimeGetSeconds(self.songAudioPlayer.songDuration) as NSNumber
+            
             self.requestedPlayheadPosition = startTime
         }
     }

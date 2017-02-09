@@ -18,19 +18,19 @@ final public class TGSplitViewController: NSSplitViewController {
     @IBOutlet weak var songInfoSVI: NSSplitViewItem!
     
     // Shadow the above SplitViewItems' viewControllers because...?
-    private var playlistPanelCtrlr : TGPlaylistViewController!
-    private var coversPanelCtrlr : TGCoverDisplayViewController!
-    private var infoPanelCtrlr : TGSongInfoViewController!
-    private var sweetSpotController : SweetSpotController!
-    private var objectController : NSObjectController?
+    fileprivate var playlistPanelCtrlr : TGPlaylistViewController!
+    fileprivate var coversPanelCtrlr : TGCoverDisplayViewController!
+    fileprivate var infoPanelCtrlr : TGSongInfoViewController!
+    fileprivate var sweetSpotController : SweetSpotController!
+    fileprivate var objectController : NSObjectController?
 
-    private var songMetadataUpdater : SongMetadataUpdater?
+    fileprivate var songMetadataUpdater : SongMetadataUpdater?
     
     var theURL: URL?
     
     var theSongPool : SongPoolAccessProtocol!
     
-    private var playbackController = TGSongPlaybackController()
+    fileprivate var playbackController = TGSongPlaybackController()
 }
 
 extension TGSplitViewController {
@@ -79,8 +79,7 @@ extension TGSplitViewController {
         // Bind the timeline value transformer's maxDuration with the song pool's currentSongDuration.
         let transformer = TGTimelineTransformer()
         
-        ValueTransformer.setValueTransformer(transformer, forName: ValueTransformerName("TimelineTransformer"))
-//        ValueTransformer.setValueTransformer(transformer, forName: "TimelineTransformer")
+        ValueTransformer.setValueTransformer(transformer, forName: NSValueTransformerName(rawValue: "TimelineTransformer"))
         
         transformer.bind(   "maxDuration",
                             to: playbackController as AnyObject,
@@ -123,27 +122,27 @@ extension TGSplitViewController {
         
         NotificationCenter.default.addObserver(   self,
                                                             selector: #selector(TGSplitViewController.songCoverWasUpdated(_:)),
-                                                            name: "songCoverUpdated" as NSNotification.Name,
+                                                            name: NSNotification.Name("songCoverUpdated"),
                                                             object: nil)
         
         NotificationCenter.default.addObserver(   self,
                                                             selector: #selector(TGSplitViewController.songMetaDataWasUpdated(_:)),
-                                                            name: "songMetaDataUpdated" as NSNotification.Name,
+                                                            name: NSNotification.Name("songMetaDataUpdated"),
                                                             object: nil)
         
         NotificationCenter.default.addObserver(   self,
                                                             selector: #selector(TGSplitViewController.userSelectedSongInContext(_:)),
-                                                            name: "userSelectedSong" as NSNotification.Name,
+                                                            name: NSNotification.Name("userSelectedSong"),
                                                             object: nil)
         
         NotificationCenter.default.addObserver(   self,
                                                             selector: #selector(TGSplitViewController.songDidStartUpdating(_:)),
-                                                            name: "songDidStartUpdating" as NSNotification.Name,
+                                                            name: NSNotification.Name("songDidStartUpdating"),
                                                             object: nil)
         
         NotificationCenter.default.addObserver(   self,
                                                             selector: #selector(TGSplitViewController.userCreatedSweetSpot(_:)),
-                                                            name: "UserCreatedSweetSpot" as NSNotification.Name,
+                                                            name: NSNotification.Name("UserCreatedSweetSpot"),
                                                             object: nil)
 
     }
@@ -215,7 +214,7 @@ extension TGSplitViewController {
         print("Done toggle, coverCollectionSVI holding priority: \(coverCollectionSVI.holdingPriority)")
     }
 
-    public override func keyDown(_ theEvent: NSEvent) {
+    public override func keyDown(with theEvent: NSEvent) {
 
         let string = theEvent.characters!
         
@@ -407,7 +406,7 @@ extension TGSplitViewController : CoverDisplayViewControllerDelegate {
 
 extension TGSplitViewController : SweetSpotControllerDelegate {
     
-    func addSong(withChanges changes: [SongProperty : AnyObject], forSongId songId: SongId) {
+    func addSong(withChanges changes: [SongProperty : Any], forSongId songId: SongId) {
 		
         theSongPool.addSong(withChanges: changes, forSongId: songId)
     }    
@@ -452,6 +451,7 @@ extension TGSplitViewController : SongPlaybackControllerDelegate {
 }
 
 extension TGSplitViewController : SongMetadataUpdaterDelegate {
+
 	func sendSweetSpotsRequest(_ songId: SongId) {
 		return sweetSpotController.requestSweetSpots(songId)
 	}

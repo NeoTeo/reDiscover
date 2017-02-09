@@ -36,7 +36,7 @@ final class TGSongAudioCacher : NSObject {
     var delegate : SongAudioCacherDelegate?
     
     /// Serialize the access to the pendingPlayerRequestCallback.
-    let pendingRequestQ = DispatchQueue(label: "Request access q", attributes: DispatchQueueAttributes.serial)
+    let pendingRequestQ = DispatchQueue(label: "Request access q")
     var _pendingPlayerRequestCallback: SongIdToPlayerRequestBlock?
     var pendingPlayerRequestCallback: SongIdToPlayerRequestBlock? {
         get {
@@ -138,7 +138,7 @@ final class TGSongAudioCacher : NSObject {
             instance variable. Any existing pending request is overwritten because
             it has been overridden by this more recent request.
     */
-    func performWhenPlayerIsAvailableForSongId(_ songId: SongId, callBack: (AVPlayer)->()) {
+    func performWhenPlayerIsAvailableForSongId(_ songId: SongId, callBack: @escaping (AVPlayer)->()) {
         
         // If the requested Player is already in the cache, execute callback immediately.
         if let player = songPlayerCache[songId] {
