@@ -172,9 +172,9 @@ class TGTimelineSliderCell : NSSliderCell {
                                                                   y: val,
                                                               width: val,
                                                              height: val))
-
+                
                 aSSControl.tag    = spotIndex//sweetSpots.indexOf(<#T##member: SweetSpot##SweetSpot#>)
-                aSSControl.target = self.theController as? AnyObject
+                aSSControl.target = self.theController as AnyObject?
                 // FIXME: figure out what's to be called.
                 aSSControl.action = #selector(TimelinePopoverViewController.userSelectedExistingSweetSpot(_:))
                 aSSControl.image  = self.knobImage

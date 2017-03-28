@@ -285,13 +285,14 @@ extension TGSplitViewController {
                                                  gridDimensions: context.gridDimensions,
                                                   cachingMethod: context.cachingMethod)
 
-		/// add the requestUpdatedData as a postSongCacheCompletion to the context
+		/// add the requestUpdatedData(cachedSongIds:) as a postSongCacheCompletion to the context
 		newContext.postCompletion = songMetadataUpdater?.requestUpdatedData
         playbackController.refreshCache(newContext)
         playbackController.requestSongPlayback(songId)
         
         //// Request updated data for the selected song.
         songMetadataUpdater?.requestUpdatedData(forSongId: newContext.selectedSongId)
+        
     }
     
     

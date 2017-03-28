@@ -54,21 +54,24 @@ final class SongPool : NSObject, SongPoolAccessProtocol {
 
     func load(_ anUrl: URL) -> Bool {
         serialDataLoad.async {
-            self.fillSongPoolWithSongURLsAtURL(anUrl)
+            self.createSongsFromUrls(at: anUrl)
         }
+        
         return true
     }
 	
     /**
-        Make and return a dictionary of songs made from any audio URLs found 
-        from the given URL.
+        Make a dictionary of songs made from any audio URLs found
+        at the given URL.
     */
-    func fillSongPoolWithSongURLsAtURL(_ theURL: URL){
-//        var allSongs = [SongId: Song]()
-        songPool = SongDictionary()
+    func createSongsFromUrls(at url: URL) {
+
+        songPool = [SongId : Song]()
+        
         songPoolAccessQ = DispatchQueue(label: "songPool dictionary access queue")
         
-        LocalAudioFileStore.applyAudioURLsToClosure(theURL) { songURL in
+        /// For each url found below the given url call the given handler closure.
+        LocalAudioFileStore.applyAudioURLsToClosure(url) { songURL in
             
             //MARK: At this point we want to check if our core data store has info on the song.
             let songString = songURL.absoluteString
@@ -77,15 +80,15 @@ final class SongPool : NSObject, SongPoolAccessProtocol {
             let newSong = Song(songId: songId, metadata: songCommonMetaData, urlString: songString, sweetSpots: nil, fingerPrint: nil, selectedSS: nil, releases: nil, artId: nil, UUId: nil, RelId: nil)
             
             self.addSong(newSong)
-            
-            NotificationCenter.default.post(name: Notification.Name(rawValue: "NewSongAdded"), object: songId)
         }
+        /// Won't return until done adding all the songs.
     }
 
     func addSong(_ theSong: TGSong) {
         
         synchronized {
             self.songPool![theSong.songId] = theSong as? Song
+            NotificationCenter.default.post(name: Notification.Name(rawValue: "NewSongAdded"), object: theSong.songId)
         }
     }
     
@@ -168,7 +171,7 @@ extension SongPool {
         guard let song = getSong(songId) else { return }
             
         print("Song with id \(songId) has: ")
-		print("duration \(song.duration())")
+		print("duration \(String(describing: song.duration()))")
 		if let sweeties = song.sweetSpots {
 			print("sweet spots: ")
 			for ss in sweeties {

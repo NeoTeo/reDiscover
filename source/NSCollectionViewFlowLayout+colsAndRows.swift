@@ -28,7 +28,7 @@ extension NSCollectionViewFlowLayout {
     }
  
     // Convert from a column and row coordinate point to a flat index.
-    func indexFromGridPos(_ gridPos: NSPoint) -> Int {
+    func index(from gridPos: NSPoint) -> Int {
 
         let (cols, _) = colsAndRowsFromLayout()
         

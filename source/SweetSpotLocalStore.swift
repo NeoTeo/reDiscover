@@ -75,14 +75,18 @@ class TGSweetSpotLocalStore : SweetSpotLocalStore {
 
 		uploadedSweetSpotsMOC!.performAndWait() {
 			do {
-                let fetchedArray = try self.uploadedSweetSpotsMOC!.fetch(request)
-				
-				for ssData in fetchedArray as! [UploadedSSData] where ssData.songUUID != nil {
-					
-					self.uploadedSweetSpots[ssData.songUUID!] = ssData
-					print("The ssData songUUID is \(ssData.songUUID) and its sweetspots \(ssData.sweetSpots)")
-				}
-				
+                
+                if let fetchedArray = try self.uploadedSweetSpotsMOC!.fetch(request) as? [UploadedSSData] {
+                    for ssData in fetchedArray {
+                        
+                        guard let uuid = ssData.songUUID else {
+                            fatalError("Fatal error: Sweetspot data not associated with any uuid!")
+                        }
+                        
+                        self.uploadedSweetSpots[uuid] = ssData
+                        print("The ssData songUUID is \(uuid) and its sweetspots \(String(describing: ssData.sweetSpots))")
+                    }
+                }
 				print("initUploadedSweetSpots done. Loaded \(self.uploadedSweetSpots.count)")
 			} catch {
 				fatalError("Failed to upload SweetSpots \(error)")

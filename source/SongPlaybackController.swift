@@ -107,7 +107,10 @@ extension TGSongPlaybackController {
         let timerObserver = { [weak self, weak songPlayer] (time : CMTime) -> () in
             /// FIXME : When songPlayer is nil it might be a sign that we're not properly
             /// sync'ing ! Fix
-            let currentPlaybackTime = songPlayer!.currentTime()
+            guard let player = songPlayer else { fatalError("sync error - songPlayer is nil") }
+            
+            let currentPlaybackTime = player.currentTime()
+            
             self!.songDidUpdatePlayheadPosition(NSNumber(value: CMTimeGetSeconds(currentPlaybackTime)))
         }
         songAudioPlayer.setSongPlayer(songPlayer, block: timerObserver)

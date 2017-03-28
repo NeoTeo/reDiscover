@@ -133,7 +133,8 @@ public class SongMetadataUpdater {
 		
 		
 		/// Add the ops to the queue.
-		opQueue.addOperations([  updateMetadataOp,
+		opQueue.addOperations([
+            updateMetadataOp,
 			fingerPrinterOp,
 			remoteDataOp,
 			updateAlbumOp,
@@ -147,11 +148,12 @@ public class SongMetadataUpdater {
         guard let song = delegate?.getSong(songId) else { return }
 		
         /// Don't re-fetch the song common metadata if we already have it.
-        if song.metadata != nil {
-            print("updateMetadata already had metadata \(song.metadata?.artist)")
-            print(song.metadata?.title)
-            print(song.metadata?.album)
-            return }
+        if let md = song.metadata {
+            print("updateMetadata already had metadata \(md.artist)")
+            print(md.title)
+            print(md.album)
+            return
+        }
         
         guard let metadata = SongCommonMetaData.loadedMetaDataForSongId(song) else { return }
 

@@ -65,12 +65,12 @@ class SweetSpotServerIO: NSObject {
 		
 		for sweetSpot in sweetSpots {
 		
-			if delegate!.sweetSpotHasBeenUploaded(sweetSpot as Double, song: song) {
+			if delegate!.sweetSpotHasBeenUploaded(sweetSpot.doubleValue, song: song) {
 				print("Has been uploaded")
 				continue
 			}
 
-			guard let requestIDURL = URL(string: "http://\(hostNameAndPort)/submit?songUUID=\(songUuid.utf8)&songSweetSpot=\(sweetSpot as Double)") else { return false }
+			guard let requestIDURL = URL(string: "http://\(hostNameAndPort)/submit?songUUID=\(songUuid.utf8)&songSweetSpot=\(sweetSpot.doubleValue)") else { return false }
 			
 			print("this is a sweetSpot upload url \(requestIDURL)")
 			
@@ -85,7 +85,7 @@ class SweetSpotServerIO: NSObject {
 											options: JSONSerialization.ReadingOptions.mutableContainers ) as! NSDictionary
 				
 				if let status = requestJSON.object(forKey: "status") as! String? {
-					if (status == "ok") != nil {
+					if status == "ok" {
 						print("Upload to SweetSpotServer returned OK")
 						
 						delegate?.markSweetSpotAsUploaded(songUuid, sweetSpot: sweetSpot)

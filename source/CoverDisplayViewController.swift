@@ -28,8 +28,10 @@ public class TGCoverDisplayViewController: NSViewController, NSCollectionViewDel
     
     @IBOutlet weak var coverCollectionView: CoverCollectionView!
     
-    fileprivate var unmappedSongIdArray: [SongId] = []
-    fileprivate var mappedSongIds: [Int:SongId] = [:]
+    /// Unmapped songs are those that have not yet been mapped to a position in the display grid.
+    /// Mapped songs are those that are mapped to a position in the display grid.
+    fileprivate var unmappedSongIds: [SongId] = []
+    fileprivate var mappedSongIds: [Int : SongId] = [:]
 	
 	/// The set of uncovered songs.
 	fileprivate var uncoveredSongIds = Set<SongId>()
@@ -208,16 +210,16 @@ public class TGCoverDisplayViewController: NSViewController, NSCollectionViewDel
 
 		if songId == nil {
 			
-			let unmappedCount = UInt32(self.unmappedSongIdArray.count)
+			let unmappedCount = UInt32(self.unmappedSongIds.count)
 		
 			 if unmappedCount > 0 {
 			
 				// Remove a random songId from unmapped and add it to the mapped.
 				let randIdx		  = Int(arc4random_uniform(unmappedCount))
 			print("randIdx = \(randIdx)")
-				songId = self.unmappedSongIdArray.remove(at: randIdx)
+				songId = self.unmappedSongIds.remove(at: randIdx)
 				self.mappedSongIds[index] = songId
-                print("mapped index \(index) to songId \(songId)")
+                print("mapped index \(index) to songId \(String(describing: songId))")
 			}
 		}
 		
@@ -292,8 +294,13 @@ public class TGCoverDisplayViewController: NSViewController, NSCollectionViewDel
     */
 	public func songIdFromGridPos(_ gridPos: NSPoint, resolvingIsAllowed : Bool = false) -> SongId? {
         
+        /// Ensure we have a valid flow layout.
+        guard let flowLayout = coverCollectionView.collectionViewLayout as? NSCollectionViewFlowLayout else {
+            fatalError("Fatal error: collection layout is not a flow layout")
+        }
+        
         // Ask the flow layout for an index given a grid position.
-        let index = (coverCollectionView.collectionViewLayout as! NSCollectionViewFlowLayout).indexFromGridPos(gridPos)
+        let index = flowLayout.index(from: gridPos)
         
         /// Catch indices from grid positions with no songs on.
         guard index < songCount else { return nil }
@@ -328,38 +335,34 @@ public class TGCoverDisplayViewController: NSViewController, NSCollectionViewDel
         This is done via an access queue.
     */
     func updateSongs(_ notification: Notification) {
-        if let songId = notification.object as? SongId {
-            // Internally (from methods) it's ok to mutate the array.
-            // How can we know if the SongId object is value or reference type?
-            // And so how can we know if the unmappedSongIdArray is value or reference based?
-            //FIXME:
-            // queue the access to the collection up serially.
-            collectionAccessQ.async {
-                self.unmappedSongIdArray.append(songId)
+        
+        guard let songId = notification.object as? SongId else { return }
+            
+        collectionAccessQ.async {
+            
+            self.unmappedSongIds.append(songId)
 
-                // The next empty index is the same as the songCount (number of songs in collection).
-                let newIndexPath = NSIndexPath(forItem: self.songCount, inSection: 0) as IndexPath
-                
-//                let newIndexPath = IndexPath(index: self.songCount)
-                
-//                let newIndexPath = IndexPath(forItem: self.songCount, inSection: 0)
-                self.songCount += 1
-                
-                // insertItemsAtIndexPaths wants a set, so we make a set.
-                let indexPaths: Set<IndexPath> = [newIndexPath]
-                
-                // collection view flips if we do this off the main queue, so The Dude abides.
-                // crashes with an EXC_BAD_ACCESS if we scroll down to catch up with the songs being added.
-                // It doesn't matter that the item index is 0 or the last (songCount) it still throws
-                // (and this is probably significant) when I scroll to the bottom - is this an animation thing?
-                // Enabling zombie objects in the scheme reveals that the crash occurs in the animation code with the 
-                // error: "*** -[UIViewAnimationContext completionHandler]: message sent to deallocated instance". 
-                // This smells like another Apple bug.
-                DispatchQueue.main.sync{
-                    //print("idxPaths \(indexPaths) and songCount = \(self.songCount)")
-                    self.coverCollectionView.insertItems(at: indexPaths)
-               }
-            }
+            // The next empty index is the same as the songCount (number of songs in collection).
+            let newIndexPath = NSIndexPath(forItem: self.songCount, inSection: 0) as IndexPath
+            
+            self.songCount += 1
+            
+            // insertItems(at:) wants a set, so we make a set.
+            let indexPaths: Set<IndexPath> = [newIndexPath]
+            
+            // collection view flips if we do this off the main queue, so The Dude abides.
+            // It crashes with an EXC_BAD_ACCESS if we scroll down to catch up with the songs being added.
+            // It doesn't matter that the item index is 0 or the last (songCount) it still throws
+            // (and this is probably significant) when I scroll to the bottom - is this an animation thing?
+            // Enabling zombie objects in the scheme reveals that the crash occurs in the animation code with the 
+            // error: "*** -[UIViewAnimationContext completionHandler]: message sent to deallocated instance". 
+            // This smells like another Apple bug.
+            
+            /// Calling this synchronously ensures the insertItems call is done before exiting this block.
+            DispatchQueue.main.sync {
+//                    print("CoverDisplayViewController updateSongs: idxPaths \(indexPaths) and songCount = \(self.songCount)")
+                self.coverCollectionView.insertItems(at: indexPaths)
+           }
         }
     }
     
@@ -390,6 +393,8 @@ public class TGCoverDisplayViewController: NSViewController, NSCollectionViewDel
             }
         }
 */
+        /// Calling this on the main queue should ensure it doesn't get called when items
+        /// are being inserted into the coverCollectionView.
         DispatchQueue.main.async{
             self.coverCollectionView.reloadData()
         }

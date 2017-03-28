@@ -57,36 +57,9 @@ public class SongId : Hashable {
         return anId.idValue == self.idValue
     }
     
-    // Override NSObject's isEqual, hash and description methods
-//    override func isEqual(object: AnyObject?) -> Bool {
-//        if self === object {
-//            return true
-//        }
-//        else
-//        {
-//            if object?.isKindOfClass(SongId) == false {
-//                return false
-//            }
-//            
-//            return self.isEqualToSongId(object as! SongId)
-//        }
-//    }
-    
     public var hashValue: Int {
         return idValue
     }
-    
-//    override var description: String {
-//        return String(format: "idValue: <%ld>",idValue)
-//    }
-    
-    // To comply with the NSCopying protocol
-//    func copyWithZone(zone: NSZone) -> AnyObject {
-////        let copy = SongId.allocWithZone(zone)
-//        let copy = self.copy()
-//        //copy.idValue = self.idValue
-//        return copy
-//  public   }
 }
 
 public func == (lhs: SongId, rhs: SongId) -> Bool {

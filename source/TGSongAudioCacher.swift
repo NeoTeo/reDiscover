@@ -103,9 +103,9 @@ final class TGSongAudioCacher : NSObject {
 			/// hertil : let's call the update metadata from here?
 			let songIds = Array(self.songPlayerCache.keys)
 			
-			if theContext.postCompletion != nil {
-				theContext.postCompletion!(songIds)
-			}
+            if theContext.postCompletion == nil { print("POSTCOMPLETION WAS NIL! <-------------------------") }
+            
+            theContext.postCompletion?(songIds)
 
 			print("We have a fresh new cache of size \(self.songPlayerCache.count)")
         }
